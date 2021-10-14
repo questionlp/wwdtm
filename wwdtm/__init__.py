@@ -1,0 +1,26 @@
+# -*- coding: utf-8 -*-
+# vim: set noai syntax=python ts=4 sw=4:
+#
+# Copyright (c) 2018-2020 Linh Pham
+# wwdtm is relased under the terms of the Apache License 2.0
+"""Explicitly listing all modules in this package"""
+
+from wwdtm.guest import (Guest,
+                         GuestAppearances,
+                         GuestUtility)
+from wwdtm.host import (Host,
+                        HostAppearances,
+                        HostUtility)
+from wwdtm.location import (Location,
+                            LocationRecordings,
+                            LocationUtility)
+from wwdtm.panelist import (Panelist,
+                            PanelistAppearances,
+                            PanelistScores,
+                            PanelistStatistics,
+                            PanelistUtility)
+from wwdtm.scorekeeper import (Scorekeeper,
+                               ScorekeeperAppearances,
+                               ScorekeeperUtility)
+
+VERSION = "2.0a0"

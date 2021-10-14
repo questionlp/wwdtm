@@ -1,0 +1,218 @@
+# -*- coding: utf-8 -*-
+# vim: set noai syntax=python ts=4 sw=4:
+#
+# Copyright (c) 2018-2021 Linh Pham
+# wwdtm is relased under the terms of the Apache License 2.0
+"""Wait Wait Don't Tell Me! Stats Panelist Statistics Retrieval Functions
+"""
+from typing import Any, Dict, Optional
+
+from mysql.connector import connect
+import numpy
+from wwdtm.panelist.scores import PanelistScores
+from wwdtm.panelist.utility import PanelistUtility
+
+class PanelistStatistics:
+    """This class contains functions used to retrieve data from a copy
+    of the Wait Wait Stats database and calculate statistics for
+    panelists.
+
+    :param connect_dict: Dictionary containing database connection
+        settings as required by mysql.connector.connect
+    :type connect_dict: Dict[str, Any], optional
+    :param database_connection: mysql.connector.connect database
+        connection
+    :type database_connection: mysql.connector.connect, optional
+    """
+
+    def __init__(self,
+                 connect_dict: Optional[Dict[str, Any]] = None,
+                 database_connection: Optional[connect] = None):
+        """Class initialization method.
+        """
+        if connect_dict:
+            self.connect_dict = connect_dict
+            self.database_connection = connect(**connect_dict)
+        elif database_connection:
+            if not database_connection.is_connected():
+                database_connection.reconnect()
+
+            self.database_connection = database_connection
+
+        self.scores = PanelistScores(database_connection=self.database_connection)
+        self.utility = PanelistUtility(database_connection=self.database_connection)
+
+    def retrieve_bluffs_by_id(self, id: int) -> Dict[str, int]:
+        """Returns a dictionary containing the number of chosen Bluffs
+        and correct Bluffs for the requested panelist ID.
+
+        :param id: Panelist ID
+        :type id: int
+        :return: Dictionary containing panelist Bluff counts
+        :rtype: Dict[str, int]
+        """
+        cursor = self.database_connection.cursor(dictionary=True)
+        query = ("SELECT ( "
+                 "SELECT COUNT(blm.chosenbluffpnlid) FROM ww_showbluffmap blm "
+                 "JOIN ww_shows s ON s.showid = blm.showid "
+                 "WHERE s.repeatshowid IS NULL AND blm.chosenbluffpnlid = %s "
+                 ") AS chosen, ( "
+                 "SELECT COUNT(blm.correctbluffpnlid) FROM ww_showbluffmap blm "
+                 "JOIN ww_shows s ON s.showid = blm.showid "
+                 "WHERE s.repeatshowid IS NULL AND blm.correctbluffpnlid = %s "
+                 ") AS correct;")
+        cursor.execute(query, (id, id, ))
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        bluffs = {
+            "chosen": result["chosen"],
+            "correct": result["correct"],
+        }
+
+        return bluffs
+
+    def retrieve_bluffs_by_slug(self, slug: str) -> Dict[str, int]:
+        """Returns a dictionary containing the number of chosen Bluffs
+        and correct Bluffs for the requested panelist slug string.
+
+        :param slug: Panelist slug string
+        :type slug: str
+        :return: Dictionary containing panelist Bluff counts
+        :rtype: Dict[str, int]
+        """
+        id = self.utility.convert_slug_to_id(slug)
+        if not id:
+            return None
+
+        return self.retrieve_bluffs_by_id(id)
+
+    def retrieve_rank_info_by_id(self, id: int) -> Dict[str, int]:
+        """Returns a dictionary with ranking information for the
+        requested panelist ID.
+
+        :param id: Panelist ID
+        :type id: int
+        :return: Dictionary containing panelist ranking information
+        :rtype: Dict[str, int]
+        """
+        cursor = self.database_connection.cursor(dictionary=True)
+        query = ("SELECT ( "
+                 "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
+                 "JOIN ww_shows s ON s.showid = pm.showid "
+                 "WHERE pm.panelistid = %s AND pm.showpnlrank = '1' AND "
+                 "s.bestof = 0 and s.repeatshowid IS NULL) as '1', ( "
+                 "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
+                 "JOIN ww_shows s ON s.showid = pm.showid "
+                 "WHERE pm.panelistid = %s AND pm.showpnlrank = '1t' AND "
+                 "s.bestof = 0 and s.repeatshowid IS NULL) as '1t', ( "
+                 "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
+                 "JOIN ww_shows s ON s.showid = pm.showid "
+                 "WHERE pm.panelistid = %s AND pm.showpnlrank = '2' AND "
+                 "s.bestof = 0 and s.repeatshowid IS NULL) as '2', ( "
+                 "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
+                 "JOIN ww_shows s ON s.showid = pm.showid "
+                 "WHERE pm.panelistid = %s AND pm.showpnlrank = '2t' AND "
+                 "s.bestof = 0 and s.repeatshowid IS NULL) as '2t', ( "
+                 "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
+                 "JOIN ww_shows s ON s.showid = pm.showid "
+                 "WHERE pm.panelistid = %s AND pm.showpnlrank = '3' AND "
+                 "s.bestof = 0 and s.repeatshowid IS NULL "
+                 ") as '3';")
+        cursor.execute(query, (id, id, id, id, id, ))
+        result = cursor.fetchone()
+        cursor.close()
+
+        rank_info = {
+            "first": result["1"],
+            "first_tied":  result["1t"],
+            "second": result["2"],
+            "second_tied": result["2t"],
+            "third": result["3"],
+        }
+
+        return rank_info
+
+    def retrieve_rank_info_by_slug(self, slug: str) -> Dict[str, int]:
+        """Returns a dictionary with ranking information for the
+        requested panelist slug string.
+
+        :param slug: Panelist slug string
+        :type slug: str
+        :return: Dictionary containing panelist ranking information
+        :rtype: Dict[str, int]
+        """
+        id = self.utility.convert_slug_to_id(slug)
+        if not id:
+            return None
+
+        return self.retrieve_rank_info_by_id(id)
+
+    def retrieve_statistics_by_id(self, id: int) -> Dict[str, Any]:
+        """Returns a dictionary containing panelist statistics, ranking
+        data, and scoring data for the requested panelist ID.
+
+        :param id: Panelist ID
+        :type id: int
+        :return: Dictionary containing panelist statistics
+        :rtype: Dict[str, Any]
+        """
+        score_data = self.scores.retrieve_scores_by_id(id)
+        ranks = self.retrieve_rank_info_by_id(id)
+
+        if not score_data or not ranks:
+            return None
+
+        appearance_count = len(score_data)
+        scoring = {
+            "minimum": int(numpy.amin(score_data)),
+            "maximum": int(numpy.amax(score_data)),
+            "mean": round(numpy.mean(score_data), 4),
+            "median": int(numpy.median(score_data)),
+            "standard_deviation": round(numpy.std(score_data), 4),
+            "total": int(numpy.sum(score_data)),
+        }
+
+        ranks_first = round(100 * (ranks["first"] / appearance_count), 4)
+        ranks_first_tied = round(100 * (ranks["first_tied"] / appearance_count), 4)
+        ranks_second = round(100 * (ranks["second"] / appearance_count), 4)
+        ranks_second_tied = round(100 * (ranks["second_tied"] / appearance_count), 4)
+        ranks_third = round(100 * (ranks["third"] / appearance_count), 4)
+
+        ranks_percentage = {
+            "first": ranks_first,
+            "first_tied": ranks_first_tied,
+            "second": ranks_second,
+            "second_tied": ranks_second_tied,
+            "third": ranks_third,
+        }
+
+        ranking = {
+            "rank": ranks,
+            "percentage": ranks_percentage,
+        }
+
+        statistics = {
+            "scoring": scoring,
+            "ranking": ranking,
+        }
+
+        return statistics
+
+    def retrieve_statistics_by_slug(self, slug: str) -> Dict[str, Any]:
+        """Returns a dictionary containing panelist statistics, ranking
+        data, and scoring data for the requested panelist slug string.
+
+        :param slug: Panelist slug string
+        :type slug: str
+        :return: Dictionary containing panelist statistics
+        :rtype: Dict[str, Any]
+        """
+        id = self.utility.convert_slug_to_id(slug)
+        if not id:
+            return None
+
+        return self.retrieve_statistics_by_id(id)
