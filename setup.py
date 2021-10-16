@@ -27,14 +27,14 @@ setuptools.setup(name="wwdtm",
                  packages=setuptools.find_packages(exclude=["tests"]),
                  package_dir={"wwdtm": "wwdtm"},
                  project_urls={
-                     "Source": "https://github.com/questionlp/libwwdtm/",
+                     "Source": "https://github.com/questionlp/wwdtm/",
                  },
                  python_requires=">=3.8",
                  install_requires=[
-                     "mysql-connector-python>=8.0.24",
-                     "numpy>=1.20.2",
-                     "python-dateutil==2.8.1",
-                     "python-slugify==4.0.1",
+                     "mysql-connector-python>=8.0.26",
+                     "numpy>=1.21.2",
+                     "python-dateutil==2.8.2",
+                     "python-slugify==5.0.1",
                      "pytz>=2021.1"
                  ],
                  include_package_data=True
