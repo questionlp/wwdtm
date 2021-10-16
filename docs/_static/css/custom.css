@@ -4,12 +4,16 @@
 @media all {
     body, input {
         font-family: "IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-        font-size: 1.1rem;
+        font-size: 1.05rem;
     }
 
     code, kbd, pre, textarea {
         font-family: "IBM Plex Mono", "Courier New", Courier, monospace;
-        font-size: 1.1rem;
+        font-size: 1.05rem;
+    }
+
+    div.sphinxsidebar {
+        font-size: 1rem;
     }
 
     p.caption, .caption-text {

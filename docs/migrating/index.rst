@@ -18,6 +18,16 @@ modules:
     scorekeeper
     show
 
+Python Version
+==============
+
+With the combination of Python 3.6 reaching the end of support at the end of
+2021 and current versions of NumPy requiring Python 3.7 or higher, ``wwdtm``
+version 2 requires Python 3.8 or higher.
+
+Development and testing of ``wwdtm`` version 2 has been done primarily using
+both Python 3.8 and 3.9, with preliminary testing done on 3.10.
+
 Handling Database Connections
 =============================
 

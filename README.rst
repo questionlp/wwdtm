@@ -1,6 +1,5 @@
-=======================
 Wait Wait Stats Library
-=======================
+-----------------------
 
 **NOTE:** This version of the Wait Wait Stats Library contained in this
 repository is currently in its early stages of development and should not be
@@ -11,28 +10,28 @@ library.
 For the current version of the library, check out the `libwwdtm`_ repository.
 
 Overview
---------
+========
 
 This project provides a Python library that provides an interface to
 retrieve data from a copy of the `Wait Wait Stats database`_.
 
 Requirements
-------------
+============
 
 This version of the library is developed to use features that are included
 in Python 3.8; and, thus, is the minimum version of Python supported.
 
 In addition to the Python version requirement, the library depends on a copy
-of the `Wait Wait Stats database`_ that runs on MariaDB or MySQL.
+of the `Wait Wait Stats Database`_ that runs on MariaDB or MySQL.
 
 Running Tests
--------------
+=============
 
 Included in this repository are tests that are written for use with ``pytest``.
 To run the tests, simply run: ``pytest`` from the root of the repository.
 
 License
--------
+=======
 
 This library is licensed under the terms of the `Apache License 2.0`_.
 
