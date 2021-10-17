@@ -39,7 +39,7 @@ class LocationUtility:
             self.database_connection = database_connection
 
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def convert_id_to_slug(self, id: int) -> str:
         """Converts a location's ID to the matching location slug
         string value.
@@ -67,7 +67,7 @@ class LocationUtility:
 
         return None
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def convert_slug_to_id(self, slug: str) -> int:
         """Converts a location's slug string to the matching location
         ID value.
@@ -97,7 +97,7 @@ class LocationUtility:
 
         return None
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def id_exists(self, id: int) -> bool:
         """Checks to see if a location ID exists.
 
@@ -121,7 +121,7 @@ class LocationUtility:
 
         return bool(result)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def slug_exists(self, slug: str) -> bool:
         """Checks to see if a location slug string exists.
 

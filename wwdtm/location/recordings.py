@@ -39,7 +39,7 @@ class LocationRecordings:
 
         self.utility = LocationUtility(database_connection=self.database_connection)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_recordings_by_id(self, id: int) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing recording
         information for the requested location ID.
@@ -106,6 +106,7 @@ class LocationRecordings:
 
         return recording_info
 
+    @lru_cache(typed=True)
     def retrieve_recordings_by_slug(self, slug: str) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing recording
         information for the requested location slug string.

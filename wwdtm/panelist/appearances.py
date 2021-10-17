@@ -39,7 +39,7 @@ class PanelistAppearances:
 
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_appearances_by_id(self, id: int) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested panelist ID.
@@ -163,7 +163,7 @@ class PanelistAppearances:
 
         return appearance_info
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_appearances_by_slug(self, slug: str) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested panelist slug string.
@@ -180,6 +180,7 @@ class PanelistAppearances:
 
         return self.retrieve_appearances_by_id(id)
 
+    @lru_cache(typed=True)
     def retrieve_yearly_appearances_by_id(self, id: int) -> Dict[int, int]:
         """Returns a dictionary containing panelist appearances broken
         down by year, for the requested panelist ID.
@@ -225,6 +226,7 @@ class PanelistAppearances:
 
         return years
 
+    @lru_cache(typed=True)
     def retrieve_yearly_appearances_by_slug(self, slug: str) -> Dict[int, int]:
         """Returns a dictionary containing panelist appearances broken
         down by year, for the requested panelist slug string.

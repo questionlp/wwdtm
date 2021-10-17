@@ -5,6 +5,7 @@
 # wwdtm is relased under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Scores Retrieval Functions
 """
+from functools import lru_cache
 from typing import Any, Dict, List, Optional, Tuple
 
 from mysql.connector import connect
@@ -38,6 +39,7 @@ class PanelistScores:
 
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
+    @lru_cache(typed=True)
     def retrieve_scores_by_id(self, id: int) -> List[int]:
         """Returns a list of panelist scores for appearances for the
         requested panelist ID.
@@ -64,6 +66,7 @@ class PanelistScores:
 
         return scores
 
+    @lru_cache(typed=True)
     def retrieve_scores_by_slug(self, slug: str
                                ) -> List[int]:
         """Returns a list of panelist scores for appearances for the
@@ -80,6 +83,7 @@ class PanelistScores:
 
         return self.retrieve_scores_by_id(id)
 
+    @lru_cache(typed=True)
     def retrieve_scores_grouped_list_by_id(self, id: int
                                           ) -> Dict[str, List[int]]:
         """Returns a panelist's score grouping for the requested
@@ -136,6 +140,7 @@ class PanelistScores:
 
         return scores_list
 
+    @lru_cache(typed=True)
     def retrieve_scores_grouped_list_by_slug(self, slug: str
                                             ) -> Dict[str, List[int]]:
         """Returns a panelist's score grouping for the requested
@@ -153,6 +158,7 @@ class PanelistScores:
 
         return self.retrieve_scores_grouped_list_by_id(id)
 
+    @lru_cache(typed=True)
     def retrieve_scores_grouped_ordered_pair_by_id(self, id: int
                                                   ) -> List[Tuple[int, int]]:
         """Returns an list of tuples containing a score and the
@@ -203,6 +209,7 @@ class PanelistScores:
 
         return list(scores.items())
 
+    @lru_cache(typed=True)
     def retrieve_scores_grouped_ordered_pair_by_slug(self, slug: str,
                                                     ) -> List[Tuple[int, int]]:
         """Returns an list of tuples containing a score and the
@@ -220,6 +227,7 @@ class PanelistScores:
 
         return self.retrieve_scores_grouped_ordered_pair_by_id(id)
 
+    @lru_cache(typed=True)
     def retrieve_scores_list_by_id(self, id: int,
                                   ) -> Dict[str, Any]:
         """Returns a dictionary containing two lists, one with show
@@ -259,6 +267,7 @@ class PanelistScores:
 
         return scores
 
+    @lru_cache(typed=True)
     def retrieve_scores_list_by_slug(self, slug: str,
                                   ) -> Dict[str, Any]:
         """Returns a dictionary containing two lists, one with show
@@ -276,6 +285,7 @@ class PanelistScores:
 
         return self.retrieve_scores_list_by_id(id)
 
+    @lru_cache(typed=True)
     def retrieve_scores_ordered_pair_by_id(self, id: int
                                           ) -> List[Tuple[str, int]]:
         """Returns an list of tuples containing a show date and the
@@ -309,6 +319,7 @@ class PanelistScores:
 
         return scores
 
+    @lru_cache(typed=True)
     def retrieve_scores_ordered_pair_by_slug(self, slug: str,
                                             ) -> List[Tuple[str, int]]:
         """Returns an list of tuples containing a show date and the

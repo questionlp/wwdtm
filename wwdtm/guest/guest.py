@@ -157,7 +157,7 @@ class Guest:
 
         return ids
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_by_id(self, id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing guest ID, name and
         slug string for the requested guest ID.
@@ -192,7 +192,7 @@ class Guest:
 
         return info
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_by_slug(self, slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing guest ID, name and
         slug string for the requested guest slug string.
@@ -215,7 +215,7 @@ class Guest:
 
         return self.retrieve_by_id(id)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_details_by_id(self, id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing guest ID, name, slug
         string and appearance information for the requested Guest ID.
@@ -239,7 +239,7 @@ class Guest:
 
         return info
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_details_by_slug(self, slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing guest ID, name, slug
         string and appearance information for the requested Guest slug

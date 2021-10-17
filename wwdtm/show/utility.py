@@ -38,7 +38,7 @@ class ShowUtility:
 
             self.database_connection = database_connection
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def convert_date_to_id(self,
                            year: int,
                            month: int,
@@ -72,7 +72,7 @@ class ShowUtility:
 
         return None
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def convert_id_to_date(self, id: int) -> str:
         """Converts a show's ID to the matching show date.
 
@@ -99,7 +99,7 @@ class ShowUtility:
 
         return None
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def date_exists(self,
                     year: int,
                     month: int,
@@ -130,7 +130,7 @@ class ShowUtility:
 
         return bool(result)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def id_exists(self, id: int) -> bool:
         """Checks to see if a show ID exists.
 

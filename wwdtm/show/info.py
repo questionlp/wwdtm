@@ -45,7 +45,7 @@ class ShowInfo:
         self.utility = ShowUtility(database_connection=self.database_connection)
         self.loc_util = LocationUtility(database_connection=self.database_connection)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_bluff_info_by_id(self, id: int) -> Dict[str, Any]:
         """Returns a dictionary containing Bluff the Listener information
         for the requested show ID.
@@ -103,7 +103,7 @@ class ShowInfo:
 
         return bluff_info
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_core_info_by_id(self, id: int) -> Dict[str, Any]:
         """Returns a dictionary with core information for the requested
         show ID.
@@ -204,7 +204,7 @@ class ShowInfo:
 
         return show_info
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_guest_info_by_id(self, id: int) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing Not My Job
         guest information for the requested show ID.
@@ -244,7 +244,7 @@ class ShowInfo:
 
         return guests
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_panelist_info_by_id(self, id: int) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing panelist
         information for the requested show ID.

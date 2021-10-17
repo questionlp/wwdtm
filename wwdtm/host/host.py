@@ -159,7 +159,7 @@ class Host:
 
         return ids
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_by_id(self, id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing host ID, name and
         slug string for the requested host ID.
@@ -196,7 +196,7 @@ class Host:
 
         return info
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_by_slug(self, slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing host ID, name and
         slug string for the requested host slug string.
@@ -219,7 +219,7 @@ class Host:
 
         return self.retrieve_by_id(id)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_details_by_id(self, id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing host ID, name, slug
         string and appearance information for the requested host ID.
@@ -243,7 +243,7 @@ class Host:
 
         return info
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_details_by_slug(self, slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing host ID, name, slug
         string and appearance information for the requested host slug

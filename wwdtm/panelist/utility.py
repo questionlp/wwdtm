@@ -37,7 +37,7 @@ class PanelistUtility:
 
             self.database_connection = database_connection
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def convert_id_to_slug(self, id: int) -> str:
         """Converts a panelist's ID to the matching panelist slug
         string value.
@@ -65,7 +65,7 @@ class PanelistUtility:
 
         return None
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def convert_slug_to_id(self, slug: str) -> int:
         """Converts a panelist's slug string to the matching panelist ID value.
 
@@ -94,7 +94,7 @@ class PanelistUtility:
 
         return None
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def id_exists(self, id: int) -> bool:
         """Checks to see if a panelist ID exists.
 
@@ -118,7 +118,7 @@ class PanelistUtility:
 
         return bool(result)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def slug_exists(self, slug: str) -> bool:
         """Checks to see if a panelist slug string exists.
 

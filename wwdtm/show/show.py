@@ -221,7 +221,7 @@ class Show:
 
         return show_years_months
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_by_date(self,
                          year: int,
                          month: int,
@@ -244,7 +244,7 @@ class Show:
 
         return self.retrieve_by_id(id)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_by_date_string(self,
                                 date_string: str) -> Dict[str, Any]:
         """Returns a dictionary object containing show ID, show date,
@@ -267,7 +267,7 @@ class Show:
 
         return self.retrieve_by_id(id)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_by_id(self, id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing show ID, show date,
         Best Of and Repeat Show information for the requested show ID.
@@ -309,7 +309,7 @@ class Show:
 
         return info
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_by_year(self, year: int) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing with show
         information for the requested year, sorted by show date.
@@ -343,7 +343,7 @@ class Show:
 
         return shows
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_by_year_month(self,
                                year: int,
                                month: int) -> List[Dict[str, Any]]:
@@ -383,7 +383,7 @@ class Show:
 
         return shows
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_details_by_date(self,
                                  year: int,
                                  month: int,
@@ -407,7 +407,7 @@ class Show:
 
         return self.retrieve_details_by_id(id)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_details_by_date_string(self,
                                         date_string: str) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing show ID,
@@ -430,7 +430,7 @@ class Show:
 
         return self.retrieve_details_by_id(id)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_details_by_id(self, id: int) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
@@ -456,7 +456,7 @@ class Show:
 
         return info
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_details_by_year(self, year: int) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information for
@@ -490,7 +490,7 @@ class Show:
 
         return shows
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_details_by_year_month(self,
                                        year: int,
                                        month: int) -> List[Dict[str, Any]]:
@@ -530,7 +530,7 @@ class Show:
 
         return shows
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_months_by_year(self,
                                 year: int) -> List[int]:
         """Returns a list of show months available for the requested
@@ -564,7 +564,7 @@ class Show:
 
         return months
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_recent(self,
                         include_days_ahead: int = 7,
                         include_days_back: int = 32) -> List[Dict[str, Any]]:
@@ -610,7 +610,7 @@ class Show:
 
         return shows
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_recent_details(self,
                                 include_days_ahead: int = 7,
                                 include_days_back: int = 32
@@ -658,7 +658,7 @@ class Show:
 
         return shows
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_scores_by_year(self, year: int) -> List[Tuple[str, int, int, int]]:
         """Returns a list of tuples containing panelist scores for all
         shows in the requested year, sorted by show date.

@@ -164,7 +164,7 @@ class Panelist:
 
         return ids
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_by_id(self, id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing panelist ID, name and
         slug string for the requested panelist ID.
@@ -201,7 +201,7 @@ class Panelist:
 
         return info
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_by_slug(self, slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing panelist ID, name and
         slug string for the requested panelist slug string.
@@ -224,7 +224,7 @@ class Panelist:
 
         return self.retrieve_by_id(id)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_details_by_id(self, id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing panelist ID, name, slug
         string and appearance information for the requested panelist ID.
@@ -250,7 +250,7 @@ class Panelist:
 
         return info
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_details_by_slug(self, slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing panelist ID, name, slug
         string and appearance information for the requested Panelist slug

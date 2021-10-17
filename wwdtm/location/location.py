@@ -194,7 +194,7 @@ class Location:
 
         return ids
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_by_id(self, id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing location ID, venue,
         city, state and slug string for the requested location ID.
@@ -236,7 +236,7 @@ class Location:
 
         return location
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_by_slug(self, slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing location ID, venue,
         city, state and slug string for the requested location ID.
@@ -259,7 +259,7 @@ class Location:
 
         return self.retrieve_by_id(id)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_details_by_id(self, id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing location ID, venue,
         city, state, slug string and a list of recordings for the
@@ -284,7 +284,7 @@ class Location:
 
         return info
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def retrieve_details_by_slug(self, slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing location ID, venue,
         city, state, slug string and a list of recordings for the

@@ -5,6 +5,7 @@
 # wwdtm is relased under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Statistics Retrieval Functions
 """
+from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
@@ -42,6 +43,7 @@ class PanelistStatistics:
         self.scores = PanelistScores(database_connection=self.database_connection)
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
+    @lru_cache(typed=True)
     def retrieve_bluffs_by_id(self, id: int) -> Dict[str, int]:
         """Returns a dictionary containing the number of chosen Bluffs
         and correct Bluffs for the requested panelist ID.
@@ -75,6 +77,7 @@ class PanelistStatistics:
 
         return bluffs
 
+    @lru_cache(typed=True)
     def retrieve_bluffs_by_slug(self, slug: str) -> Dict[str, int]:
         """Returns a dictionary containing the number of chosen Bluffs
         and correct Bluffs for the requested panelist slug string.
@@ -90,6 +93,7 @@ class PanelistStatistics:
 
         return self.retrieve_bluffs_by_id(id)
 
+    @lru_cache(typed=True)
     def retrieve_rank_info_by_id(self, id: int) -> Dict[str, int]:
         """Returns a dictionary with ranking information for the
         requested panelist ID.
@@ -136,6 +140,7 @@ class PanelistStatistics:
 
         return rank_info
 
+    @lru_cache(typed=True)
     def retrieve_rank_info_by_slug(self, slug: str) -> Dict[str, int]:
         """Returns a dictionary with ranking information for the
         requested panelist slug string.
@@ -151,6 +156,7 @@ class PanelistStatistics:
 
         return self.retrieve_rank_info_by_id(id)
 
+    @lru_cache(typed=True)
     def retrieve_statistics_by_id(self, id: int) -> Dict[str, Any]:
         """Returns a dictionary containing panelist statistics, ranking
         data, and scoring data for the requested panelist ID.
@@ -202,6 +208,7 @@ class PanelistStatistics:
 
         return statistics
 
+    @lru_cache(typed=True)
     def retrieve_statistics_by_slug(self, slug: str) -> Dict[str, Any]:
         """Returns a dictionary containing panelist statistics, ranking
         data, and scoring data for the requested panelist slug string.

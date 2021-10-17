@@ -37,7 +37,7 @@ class HostUtility:
 
             self.database_connection = database_connection
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def convert_id_to_slug(self, id: int) -> str:
         """Converts a host's ID to the matching host slug string value.
 
@@ -64,7 +64,7 @@ class HostUtility:
 
         return None
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def convert_slug_to_id(self, slug: str) -> int:
         """Converts a host's slug string to the matching host ID value.
 
@@ -93,7 +93,7 @@ class HostUtility:
 
         return None
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def id_exists(self, id: int) -> bool:
         """Checks to see if a host ID exists.
 
@@ -117,7 +117,7 @@ class HostUtility:
 
         return bool(result)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def slug_exists(self, slug: str) -> bool:
         """Checks to see if a host slug string exists.
 

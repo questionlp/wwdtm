@@ -37,7 +37,7 @@ class GuestUtility:
 
             self.database_connection = database_connection
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def convert_id_to_slug(self, id: int) -> str:
         """Converts a guest's ID to the matching guest slug string.
 
@@ -64,7 +64,7 @@ class GuestUtility:
 
         return None
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def convert_slug_to_id(self, slug: str) -> int:
         """Converts a guest's slug string to the matching guest ID, if
         a match is found. If no match is found, None is returned.
@@ -94,7 +94,7 @@ class GuestUtility:
 
         return None
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def id_exists(self, id: int) -> bool:
         """Checks to see if a guest ID exists.
 
@@ -118,7 +118,7 @@ class GuestUtility:
 
         return bool(result)
 
-    @lru_cache(maxsize=256, typed=True)
+    @lru_cache(typed=True)
     def slug_exists(self, slug: str) -> bool:
         """Checks to see if a guest slug string exists.
 
