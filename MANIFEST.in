@@ -1,0 +1,15 @@
+# Include example configuration file
+include config.dist.json
+
+# Include pytest configuration file
+include pytest.ini
+
+# Include documentation
+graft docs
+global-exclude *.py[cod]
+prune docs/_build
+prune docs/venv
+
+# Include tests
+graft tests
+global-exclude *.py[cod]
