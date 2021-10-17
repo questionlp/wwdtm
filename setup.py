@@ -14,5 +14,5 @@ setup(name="wwdtm",
           "python-dateutil==2.8.2",
           "python-slugify==5.0.1",
           "pytz>=2021.1"
-        ]
+      ]
 )
