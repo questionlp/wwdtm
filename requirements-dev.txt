@@ -1,3 +1,6 @@
+wheel
+setuptools
+build
 mysql-connector-python==8.0.26
 numpy==1.21.2
 pytest==6.2.5
