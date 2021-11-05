@@ -47,7 +47,8 @@ class Guest:
         name and slug string for all guests.
 
         :return: List of all guests and their corresponding
-            information
+            information. If no guests could be retrieved, an empty list
+            is returned.
         :rtype: List[Dict[str, Any]]
         """
         self.database_connection.is_connected
@@ -61,7 +62,7 @@ class Guest:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         guests = []
         for row in results:
@@ -80,7 +81,8 @@ class Guest:
         name, slug string and appearance information for all guests.
 
         :return: List of all guests and their corresponding
-            information and appearances
+            information and appearances. If no guests could be
+            retrieved, an empty list is returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -93,7 +95,7 @@ class Guest:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         guests = []
         for row in results:
@@ -113,7 +115,8 @@ class Guest:
         """Returns a list of all guest IDs from the database, sorted by
         guest name.
 
-        :return: List of all guest IDs
+        :return: List of all guest IDs. If no guest IDs could be
+            retrieved, an emtpy list is returned.
         :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -125,7 +128,7 @@ class Guest:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:
@@ -137,7 +140,8 @@ class Guest:
         """Returns a list of all guest slug strings from the database,
         sorted by guest name.
 
-        :return: List of all guest slug strings
+        :return: List of all guest slug strings. If no guest slugs could
+            be retrieved, an emtpy list is returned.
         :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -149,7 +153,7 @@ class Guest:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:
@@ -164,13 +168,14 @@ class Guest:
 
         :param id: Guest ID
         :type id: int
-        :return: Dictionary containing guest information
+        :return: Dictionary containing guest information. If no guest
+            information is found, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
             id = int(id)
         except ValueError:
-            return None
+            return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT guestid AS id, guest, guestslug AS slug "
@@ -182,7 +187,7 @@ class Guest:
         cursor.close()
 
         if not result:
-            return None
+            return {}
 
         info = {
             "id": result["id"],
@@ -199,19 +204,20 @@ class Guest:
 
         :param slug: Guest slug string
         :type slug: str
-        :return: Dictionary containing guest information
+        :return: Dictionary containing guest information. If no guest
+            information is found, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
             slug = slug.strip()
             if not slug:
-                return False
+                return {}
         except AttributeError:
-            return False
+            return {}
 
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_by_id(id)
 
@@ -223,17 +229,18 @@ class Guest:
         :param id: Guest ID
         :type id: int
         :return: Dictionary containing guest information and their
-            appearances
+            appearances. If no guest information is found, an empty
+            dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
             id = int(id)
         except ValueError:
-            return None
+            return {}
 
         info = self.retrieve_by_id(id)
         if not info:
-            return None
+            return {}
 
         info["appearances"] = self.appearances.retrieve_appearances_by_id(id)
 
@@ -248,18 +255,19 @@ class Guest:
         :param slug: Guest slug string
         :type slug: str
         :return: Dictionary containing guest information and their
-            appearances
+            appearances. If no guest information is found, an empty
+            dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
             slug = slug.strip()
             if not slug:
-                return False
+                return {}
         except AttributeError:
-            return False
+            return {}
 
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_details_by_id(id)

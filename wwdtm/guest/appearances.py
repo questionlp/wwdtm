@@ -53,7 +53,7 @@ class GuestAppearances:
         try:
             id = int(id)
         except ValueError:
-            return None
+            return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT ( "
@@ -129,6 +129,6 @@ class GuestAppearances:
         """
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_appearances_by_id(id)

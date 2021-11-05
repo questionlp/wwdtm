@@ -173,9 +173,11 @@ class LocationUtility:
             return slugify(f"{venue} {city} {state}")
         elif venue and city and not state:
             return slugify(f"{venue} {city}")
-        elif venue and (not city and not state):
-            return slugify(venue)
+        elif id and venue and (not city and not state):
+            return slugify(f"{id}-{venue}")
+        elif id and city and state and not venue:
+            return slugify(f"{id} {city} {state}")
         elif id:
-            return slugify(f"locationid-{id}")
+            return f"location-{id}"
         else:
             raise ValueError("Invalid location information provided")
