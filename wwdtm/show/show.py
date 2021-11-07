@@ -47,7 +47,9 @@ class Show:
         """Returns a list of dictionary objects containing show ID,
         show date, Best Of and Repeat Show information for all shows.
 
-        :return: List of all shows and their corresponding information
+        :return: List of all shows and their corresponding information.
+            If show information could not be retrieved, an empty list
+            will be returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -60,7 +62,7 @@ class Show:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         shows = []
         for row in results:
@@ -85,7 +87,9 @@ class Show:
         show date, host, scorekeeper, panelist and guest information
         for all shows.
 
-        :return: List of all shows and their corresponding details
+        :return: List of all shows and their corresponding details.
+            If show information could not be retrieved, an empty list
+            will be returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -96,7 +100,7 @@ class Show:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         shows = []
         for row in results:
@@ -115,7 +119,8 @@ class Show:
         """Returns a list of all show IDs from the database, sorted by
         show date.
 
-        :return: List of all show IDs
+        :return: List of all show IDs. If show IDs could not be
+            retrieved, an empty list will be returned.
         :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -126,7 +131,7 @@ class Show:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:
@@ -138,7 +143,8 @@ class Show:
         """Returns a list of all show dates from the database, sorted
         by show date.
 
-        :return: List of all show date strings
+        :return: List of all show date strings. If show dates could not
+            be retrieved, an empty list will be returned.
         :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -149,7 +155,7 @@ class Show:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:
@@ -162,7 +168,8 @@ class Show:
         and day, sorted by show date.
 
         :return: List of allow show dates as a tuple of year, month
-            and day
+            and day. If show dates could not be retrieved, an empty list
+            will be returned.
         :rtype: List[Tuple[int, int, int]]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -172,6 +179,9 @@ class Show:
         cursor.execute(query)
         result = cursor.fetchall()
         cursor.close()
+
+        if not result:
+            return []
 
         show_dates = []
         for show in result:
@@ -183,7 +193,9 @@ class Show:
         """Returns a list of all show years and months as a string,
         sorted by year and month.
 
-        :return: List of all show years and month in ``YYYY-MM`` format
+        :return: List of all show years and month in ``YYYY-MM`` format.
+            If show dates could not be retrieved, an empty list will be
+            returned.
         :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -193,6 +205,9 @@ class Show:
         cursor.execute(query)
         result = cursor.fetchall()
         cursor.close()
+
+        if not result:
+            return []
 
         show_years_months = []
         for row in result:
@@ -204,7 +219,9 @@ class Show:
         """Returns a list of all show years and months as a tuple of
         year and month, sorted by year and month.
 
-        :return: List of allow show dates as a tuple of year and month
+        :return: List of allow show dates as a tuple of year and month.
+            If show dates could not be retrieved, an empty list will be
+            returned.
         :rtype: List[Tuple[int, int]]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -214,6 +231,9 @@ class Show:
         cursor.execute(query)
         result = cursor.fetchall()
         cursor.close()
+
+        if not result:
+            return []
 
         show_years_months = []
         for row in result:
@@ -235,12 +255,14 @@ class Show:
         :type month: int
         :param day: One or two digit day
         :type day: int
-        :return: Dictionary containing show information
+        :return: Dictionary containing show information. If show
+            information could not be retrieved, an empty dictionary will
+            be returned.
         :rtype: Dict[str, Any]
         """
         id = self.utility.convert_date_to_id(year, month, day)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_by_id(id)
 
@@ -253,13 +275,15 @@ class Show:
 
         :param date_string: Show date in ``YYYY-MM-DD`` format
         :type date_string: str
-        :return: Dictionary containing show information
+        :return: Dictionary containing show information. If show
+            information could not be retrieved, an empty dictionary will
+            be returned.
         :rtype: Dict[str, Any]
         """
         try:
             parsed_date_string = date_parser.parse(date_string)
         except ValueError:
-            return None
+            return {}
 
         id = self.utility.convert_date_to_id(parsed_date_string.year,
                                              parsed_date_string.month,
@@ -274,13 +298,15 @@ class Show:
 
         :param id: Show ID
         :type id: int
-        :return: Show information
+        :return: Dictionary containing show information. If show
+            information could not be retrieved, an empty dictionary will
+            be returned.
         :rtype: Dict[str, Any]
         """
         try:
             id = int(id)
         except ValueError:
-            return None
+            return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT showid AS id, showdate AS date, "
@@ -293,7 +319,7 @@ class Show:
         cursor.close()
 
         if not result:
-            return None
+            return {}
 
         repeat_show_id = result["repeatshowid"]
         info = {
@@ -317,13 +343,14 @@ class Show:
         :param year: Four digit year
         :type year: int
         :return: List of shows for the requested year and corresponding
-            information
+            information. If show information could not be retrieved,
+            an empty list will be returned.
         :rtype: List[Dict[str, Any]]
         """
         try:
             parsed_year = date_parser.parse(f"{year:04d}")
         except ValueError:
-            return None
+            return []
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT showid FROM ww_shows "
@@ -334,7 +361,7 @@ class Show:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         shows = []
         for show in result:
@@ -356,13 +383,14 @@ class Show:
         :param month: One or two digit month
         :type month: int
         :return: List of shows for the requested year and month, and
-            corresponding information
+            corresponding information. If show information could not be
+            retrieved, an list dictionary will be returned.
         :rtype: List[Dict[str, Any]]
         """
         try:
             parsed_year_month = date_parser.parse(f"{year:04d}-{month:02d}-01")
         except ValueError:
-            return None
+            return []
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT showid FROM ww_shows "
@@ -374,7 +402,7 @@ class Show:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         shows = []
         for show in result:
@@ -398,12 +426,14 @@ class Show:
         :type month: int
         :param day: One or two digit day
         :type day: int
-        :return: Dictionary containing show information and details
+        :return: Dictionary containing show information and details. If
+            show information could not be retrieved, an empty dictionary
+            will be returned.
         :rtype: Dict[str, Any]
         """
         id = self.utility.convert_date_to_id(year, month, day)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_details_by_id(id)
 
@@ -416,13 +446,15 @@ class Show:
 
         :param date_string: Show date in ``YYYY-MM-DD`` format
         :type date_string: str
-        :return: Dictionary containing show information and details
+        :return: Dictionary containing show information and details. If
+            show information could not be retrieved, an empty dictionary
+            will be returned.
         :rtype: Dict[str, Any]
         """
         try:
             parsed_date_string = date_parser.parse(date_string)
         except ValueError:
-            return None
+            return {}
 
         id = self.utility.convert_date_to_id(parsed_date_string.year,
                                              parsed_date_string.month,
@@ -438,17 +470,19 @@ class Show:
 
         :param id: Show ID
         :type id: int
-        :return: Dictionary containing show information and details
+        :return: Dictionary containing show information and details. If
+            show information could not be retrieved, an empty dictionary
+            will be returned.
         :rtype: Dict[str, Any]
         """
         try:
             id = int(id)
         except ValueError:
-            return None
+            return {}
 
         info = self.info.retrieve_core_info_by_id(id)
         if not info:
-            return None
+            return {}
 
         info["panelists"] = self.info.retrieve_panelist_info_by_id(id)
         info["bluff"] = self.info.retrieve_bluff_info_by_id(id)
@@ -465,13 +499,14 @@ class Show:
         :param year: Four digit year
         :type year: int
         :return: List of shows for the requested year and corresponding
-            details
+            details. If show information could not be retrieved, an
+            empty list will be returned.
         :rtype: List[Dict[str, Any]]
         """
         try:
             parsed_year = date_parser.parse(f"{year:04d}")
         except ValueError:
-            return None
+            return []
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT showid AS id FROM ww_shows "
@@ -482,7 +517,7 @@ class Show:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         shows = []
         for show in result:
@@ -503,13 +538,14 @@ class Show:
         :param month: One or two digit month
         :type month: int
         :return: List of shows for the requested year and month, and
-            corresponding details
+            corresponding details. If show information could not be
+            retrieved, an empty list will be returned.
         :rtype: List[Dict[str, Any]]
         """
         try:
             parsed_year_month = date_parser.parse(f"{year:04d}-{month:02d}-01")
         except ValueError:
-            return None
+            return []
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT showid AS id FROM ww_shows "
@@ -522,7 +558,7 @@ class Show:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         shows = []
         for show in result:
@@ -538,13 +574,14 @@ class Show:
 
         :param year: Four digit year
         :type year: int
-        :return: List of months
+        :return: List of available show months. If show information
+            could not be retrieved, an empty list will be returned.
         :rtype: List[int]
         """
         try:
             _ = date_parser.parse(f"{year:04d}")
         except ValueError:
-            return None
+            return []
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT DISTINCT MONTH(showdate) "
@@ -556,7 +593,7 @@ class Show:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         months = []
         for row in result:
@@ -577,20 +614,22 @@ class Show:
         :param include_days_back: Number of days in the past to
             include, defaults to 32
         :type include_days_back: int, optional
-        :return: List of recent shows and corresponding information
+        :return: List of recent shows and corresponding information. If
+            show information could not be retrieved, an empty list will
+            be returned.
         :rtype: List[Dict[str, Any]]
         """
         try:
             past_days = int(include_days_back)
             future_days = int(include_days_ahead)
         except ValueError:
-            return None
+            return []
 
         try:
             past_date = datetime.datetime.now() - datetime.timedelta(days=past_days)
             future_date = datetime.datetime.now() + datetime.timedelta(days=future_days)
         except OverflowError:
-            return None
+            return []
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT showid AS id FROM ww_shows "
@@ -602,7 +641,7 @@ class Show:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         shows = []
         for show in result:
@@ -625,20 +664,22 @@ class Show:
         :param include_days_back: Number of days in the past to
             include, defaults to 32
         :type include_days_back: int, optional
-        :return: List of recent shows and corresponding details
+        :return: List of recent shows and corresponding details. If show
+            information could not be retrieved, an empty list will be
+            returned.
         :rtype: List[Dict[str, Any]]
         """
         try:
             past_days = int(include_days_back)
             future_days = int(include_days_ahead)
         except ValueError:
-            return None
+            return []
 
         try:
             past_date = datetime.datetime.now() - datetime.timedelta(days=past_days)
             future_date = datetime.datetime.now() + datetime.timedelta(days=future_days)
         except OverflowError:
-            return None
+            return []
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT showid AS id FROM ww_shows "
@@ -650,7 +691,7 @@ class Show:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         shows = []
         for show in result:
@@ -666,13 +707,14 @@ class Show:
         :param year: Four digit year
         :type year: int
         :return: List of tuples each containing show date and panelist
-            scores
+            scores. If show scores could not be retrieved, an empty list
+            will be returned.
         :rtype: List[Tuple[str, int, int, int]]
         """
         try:
             _ = date_parser.parse(f"{year:04d}")
         except ValueError:
-            return None
+            return []
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT s.showdate AS date, pm.panelistscore AS score "
@@ -686,7 +728,7 @@ class Show:
         result = cursor.fetchall()
 
         if not result:
-            return None
+            return []
 
         shows = {}
         for row in result:
@@ -707,7 +749,8 @@ class Show:
     def retrieve_years(self) -> List[int]:
         """Returns a list of available show years, sorted by year.
 
-        :return: List of all show years
+        :return: List of available show years. If show dates could not
+            be retrieved, an empty list will be returned.
         :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -719,7 +762,7 @@ class Show:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         years = []
         for row in result:

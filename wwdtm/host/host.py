@@ -46,7 +46,8 @@ class Host:
         """Returns a list of dictionary objects containing host ID,
         name and slug string for all hosts.
 
-        :return: List of all hosts and their corresponding information
+        :return: List of all hosts and their corresponding information.
+            If hosts could not be retrieved, an empty list is returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -60,7 +61,7 @@ class Host:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         hosts = []
         for row in results:
@@ -80,7 +81,8 @@ class Host:
         name, slug string and appearance information for all hosts.
 
         :return: List of all hosts and their corresponding information
-            and appearances
+            and appearances. If hosts could not be retrieved, an empty
+            list is returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -94,7 +96,7 @@ class Host:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         hosts = []
         for row in results:
@@ -115,7 +117,8 @@ class Host:
         """Returns a list of all host IDs from the database, sorted by
         host name.
 
-        :return: List of all host IDs
+        :return: List of all host IDs. If host IDs could not be
+            retrieved, an empty list is returned.
         :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -127,7 +130,7 @@ class Host:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:
@@ -139,7 +142,8 @@ class Host:
         """Returns a list of all host slug strings from the database,
         sorted by host name.
 
-        :return: List of all host slug strings
+        :return: List of all host slug strings. If host slug strings
+            could not be retrieved, an empty list is returned.
         :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -151,7 +155,7 @@ class Host:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:
@@ -166,13 +170,15 @@ class Host:
 
         :param id: Host ID
         :type id: int
-        :return: Dictionary containing host information
+        :return: Dictionary containing host information. If host
+            information could not be retrieved, an empty dictionary is
+            returned.
         :rtype: Dict[str, Any]
         """
         try:
             id = int(id)
         except ValueError:
-            return None
+            return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT hostid AS id, host, hostslug AS slug, "
@@ -185,7 +191,7 @@ class Host:
         cursor.close()
 
         if not result:
-            return None
+            return {}
 
         info = {
             "id": result["id"],
@@ -203,19 +209,21 @@ class Host:
 
         :param slug: Host slug string
         :type slug: str
-        :return: Dictionary containing host information
+        :return: Dictionary containing host information. If host
+            information could be retrieved, an empty dictionary is
+            returned.
         :rtype: Dict[str, Any]
         """
         try:
             slug = slug.strip()
             if not slug:
-                return False
+                return {}
         except AttributeError:
-            return False
+            return {}
 
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_by_id(id)
 
@@ -227,17 +235,18 @@ class Host:
         :param id: Host ID
         :type id: int
         :return: Dictionary containing host information and their
-            appearances
+            appearances. If host information could be retrieved, an
+            empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
             id = int(id)
         except ValueError:
-            return None
+            return {}
 
         info = self.retrieve_by_id(id)
         if not info:
-            return None
+            return {}
 
         info["appearances"] = self.appearances.retrieve_appearances_by_id(id)
 
@@ -252,18 +261,19 @@ class Host:
         :param slug: Host slug string
         :type slug: str
         :return: Dictionary containing host information and their
-            appearances
+            appearances. If host information could be retrieved, an
+            empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
             slug = slug.strip()
             if not slug:
-                return False
+                return {}
         except AttributeError:
-            return False
+            return {}
 
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_details_by_id(id)

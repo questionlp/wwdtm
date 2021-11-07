@@ -46,7 +46,8 @@ class PanelistScores:
 
         :param id: Panelist ID
         :type id: int
-        :return: List containing panelist scores
+        :return: List containing panelist scores. If panelist scores
+            could not be retrieved, an empty list is returned.
         :rtype: List[int]
         """
         scores = []
@@ -59,6 +60,9 @@ class PanelistScores:
         cursor.execute(query, (id, ))
         result = cursor.fetchall()
         cursor.close()
+
+        if not result:
+            return []
 
         for appearance in result:
             if appearance["panelistscore"]:
@@ -74,12 +78,13 @@ class PanelistScores:
 
         :param slug: Panelist slug string
         :type slug: str
-        :return: List containing panelist scores
+        :return: List containing panelist scores. If panelist scores
+            could not be retrieved, an empty list is returned.
         :rtype: List[int]
         """
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return []
 
         return self.retrieve_scores_by_id(id)
 
@@ -92,7 +97,9 @@ class PanelistScores:
         :param id: Panelist ID
         :type id: int
         :return: Dictionary containing two lists, one containing scores
-            and one containing counts of those scores
+            and one containing counts of those scores. If panelist
+            scores could not be retrieved, an empty dictionary is
+            returned.
         :rtype: Dict[str, List[int]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -104,7 +111,7 @@ class PanelistScores:
         result = cursor.fetchone()
 
         if not result:
-            return None
+            return {}
 
         min_score = result["min"]
         max_score = result["max"]
@@ -128,7 +135,7 @@ class PanelistScores:
         cursor.close()
 
         if not results:
-            return None
+            return {}
 
         for row in results:
             scores[row["score"]] = row["score_count"]
@@ -149,12 +156,14 @@ class PanelistScores:
         :param slug: Panelist slug string
         :type slug: str
         :return: Dictionary containing two lists, one containing scores
-            and one containing counts of those scores
+            and one containing counts of those scores. If panelist
+            scores could not be retrieved, an empty dictionary is
+            returned.
         :rtype: Dict[str, List[int]]
         """
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_scores_grouped_list_by_id(id)
 
@@ -167,7 +176,9 @@ class PanelistScores:
 
         :param id: Panelist ID
         :type id: int
-        :return: List of tuples containing scores and score counts
+        :return: List of tuples containing scores and score counts. If
+            panelist scores could not be retrieved, an empty list is
+            returned.
         :rtype: List[Tuple[int, int]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -178,7 +189,7 @@ class PanelistScores:
         result = cursor.fetchone()
 
         if not result:
-            return None
+            return []
 
         min_score = result["min"]
         max_score = result["max"]
@@ -202,7 +213,7 @@ class PanelistScores:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         for row in results:
             scores[row["score"]] = row["score_count"]
@@ -218,26 +229,30 @@ class PanelistScores:
 
         :param slug: Panelist slug string
         :type slug: str
-        :return: List of tuples containing scores and score counts
+        :return: List of tuples containing scores and score counts. If
+            panelist scores could not be retrieved, an empty list is
+            returned.
         :rtype: List[Tuple[int, int]]
         """
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return []
 
         return self.retrieve_scores_grouped_ordered_pair_by_id(id)
 
     @lru_cache(typed=True)
     def retrieve_scores_list_by_id(self, id: int,
-                                  ) -> Dict[str, Any]:
+                                  ) -> Dict[str, List]:
         """Returns a dictionary containing two lists, one with show
         dates and one with corresponding scores for the requested
         panelist ID.
 
         :param id: Panelist ID
         :type id: int
-        :return: List of tuples containing show dates and scores
-        :rtype: Dict[str, Any]
+        :return: Dictionary containing a list show dates and a list
+            of scores. If panelist scores could not be retrieved, an
+            empty dictionary is returned.
+        :rtype: Dict[str, List]
         """
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT s.showdate, pm.panelistscore "
@@ -252,7 +267,7 @@ class PanelistScores:
         cursor.close()
 
         if not results:
-            return None
+            return {}
 
         show_list = []
         score_list = []
@@ -269,19 +284,21 @@ class PanelistScores:
 
     @lru_cache(typed=True)
     def retrieve_scores_list_by_slug(self, slug: str,
-                                  ) -> Dict[str, Any]:
+                                  ) -> Dict[str, List]:
         """Returns a dictionary containing two lists, one with show
         dates and one with corresponding scores for the requested
         panelist slug string.
 
         :param slug: Panelist slug string
         :type slug: str
-        :return: List of tuples containing show dates and scores
-        :rtype: Dict[str, Any]
+        :return: Dictionary containing a list show dates and a list
+            of scores. If panelist scores could not be retrieved, an
+            empty dictionary is returned.
+        :rtype: Dict[str, List]
         """
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_scores_list_by_id(id)
 
@@ -293,7 +310,9 @@ class PanelistScores:
 
         :param id: Panelist ID
         :type id: int
-        :return: List of tuples containing show dates and scores
+        :return: List of tuples containing show dates and scores. If
+            panelist scores could not be retrieved, an empty list is
+            returned.
         :rtype: List[Tuple[str, int]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -309,7 +328,7 @@ class PanelistScores:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         scores = []
         for show in results:
@@ -327,11 +346,13 @@ class PanelistScores:
 
         :param slug: Panelist slug string
         :type slug: str
-        :return: List of tuples containing show dates and scores
+        :return: List of tuples containing show dates and scores. If
+            panelist scores could not be retrieved, an empty list is
+            returned.
         :rtype: List[Tuple[str, int]]
         """
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return []
 
         return self.retrieve_scores_ordered_pair_by_id(id)

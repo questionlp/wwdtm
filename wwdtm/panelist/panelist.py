@@ -49,7 +49,8 @@ class Panelist:
         name and slug string for all panelists.
 
         :return: List of all panelists and their corresponding
-            information
+            information. If panelists could not be retrieved, an empty
+            list is returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -63,7 +64,7 @@ class Panelist:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         panelists = []
         for row in results:
@@ -83,7 +84,8 @@ class Panelist:
         name, slug string and appearance information for all panelists.
 
         :return: List of all panelists and their corresponding
-            information and appearances
+            information and appearances. If panelists could not be
+            retrieved, an empty list is returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -97,7 +99,7 @@ class Panelist:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         panelists = []
         for row in results:
@@ -120,7 +122,8 @@ class Panelist:
         """Returns a list of all panelist IDs from the database, sorted
         by panelist name.
 
-        :return: List of all panelist IDs
+        :return: List of all panelist IDs. If panelist IDs could not be
+            retrieved, an empty list is returned.
         :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -132,7 +135,7 @@ class Panelist:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:
@@ -144,7 +147,8 @@ class Panelist:
         """Returns a list of all panelist slug strings from the
         database, sorted by panelist name.
 
-        :return: List of all panelist slug strings
+        :return: List of all panelist slug strings. If panelist slug
+            strings could not be retrieved, an empty list is returned.
         :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -171,13 +175,15 @@ class Panelist:
 
         :param id: Panelist ID
         :type id: int
-        :return: Dictionary containing panelist information
+        :return: Dictionary containing panelist information. If panelist
+            information could not be retrieved, an empty dictionary is
+            returned.
         :rtype: Dict[str, Any]
         """
         try:
             id = int(id)
         except ValueError:
-            return None
+            return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT panelistid AS id, panelist, panelistslug AS slug, "
@@ -190,7 +196,7 @@ class Panelist:
         cursor.close()
 
         if not result:
-            return None
+            return {}
 
         info = {
             "id": result["id"],
@@ -208,19 +214,21 @@ class Panelist:
 
         :param slug: Panelist slug string
         :type slug: str
-        :return: Dictionary containing panelist information
+        :return: Dictionary containing panelist information. If panelist
+            information could not be retrieved, an empty dictionary is
+            returned.
         :rtype: Dict[str, Any]
         """
         try:
             slug = slug.strip()
             if not slug:
-                return False
+                return {}
         except AttributeError:
-            return False
+            return {}
 
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_by_id(id)
 
@@ -232,17 +240,18 @@ class Panelist:
         :param id: Panelist ID
         :type id: int
         :return: Dictionary containing panelist information and their
-            appearances
+            appearances. If panelist information could not be retrieved,
+            an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
             id = int(id)
         except ValueError:
-            return None
+            return {}
 
         info = self.retrieve_by_id(id)
         if not info:
-            return None
+            return {}
 
         info["statistics"] = self.statistics.retrieve_statistics_by_id(id)
         info["bluffs"] = self.statistics.retrieve_bluffs_by_id(id)
@@ -259,18 +268,19 @@ class Panelist:
         :param slug: Panelist slug string
         :type slug: str
         :return: Dictionary containing panelist information and their
-            appearances
+            appearances. If panelist information could not be retrieved,
+            an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
             slug = slug.strip()
             if not slug:
-                return False
+                return {}
         except AttributeError:
-            return False
+            return {}
 
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_details_by_id(id)

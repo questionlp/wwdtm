@@ -48,13 +48,15 @@ class ScorekeeperAppearances:
         :param id: Scorekeeper ID
         :type id: int
         :return: Dictionary containing appearance counts and list of
-            appearances for a scorekeeper
+            appearances for a scorekeeper. If scorekeeper appearances
+            could not be retrieved, an empty dictionary would be
+            returned.
         :rtype: Dict[str, Any]
         """
         try:
             id = int(id)
         except ValueError:
-            return None
+            return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT ( "
@@ -125,11 +127,13 @@ class ScorekeeperAppearances:
         :param slug: Scorekeeper slug string
         :type slug: str
         :return: Dictionary containing appearance counts and list of
-            appearances for a scorekeeper
+            appearances for a scorekeeper. If scorekeeper appearances
+            could not be retrieved, an empty dictionary would be
+            returned.
         :rtype: Dict[str, Any]
         """
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_appearances_by_id(id)

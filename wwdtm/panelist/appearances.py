@@ -47,13 +47,14 @@ class PanelistAppearances:
         :param id: Panelist ID
         :type id: int
         :return:  Dictionary containing appearance counts and list of
-            appearances for a panelist
+            appearances for a panelist. If panelist appearances could
+            not be retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
             id = int(id)
         except ValueError:
-            return None
+            return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT ( "
@@ -171,12 +172,13 @@ class PanelistAppearances:
         :param slug: Panelist slug string
         :type slug: str
         :return:  Dictionary containing appearance counts and list of
-            appearances for a panelist
+            appearances for a panelist. If panelist appearances could
+            not be retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_appearances_by_id(id)
 
@@ -187,7 +189,9 @@ class PanelistAppearances:
 
         :param id: Panelist ID
         :type id: int
-        :return: Dictionary containing scoring breakdown by year
+        :return: Dictionary containing scoring breakdown by year. If
+            panelist appearances could not be retrieved, an empty
+            dictionary is returned.
         :rtype: Dict[int, int]
         """
         years = {}
@@ -199,7 +203,7 @@ class PanelistAppearances:
         results = cursor.fetchall()
 
         if not results:
-            return None
+            return {}
 
         for row in results:
             years[row["year"]] = 0
@@ -219,7 +223,7 @@ class PanelistAppearances:
         cursor.close()
 
         if not results:
-            return None
+            return {}
 
         for row in results:
             years[row["year"]] = row["count"]
@@ -233,11 +237,13 @@ class PanelistAppearances:
 
         :param slug: Panelist slug string
         :type slug: str
-        :return: Dictionary containing scoring breakdown by year
+        :return: Dictionary containing scoring breakdown by year. If
+            panelist appearances could not be retrieved, an empty
+            dictionary is returned.
         :rtype: Dict[int, int]
         """
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_yearly_appearances_by_id(id)

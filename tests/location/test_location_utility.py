@@ -155,7 +155,7 @@ def test_location_utility_slugify_location_city_state(city: str, state: str):
         slug = utility.slugify_location(city=city, state=state)
 
 @pytest.mark.parametrize("id, venue, city, state",
-                         [("2", "Chase Auditorium", "Chicago", "IL")])
+                         [(2, "Chase Auditorium", "Chicago", "IL")])
 def test_location_utility_slugify_location_full(id: int,
                                                 venue: str,
                                                 city: str,
@@ -178,20 +178,18 @@ def test_location_utility_slugify_location_full(id: int,
     assert slug, "Unable to convert into a slug string"
     assert isinstance(slug, str), "Value returned is not a string"
 
-@pytest.mark.parametrize("venue", ["Chase Auditorium"])
-def test_location_utility_slugify_location_venue(venue: str):
+@pytest.mark.parametrize("id, venue", [(2, "Chase Auditorium")])
+def test_location_utility_slugify_location_venue(id: int, venue: str):
     """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`
     with venue name
 
+    :param id: Location ID to include in the slug string
+    :type id: int
     :param venue: Venue name to include in the slug string
     :type venue: str
-    :param city: City to include in the slug string
-    :type city: str
-    :param state: State to include in the slug string
-    :type state: str
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
-    slug = utility.slugify_location(venue=venue)
+    slug = utility.slugify_location(id=id, venue=venue)
 
     assert slug, "Unable to convert into a slug string"
     assert isinstance(slug, str), "Value returned is not a string"

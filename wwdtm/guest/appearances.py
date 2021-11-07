@@ -47,7 +47,8 @@ class GuestAppearances:
         :param id: Guest ID
         :type id: int
         :return: Dictionary containing appearance counts and list of
-            appearances for a guest
+            appearances for a guest. If guest appearances could not be
+            retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
@@ -124,7 +125,8 @@ class GuestAppearances:
         :param str: Guest slug string
         :type str: slug
         :return: Dictionary containing appearance counts and list of
-            appearances for a guest
+            appearances for a guest. If guest appearances could not be
+            retrieved, empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         id = self.utility.convert_slug_to_id(slug)

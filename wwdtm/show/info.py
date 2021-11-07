@@ -53,7 +53,7 @@ class ShowInfo:
         :param id: Show ID
         :type id: int
         :return: Dictionary containing correct and chosen Bluff the
-            Listener information
+            Listener information.
         :rtype: Dict[str, Any]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -111,7 +111,8 @@ class ShowInfo:
         :param id: Show ID
         :type id: int
         :return: Dictionary containing host, scorekeeper, location,
-            description and notes
+            description and notes. If show core information could not be
+            retrieved, an empty dictionary will be returned.
         :rtype: Dict[str, Any]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -138,7 +139,7 @@ class ShowInfo:
         cursor.close()
 
         if not result:
-            return None
+            return {}
 
         location_info = {
             "id": result["locationid"],
@@ -211,7 +212,9 @@ class ShowInfo:
 
         :param id: Show ID
         :type id: int
-        :return: Dictionary containing Not My Job guest information
+        :return: Dictionary containing Not My Job guest information. If
+            Not My Job information could not be retrieved, an empty list
+            will be returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -228,7 +231,7 @@ class ShowInfo:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         guests = []
         for guest in result:
@@ -252,7 +255,8 @@ class ShowInfo:
         :param id: Show ID
         :type id: int
         :return: List of panelists with corresponding scores and
-            ranking information
+            ranking information. If panelist information could not be
+            retrieved, an empty list will be returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -270,7 +274,7 @@ class ShowInfo:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         panelists = []
         for row in result:

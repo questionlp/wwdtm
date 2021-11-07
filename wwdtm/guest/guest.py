@@ -47,7 +47,7 @@ class Guest:
         name and slug string for all guests.
 
         :return: List of all guests and their corresponding
-            information. If no guests could be retrieved, an empty list
+            information. If guests could not be retrieved, an empty list
             is returned.
         :rtype: List[Dict[str, Any]]
         """
@@ -81,7 +81,7 @@ class Guest:
         name, slug string and appearance information for all guests.
 
         :return: List of all guests and their corresponding
-            information and appearances. If no guests could be
+            information and appearances. If guests could not be
             retrieved, an empty list is returned.
         :rtype: List[Dict[str, Any]]
         """
@@ -115,7 +115,7 @@ class Guest:
         """Returns a list of all guest IDs from the database, sorted by
         guest name.
 
-        :return: List of all guest IDs. If no guest IDs could be
+        :return: List of all guest IDs. If guest IDs could not be
             retrieved, an emtpy list is returned.
         :rtype: List[int]
         """
@@ -140,8 +140,8 @@ class Guest:
         """Returns a list of all guest slug strings from the database,
         sorted by guest name.
 
-        :return: List of all guest slug strings. If no guest slugs could
-            be retrieved, an emtpy list is returned.
+        :return: List of all guest slug strings. If guest slug strings
+            could not be retrieved, an emtpy list is returned.
         :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -168,8 +168,9 @@ class Guest:
 
         :param id: Guest ID
         :type id: int
-        :return: Dictionary containing guest information. If no guest
-            information is found, an empty dictionary is returned.
+        :return: Dictionary containing guest information. If guest
+            information could not be retrieved, an empty dictionary is
+            returned.
         :rtype: Dict[str, Any]
         """
         try:
@@ -204,8 +205,9 @@ class Guest:
 
         :param slug: Guest slug string
         :type slug: str
-        :return: Dictionary containing guest information. If no guest
-            information is found, an empty dictionary is returned.
+        :return: Dictionary containing guest information. If guest
+            information could not be retrieved, an empty dictionary is
+            returned.
         :rtype: Dict[str, Any]
         """
         try:
@@ -229,8 +231,8 @@ class Guest:
         :param id: Guest ID
         :type id: int
         :return: Dictionary containing guest information and their
-            appearances. If no guest information is found, an empty
-            dictionary is returned.
+            appearances. If guest information could not be retrieved,
+            an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
@@ -255,8 +257,8 @@ class Guest:
         :param slug: Guest slug string
         :type slug: str
         :return: Dictionary containing guest information and their
-            appearances. If no guest information is found, an empty
-            dictionary is returned.
+            appearances. If guest information could not be retrieved,
+            an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:

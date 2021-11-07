@@ -50,7 +50,9 @@ class PanelistStatistics:
 
         :param id: Panelist ID
         :type id: int
-        :return: Dictionary containing panelist Bluff counts
+        :return: Dictionary containing panelist Bluff counts. If
+            panelist Bluff counts could not be returned, an empty
+            dictionary will be returned.
         :rtype: Dict[str, int]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -68,7 +70,7 @@ class PanelistStatistics:
         cursor.close()
 
         if not result:
-            return None
+            return {}
 
         bluffs = {
             "chosen": result["chosen"],
@@ -84,12 +86,14 @@ class PanelistStatistics:
 
         :param slug: Panelist slug string
         :type slug: str
-        :return: Dictionary containing panelist Bluff counts
+        :return: Dictionary containing panelist Bluff counts. If
+            panelist Bluff counts could not be returned, an empty
+            dictionary will be returned.
         :rtype: Dict[str, int]
         """
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_bluffs_by_id(id)
 
@@ -100,7 +104,9 @@ class PanelistStatistics:
 
         :param id: Panelist ID
         :type id: int
-        :return: Dictionary containing panelist ranking information
+        :return: Dictionary containing panelist ranking information. If
+            panelist ranking information could not be returned, an empty
+            dictionary will be returned.
         :rtype: Dict[str, int]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -130,6 +136,9 @@ class PanelistStatistics:
         result = cursor.fetchone()
         cursor.close()
 
+        if not result:
+            return {}
+
         rank_info = {
             "first": result["1"],
             "first_tied":  result["1t"],
@@ -147,12 +156,14 @@ class PanelistStatistics:
 
         :param slug: Panelist slug string
         :type slug: str
-        :return: Dictionary containing panelist ranking information
+        :return: Dictionary containing panelist ranking information. If
+            panelist ranking information could not be returned, an empty
+            dictionary will be returned.
         :rtype: Dict[str, int]
         """
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_rank_info_by_id(id)
 
@@ -163,14 +174,16 @@ class PanelistStatistics:
 
         :param id: Panelist ID
         :type id: int
-        :return: Dictionary containing panelist statistics
+        :return: Dictionary containing panelist statistics. If panelist
+            statistics could not be returned, an empty dictionary will
+            be returned.
         :rtype: Dict[str, Any]
         """
         score_data = self.scores.retrieve_scores_by_id(id)
         ranks = self.retrieve_rank_info_by_id(id)
 
         if not score_data or not ranks:
-            return None
+            return {}
 
         appearance_count = len(score_data)
         scoring = {
@@ -215,11 +228,13 @@ class PanelistStatistics:
 
         :param slug: Panelist slug string
         :type slug: str
-        :return: Dictionary containing panelist statistics
+        :return: Dictionary containing panelist statistics. If panelist
+            statistics could not be returned, an empty dictionary will
+            be returned.
         :rtype: Dict[str, Any]
         """
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_statistics_by_id(id)

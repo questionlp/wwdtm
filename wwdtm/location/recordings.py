@@ -47,13 +47,14 @@ class LocationRecordings:
         :param id: Location ID
         :type id: int
         :return: Dictionary containing recording counts and a list of
-            appearances for a location
+            appearances for a location. If location recordings could
+            not be retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
             id = int(id)
         except ValueError:
-            return None
+            return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT ( "
@@ -114,11 +115,12 @@ class LocationRecordings:
         :param slug: Location slug string
         :type slug: str
         :return: Dictionary containing recording counts and a list of
-            appearances for a location
+            appearances for a location. If location recordings could
+            not be retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_recordings_by_id(id)

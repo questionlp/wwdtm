@@ -48,7 +48,9 @@ class Location:
         :param sort_by_venue: Sets wheter to sort by venue first, or
             by state and city first
         :type sort_by_venue: bool
-        :return: List of all locations and their corresponding information
+        :return: List of all locations and their corresponding
+            information. If locations could not be retrieved, an empty
+            list is returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -66,7 +68,7 @@ class Location:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         locations = []
         for row in results:
@@ -96,7 +98,8 @@ class Location:
             by state and city first
         :type sort_by_venue: bool
         :return: List of all locations and their corresponding
-            information and recordings
+            information and recordings. If locations could not be
+            retrieved, an empty list is returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -113,7 +116,7 @@ class Location:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         locations = []
         for row in results:
@@ -141,7 +144,8 @@ class Location:
         :param sort_by_venue: Sets wheter to sort by venue first, or
             by state and city first
         :type sort_by_venue: bool
-        :return: List of all location IDs
+        :return: List of all location IDs. If location IDs could not be
+            retrieved, an empty list is returned.
         :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -156,7 +160,7 @@ class Location:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:
@@ -171,7 +175,8 @@ class Location:
         :param sort_by_venue: Sets wheter to sort by venue first, or
             by state and city first
         :type sort_by_venue: bool
-        :return: List of all location slug strings
+        :return: List of all location slug strings. If location slug
+            strings could not be retrieved, an empty list is returned.
         :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -186,7 +191,7 @@ class Location:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:
@@ -201,13 +206,15 @@ class Location:
 
         :param id: Location ID
         :type id: int
-        :return: Dictionary containing location information
+        :return: Dictionary containing location information. If
+            location information could not be retrieved, an empty
+            dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
             id = int(id)
         except ValueError:
-            return None
+            return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT locationid AS id, city, state, venue, "
@@ -220,7 +227,7 @@ class Location:
         cursor.close()
 
         if not result:
-            return None
+            return {}
 
         slug = self.utility.slugify_location(id=result["id"],
                                              venue=result["venue"],
@@ -243,19 +250,21 @@ class Location:
 
         :param slug: Location slug string
         :type slug: str
-        :return: Dictionary containing location information
+        :return: Dictionary containing location information. If
+            location information could not be retrieved, an empty
+            dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
             slug = slug.strip()
             if not slug:
-                return False
+                return {}
         except AttributeError:
-            return False
+            return {}
 
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_by_id(id)
 
@@ -268,17 +277,18 @@ class Location:
         :param id: Location ID
         :type id: int
         :return: Dictionary containing location information and their
-            recordings
+            recordings. If location information could not be retrieved,
+            an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
             id = int(id)
         except ValueError:
-            return None
+            return {}
 
         info = self.retrieve_by_id(id)
         if not info:
-            return None
+            return {}
 
         info["recordings"] = self.recordings.retrieve_recordings_by_id(id)
 
@@ -293,18 +303,19 @@ class Location:
         :param slug: Location slug string
         :type slug: str
         :return: Dictionary containing location information and their
-            recordings
+            recordings. If location information could not be retrieved,
+            an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
             slug = slug.strip()
             if not slug:
-                return False
+                return {}
         except AttributeError:
-            return False
+            return {}
 
         id = self.utility.convert_slug_to_id(slug)
         if not id:
-            return None
+            return {}
 
         return self.retrieve_details_by_id(id)
