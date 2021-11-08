@@ -71,3 +71,18 @@ required database connection information or an existing database connection:
 The latter option may be useful if you are using connection pooling within
 your application and you're just passing in a connection created from that
 connection pool.
+
+Method Output Type Matches Type Hinting
+=======================================
+
+With version 1 of ``wwdtm``, if the requested data could not be retrieved from
+the database, most functions that would normally return a list or a dictionary
+would return ``None`` or ``False`` instead.
+
+This behavior is changed in version 2 in which methods that have type hinting
+stating that a method returns a ``Dict`` will return an empty dictionary.
+Methods that have type hinting stating that the method returns a list will
+return an empty list.
+
+Methods that are designed to return ``int`` or ``string`` will continue to
+return ``None`` if the requested data could not be retrieved.
