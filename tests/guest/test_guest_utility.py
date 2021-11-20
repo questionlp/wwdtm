@@ -67,7 +67,7 @@ def test_guest_utility_convert_slug_to_id(guest_slug: str):
     id_ = utility.convert_slug_to_id(guest_slug)
 
     assert id_, f"Guest ID for slug {guest_slug} was not found"
-    assert isinstance(id, int), f"Invalid value returned for slug {guest_slug}"
+    assert isinstance(id_, int), f"Invalid value returned for slug {guest_slug}"
 
 
 @pytest.mark.parametrize("guest_slug", ["tom-hanx", "steven-colbert"])
