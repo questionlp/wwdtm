@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.panelist.PanelistScores`
 """
 import json
@@ -10,6 +10,7 @@ from typing import Any, Dict
 
 import pytest
 from wwdtm.panelist import PanelistScores
+
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
@@ -25,6 +26,7 @@ def get_connect_dict() -> Dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
+
 @pytest.mark.parametrize("id", [14])
 def test_panelist_scores_retrieve_scores_by_id(id: int):
     """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_by_id`
@@ -36,6 +38,7 @@ def test_panelist_scores_retrieve_scores_by_id(id: int):
     scoring = scores.retrieve_scores_by_id(id)
 
     assert scoring, f"Scoring data not returned for ID {id}"
+
 
 @pytest.mark.parametrize("slug", ["luke-burbank"])
 def test_panelist_scores_retrieve_scores_by_slug(slug: str):
@@ -50,6 +53,7 @@ def test_panelist_scores_retrieve_scores_by_slug(slug: str):
 
     assert scoring, f"Scoring data not returned for slug {slug}"
 
+
 @pytest.mark.parametrize("id", [14])
 def test_panelist_scores_retrieve_scores_grouped_list_by_id(id: int):
     """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_grouped_list_by_id`
@@ -62,6 +66,7 @@ def test_panelist_scores_retrieve_scores_grouped_list_by_id(id: int):
 
     assert "score" in scoring, f"'score' was not returned for ID {id}"
     assert "count" in scoring, f"'count' was not returned for ID {id}"
+
 
 @pytest.mark.parametrize("slug", ["luke-burbank"])
 def test_panelist_scores_retrieve_scores_grouped_list_by_slug(slug: str):
@@ -77,6 +82,7 @@ def test_panelist_scores_retrieve_scores_grouped_list_by_slug(slug: str):
     assert "score" in scoring, f"'score' was not returned for slug {slug}"
     assert "count" in scoring, f"'count' was not returned for slug {slug}"
 
+
 @pytest.mark.parametrize("id", [14])
 def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_id(id: int):
     """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_grouped_ordered_pair_by_id`
@@ -89,6 +95,7 @@ def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_id(id: int):
 
     assert scoring, f"Scoring data not returned for ID {id}"
     assert isinstance(scoring[0], tuple), "First list item is not a tuple"
+
 
 @pytest.mark.parametrize("slug", ["luke-burbank"])
 def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_slug(slug: str):
@@ -104,6 +111,7 @@ def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_slug(slug: str)
     assert scoring, f"Scoring data not returned for slug {slug}"
     assert isinstance(scoring[0], tuple), "First list item is not a tuple"
 
+
 @pytest.mark.parametrize("id", [14])
 def test_panelist_scores_retrieve_scores_list_by_id(id: int):
     """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_list_by_id`
@@ -116,6 +124,7 @@ def test_panelist_scores_retrieve_scores_list_by_id(id: int):
 
     assert "shows" in scoring, f"'shows' was not returned for ID {id}"
     assert "scores" in scoring, f"'scores' was not returned for ID {id}"
+
 
 @pytest.mark.parametrize("slug", ["luke-burbank"])
 def test_panelist_scores_retrieve_scores_list_by_slug(slug: str):
@@ -131,6 +140,7 @@ def test_panelist_scores_retrieve_scores_list_by_slug(slug: str):
     assert "shows" in scoring, f"'shows' was not returned for slug {slug}"
     assert "scores" in scoring, f"'scores' was not returned for slug {slug}"
 
+
 @pytest.mark.parametrize("id", [14])
 def test_panelist_scores_retrieve_scores_ordered_pair_by_id(id: int):
     """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_ordered_pair_by_id`
@@ -142,6 +152,7 @@ def test_panelist_scores_retrieve_scores_ordered_pair_by_id(id: int):
     scoring = scores.retrieve_scores_ordered_pair_by_id(id)
 
     assert scoring, f"Scoring data not returned for ID {id}"
+
 
 @pytest.mark.parametrize("slug", ["luke-burbank"])
 def test_panelist_scores_retrieve_scores_ordered_pair_by_slug(slug: str):

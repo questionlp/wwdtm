@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Location Recordings Retrieval Functions
 """
 from functools import lru_cache
@@ -10,6 +10,7 @@ from typing import Any, Dict, Optional
 
 from mysql.connector import connect
 from wwdtm.location.utility import LocationUtility
+
 
 class LocationRecordings:
     """This class contains functions that retrieve location recordings
@@ -65,7 +66,7 @@ class LocationRecordings:
                  "SELECT COUNT(lm.showid) FROM ww_showlocationmap lm "
                  "JOIN ww_shows s ON s.showid = lm.showid "
                  "WHERE lm.locationid = %s ) AS all_shows;")
-        cursor.execute(query, (id, id ,))
+        cursor.execute(query, (id, id, ))
         result = cursor.fetchone()
 
         recording_counts = {

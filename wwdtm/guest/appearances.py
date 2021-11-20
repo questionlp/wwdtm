@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Guest Appearance Retrieval Functions
 """
 from functools import lru_cache
@@ -10,6 +10,7 @@ from typing import Any, Dict, Optional
 
 from mysql.connector import connect
 from wwdtm.guest.utility import GuestUtility
+
 
 class GuestAppearances:
     """This class contains functions that retrieve guest appearance
@@ -65,7 +66,7 @@ class GuestAppearances:
                  "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
                  "JOIN ww_shows s ON s.showid = gm.showid "
                  "WHERE gm.guestid = %s ) AS all_shows;")
-        cursor.execute(query, (id, id ,))
+        cursor.execute(query, (id, id, ))
         result = cursor.fetchone()
 
         if result:
@@ -122,8 +123,8 @@ class GuestAppearances:
         """Returns a list of dictionary objects containing appearance
         information for the requested guest slug string.
 
-        :param str: Guest slug string
-        :type str: slug
+        :param slug: Guest slug string
+        :type slug: str
         :return: Dictionary containing appearance counts and list of
             appearances for a guest. If guest appearances could not be
             retrieved, empty dictionary is returned.

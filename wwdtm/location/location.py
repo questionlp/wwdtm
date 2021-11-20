@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Location Data Retrieval Functions
 """
 from functools import lru_cache
@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Optional
 from mysql.connector import connect
 from wwdtm.location.recordings import LocationRecordings
 from wwdtm.location.utility import LocationUtility
+
 
 class Location:
     """This class contains functions used to retrieve location data
@@ -45,7 +46,7 @@ class Location:
         """Returns a list of dictionary objects containing location ID,
         city, state, venue and slug string for all locations.
 
-        :param sort_by_venue: Sets wheter to sort by venue first, or
+        :param sort_by_venue: Sets whether to sort by venue first, or
             by state and city first
         :type sort_by_venue: bool
         :return: List of all locations and their corresponding
@@ -89,12 +90,12 @@ class Location:
         return locations
 
     def retrieve_all_details(self, sort_by_venue: bool = False
-                            ) -> List[Dict[str, Any]]:
+                             ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing location ID,
         city, state, venue, slug string and recording information for
         all locations.
 
-        :param sort_by_venue: Sets wheter to sort by venue first, or
+        :param sort_by_venue: Sets whether to sort by venue first, or
             by state and city first
         :type sort_by_venue: bool
         :return: List of all locations and their corresponding
@@ -141,7 +142,7 @@ class Location:
     def retrieve_all_ids(self, sort_by_venue: bool = False) -> List[int]:
         """Returns a list of all locations IDs from the database.
 
-        :param sort_by_venue: Sets wheter to sort by venue first, or
+        :param sort_by_venue: Sets whether to sort by venue first, or
             by state and city first
         :type sort_by_venue: bool
         :return: List of all location IDs. If location IDs could not be
@@ -172,7 +173,7 @@ class Location:
         """Returns a list of all location slug strings from the
         database.
 
-        :param sort_by_venue: Sets wheter to sort by venue first, or
+        :param sort_by_venue: Sets whether to sort by venue first, or
             by state and city first
         :type sort_by_venue: bool
         :return: List of all location slug strings. If location slug

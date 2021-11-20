@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wdtm.guest.GuestUtility`
 """
 import json
@@ -10,6 +10,7 @@ from typing import Any, Dict
 
 import pytest
 from wwdtm.guest import GuestUtility
+
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
@@ -25,6 +26,7 @@ def get_connect_dict() -> Dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
+
 @pytest.mark.parametrize("id", [54])
 def test_guest_utility_convert_id_to_slug(id: int):
     """Testing for :py:meth:`wwdtm.guest.GuestUtility.convert_id_to_slug`
@@ -37,6 +39,7 @@ def test_guest_utility_convert_id_to_slug(id: int):
 
     assert slug, f"Guest slug for ID {id} was not found"
     assert isinstance(slug, str), f"Invalid value returned for ID {id}"
+
 
 @pytest.mark.parametrize("id", [-54])
 def test_guest_utility_convert_invalid_id_to_slug(id: int):
@@ -51,6 +54,7 @@ def test_guest_utility_convert_invalid_id_to_slug(id: int):
 
     assert not slug, f"Guest slug for ID {id} was found"
 
+
 @pytest.mark.parametrize("slug", ["tom-hanks", "stephen-colbert"])
 def test_guest_utility_convert_slug_to_id(slug: str):
     """Testing for :py:meth:`wwdtm.guest.GuestUtility.convert_slug_to_id`
@@ -63,6 +67,7 @@ def test_guest_utility_convert_slug_to_id(slug: str):
 
     assert id, f"Guest ID for slug {slug} was not found"
     assert isinstance(id, int), f"Invalid value returned for slug {slug}"
+
 
 @pytest.mark.parametrize("slug", ["tom-hanx", "steven-colbert"])
 def test_guest_utility_convert_invalid_slug_to_id(slug: str):
@@ -77,6 +82,7 @@ def test_guest_utility_convert_invalid_slug_to_id(slug: str):
 
     assert not id, f"Guest ID for slug {slug} was found"
 
+
 @pytest.mark.parametrize("id", [54])
 def test_guest_utility_id_exists(id: int):
     """Testing for :py:meth:`wwdtm.guest.GuestUtility.id_exists`
@@ -88,6 +94,7 @@ def test_guest_utility_id_exists(id: int):
     result = utility.id_exists(id)
 
     assert result, f"Guest ID {id} does not exist"
+
 
 @pytest.mark.parametrize("id", [-1])
 def test_guest_utility_id_not_exists(id: int):
@@ -101,6 +108,7 @@ def test_guest_utility_id_not_exists(id: int):
 
     assert not result, f"Guest ID {id} exists"
 
+
 @pytest.mark.parametrize("slug", ["tom-hanks", "stephen-colbert"])
 def test_guest_utility_slug_exists(slug: str):
     """Testing for :py:meth:`wwdtm.guest.GuestUtility.slug_exists`
@@ -112,6 +120,7 @@ def test_guest_utility_slug_exists(slug: str):
     result = utility.slug_exists(slug)
 
     assert result, f"Guest slug {slug} does not exist"
+
 
 @pytest.mark.parametrize("slug", ["tom-hanx", "steven-colbert"])
 def test_guest_utility_slug_not_exists(slug: str):

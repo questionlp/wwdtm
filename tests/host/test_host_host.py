@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.host.Host`
 """
 import json
@@ -10,6 +10,7 @@ from typing import Any, Dict
 
 import pytest
 from wwdtm.host import Host
+
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
@@ -25,6 +26,7 @@ def get_connect_dict() -> Dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
+
 def test_host_retrieve_all():
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_all`
     """
@@ -33,6 +35,7 @@ def test_host_retrieve_all():
 
     assert hosts, "No hosts could be retrieved"
     assert "id" in hosts[0], "'id' was not returned for the first list item"
+
 
 def test_host_retrieve_all_details():
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_all_details`
@@ -45,6 +48,7 @@ def test_host_retrieve_all_details():
     assert "appearances" in hosts[0], ("'appearances' was not returned for the"
                                        "first list item")
 
+
 def test_host_retrieve_all_ids():
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_all_ids`
     """
@@ -53,6 +57,7 @@ def test_host_retrieve_all_ids():
 
     assert ids, "No host IDs could be retrieved"
 
+
 def test_host_retrieve_all_slugs():
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_all_slugs`
     """
@@ -60,6 +65,7 @@ def test_host_retrieve_all_slugs():
     slugs = host.retrieve_all_slugs()
 
     assert slugs, "No host slug strings could be retrieved"
+
 
 @pytest.mark.parametrize("id", [2])
 def test_host_retrieve_by_id(id: int):
@@ -73,6 +79,7 @@ def test_host_retrieve_by_id(id: int):
 
     assert info, f"Host ID {id} not found"
     assert "name" in info, f"'name' was not returned for ID {id}"
+
 
 @pytest.mark.parametrize("id", [2])
 def test_host_retrieve_details_by_id(id: int):
@@ -88,6 +95,7 @@ def test_host_retrieve_details_by_id(id: int):
     assert "name" in info, f"'name' was not returned for ID {id}"
     assert "appearances" in info, f"'appearances' was not returned for ID {id}"
 
+
 @pytest.mark.parametrize("slug", ["luke-burbank"])
 def test_host_retrieve_by_slug(slug: str):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_by_slug`
@@ -100,6 +108,7 @@ def test_host_retrieve_by_slug(slug: str):
 
     assert info, f"Host slug {slug} not found"
     assert "name" in info, f"'name' was not returned for slug {slug}"
+
 
 @pytest.mark.parametrize("slug", ["luke-burbank"])
 def test_host_retrieve_details_by_slug(slug: str):

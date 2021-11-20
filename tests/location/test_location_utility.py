@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.location.LocationUtility`
 """
 import json
@@ -10,6 +10,7 @@ from typing import Any, Dict
 
 import pytest
 from wwdtm.location import LocationUtility
+
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
@@ -25,6 +26,7 @@ def get_connect_dict() -> Dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
+
 @pytest.mark.parametrize("id", [95])
 def test_location_utility_convert_id_to_slug(id: int):
     """Testing for :py:meth:`wwdtm.location.LocationUtility.convert_id_to_slug`
@@ -36,6 +38,7 @@ def test_location_utility_convert_id_to_slug(id: int):
     slug = utility.convert_id_to_slug(id)
 
     assert slug, f"Location slug for ID {id} was not found"
+
 
 @pytest.mark.parametrize("id", [-1])
 def test_location_utility_convert_invalid_id_to_slug(id: int):
@@ -50,6 +53,7 @@ def test_location_utility_convert_invalid_id_to_slug(id: int):
 
     assert not slug, f"Location slug for ID {id} was found"
 
+
 @pytest.mark.parametrize("slug", ["the-chicago-theatre-chicago-il"])
 def test_location_utility_convert_slug_to_id(slug: str):
     """Testing for :py:meth:`wwdtm.location.LocationUtility.convert_slug_to_id`
@@ -62,6 +66,7 @@ def test_location_utility_convert_slug_to_id(slug: str):
     id = utility.convert_slug_to_id(slug)
 
     assert id, f"Location ID for slug {slug} was not found"
+
 
 @pytest.mark.parametrize("slug", ["the-chicago-theatre-chicago-li"])
 def test_location_utility_convert_invalid_slug_to_id(slug: str):
@@ -76,6 +81,7 @@ def test_location_utility_convert_invalid_slug_to_id(slug: str):
 
     assert not id, f"Location ID for slug {slug} was found"
 
+
 @pytest.mark.parametrize("id", [95])
 def test_location_utility_id_exists(id: int):
     """Testing for :py:meth:`wwdtm.location.LocationUtility.id_exists`
@@ -87,6 +93,7 @@ def test_location_utility_id_exists(id: int):
     result = utility.id_exists(id)
 
     assert result, f"Location ID {id} does not exist"
+
 
 @pytest.mark.parametrize("id", [-1])
 def test_location_utility_id_not_exists(id: int):
@@ -100,6 +107,7 @@ def test_location_utility_id_not_exists(id: int):
 
     assert not result, f"Location ID {id} exists"
 
+
 @pytest.mark.parametrize("slug", ["the-chicago-theatre-chicago-il"])
 def test_location_utility_slug_exists(slug: str):
     """Testing for :py:meth:`wwdtm.location.LocationUtility.slug_exists`
@@ -111,6 +119,7 @@ def test_location_utility_slug_exists(slug: str):
     result = utility.slug_exists(slug)
 
     assert result, f"Location slug {slug} does not exist"
+
 
 @pytest.mark.parametrize("slug", ["the-chicago-theatre-chicago-li"])
 def test_location_utility_slug_not_exists(slug: str):
@@ -126,6 +135,7 @@ def test_location_utility_slug_not_exists(slug: str):
 
     assert not result, f"Location slug {slug} exists"
 
+
 @pytest.mark.parametrize("city",
                          ["Chicago"])
 def test_location_utility_slugify_location_city(city: str):
@@ -138,6 +148,10 @@ def test_location_utility_slugify_location_city(city: str):
     with pytest.raises(ValueError):
         utility = LocationUtility(connect_dict=get_connect_dict())
         slug = utility.slugify_location(city=city)
+
+        assert slug, "Unable to convert into a slug string"
+        assert isinstance(slug, str), "Value returned is not a string"
+
 
 @pytest.mark.parametrize("city, state",
                          [("Chicago", "IL")])
@@ -153,6 +167,10 @@ def test_location_utility_slugify_location_city_state(city: str, state: str):
     with pytest.raises(ValueError):
         utility = LocationUtility(connect_dict=get_connect_dict())
         slug = utility.slugify_location(city=city, state=state)
+
+        assert slug, "Unable to convert into a slug string"
+        assert isinstance(slug, str), "Value returned is not a string"
+
 
 @pytest.mark.parametrize("id, venue, city, state",
                          [(2, "Chase Auditorium", "Chicago", "IL")])
@@ -177,6 +195,7 @@ def test_location_utility_slugify_location_full(id: int,
 
     assert slug, "Unable to convert into a slug string"
     assert isinstance(slug, str), "Value returned is not a string"
+
 
 @pytest.mark.parametrize("id, venue", [(2, "Chase Auditorium")])
 def test_location_utility_slugify_location_venue(id: int, venue: str):
@@ -214,6 +233,7 @@ def test_location_utility_slugify_location_venue_city_state(venue: str,
 
     assert slug, "Unable to convert into a slug string"
     assert isinstance(slug, str), "Value returned is not a string"
+
 
 @pytest.mark.parametrize("id", [2])
 def test_location_utility_slugify_location_id(id: int):

@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.location.LocationRecordings`
 """
 import json
@@ -10,6 +10,7 @@ from typing import Any, Dict
 
 import pytest
 from wwdtm.location import LocationRecordings
+
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
@@ -25,6 +26,7 @@ def get_connect_dict() -> Dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
+
 @pytest.mark.parametrize("id", [95])
 def test_location_recordings_retrieve_recordings_by_id(id: int):
     """Testing for :py:meth:`wwdtm.location.LocationRecordings.retrieve_recordings_by_id`
@@ -37,6 +39,7 @@ def test_location_recordings_retrieve_recordings_by_id(id: int):
 
     assert "count" in recording, f"'count' was not returned for ID {id}"
     assert "shows" in recording, f"'shows' was not returned for ID {id}"
+
 
 @pytest.mark.parametrize("slug", ["the-chicago-theatre-chicago-il"])
 def test_location_recordings_retrieve_recordings_by_slug(slug: str):

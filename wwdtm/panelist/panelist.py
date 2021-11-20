@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Data Retrieval Functions
 """
 from functools import lru_cache
@@ -13,6 +13,7 @@ from slugify import slugify
 from wwdtm.panelist.appearances import PanelistAppearances
 from wwdtm.panelist.statistics import PanelistStatistics
 from wwdtm.panelist.utility import PanelistUtility
+
 
 class Panelist:
     """This class contains functions used to retrieve panelist data
@@ -160,7 +161,7 @@ class Panelist:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:

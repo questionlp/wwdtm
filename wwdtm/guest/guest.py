@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Guest Data Retrieval Functions
 """
 from functools import lru_cache
@@ -12,6 +12,7 @@ from mysql.connector import connect
 from slugify import slugify
 from wwdtm.guest.appearances import GuestAppearances
 from wwdtm.guest.utility import GuestUtility
+
 
 class Guest:
     """This class contains functions used to retrieve guest data from a
@@ -51,7 +52,7 @@ class Guest:
             is returned.
         :rtype: List[Dict[str, Any]]
         """
-        self.database_connection.is_connected
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT guestid AS id, guest, guestslug AS slug "
                  "FROM ww_guests "

@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Show Data Retrieval Functions
 """
 import datetime
@@ -13,6 +13,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from mysql.connector import connect
 from wwdtm.show.info import ShowInfo
 from wwdtm.show.utility import ShowUtility
+
 
 class Show:
     """This class contains functions used to retrieve show data from a
@@ -549,9 +550,9 @@ class Show:
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT showid AS id FROM ww_shows "
-                "WHERE YEAR(showdate) = %s "
-                "AND MONTH(showdate) = %s "
-                "ORDER BY showdate ASC;")
+                 "WHERE YEAR(showdate) = %s "
+                 "AND MONTH(showdate) = %s "
+                 "ORDER BY showdate ASC;")
         cursor.execute(query, (parsed_year_month.year,
                                parsed_year_month.month, ))
         result = cursor.fetchall()
@@ -653,7 +654,7 @@ class Show:
     def retrieve_recent_details(self,
                                 include_days_ahead: int = 7,
                                 include_days_back: int = 32
-                               ) -> List[Dict[str, Any]]:
+                                ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
         for recent shows.
@@ -683,8 +684,8 @@ class Show:
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT showid AS id FROM ww_shows "
-                "WHERE showdate >= %s AND "
-                "showdate <= %s ORDER BY showdate ASC;")
+                 "WHERE showdate >= %s AND "
+                 "showdate <= %s ORDER BY showdate ASC;")
         cursor.execute(query, (past_date.isoformat(),
                                future_date.isoformat(), ))
         result = cursor.fetchall()
@@ -700,7 +701,7 @@ class Show:
         return shows
 
     @lru_cache(typed=True)
-    def retrieve_scores_by_year(self, year: int) -> List[Tuple[str, int, int, int]]:
+    def retrieve_scores_by_year(self, year: int) -> List[Tuple]: #List[Tuple[str, int, int, int]]:
         """Returns a list of tuples containing panelist scores for all
         shows in the requested year, sorted by show date.
 

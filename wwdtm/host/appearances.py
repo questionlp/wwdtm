@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Host Appearance Retrieval Functions
 """
 from functools import lru_cache
@@ -10,6 +10,7 @@ from typing import Any, Dict, Optional
 
 from mysql.connector import connect
 from wwdtm.host.utility import HostUtility
+
 
 class HostAppearances:
     """This class contains functions that retrieve host appearance
@@ -58,14 +59,14 @@ class HostAppearances:
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT ( "
-                    "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
-                    "JOIN ww_shows s ON s.showid = hm.showid "
-                    "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
-                    "hm.hostid = %s ) AS regular_shows, ( "
-                    "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
-                    "JOIN ww_shows s ON s.showid = hm.showid "
-                    "WHERE hm.hostid = %s ) AS all_shows;")
-        cursor.execute(query, (id, id ,))
+                 "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
+                 "JOIN ww_shows s ON s.showid = hm.showid "
+                 "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
+                 "hm.hostid = %s ) AS regular_shows, ( "
+                 "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
+                 "JOIN ww_shows s ON s.showid = hm.showid "
+                 "WHERE hm.hostid = %s ) AS all_shows;")
+        cursor.execute(query, (id, id, ))
         result = cursor.fetchone()
 
         if result:

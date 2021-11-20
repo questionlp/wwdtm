@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Supplemental Show Information
 Retrieval Functions
 """
@@ -10,10 +10,10 @@ from functools import lru_cache
 from typing import Any, Dict, List, Optional
 
 from mysql.connector import connect
-from mysql.connector.errors import DatabaseError, ProgrammingError
 from slugify import slugify
 from wwdtm.show.utility import ShowUtility
 from wwdtm.location.location import LocationUtility
+
 
 class ShowInfo:
     """This class contains functions that retrieve show supplemental

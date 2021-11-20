@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.scorekeeper.ScorekeeperUtility`
 """
 import json
@@ -10,6 +10,7 @@ from typing import Any, Dict
 
 import pytest
 from wwdtm.scorekeeper import ScorekeeperUtility
+
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
@@ -20,6 +21,7 @@ def get_connect_dict() -> Dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
 
 @pytest.mark.parametrize("id", [2])
 def test_scorekeeper_utility_convert_id_to_slug(id: int):
@@ -35,6 +37,7 @@ def test_scorekeeper_utility_convert_id_to_slug(id: int):
     assert slug, f"Scorekeeper slug for ID {id} was not found"
     assert isinstance(slug, str), f"Invalid value returned for ID {id}"
 
+
 @pytest.mark.parametrize("id", [-1])
 def test_scorekeeper_utility_convert_invalid_id_to_slug(id: int):
     """Negative testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.convert_id_to_slug`
@@ -48,6 +51,7 @@ def test_scorekeeper_utility_convert_invalid_id_to_slug(id: int):
 
     assert not slug, f"Scorekeeper slug for ID {id} was found"
 
+
 @pytest.mark.parametrize("slug", ["korva-coleman"])
 def test_scorekeeper_utility_convert_slug_to_id(slug: str):
     """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.convert_slug_to_id`
@@ -59,8 +63,9 @@ def test_scorekeeper_utility_convert_slug_to_id(slug: str):
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
     id = utility.convert_slug_to_id(slug)
 
-    assert slug, f"Scorekeeper ID for slug {slug} was found"
-    assert isinstance(slug, str), f"Invalid value returned for slug {slug}"
+    assert id, f"Scorekeeper ID for slug {slug} was found"
+    assert isinstance(id, int), f"Invalid value returned for slug {slug}"
+
 
 @pytest.mark.parametrize("slug", ["corva-coleman"])
 def test_scorekeeper_utility_convert_invalid_slug_to_id(slug: str):
@@ -75,6 +80,7 @@ def test_scorekeeper_utility_convert_invalid_slug_to_id(slug: str):
 
     assert not slug, f"Scorekeeper ID for slug {slug} was not found"
 
+
 @pytest.mark.parametrize("id", [2])
 def test_scorekeeper_utility_id_exists(id: int):
     """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.id_exists`
@@ -86,6 +92,7 @@ def test_scorekeeper_utility_id_exists(id: int):
     result = utility.id_exists(id)
 
     assert result, f"Scorekeeper ID {id} does not exist"
+
 
 @pytest.mark.parametrize("id", [-1])
 def test_scorekeeper_utility_id_not_exists(id: int):
@@ -99,6 +106,7 @@ def test_scorekeeper_utility_id_not_exists(id: int):
 
     assert not result, f"Scorekeeper ID {id} exists"
 
+
 @pytest.mark.parametrize("slug", ["korva-coleman"])
 def test_scorekeeper_utility_slug_exists(slug: str):
     """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.slug_exists`
@@ -110,6 +118,7 @@ def test_scorekeeper_utility_slug_exists(slug: str):
     result = utility.slug_exists(slug)
 
     assert result, f"Scorekeeper slug {slug} does not exist"
+
 
 @pytest.mark.parametrize("slug", ["corva-coleman"])
 def test_scorekeeper_utility_slug_not_exists(slug: str):

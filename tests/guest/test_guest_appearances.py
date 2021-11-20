@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.guest.GuestAppearances`
 """
 import json
@@ -10,6 +10,7 @@ from typing import Any, Dict
 
 import pytest
 from wwdtm.guest import GuestAppearances
+
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
@@ -25,6 +26,7 @@ def get_connect_dict() -> Dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
+
 @pytest.mark.parametrize("id", [976])
 def test_guest_appearances_retrieve_appearances_by_id(id: int):
     """Testing for :py:meth:`wwdtm.guest.Appearances.retrieve_appearances_by_id`
@@ -37,6 +39,7 @@ def test_guest_appearances_retrieve_appearances_by_id(id: int):
 
     assert "count" in appearance, f"'count' was not returned for ID {id}"
     assert "shows" in appearance, f"'shows' was not returned for ID {id}"
+
 
 @pytest.mark.parametrize("slug", ["tom-hanks"])
 def test_guest_appearances_retrieve_appearances_by_slug(slug: str):

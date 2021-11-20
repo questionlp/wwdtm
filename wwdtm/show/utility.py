@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Show Data Utility Functions
 """
 import datetime
@@ -10,6 +10,7 @@ from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
+
 
 class ShowUtility:
     """This class contains supporting functions used to check whether
@@ -42,7 +43,7 @@ class ShowUtility:
     def convert_date_to_id(self,
                            year: int,
                            month: int,
-                           day: int) -> int:
+                           day: int) -> Optional[int]:
         """Converts a show date to the matching show ID value.
 
         :param year: Year portion of a show date
@@ -73,7 +74,7 @@ class ShowUtility:
         return None
 
     @lru_cache(typed=True)
-    def convert_id_to_date(self, id: int) -> str:
+    def convert_id_to_date(self, id: int) -> Optional[str]:
         """Converts a show's ID to the matching show date.
 
         :param id: Show ID

@@ -2,13 +2,14 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Data Utility Functions
 """
 from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
+
 
 class PanelistUtility:
     """This class contains supporting functions used to check whether
@@ -38,7 +39,7 @@ class PanelistUtility:
             self.database_connection = database_connection
 
     @lru_cache(typed=True)
-    def convert_id_to_slug(self, id: int) -> str:
+    def convert_id_to_slug(self, id: int) -> Optional[str]:
         """Converts a panelist's ID to the matching panelist slug
         string value.
 
@@ -66,8 +67,9 @@ class PanelistUtility:
         return None
 
     @lru_cache(typed=True)
-    def convert_slug_to_id(self, slug: str) -> int:
-        """Converts a panelist's slug string to the matching panelist ID value.
+    def convert_slug_to_id(self, slug: str) -> Optional[int]:
+        """Converts a panelist's slug string to the matching panelist ID
+        value.
 
         :param slug: Panelist slug string
         :type slug: str

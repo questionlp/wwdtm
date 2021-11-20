@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Scores Retrieval Functions
 """
 from functools import lru_cache
@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from mysql.connector import connect
 from wwdtm.panelist.utility import PanelistUtility
+
 
 class PanelistScores:
     """This class contains functions used to retrieve panelist scores
@@ -72,7 +73,7 @@ class PanelistScores:
 
     @lru_cache(typed=True)
     def retrieve_scores_by_slug(self, slug: str
-                               ) -> List[int]:
+                                ) -> List[int]:
         """Returns a list of panelist scores for appearances for the
         requested panelist slug string.
 
@@ -90,7 +91,7 @@ class PanelistScores:
 
     @lru_cache(typed=True)
     def retrieve_scores_grouped_list_by_id(self, id: int
-                                          ) -> Dict[str, List[int]]:
+                                           ) -> Dict[str, List[int]]:
         """Returns a panelist's score grouping for the requested
         panelist ID.
 
@@ -149,7 +150,7 @@ class PanelistScores:
 
     @lru_cache(typed=True)
     def retrieve_scores_grouped_list_by_slug(self, slug: str
-                                            ) -> Dict[str, List[int]]:
+                                             ) -> Dict[str, List[int]]:
         """Returns a panelist's score grouping for the requested
         panelist slug string.
 
@@ -169,7 +170,7 @@ class PanelistScores:
 
     @lru_cache(typed=True)
     def retrieve_scores_grouped_ordered_pair_by_id(self, id: int
-                                                  ) -> List[Tuple[int, int]]:
+                                                   ) -> List[Tuple[int, int]]:
         """Returns an list of tuples containing a score and the
         corresponding number of instances a panelist has scored that amount
         for the requested panelist ID.
@@ -222,7 +223,7 @@ class PanelistScores:
 
     @lru_cache(typed=True)
     def retrieve_scores_grouped_ordered_pair_by_slug(self, slug: str,
-                                                    ) -> List[Tuple[int, int]]:
+                                                     ) -> List[Tuple[int, int]]:
         """Returns an list of tuples containing a score and the
         corresponding number of instances a panelist has scored that amount
         for the requested panelist slug string.
@@ -242,7 +243,7 @@ class PanelistScores:
 
     @lru_cache(typed=True)
     def retrieve_scores_list_by_id(self, id: int,
-                                  ) -> Dict[str, List]:
+                                   ) -> Dict[str, List]:
         """Returns a dictionary containing two lists, one with show
         dates and one with corresponding scores for the requested
         panelist ID.
@@ -284,7 +285,7 @@ class PanelistScores:
 
     @lru_cache(typed=True)
     def retrieve_scores_list_by_slug(self, slug: str,
-                                  ) -> Dict[str, List]:
+                                     ) -> Dict[str, List]:
         """Returns a dictionary containing two lists, one with show
         dates and one with corresponding scores for the requested
         panelist slug string.
@@ -304,7 +305,7 @@ class PanelistScores:
 
     @lru_cache(typed=True)
     def retrieve_scores_ordered_pair_by_id(self, id: int
-                                          ) -> List[Tuple[str, int]]:
+                                           ) -> List[Tuple[str, int]]:
         """Returns an list of tuples containing a show date and the
         corresponding score for the requested panelist ID.
 
@@ -340,7 +341,7 @@ class PanelistScores:
 
     @lru_cache(typed=True)
     def retrieve_scores_ordered_pair_by_slug(self, slug: str,
-                                            ) -> List[Tuple[str, int]]:
+                                             ) -> List[Tuple[str, int]]:
         """Returns an list of tuples containing a show date and the
         corresponding score for the requested panelist slug string.
 

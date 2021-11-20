@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Host Data Retrieval Functions
 """
 from functools import lru_cache
@@ -12,6 +12,7 @@ from mysql.connector import connect
 from slugify import slugify
 from wwdtm.host.appearances import HostAppearances
 from wwdtm.host.utility import HostUtility
+
 
 class Host:
     """This class contains functions used to retrieve host data from a

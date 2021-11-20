@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Appearance Retrieval Functions
 """
 from functools import lru_cache
@@ -10,6 +10,7 @@ from typing import Any, Dict, Optional
 
 from mysql.connector import connect
 from wwdtm.panelist.utility import PanelistUtility
+
 
 class PanelistAppearances:
     """This class contains functions that retrieve panelist appearance
@@ -197,8 +198,8 @@ class PanelistAppearances:
         years = {}
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT DISTINCT YEAR(s.showdate) AS year "
-                    "FROM ww_shows s "
-                    "ORDER BY YEAR(s.showdate) ASC;")
+                 "FROM ww_shows s "
+                 "ORDER BY YEAR(s.showdate) ASC;")
         cursor.execute(query)
         results = cursor.fetchall()
 

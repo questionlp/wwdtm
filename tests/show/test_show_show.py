@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Testing for object :py:class:`wwdtm.show.Show`
 """
 import json
@@ -10,6 +10,7 @@ from typing import Any, Dict
 
 import pytest
 from wwdtm.show import Show
+
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
@@ -21,6 +22,7 @@ def get_connect_dict() -> Dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
+
 def test_show_retrieve_all():
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_all`
     """
@@ -29,6 +31,7 @@ def test_show_retrieve_all():
 
     assert shows, "No shows could be retrieved"
     assert "id" in shows[0], "No Show ID returned for the first list item"
+
 
 def test_show_retrieve_all_details():
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_details`
@@ -40,6 +43,7 @@ def test_show_retrieve_all_details():
     assert "date" in shows[0], "'date' was not returned for the first list item"
     assert "host" in shows[0], "'host' was not returned for first list item"
 
+
 def test_show_retrieve_all_ids():
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_ids`
     """
@@ -48,6 +52,7 @@ def test_show_retrieve_all_ids():
 
     assert ids, "No show IDs could be retrieved"
 
+
 def test_show_retrieve_all_dates():
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_dates`
     """
@@ -55,6 +60,7 @@ def test_show_retrieve_all_dates():
     dates = show.retrieve_all_dates()
 
     assert dates, "No show dates could be retrieved"
+
 
 def test_show_retrieve_all_dates_tuple():
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_dates_tuple`
@@ -65,6 +71,7 @@ def test_show_retrieve_all_dates_tuple():
     assert dates, "No show dates could be retrieved"
     assert isinstance(dates[0], tuple), "First list item is not a tuple"
 
+
 def test_show_retrieve_all_show_years_months():
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_show_years_months`
     """
@@ -74,6 +81,7 @@ def test_show_retrieve_all_show_years_months():
     assert dates, "No dates could be retrieved"
     assert isinstance(dates[0], str), "First list item is not a string"
 
+
 def test_show_retrieve_all_show_years_months_tuple():
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_shows_years_months_tuple`
     """
@@ -82,6 +90,7 @@ def test_show_retrieve_all_show_years_months_tuple():
 
     assert dates, "No dates could be retrieved"
     assert isinstance(dates[0], tuple), "First list item is not a tuple"
+
 
 @pytest.mark.parametrize("year, month, day", [(2020, 4, 25)])
 def test_show_retrieve_by_date(year: int, month: int, day: int):
@@ -103,6 +112,7 @@ def test_show_retrieve_by_date(year: int, month: int, day: int):
     assert "date" in info, (f"'date' was not returned for show "
                             f"{year:04d}-{month:02d}-{day:02d}")
 
+
 @pytest.mark.parametrize("date", ["2018-10-27"])
 def test_show_retrieve_by_date_string(date: str):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_by_date_string`
@@ -117,6 +127,7 @@ def test_show_retrieve_by_date_string(date: str):
     assert info, f"Show for date {date} not found"
     assert "date" in info, f"'date' was not returned for show {date}"
 
+
 @pytest.mark.parametrize("id", [1162])
 def test_show_retrieve_by_id(id: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_by_id`
@@ -129,6 +140,7 @@ def test_show_retrieve_by_id(id: int):
 
     assert info, f"Show ID {id} not found"
     assert "date" in info, f"'date' was not returned for ID {id}"
+
 
 @pytest.mark.parametrize("year", [2018])
 def test_show_retrieve_by_year(year: int):
@@ -143,6 +155,7 @@ def test_show_retrieve_by_year(year: int):
     assert shows, f"No shows could be retrieved for year {year:04d}"
     assert "id" in shows[0], (f"'id' was not returned for the first list item "
                               f"for year {year:04d}")
+
 
 @pytest.mark.parametrize("year, month", [(1998, 1), (2018, 10)])
 def test_show_retrieve_by_year_month(year: int, month: int):
@@ -161,6 +174,7 @@ def test_show_retrieve_by_year_month(year: int, month: int):
                    f"{year:04d}-{month:02d}")
     assert "id" in shows[0], (f"'id' was not returned for the first list "
                               f"item for year/month {year:02d}-{month:04d}")
+
 
 @pytest.mark.parametrize("year, month, day", [(2020, 4, 25)])
 def test_show_retrieve_details_by_date(year: int, month: int, day: int):
@@ -182,6 +196,7 @@ def test_show_retrieve_details_by_date(year: int, month: int, day: int):
     assert "host" in info, (f"'host' was not returned for show "
                             f"{year:04d}-{month:02d}-{day:02d}")
 
+
 @pytest.mark.parametrize("date", ["2018-10-27"])
 def test_show_retrieve_details_by_date_string(date: str):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_date_string`
@@ -197,6 +212,7 @@ def test_show_retrieve_details_by_date_string(date: str):
     assert "date" in info, f"'date' was not returned for show {date}"
     assert "host" in info, f"'host' was not returned for show {date}"
 
+
 @pytest.mark.parametrize("id", [1162, 1246])
 def test_show_retrieve_details_by_id(id: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_id`
@@ -210,6 +226,7 @@ def test_show_retrieve_details_by_id(id: int):
     assert info, f"Show ID {id} not found"
     assert "date" in info, f"'date' was not returned for ID {id}"
     assert "host" in info, f"'host' was not returned for ID {id}"
+
 
 @pytest.mark.parametrize("year", [2021])
 def test_show_retrieve_details_by_year(year: int):
@@ -226,6 +243,7 @@ def test_show_retrieve_details_by_year(year: int):
                                f"item for year {year:04d}")
     assert "host" in info[0], (f"'host' was not returned for first list "
                                f"item for year {year:04d}")
+
 
 @pytest.mark.parametrize("year, month", [(2020, 4)])
 def test_show_retrieve_details_by_year_month(year: int, month: int):
@@ -246,6 +264,7 @@ def test_show_retrieve_details_by_year_month(year: int, month: int):
     assert "host" in info[0], (f"'host' was not returned for first list item "
                                f"for year/month {year:04d}-{month:02d}")
 
+
 @pytest.mark.parametrize("year", [2018])
 def test_show_retrieve_months_by_year(year: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_months_by_year`
@@ -258,6 +277,7 @@ def test_show_retrieve_months_by_year(year: int):
 
     assert months, f"No months could be retrieved for year {year:04d}"
 
+
 def test_show_retrieve_recent():
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_recent`
     """
@@ -266,6 +286,7 @@ def test_show_retrieve_recent():
 
     assert shows, "No shows could be retrieved"
     assert "id" in shows[0], "No Show ID returned for the first list item"
+
 
 def test_show_retrieve_recent_details():
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_recent_details`
@@ -276,6 +297,7 @@ def test_show_retrieve_recent_details():
     assert shows, "No shows could be retrieved"
     assert "date" in shows[0], "'date' was not returned for the first list item"
     assert "host" in shows[0], "'host' was not returned for first list item"
+
 
 @pytest.mark.parametrize("year", [2018])
 def test_show_retrieve_scores_by_year(year: int):
@@ -290,6 +312,7 @@ def test_show_retrieve_scores_by_year(year: int):
 
     assert scores, f"No scores could be retrieved by year {year:04d}"
     assert isinstance(scores[0], tuple), "First list item is not a tuple"
+
 
 def test_show_retrieve_years():
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_years`

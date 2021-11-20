@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Testing for object :py:class:`wwdtm.show.ShowInfo`
 """
 import json
@@ -10,6 +10,7 @@ from typing import Any, Dict
 
 import pytest
 from wwdtm.show import ShowInfo
+
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
@@ -20,6 +21,7 @@ def get_connect_dict() -> Dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
 
 @pytest.mark.parametrize("id", [1162])
 def test_show_info_retrieve_bluff_info_by_id(id: int):
@@ -39,6 +41,7 @@ def test_show_info_retrieve_bluff_info_by_id(id: int):
     assert "correct_panelist" in bluff, (f"'correct_panelist' was not returned with "
                                          f"panelist information for show ID {id}")
 
+
 @pytest.mark.parametrize("id", [1162])
 def test_show_info_retrieve_core_info_by_id(id: int):
     """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_core_info_by_id`
@@ -55,6 +58,7 @@ def test_show_info_retrieve_core_info_by_id(id: int):
     assert "description" in core, (f"'description' was not returned with show "
                                    f"information for show ID {id}")
 
+
 @pytest.mark.parametrize("id", [1162])
 def test_show_info_retrieve_guest_info_by_id(id: int):
     """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_guest_info_by_id`
@@ -70,6 +74,7 @@ def test_show_info_retrieve_guest_info_by_id(id: int):
                                f"for show ID {id}")
     assert "score" in guests[0], (f"'score' was not returned for the first list "
                                   f"item for show ID {id}")
+
 
 @pytest.mark.parametrize("id", [1162])
 def test_show_info_retrieve_panelist_info_by_id(id: int):

@@ -2,13 +2,14 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Host Data Utility Functions
 """
 from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
+
 
 class HostUtility:
     """This class contains supporting functions used to check whether
@@ -38,7 +39,7 @@ class HostUtility:
             self.database_connection = database_connection
 
     @lru_cache(typed=True)
-    def convert_id_to_slug(self, id: int) -> str:
+    def convert_id_to_slug(self, id: int) -> Optional[str]:
         """Converts a host's ID to the matching host slug string value.
 
         :param id: Host ID
@@ -65,7 +66,7 @@ class HostUtility:
         return None
 
     @lru_cache(typed=True)
-    def convert_slug_to_id(self, slug: str) -> int:
+    def convert_slug_to_id(self, slug: str) -> Optional[int]:
         """Converts a host's slug string to the matching host ID value.
 
         :param slug: Host slug string
@@ -133,7 +134,6 @@ class HostUtility:
                 return False
         except ValueError:
             return False
-
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT hostslug FROM ww_hosts "

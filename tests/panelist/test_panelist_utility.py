@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.panelist.PanelistUtility`
 """
 import json
@@ -10,6 +10,7 @@ from typing import Any, Dict
 
 import pytest
 from wwdtm.panelist import PanelistUtility
+
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
@@ -25,6 +26,7 @@ def get_connect_dict() -> Dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
+
 @pytest.mark.parametrize("id", [14])
 def test_panelist_utility_convert_id_to_slug(id: int):
     """Testing for :py:meth:`wwdtm.panelist.PanelistUtility.convert_id_to_slug`
@@ -38,6 +40,7 @@ def test_panelist_utility_convert_id_to_slug(id: int):
     assert slug, f"Panelist slug for ID {id} was not found"
     assert isinstance(slug, str), f"Invalid value returned for ID {id}"
 
+
 @pytest.mark.parametrize("id", [-1])
 def test_panelist_utility_convert_invalid_id_to_slug(id: int):
     """Negative testing for :py:meth:`wwdtm.panelist.PanelistUtility.convert_id_to_slug`
@@ -50,6 +53,7 @@ def test_panelist_utility_convert_invalid_id_to_slug(id: int):
     slug = utility.convert_id_to_slug(id)
 
     assert not slug, f"Panelist slug for ID {id} was found"
+
 
 @pytest.mark.parametrize("slug", ["faith-salie"])
 def test_panelist_utility_convert_slug_to_id(slug: str):
@@ -65,6 +69,7 @@ def test_panelist_utility_convert_slug_to_id(slug: str):
     assert id, f"Panelist ID for slug {slug} was not found"
     assert isinstance(id, int), f"Invalid value returned for slug {slug}"
 
+
 @pytest.mark.parametrize("slug", ["faith-sale"])
 def test_panelist_utility_convert_invalid_slug_to_id(slug: str):
     """Negative testing for :py:meth:`wwdtm.panelist.PanelistUtility.convert_slug_to_id`
@@ -78,6 +83,7 @@ def test_panelist_utility_convert_invalid_slug_to_id(slug: str):
 
     assert not id, f"Panelist ID for slug {slug} was found"
 
+
 @pytest.mark.parametrize("id", [14])
 def test_panelist_utility_id_exists(id: int):
     """Testing for :py:meth:`wwdtm.panelist.PanelistUtility.id_exists`
@@ -89,6 +95,7 @@ def test_panelist_utility_id_exists(id: int):
     result = utility.id_exists(id)
 
     assert result, f"Panelist ID {id} does not exist"
+
 
 @pytest.mark.parametrize("id", [-1])
 def test_panelist_utility_id_not_exists(id: int):
@@ -102,6 +109,7 @@ def test_panelist_utility_id_not_exists(id: int):
 
     assert not result, f"Panelist ID {id} exists"
 
+
 @pytest.mark.parametrize("slug", ["faith-salie"])
 def test_panelist_utility_slug_exists(slug: str):
     """Testing for :py:meth:`wwdtm.panelist.PanelistUtility.slug_exists`
@@ -113,6 +121,7 @@ def test_panelist_utility_slug_exists(slug: str):
     result = utility.slug_exists(slug)
 
     assert result, f"Panelist slug {slug} does not exist"
+
 
 @pytest.mark.parametrize("slug", ["faith-sale"])
 def test_panelist_utility_slug_not_exists(slug: str):

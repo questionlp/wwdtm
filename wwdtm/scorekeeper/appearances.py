@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Scorekeeper Appearance Retrieval
 Functions
 """
@@ -11,6 +11,7 @@ from typing import Any, Dict, Optional
 
 from mysql.connector import connect
 from wwdtm.scorekeeper.utility import ScorekeeperUtility
+
 
 class ScorekeeperAppearances:
     """This class contains functions that retrieve scorekeeper
@@ -67,7 +68,7 @@ class ScorekeeperAppearances:
                  "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
                  "JOIN ww_shows s ON s.showid = skm.showid "
                  "WHERE skm.scorekeeperid = %s ) AS all_shows;")
-        cursor.execute(query, (id, id ,))
+        cursor.execute(query, (id, id, ))
         result = cursor.fetchone()
 
         if result:
