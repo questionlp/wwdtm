@@ -46,12 +46,12 @@ class ShowInfo:
         self.loc_util = LocationUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
-    def retrieve_bluff_info_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_bluff_info_by_id(self, show_id: int) -> Dict[str, Any]:
         """Returns a dictionary containing Bluff the Listener information
         for the requested show ID.
 
-        :param id: Show ID
-        :type id: int
+        :param show_id: Show ID
+        :type show_id: int
         :return: Dictionary containing correct and chosen Bluff the
             Listener information.
         :rtype: Dict[str, Any]
@@ -64,7 +64,7 @@ class ShowInfo:
                  "JOIN ww_panelists p ON "
                  "p.panelistid = blm.chosenbluffpnlid "
                  "WHERE s.showid = %s;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (show_id, ))
         chosen_result = cursor.fetchone()
 
         if chosen_result:
@@ -83,7 +83,7 @@ class ShowInfo:
                  "JOIN ww_panelists p ON "
                  "p.panelistid = blm.correctbluffpnlid "
                  "WHERE s.showid = %s;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (show_id, ))
         correct_result = cursor.fetchone()
         cursor.close()
 
@@ -104,12 +104,12 @@ class ShowInfo:
         return bluff_info
 
     @lru_cache(typed=True)
-    def retrieve_core_info_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_core_info_by_id(self, show_id: int) -> Dict[str, Any]:
         """Returns a dictionary with core information for the requested
         show ID.
 
-        :param id: Show ID
-        :type id: int
+        :param show_id: Show ID
+        :type show_id: int
         :return: Dictionary containing host, scorekeeper, location,
             description and notes. If show core information could not be
             retrieved, an empty dictionary will be returned.
@@ -134,7 +134,7 @@ class ShowInfo:
                  "JOIN ww_showdescriptions sd ON sd.showid = s.showid "
                  "JOIN ww_shownotes sn ON sn.showid = s.showid "
                  "WHERE s.showid = %s;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (show_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -150,7 +150,7 @@ class ShowInfo:
         }
 
         if not result["locationslug"]:
-            location_info["slug"] = self.loc_util.slugify_location(id=result["locationid"],
+            location_info["slug"] = self.loc_util.slugify_location(location_id=result["locationid"],
                                                                    venue=result["venue"],
                                                                    city=result["city"],
                                                                    state=result["state"])
@@ -181,7 +181,7 @@ class ShowInfo:
             notes = None
 
         show_info = {
-            "id": id,
+            "id": show_id,
             "date": result["showdate"].isoformat(),
             "best_of": bool(result["bestof"]),
             "repeat_show": bool(result["repeatshowid"]),
@@ -206,12 +206,12 @@ class ShowInfo:
         return show_info
 
     @lru_cache(typed=True)
-    def retrieve_guest_info_by_id(self, id: int) -> List[Dict[str, Any]]:
+    def retrieve_guest_info_by_id(self, show_id: int) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing Not My Job
         guest information for the requested show ID.
 
-        :param id: Show ID
-        :type id: int
+        :param show_id: Show ID
+        :type show_id: int
         :return: Dictionary containing Not My Job guest information. If
             Not My Job information could not be retrieved, an empty list
             will be returned.
@@ -226,7 +226,7 @@ class ShowInfo:
                  "JOIN ww_shows s on s.showid = gm.showid "
                  "WHERE gm.showid = %s "
                  "ORDER by gm.showguestmapid ASC;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (show_id, ))
         result = cursor.fetchall()
         cursor.close()
 
@@ -248,12 +248,12 @@ class ShowInfo:
         return guests
 
     @lru_cache(typed=True)
-    def retrieve_panelist_info_by_id(self, id: int) -> List[Dict[str, Any]]:
+    def retrieve_panelist_info_by_id(self, show_id: int) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing panelist
         information for the requested show ID.
 
-        :param id: Show ID
-        :type id: int
+        :param show_id: Show ID
+        :type show_id: int
         :return: List of panelists with corresponding scores and
             ranking information. If panelist information could not be
             retrieved, an empty list will be returned.
@@ -269,7 +269,7 @@ class ShowInfo:
                  "JOIN ww_panelists p on p.panelistid = pm.panelistid "
                  "WHERE pm.showid = %s "
                  "ORDER by pm.panelistscore DESC, pm.showpnlmapid ASC;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (show_id, ))
         result = cursor.fetchall()
         cursor.close()
 

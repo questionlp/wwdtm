@@ -39,16 +39,16 @@ class GuestUtility:
             self.database_connection = database_connection
 
     @lru_cache(typed=True)
-    def convert_id_to_slug(self, id: int) -> Optional[str]:
+    def convert_id_to_slug(self, guest_id: int) -> Optional[str]:
         """Converts a guest's ID to the matching guest slug string.
 
-        :param id: Guest ID
-        :type id: int
+        :param guest_id: Guest ID
+        :type guest_id: int
         :return: Guest slug string, if a match is found
         :rtype: str
         """
         try:
-            id = int(id)
+            id_ = int(guest_id)
         except ValueError:
             return None
 
@@ -56,7 +56,7 @@ class GuestUtility:
         query = ("SELECT guestslug FROM ww_guests "
                  "WHERE guestid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (id_, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -66,17 +66,17 @@ class GuestUtility:
         return None
 
     @lru_cache(typed=True)
-    def convert_slug_to_id(self, slug: str) -> Optional[int]:
+    def convert_slug_to_id(self, guest_slug: str) -> Optional[int]:
         """Converts a guest's slug string to the matching guest ID, if
         a match is found. If no match is found, None is returned.
 
-        :param slug: Guest slug string
-        :type slug: str
+        :param guest_slug: Guest slug string
+        :type guest_slug: str
         :return: Guest ID, if a match is found
         :rtype: int
         """
         try:
-            slug = slug.strip()
+            slug = guest_slug.strip()
             if not slug:
                 return None
         except ValueError:
@@ -96,16 +96,16 @@ class GuestUtility:
         return None
 
     @lru_cache(typed=True)
-    def id_exists(self, id: int) -> bool:
+    def id_exists(self, guest_id: int) -> bool:
         """Checks to see if a guest ID exists.
 
-        :param id: Guest ID
-        :type id: int
+        :param guest_id: Guest ID
+        :type guest_id: int
         :return: True or False, based on whether the guest ID exists
         :rtype: bool
         """
         try:
-            id = int(id)
+            id_ = int(guest_id)
         except ValueError:
             return False
 
@@ -113,24 +113,24 @@ class GuestUtility:
         query = ("SELECT guestid FROM ww_guests "
                  "WHERE guestid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (id_, ))
         result = cursor.fetchone()
         cursor.close()
 
         return bool(result)
 
     @lru_cache(typed=True)
-    def slug_exists(self, slug: str) -> bool:
+    def slug_exists(self, guest_slug: str) -> bool:
         """Checks to see if a guest slug string exists.
 
-        :param slug: Guest slug string
-        :type slug: str
+        :param guest_slug: Guest slug string
+        :type guest_slug: str
         :return: True or False, based on whether the guest slug string
             exists
         :rtype: bool
         """
         try:
-            slug = slug.strip()
+            slug = guest_slug.strip()
             if not slug:
                 return False
         except ValueError:

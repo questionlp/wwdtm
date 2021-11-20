@@ -41,19 +41,19 @@ class PanelistAppearances:
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_appearances_by_id(self, panelist_id: int) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested panelist ID.
 
-        :param id: Panelist ID
-        :type id: int
+        :param panelist_id: Panelist ID
+        :type panelist_id: int
         :return:  Dictionary containing appearance counts and list of
             appearances for a panelist. If panelist appearances could
             not be retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
-            id = int(id)
+            id_ = int(panelist_id)
         except ValueError:
             return {}
 
@@ -72,7 +72,7 @@ class PanelistAppearances:
                  "s.repeatshowid IS NULL "
                  "AND pm.panelistscore IS NOT NULL ) "
                  "AS shows_with_scores;")
-        cursor.execute(query, (id, id, id, ))
+        cursor.execute(query, (id_, id_, id_, ))
         result = cursor.fetchone()
 
         if result:
@@ -96,7 +96,7 @@ class PanelistAppearances:
                  "WHERE s.bestof = 0 AND s.repeatshowid IS NULL "
                  "AND pm.panelistid = %s "
                  "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (id_, ))
         result = cursor.fetchone()
 
         if result and result["first_id"]:
@@ -134,7 +134,7 @@ class PanelistAppearances:
                  "JOIN ww_shows s ON s.showid = pm.showid "
                  "WHERE pm.panelistid = %s "
                  "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (id_, ))
         results = cursor.fetchall()
         cursor.close()
 
@@ -166,30 +166,30 @@ class PanelistAppearances:
         return appearance_info
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_appearances_by_slug(self, panelist_slug: str) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested panelist slug string.
 
-        :param slug: Panelist slug string
-        :type slug: str
+        :param panelist_slug: Panelist slug string
+        :type panelist_slug: str
         :return:  Dictionary containing appearance counts and list of
             appearances for a panelist. If panelist appearances could
             not be retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
+        id_ = self.utility.convert_slug_to_id(panelist_slug)
+        if not id_:
             return {}
 
-        return self.retrieve_appearances_by_id(id)
+        return self.retrieve_appearances_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_yearly_appearances_by_id(self, id: int) -> Dict[int, int]:
+    def retrieve_yearly_appearances_by_id(self, panelist_id: int) -> Dict[int, int]:
         """Returns a dictionary containing panelist appearances broken
         down by year, for the requested panelist ID.
 
-        :param id: Panelist ID
-        :type id: int
+        :param panelist_id: Panelist ID
+        :type panelist_id: int
         :return: Dictionary containing scoring breakdown by year. If
             panelist appearances could not be retrieved, an empty
             dictionary is returned.
@@ -219,7 +219,7 @@ class PanelistAppearances:
                  "AND s.repeatshowid IS NULL "
                  "GROUP BY p.panelist, YEAR(s.showdate) "
                  "ORDER BY p.panelist ASC, YEAR(s.showdate) ASC;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (panelist_id, ))
         results = cursor.fetchall()
         cursor.close()
 
@@ -232,19 +232,20 @@ class PanelistAppearances:
         return years
 
     @lru_cache(typed=True)
-    def retrieve_yearly_appearances_by_slug(self, slug: str) -> Dict[int, int]:
+    def retrieve_yearly_appearances_by_slug(self, panelist_slug: str
+                                            ) -> Dict[int, int]:
         """Returns a dictionary containing panelist appearances broken
         down by year, for the requested panelist slug string.
 
-        :param slug: Panelist slug string
-        :type slug: str
+        :param panelist_slug: Panelist slug string
+        :type panelist_slug: str
         :return: Dictionary containing scoring breakdown by year. If
             panelist appearances could not be retrieved, an empty
             dictionary is returned.
         :rtype: Dict[int, int]
         """
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
+        id_ = self.utility.convert_slug_to_id(panelist_slug)
+        if not id_:
             return {}
 
-        return self.retrieve_yearly_appearances_by_id(id)
+        return self.retrieve_yearly_appearances_by_id(id_)

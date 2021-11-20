@@ -165,19 +165,19 @@ class Host:
         return ids
 
     @lru_cache(typed=True)
-    def retrieve_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_by_id(self, host_id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing host ID, name and
         slug string for the requested host ID.
 
-        :param id: Host ID
-        :type id: int
+        :param host_id: Host ID
+        :type host_id: int
         :return: Dictionary containing host information. If host
             information could not be retrieved, an empty dictionary is
             returned.
         :rtype: Dict[str, Any]
         """
         try:
-            id = int(id)
+            id_ = int(host_id)
         except ValueError:
             return {}
 
@@ -187,7 +187,7 @@ class Host:
                  "FROM ww_hosts "
                  "WHERE hostid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (id_, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -204,77 +204,77 @@ class Host:
         return info
 
     @lru_cache(typed=True)
-    def retrieve_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_by_slug(self, host_slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing host ID, name and
         slug string for the requested host slug string.
 
-        :param slug: Host slug string
-        :type slug: str
+        :param host_slug: Host slug string
+        :type host_slug: str
         :return: Dictionary containing host information. If host
             information could be retrieved, an empty dictionary is
             returned.
         :rtype: Dict[str, Any]
         """
         try:
-            slug = slug.strip()
+            slug = host_slug.strip()
             if not slug:
                 return {}
         except AttributeError:
             return {}
 
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
+        id_ = self.utility.convert_slug_to_id(slug)
+        if not id_:
             return {}
 
-        return self.retrieve_by_id(id)
+        return self.retrieve_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_details_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_details_by_id(self, host_id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing host ID, name, slug
         string and appearance information for the requested host ID.
 
-        :param id: Host ID
-        :type id: int
+        :param host_id: Host ID
+        :type host_id: int
         :return: Dictionary containing host information and their
             appearances. If host information could be retrieved, an
             empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
-            id = int(id)
+            id_ = int(host_id)
         except ValueError:
             return {}
 
-        info = self.retrieve_by_id(id)
+        info = self.retrieve_by_id(id_)
         if not info:
             return {}
 
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(id)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(id_)
 
         return info
 
     @lru_cache(typed=True)
-    def retrieve_details_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_details_by_slug(self, host_slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing host ID, name, slug
         string and appearance information for the requested host slug
         string.
 
-        :param slug: Host slug string
-        :type slug: str
+        :param host_slug: Host slug string
+        :type host_slug: str
         :return: Dictionary containing host information and their
             appearances. If host information could be retrieved, an
             empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
-            slug = slug.strip()
+            slug = host_slug.strip()
             if not slug:
                 return {}
         except AttributeError:
             return {}
 
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
+        id_ = self.utility.convert_slug_to_id(slug)
+        if not id_:
             return {}
 
-        return self.retrieve_details_by_id(id)
+        return self.retrieve_details_by_id(id_)

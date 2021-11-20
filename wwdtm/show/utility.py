@@ -74,16 +74,16 @@ class ShowUtility:
         return None
 
     @lru_cache(typed=True)
-    def convert_id_to_date(self, id: int) -> Optional[str]:
+    def convert_id_to_date(self, show_id: int) -> Optional[str]:
         """Converts a show's ID to the matching show date.
 
-        :param id: Show ID
-        :type id: int
+        :param show_id: Show ID
+        :type show_id: int
         :return: Show date, if a match is found
         :rtype: str
         """
         try:
-            id = int(id)
+            id_ = int(show_id)
         except ValueError:
             return None
 
@@ -91,7 +91,7 @@ class ShowUtility:
         query = ("SELECT showdate FROM ww_shows "
                  "WHERE showid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (id_, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -132,16 +132,16 @@ class ShowUtility:
         return bool(result)
 
     @lru_cache(typed=True)
-    def id_exists(self, id: int) -> bool:
+    def id_exists(self, show_id: int) -> bool:
         """Checks to see if a show ID exists.
 
-        :param id: Show ID
-        :type id: int
+        :param show_id: Show ID
+        :type show_id: int
         :return: True or False, based on whether the show ID exists
         :rtype: bool
         """
         try:
-            id = int(id)
+            id_ = int(show_id)
         except ValueError:
             return False
 
@@ -149,7 +149,7 @@ class ShowUtility:
         query = ("SELECT showid FROM ww_shows "
                  "WHERE showid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (id_, ))
         result = cursor.fetchone()
         cursor.close()
 

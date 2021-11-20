@@ -63,61 +63,63 @@ def test_scorekeeper_retrieve_all_slugs():
     assert slugs, "No scorekeeper slug strings could be retrieved"
 
 
-@pytest.mark.parametrize("id", [13])
-def test_scorekeeper_retrieve_by_id(id: int):
+@pytest.mark.parametrize("scorekeeper_id", [13])
+def test_scorekeeper_retrieve_by_id(scorekeeper_id: int):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_by_id`
 
-    :param id: Scorekeeper ID to test retrieving scorekeeper information
-    :type id: int
+    :param scorekeeper_id: Scorekeeper ID to test retrieving scorekeeper
+        information
+    :type scorekeeper_id: int
     """
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
-    info = scorekeeper.retrieve_by_id(id)
+    info = scorekeeper.retrieve_by_id(scorekeeper_id)
 
-    assert info, f"Scorekeeper ID {id} not found"
-    assert "name" in info, f"'name' was not returned for ID {id}"
+    assert info, f"Scorekeeper ID {scorekeeper_id} not found"
+    assert "name" in info, f"'name' was not returned for ID {scorekeeper_id}"
 
 
-@pytest.mark.parametrize("id", [13])
-def test_scorekeeper_retrieve_details_by_id(id: int):
+@pytest.mark.parametrize("scorekeeper_id", [13])
+def test_scorekeeper_retrieve_details_by_id(scorekeeper_id: int):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_details_by_id`
 
-    :param id: Scorekeeper ID to test retrieving scorekeeper details
-    :type id: int
+    :param scorekeeper_id: Scorekeeper ID to test retrieving scorekeeper
+        details
+    :type scorekeeper_id: int
     """
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
-    info = scorekeeper.retrieve_details_by_id(id)
+    info = scorekeeper.retrieve_details_by_id(scorekeeper_id)
 
-    assert info, f"Scorekeeper ID {id} not found"
-    assert "name" in info, f"'name' was not returned for ID {id}"
-    assert "appearances" in info, f"'appearances' was not returned for ID {id}"
+    assert info, f"Scorekeeper ID {scorekeeper_id} not found"
+    assert "name" in info, f"'name' was not returned for ID {scorekeeper_id}"
+    assert "appearances" in info, f"'appearances' was not returned for ID {scorekeeper_id}"
 
 
-@pytest.mark.parametrize("slug", ["chioke-i-anson"])
-def test_scorekeeper_retrieve_by_slug(slug: str):
+@pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson"])
+def test_scorekeeper_retrieve_by_slug(scorekeeper_slug: str):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_by_slug`
 
-    :param slug: Scorekeeper slug string to test retrieving scorekeeper
-        information
-    :type slug: str
+    :param scorekeeper_slug: Scorekeeper slug string to test retrieving
+        scorekeeper information
+    :type scorekeeper_slug: str
     """
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
-    info = scorekeeper.retrieve_by_slug(slug)
+    info = scorekeeper.retrieve_by_slug(scorekeeper_slug)
 
-    assert info, f"Scorekeeper slug {slug} not found"
-    assert "name" in info, f"'name' was not returned for slug {slug}"
+    assert info, f"Scorekeeper slug {scorekeeper_slug} not found"
+    assert "name" in info, f"'name' was not returned for slug {scorekeeper_slug}"
 
 
-@pytest.mark.parametrize("slug", ["chioke-i-anson"])
-def test_scorekeeper_retrieve_details_by_slug(slug: str):
+@pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson"])
+def test_scorekeeper_retrieve_details_by_slug(scorekeeper_slug: str):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_details_by_slug`
 
-    :param slug: Scorekeeper slug string to test retrieving scorekeeper
-        details
-    :type slug: str
+    :param scorekeeper_slug: Scorekeeper slug string to test retrieving
+        scorekeeper details
+    :type scorekeeper_slug: str
     """
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
-    info = scorekeeper.retrieve_details_by_slug(slug)
+    info = scorekeeper.retrieve_details_by_slug(scorekeeper_slug)
 
-    assert info, f"Scorekeeper slug {slug} not found"
-    assert "name" in info, f"'name' was not returned for slug {slug}"
-    assert "appearances" in info, f"'appearances' was not returned for slug {slug}"
+    assert info, f"Scorekeeper slug {scorekeeper_slug} not found"
+    assert "name" in info, f"'name' was not returned for slug {scorekeeper_slug}"
+    assert "appearances" in info, f"'appearances' was not returned for slug {scorekeeper_slug}"

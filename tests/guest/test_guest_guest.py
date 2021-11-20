@@ -67,59 +67,60 @@ def test_guest_retrieve_all_slugs():
     assert slugs, "No guest slug strings could be retrieved"
 
 
-@pytest.mark.parametrize("id", [976])
-def test_guest_retrieve_by_id(id: int):
+@pytest.mark.parametrize("guest_id", [976])
+def test_guest_retrieve_by_id(guest_id: int):
     """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_by_id`
 
-    :param id: Guest ID to test retrieving guest information
-    :type id: int
+    :param guest_id: Guest ID to test retrieving guest information
+    :type guest_id: int
     """
     guest = Guest(connect_dict=get_connect_dict())
-    info = guest.retrieve_by_id(id)
+    info = guest.retrieve_by_id(guest_id)
 
-    assert info, f"Guest ID {id} not found"
-    assert "name" in info, f"'name' was not returned for ID {id}"
+    assert info, f"Guest ID {guest_id} not found"
+    assert "name" in info, f"'name' was not returned for ID {guest_id}"
 
 
-@pytest.mark.parametrize("slug", ["tom-hanks"])
-def test_guest_retrieve_by_slug(slug: str):
+@pytest.mark.parametrize("guest_slug", ["tom-hanks"])
+def test_guest_retrieve_by_slug(guest_slug: str):
     """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_by_slug`
 
-    :param slug: Guest slug string to test retrieving guest information
-    :type slug: str
+    :param guest_slug: Guest slug string to test retrieving guest
+        information
+    :type guest_slug: str
     """
     guest = Guest(connect_dict=get_connect_dict())
-    info = guest.retrieve_by_slug(slug)
+    info = guest.retrieve_by_slug(guest_slug)
 
-    assert info, f"Guest slug {slug} not found"
-    assert "name" in info, f"'name' was not returned for slug {slug}"
+    assert info, f"Guest slug {guest_slug} not found"
+    assert "name" in info, f"'name' was not returned for slug {guest_slug}"
 
 
-@pytest.mark.parametrize("id", [976])
-def test_guest_retrieve_details_by_id(id: int):
+@pytest.mark.parametrize("guest_id", [976])
+def test_guest_retrieve_details_by_id(guest_id: int):
     """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_details_by_id`
 
-    :param id: Guest ID to test retrieving guest details
-    :type id: int
+    :param guest_id: Guest ID to test retrieving guest details
+    :type guest_id: int
     """
     guest = Guest(connect_dict=get_connect_dict())
-    info = guest.retrieve_details_by_id(id)
+    info = guest.retrieve_details_by_id(guest_id)
 
-    assert info, f"Guest ID {id} not found"
-    assert "name" in info, f"'name' attribute was returned for ID {id}"
-    assert "appearances" in info, f"'appearances' was not returned for ID {id}"
+    assert info, f"Guest ID {guest_id} not found"
+    assert "name" in info, f"'name' attribute was returned for ID {guest_id}"
+    assert "appearances" in info, f"'appearances' was not returned for ID {guest_id}"
 
 
-@pytest.mark.parametrize("slug", ["tom-hanks"])
-def test_guest_guest_retrieve_details_by_slug(slug: str):
+@pytest.mark.parametrize("guest_slug", ["tom-hanks"])
+def test_guest_guest_retrieve_details_by_slug(guest_slug: str):
     """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_details_by_slug`
 
-    :param slug: Guest slug string to test retrieving guest details
-    :type slug: str
+    :param guest_slug: Guest slug string to test retrieving guest details
+    :type guest_slug: str
     """
     guest = Guest(connect_dict=get_connect_dict())
-    info = guest.retrieve_details_by_slug(slug)
+    info = guest.retrieve_details_by_slug(guest_slug)
 
-    assert info, f"Guest slug {slug} not found"
-    assert "name" in info, f"'name' was not returned for slug {slug}"
-    assert "appearances" in info, f"'appearances' was not returned for slug {slug}"
+    assert info, f"Guest slug {guest_slug} not found"
+    assert "name" in info, f"'name' was not returned for slug {guest_slug}"
+    assert "appearances" in info, f"'appearances' was not returned for slug {guest_slug}"

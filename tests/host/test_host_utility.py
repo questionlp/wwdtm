@@ -27,108 +27,109 @@ def get_connect_dict() -> Dict[str, Any]:
             return config_dict["database"]
 
 
-@pytest.mark.parametrize("id", [2])
-def test_host_utility_convert_id_to_slug(id: int):
+@pytest.mark.parametrize("host_id", [2])
+def test_host_utility_convert_id_to_slug(host_id: int):
     """Testing for :py:meth:`wwdtm.host.HostUtility.convert_id_to_slug`
 
-    :param id: Host ID to test converting into host slug string
-    :type id: int
+    :param host_id: Host ID to test converting into host slug string
+    :type host_id: int
     """
     utility = HostUtility(connect_dict=get_connect_dict())
-    slug = utility.convert_id_to_slug(id)
+    slug = utility.convert_id_to_slug(host_id)
 
-    assert slug, f"Host slug for ID {id} was not found"
-    assert isinstance(slug, str), f"Invalid value returned for ID {id}"
+    assert slug, f"Host slug for ID {host_id} was not found"
+    assert isinstance(slug, str), f"Invalid value returned for ID {host_id}"
 
 
-@pytest.mark.parametrize("id", [-1])
-def test_host_utility_convert_invalid_id_to_slug(id: int):
+@pytest.mark.parametrize("host_id", [-1])
+def test_host_utility_convert_invalid_id_to_slug(host_id: int):
     """Negative testing for :py:meth:`wwdtm.host.HostUtility.convert_id_to_slug`
 
-    :param id: Host ID to test failing to convert into host slug string
-    :type id: int
+    :param host_id: Host ID to test failing to convert into host slug
+        string
+    :type host_id: int
     """
     utility = HostUtility(connect_dict=get_connect_dict())
-    slug = utility.convert_id_to_slug(id)
+    slug = utility.convert_id_to_slug(host_id)
 
-    assert not slug, f"Host slug for ID {id} was found"
+    assert not slug, f"Host slug for ID {host_id} was found"
 
 
-@pytest.mark.parametrize("slug", ["tom-hanks"])
-def test_host_utility_convert_slug_to_id(slug: str):
+@pytest.mark.parametrize("host_slug", ["tom-hanks"])
+def test_host_utility_convert_slug_to_id(host_slug: str):
     """Testing for :py:meth:`wwdtm.host.HostUtility.convert_slug_to_id`
 
-    :param slug: Host slug string to test converting into host ID
-    :type slug: str
+    :param host_slug: Host slug string to test converting into host ID
+    :type host_slug: str
     """
     utility = HostUtility(connect_dict=get_connect_dict())
-    id = utility.convert_slug_to_id(slug)
+    id_ = utility.convert_slug_to_id(host_slug)
 
-    assert id, f"Host ID for slug {slug} was not found"
-    assert isinstance(id, int), f"Invalid value returned for slug {slug}"
+    assert id_, f"Host ID for slug {host_slug} was not found"
+    assert isinstance(id_, int), f"Invalid value returned for slug {host_slug}"
 
 
-@pytest.mark.parametrize("slug", ["tom-hanx"])
-def test_host_utility_convert_invalid_slug_to_id(slug: str):
+@pytest.mark.parametrize("host_slug", ["tom-hanx"])
+def test_host_utility_convert_invalid_slug_to_id(host_slug: str):
     """Negative testing for :py:meth:`wwdtm.host.HostUtility.convert_slug_to_id`
 
-    :param slug: Host slug string to test failing to convert into host
-        ID
-    :type slug: str
+    :param host_slug: Host slug string to test failing to convert into
+        host ID
+    :type host_slug: str
     """
     utility = HostUtility(connect_dict=get_connect_dict())
-    result = utility.convert_slug_to_id(slug)
+    result = utility.convert_slug_to_id(host_slug)
 
-    assert not result, f"Host ID for slug {slug} found"
+    assert not result, f"Host ID for slug {host_slug} found"
 
 
-@pytest.mark.parametrize("id", [2])
-def test_host_utility_id_exists(id: int):
+@pytest.mark.parametrize("host_id", [2])
+def test_host_utility_id_exists(host_id: int):
     """Testing for :py:meth:`wwdtm.host.HostUtility.id_exists`
 
-    :param id: Host ID to test if a host exists
-    :type id: int
+    :param host_id: Host ID to test if a host exists
+    :type host_id: int
     """
     utility = HostUtility(connect_dict=get_connect_dict())
-    result = utility.id_exists(id)
+    result = utility.id_exists(host_id)
 
-    assert result, f"Host ID {id} does not exist"
+    assert result, f"Host ID {host_id} does not exist"
 
 
-@pytest.mark.parametrize("id", [-1])
-def test_host_utility_id_not_exists(id: int):
+@pytest.mark.parametrize("host_id", [-1])
+def test_host_utility_id_not_exists(host_id: int):
     """Negative testing for :py:meth:`wwdtm.host.HostUtility.id_exists()`
 
-    :param id: Host ID to test if a host does not exist
-    :type id: int
+    :param host_id: Host ID to test if a host does not exist
+    :type host_id: int
     """
     utility = HostUtility(connect_dict=get_connect_dict())
-    result = utility.id_exists(id)
+    result = utility.id_exists(host_id)
 
-    assert not result, f"Host ID {id} exists"
+    assert not result, f"Host ID {host_id} exists"
 
 
-@pytest.mark.parametrize("slug", ["tom-hanks"])
-def test_host_utility_slug_exists(slug: str):
+@pytest.mark.parametrize("host_slug", ["tom-hanks"])
+def test_host_utility_slug_exists(host_slug: str):
     """Testing for :py:meth:`wwdtm.host.HostUtility.slug_exists`
 
-    :param slug: Host slug string to test if a host exists
-    :type slug: str
+    :param host_slug: Host slug string to test if a host exists
+    :type host_slug: str
     """
     utility = HostUtility(connect_dict=get_connect_dict())
-    result = utility.slug_exists(slug)
+    result = utility.slug_exists(host_slug)
 
-    assert result, f"Host slug {slug} does not exist"
+    assert result, f"Host slug {host_slug} does not exist"
 
 
-@pytest.mark.parametrize("slug", ["tom-hanx"])
-def test_host_utility_slug_not_exists(slug: str):
+@pytest.mark.parametrize("host_slug", ["tom-hanx"])
+def test_host_utility_slug_not_exists(host_slug: str):
     """Negative testing for :py:meth:`wwdtm.host.HostUtility.slug_exists`
 
-    :param slug: Host slug string to test if a host does not exist
-    :type slug: str
+    :param host_slug: Host slug string to test if a host does not exist
+    :type host_slug: str
     """
     utility = HostUtility(connect_dict=get_connect_dict())
-    result = utility.slug_exists(slug)
+    result = utility.slug_exists(host_slug)
 
-    assert not result, f"Host slug {slug} exists"
+    assert not result, f"Host slug {host_slug} exists"

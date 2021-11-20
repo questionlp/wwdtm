@@ -42,12 +42,12 @@ class ScorekeeperAppearances:
         self.utility = ScorekeeperUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_appearances_by_id(self, scorekeeper_id: int) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested scorekeeper ID.
 
-        :param id: Scorekeeper ID
-        :type id: int
+        :param scorekeeper_id: Scorekeeper ID
+        :type scorekeeper_id: int
         :return: Dictionary containing appearance counts and list of
             appearances for a scorekeeper. If scorekeeper appearances
             could not be retrieved, an empty dictionary would be
@@ -55,7 +55,7 @@ class ScorekeeperAppearances:
         :rtype: Dict[str, Any]
         """
         try:
-            id = int(id)
+            id_ = int(scorekeeper_id)
         except ValueError:
             return {}
 
@@ -68,7 +68,7 @@ class ScorekeeperAppearances:
                  "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
                  "JOIN ww_shows s ON s.showid = skm.showid "
                  "WHERE skm.scorekeeperid = %s ) AS all_shows;")
-        cursor.execute(query, (id, id, ))
+        cursor.execute(query, (id_, id_, ))
         result = cursor.fetchone()
 
         if result:
@@ -90,7 +90,7 @@ class ScorekeeperAppearances:
                  "JOIN ww_shows s ON s.showid = skm.showid "
                  "WHERE sk.scorekeeperid = %s "
                  "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (id_, ))
         results = cursor.fetchall()
         cursor.close()
 
@@ -121,20 +121,20 @@ class ScorekeeperAppearances:
         return appearance_info
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_appearances_by_slug(self, scorekeeper_slug: str) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested scorekeeper ID.
 
-        :param slug: Scorekeeper slug string
-        :type slug: str
+        :param scorekeeper_slug: Scorekeeper slug string
+        :type scorekeeper_slug: str
         :return: Dictionary containing appearance counts and list of
             appearances for a scorekeeper. If scorekeeper appearances
             could not be retrieved, an empty dictionary would be
             returned.
         :rtype: Dict[str, Any]
         """
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
+        id_ = self.utility.convert_slug_to_id(scorekeeper_slug)
+        if not id_:
             return {}
 
-        return self.retrieve_appearances_by_id(id)
+        return self.retrieve_appearances_by_id(id_)

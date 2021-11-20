@@ -27,57 +27,59 @@ def get_connect_dict() -> Dict[str, Any]:
             return config_dict["database"]
 
 
-@pytest.mark.parametrize("id", [14])
-def test_panelist_appearances_retrieve_appearances_by_id(id: int):
+@pytest.mark.parametrize("panelist_id", [14])
+def test_panelist_appearances_retrieve_appearances_by_id(panelist_id: int):
     """Testing for :py:meth:`wwdtm.panelist.PanelistAppearances.retrieve_appearances_by_id`
 
-    :param id: Panelist ID to test retrieving panelist appearances
-    :type id: int
+    :param panelist_id: Panelist ID to test retrieving panelist
+        appearances
+    :type panelist_id: int
     """
     appearances = PanelistAppearances(connect_dict=get_connect_dict())
-    appearance = appearances.retrieve_appearances_by_id(id)
+    appearance = appearances.retrieve_appearances_by_id(panelist_id)
 
-    assert "count" in appearance, f"'count' was not returned for ID {id}"
-    assert "shows" in appearance, f"'shows' was not returned for ID {id}"
+    assert "count" in appearance, f"'count' was not returned for ID {panelist_id}"
+    assert "shows" in appearance, f"'shows' was not returned for ID {panelist_id}"
 
 
-@pytest.mark.parametrize("slug", ["luke-burbank"])
-def test_panelist_appearances_retrieve_appearances_by_slug(slug: str):
+@pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
+def test_panelist_appearances_retrieve_appearances_by_slug(panelist_slug: str):
     """Testing for :py:meth:`wwdtm.panelist.PanelistAppearances.retrieve_appearances_by_slug`
 
-    :param slug: Panelist slug string to test retrieving panelist
-        appearances
-    :type slug: str
+    :param panelist_slug: Panelist slug string to test retrieving
+        panelist appearances
+    :type panelist_slug: str
     """
     appearances = PanelistAppearances(connect_dict=get_connect_dict())
-    appearance = appearances.retrieve_appearances_by_slug(slug)
+    appearance = appearances.retrieve_appearances_by_slug(panelist_slug)
 
-    assert "count" in appearance, f"'count' was not returned for slug {slug}"
-    assert "shows" in appearance, f"'shows' was not returned for slug {slug}"
+    assert "count" in appearance, f"'count' was not returned for slug {panelist_slug}"
+    assert "shows" in appearance, f"'shows' was not returned for slug {panelist_slug}"
 
 
-@pytest.mark.parametrize("id", [14])
-def test_panelist_appearances_retrieve_yearly_appearances_by_id(id: int):
+@pytest.mark.parametrize("panelist_id", [14])
+def test_panelist_appearances_retrieve_yearly_appearances_by_id(panelist_id: int):
     """Testing for :py:meth:`wwdtm.panelist.PanelistAppearances.retrieve_yearly_appearances_by_id`
 
-    :param id: Panelist ID to test retrieving a panelist's appearances
-    :type id: int
+    :param panelist_id: Panelist ID to test retrieving a panelist's
+        appearances
+    :type panelist_id: int
     """
     appearances = PanelistAppearances(connect_dict=get_connect_dict())
-    breakdown = appearances.retrieve_yearly_appearances_by_id(id)
+    breakdown = appearances.retrieve_yearly_appearances_by_id(panelist_id)
 
-    assert breakdown, f"No values returned for panelist appearances"
+    assert breakdown, f"No appearance information returned for ID {panelist_id}"
 
 
-@pytest.mark.parametrize("slug", ["luke-burbank"])
-def test_panelist_appearances_retrieve_yearly_appearances_by_slug(slug: str):
+@pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
+def test_panelist_appearances_retrieve_yearly_appearances_by_slug(panelist_slug: str):
     """Testing for :py:meth:`wwdtm.panelist.PanelistAppearances.retrieve_yearly_appearances_by_slug`
 
-    :param slug: Panelist slug string to test retrieving panelist
-        appearances
-    :type slug: str
+    :param panelist_slug: Panelist slug string to test retrieving
+        panelist appearances
+    :type panelist_slug: str
     """
     appearances = PanelistAppearances(connect_dict=get_connect_dict())
-    breakdown = appearances.retrieve_yearly_appearances_by_slug(slug)
+    breakdown = appearances.retrieve_yearly_appearances_by_slug(panelist_slug)
 
-    assert breakdown, f"No values returned for panelist appearances"
+    assert breakdown, f"No appearance information returned for slug {panelist_slug}"

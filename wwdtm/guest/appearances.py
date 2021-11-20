@@ -41,19 +41,19 @@ class GuestAppearances:
         self.utility = GuestUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_appearances_by_id(self, guest_id: int) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested guest ID.
 
-        :param id: Guest ID
-        :type id: int
+        :param guest_id: Guest ID
+        :type guest_id: int
         :return: Dictionary containing appearance counts and list of
             appearances for a guest. If guest appearances could not be
             retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
-            id = int(id)
+            id_ = int(guest_id)
         except ValueError:
             return {}
 
@@ -66,7 +66,7 @@ class GuestAppearances:
                  "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
                  "JOIN ww_shows s ON s.showid = gm.showid "
                  "WHERE gm.guestid = %s ) AS all_shows;")
-        cursor.execute(query, (id, id, ))
+        cursor.execute(query, (id_, id_, ))
         result = cursor.fetchone()
 
         if result:
@@ -89,7 +89,7 @@ class GuestAppearances:
                  "JOIN ww_shows s ON s.showid = gm.showid "
                  "WHERE gm.guestid = %s "
                  "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (id_, ))
         results = cursor.fetchall()
         cursor.close()
 
@@ -119,19 +119,19 @@ class GuestAppearances:
         return appearance_info
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_appearances_by_slug(self, guest_slug: str) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested guest slug string.
 
-        :param slug: Guest slug string
-        :type slug: str
+        :param guest_slug: Guest slug string
+        :type guest_slug: str
         :return: Dictionary containing appearance counts and list of
             appearances for a guest. If guest appearances could not be
             retrieved, empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
+        id_ = self.utility.convert_slug_to_id(guest_slug)
+        if not id_:
             return {}
 
-        return self.retrieve_appearances_by_id(id)
+        return self.retrieve_appearances_by_id(id_)

@@ -67,59 +67,60 @@ def test_host_retrieve_all_slugs():
     assert slugs, "No host slug strings could be retrieved"
 
 
-@pytest.mark.parametrize("id", [2])
-def test_host_retrieve_by_id(id: int):
+@pytest.mark.parametrize("host_id", [2])
+def test_host_retrieve_by_id(host_id: int):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_by_id`
 
-    :param id: Host ID to test retrieving host information
-    :type id: int
+    :param host_id: Host ID to test retrieving host information
+    :type host_id: int
     """
     host = Host(connect_dict=get_connect_dict())
-    info = host.retrieve_by_id(id)
+    info = host.retrieve_by_id(host_id)
 
-    assert info, f"Host ID {id} not found"
-    assert "name" in info, f"'name' was not returned for ID {id}"
+    assert info, f"Host ID {host_id} not found"
+    assert "name" in info, f"'name' was not returned for ID {host_id}"
 
 
-@pytest.mark.parametrize("id", [2])
-def test_host_retrieve_details_by_id(id: int):
+@pytest.mark.parametrize("host_id", [2])
+def test_host_retrieve_details_by_id(host_id: int):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_details_by_id`
 
-    :param id: Host ID to test retrieving host details
-    :type id: int
+    :param host_id: Host ID to test retrieving host details
+    :type host_id: int
     """
     host = Host(connect_dict=get_connect_dict())
-    info = host.retrieve_details_by_id(id)
+    info = host.retrieve_details_by_id(host_id)
 
-    assert info, f"Host ID {id} not found"
-    assert "name" in info, f"'name' was not returned for ID {id}"
-    assert "appearances" in info, f"'appearances' was not returned for ID {id}"
+    assert info, f"Host ID {host_id} not found"
+    assert "name" in info, f"'name' was not returned for ID {host_id}"
+    assert "appearances" in info, f"'appearances' was not returned for ID {host_id}"
 
 
-@pytest.mark.parametrize("slug", ["luke-burbank"])
-def test_host_retrieve_by_slug(slug: str):
+@pytest.mark.parametrize("host_slug", ["luke-burbank"])
+def test_host_retrieve_by_slug(host_slug: str):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_by_slug`
 
-    :param slug: Host slug string to test retrieving host information
-    :type slug: str
+    :param host_slug: Host slug string to test retrieving host
+        information
+    :type host_slug: str
     """
     host = Host(connect_dict=get_connect_dict())
-    info = host.retrieve_by_slug(slug)
+    info = host.retrieve_by_slug(host_slug)
 
-    assert info, f"Host slug {slug} not found"
-    assert "name" in info, f"'name' was not returned for slug {slug}"
+    assert info, f"Host slug {host_slug} not found"
+    assert "name" in info, f"'name' was not returned for slug {host_slug}"
 
 
-@pytest.mark.parametrize("slug", ["luke-burbank"])
-def test_host_retrieve_details_by_slug(slug: str):
+@pytest.mark.parametrize("host_slug", ["luke-burbank"])
+def test_host_retrieve_details_by_slug(host_slug: str):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_details_by_slug`
 
-    :param slug: Host slug string to test retrieving host details
-    :type slug: str
+    :param host_slug: Host slug string to test retrieving host details
+    :type host_slug: str
     """
     host = Host(connect_dict=get_connect_dict())
-    info = host.retrieve_details_by_slug(slug)
+    info = host.retrieve_details_by_slug(host_slug)
 
-    assert info, f"Host slug {slug} not found"
-    assert "name" in info, f"'name' was not returned for slug {slug}"
-    assert "appearances" in info, f"'appearances' was not returned for slug {slug}"
+    assert info, f"Host slug {host_slug} not found"
+    assert "name" in info, f"'name' was not returned for slug {host_slug}"
+    assert "appearances" in info, f"'appearances' was not returned for slug {host_slug}"

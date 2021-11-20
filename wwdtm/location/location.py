@@ -73,7 +73,7 @@ class Location:
 
         locations = []
         for row in results:
-            slug = self.utility.slugify_location(id=row["id"],
+            slug = self.utility.slugify_location(location_id=row["id"],
                                                  venue=row["venue"],
                                                  city=row["city"],
                                                  state=row["state"])
@@ -121,7 +121,7 @@ class Location:
 
         locations = []
         for row in results:
-            slug = self.utility.slugify_location(id=row["id"],
+            slug = self.utility.slugify_location(location_id=row["id"],
                                                  venue=row["venue"],
                                                  city=row["city"],
                                                  state=row["state"])
@@ -201,19 +201,19 @@ class Location:
         return ids
 
     @lru_cache(typed=True)
-    def retrieve_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_by_id(self, location_id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing location ID, venue,
         city, state and slug string for the requested location ID.
 
-        :param id: Location ID
-        :type id: int
+        :param location_id: Location ID
+        :type location_id: int
         :return: Dictionary containing location information. If
             location information could not be retrieved, an empty
             dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
-            id = int(id)
+            id_ = int(location_id)
         except ValueError:
             return {}
 
@@ -223,14 +223,14 @@ class Location:
                  "FROM ww_locations "
                  "WHERE locationid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (id_, ))
         result = cursor.fetchone()
         cursor.close()
 
         if not result:
             return {}
 
-        slug = self.utility.slugify_location(id=result["id"],
+        slug = self.utility.slugify_location(location_id=result["id"],
                                              venue=result["venue"],
                                              city=result["city"],
                                              state=result["state"])
@@ -245,78 +245,78 @@ class Location:
         return location
 
     @lru_cache(typed=True)
-    def retrieve_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_by_slug(self, location_slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing location ID, venue,
         city, state and slug string for the requested location ID.
 
-        :param slug: Location slug string
-        :type slug: str
+        :param location_slug: Location slug string
+        :type location_slug: str
         :return: Dictionary containing location information. If
             location information could not be retrieved, an empty
             dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
-            slug = slug.strip()
+            slug = location_slug.strip()
             if not slug:
                 return {}
         except AttributeError:
             return {}
 
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
+        id_ = self.utility.convert_slug_to_id(slug)
+        if not id_:
             return {}
 
-        return self.retrieve_by_id(id)
+        return self.retrieve_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_details_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_details_by_id(self, location_id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing location ID, venue,
         city, state, slug string and a list of recordings for the
         requested location ID.
 
-        :param id: Location ID
-        :type id: int
+        :param location_id: Location ID
+        :type location_id: int
         :return: Dictionary containing location information and their
             recordings. If location information could not be retrieved,
             an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
-            id = int(id)
+            id_ = int(location_id)
         except ValueError:
             return {}
 
-        info = self.retrieve_by_id(id)
+        info = self.retrieve_by_id(id_)
         if not info:
             return {}
 
-        info["recordings"] = self.recordings.retrieve_recordings_by_id(id)
+        info["recordings"] = self.recordings.retrieve_recordings_by_id(id_)
 
         return info
 
     @lru_cache(typed=True)
-    def retrieve_details_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_details_by_slug(self, location_slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing location ID, venue,
         city, state, slug string and a list of recordings for the
         requested location slug string.
 
-        :param slug: Location slug string
-        :type slug: str
+        :param location_slug: Location slug string
+        :type location_slug: str
         :return: Dictionary containing location information and their
             recordings. If location information could not be retrieved,
             an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
-            slug = slug.strip()
+            slug = location_slug.strip()
             if not slug:
                 return {}
         except AttributeError:
             return {}
 
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
+        id_ = self.utility.convert_slug_to_id(slug)
+        if not id_:
             return {}
 
-        return self.retrieve_details_by_id(id)
+        return self.retrieve_details_by_id(id_)

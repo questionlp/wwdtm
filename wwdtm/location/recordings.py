@@ -41,19 +41,19 @@ class LocationRecordings:
         self.utility = LocationUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
-    def retrieve_recordings_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_recordings_by_id(self, location_id: int) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing recording
         information for the requested location ID.
 
-        :param id: Location ID
-        :type id: int
+        :param location_id: Location ID
+        :type location_id: int
         :return: Dictionary containing recording counts and a list of
             appearances for a location. If location recordings could
             not be retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
-            id = int(id)
+            id_ = int(location_id)
         except ValueError:
             return {}
 
@@ -66,7 +66,7 @@ class LocationRecordings:
                  "SELECT COUNT(lm.showid) FROM ww_showlocationmap lm "
                  "JOIN ww_shows s ON s.showid = lm.showid "
                  "WHERE lm.locationid = %s ) AS all_shows;")
-        cursor.execute(query, (id, id, ))
+        cursor.execute(query, (id_, id_, ))
         result = cursor.fetchone()
 
         recording_counts = {
@@ -81,7 +81,7 @@ class LocationRecordings:
                  "JOIN ww_shows s ON s.showid = lm.showid "
                  "WHERE lm.locationid = %s "
                  "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (id_, ))
         results = cursor.fetchall()
         cursor.close()
 
@@ -109,19 +109,19 @@ class LocationRecordings:
         return recording_info
 
     @lru_cache(typed=True)
-    def retrieve_recordings_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_recordings_by_slug(self, location_slug: str) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing recording
         information for the requested location slug string.
 
-        :param slug: Location slug string
-        :type slug: str
+        :param location_slug: Location slug string
+        :type location_slug: str
         :return: Dictionary containing recording counts and a list of
             appearances for a location. If location recordings could
             not be retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
+        id_ = self.utility.convert_slug_to_id(location_slug)
+        if not id_:
             return {}
 
-        return self.retrieve_recordings_by_id(id)
+        return self.retrieve_recordings_by_id(id_)

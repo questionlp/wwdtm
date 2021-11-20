@@ -37,11 +37,11 @@ def test_show_utility_convert_date_to_id(year: int,
     :type day: int
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
-    id = utility.convert_date_to_id(year, month, day)
+    id_ = utility.convert_date_to_id(year, month, day)
 
-    assert id, f"Show ID for date {year:04d}-{month:02d}-{day:02d} not found"
-    assert isinstance(id, int), (f"Invalid value returned for date "
-                                 f"{year:04d}-{month:02d}-{day:02d}")
+    assert id_, f"Show ID for date {year:04d}-{month:02d}-{day:02d} not found"
+    assert isinstance(id_, int), (f"Invalid value returned for date "
+                                  f"{year:04d}-{month:02d}-{day:02d}")
 
 
 @pytest.mark.parametrize("year, month, day", [(2018, 10, 26)])
@@ -60,36 +60,36 @@ def test_show_utility_convert_invalid_date_to_id(year: int,
     :type day: int
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
-    id = utility.convert_date_to_id(year, month, day)
+    id_ = utility.convert_date_to_id(year, month, day)
 
-    assert not id, f"Show ID for date {year:04d}-{month:02d}-{day:02d} was found"
+    assert not id_, f"Show ID for date {year:04d}-{month:02d}-{day:02d} was found"
 
 
-@pytest.mark.parametrize("id", [1162])
-def test_show_utility_convert_id_to_date(id: int):
+@pytest.mark.parametrize("show_id", [1162])
+def test_show_utility_convert_id_to_date(show_id: int):
     """Testing for :py:meth:`wwdtm.show.ShowUtility.convert_id_to_date`
 
-    :param id: Show ID to test converting into show date
-    :type id: int
+    :param show_id: Show ID to test converting into show date
+    :type show_id: int
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
-    date = utility.convert_id_to_date(id)
+    date = utility.convert_id_to_date(show_id)
 
-    assert date, f"Show date for ID {id} was not found"
-    assert isinstance(date, str), f"Invalid value returned for ID {date}"
+    assert date, f"Show date for ID {show_id} was not found"
+    assert isinstance(date, str), f"Invalid value returned for ID {show_id}"
 
 
-@pytest.mark.parametrize("id", [-1])
-def test_show_utility_convert_invalid_id_to_date(id: int):
+@pytest.mark.parametrize("show_id", [-1])
+def test_show_utility_convert_invalid_id_to_date(show_id: int):
     """Negative testing for :py:meth:`wwdtm.show.ShowUtility.convert_id_to_date`
 
-    :param id: Show ID to test failing to convert into show date
-    :type id: int
+    :param show_id: Show ID to test failing to convert into show date
+    :type show_id: int
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
-    date = utility.convert_id_to_date(id)
+    date = utility.convert_id_to_date(show_id)
 
-    assert not date, f"Show date for ID {id} was found"
+    assert not date, f"Show date for ID {show_id} was found"
 
 
 @pytest.mark.parametrize("year, month, day", [(2020, 4, 25)])
@@ -131,27 +131,27 @@ def test_show_utility_date_not_exists(year: int,
     assert not result, f"Show date {year:04d}-{month:02d}-{day:02d} was found"
 
 
-@pytest.mark.parametrize("id", [1162])
-def test_show_utility_id_exists(id: int):
+@pytest.mark.parametrize("show_id", [1162])
+def test_show_utility_id_exists(show_id: int):
     """Testing for :py:meth:`wwdtm.show.ShowUtility.id_exists`
 
-    :param id: Show ID to test if a show exists
-    :type id: int
+    :param show_id: Show ID to test if a show exists
+    :type show_id: int
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
-    result = utility.id_exists(id)
+    result = utility.id_exists(show_id)
 
-    assert result, f"Show ID {id} was not found"
+    assert result, f"Show ID {show_id} was not found"
 
 
-@pytest.mark.parametrize("id", [-1])
-def test_show_utility_id_not_exists(id: int):
+@pytest.mark.parametrize("show_id", [-1])
+def test_show_utility_id_not_exists(show_id: int):
     """Negative testing for :py:meth:`wwdtm.show.ShowUtility.id_exists`
 
-    :param id: Show ID to test if a show does not exist
-    :type id: int
+    :param show_id: Show ID to test if a show does not exist
+    :type show_id: int
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
-    result = utility.id_exists(id)
+    result = utility.id_exists(show_id)
 
-    assert not result, f"Show ID {id} was found"
+    assert not result, f"Show ID {show_id} was found"

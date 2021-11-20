@@ -128,18 +128,18 @@ def test_show_retrieve_by_date_string(date: str):
     assert "date" in info, f"'date' was not returned for show {date}"
 
 
-@pytest.mark.parametrize("id", [1162])
-def test_show_retrieve_by_id(id: int):
+@pytest.mark.parametrize("show_id", [1162])
+def test_show_retrieve_by_id(show_id: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_by_id`
 
-    :param id: Show ID to test retrieving show information
-    :type id: int
+    :param show_id: Show ID to test retrieving show information
+    :type show_id: int
     """
     show = Show(connect_dict=get_connect_dict())
-    info = show.retrieve_by_id(id)
+    info = show.retrieve_by_id(show_id)
 
-    assert info, f"Show ID {id} not found"
-    assert "date" in info, f"'date' was not returned for ID {id}"
+    assert info, f"Show ID {show_id} not found"
+    assert "date" in info, f"'date' was not returned for ID {show_id}"
 
 
 @pytest.mark.parametrize("year", [2018])
@@ -213,19 +213,19 @@ def test_show_retrieve_details_by_date_string(date: str):
     assert "host" in info, f"'host' was not returned for show {date}"
 
 
-@pytest.mark.parametrize("id", [1162, 1246])
-def test_show_retrieve_details_by_id(id: int):
+@pytest.mark.parametrize("show_id", [1162, 1246])
+def test_show_retrieve_details_by_id(show_id: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_id`
 
-    :param id: Show ID to test retrieving show details
-    :type id: int
+    :param show_id: Show ID to test retrieving show details
+    :type show_id: int
     """
     show = Show(connect_dict=get_connect_dict())
-    info = show.retrieve_details_by_id(id)
+    info = show.retrieve_details_by_id(show_id)
 
-    assert info, f"Show ID {id} not found"
-    assert "date" in info, f"'date' was not returned for ID {id}"
-    assert "host" in info, f"'host' was not returned for ID {id}"
+    assert info, f"Show ID {show_id} not found"
+    assert "date" in info, f"'date' was not returned for ID {show_id}"
+    assert "host" in info, f"'host' was not returned for ID {show_id}"
 
 
 @pytest.mark.parametrize("year", [2021])

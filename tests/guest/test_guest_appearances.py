@@ -27,29 +27,29 @@ def get_connect_dict() -> Dict[str, Any]:
             return config_dict["database"]
 
 
-@pytest.mark.parametrize("id", [976])
-def test_guest_appearances_retrieve_appearances_by_id(id: int):
+@pytest.mark.parametrize("guest_id", [976])
+def test_guest_appearances_retrieve_appearances_by_id(guest_id: int):
     """Testing for :py:meth:`wwdtm.guest.Appearances.retrieve_appearances_by_id`
 
-    :param id: Guest ID to test retrieving guest appearances
-    :type id: int
+    :param guest_id: Guest ID to test retrieving guest appearances
+    :type guest_id: int
     """
     appearances = GuestAppearances(connect_dict=get_connect_dict())
-    appearance = appearances.retrieve_appearances_by_id(id)
+    appearance = appearances.retrieve_appearances_by_id(guest_id)
 
-    assert "count" in appearance, f"'count' was not returned for ID {id}"
-    assert "shows" in appearance, f"'shows' was not returned for ID {id}"
+    assert "count" in appearance, f"'count' was not returned for ID {guest_id}"
+    assert "shows" in appearance, f"'shows' was not returned for ID {guest_id}"
 
 
-@pytest.mark.parametrize("slug", ["tom-hanks"])
-def test_guest_appearances_retrieve_appearances_by_slug(slug: str):
+@pytest.mark.parametrize("guest_slug", ["tom-hanks"])
+def test_guest_appearances_retrieve_appearances_by_slug(guest_slug: str):
     """Testing for :py:meth:`wwdtm.guest.Appearances.retrieve_appearances_by_slug`
 
-    :param slug: Guest slug string to test retrieving guest appearances
-    :type slug: str
+    :param guest_slug: Guest slug string to test retrieving guest appearances
+    :type guest_slug: str
     """
     appearances = GuestAppearances(connect_dict=get_connect_dict())
-    appearance = appearances.retrieve_appearances_by_slug(slug)
+    appearance = appearances.retrieve_appearances_by_slug(guest_slug)
 
-    assert "count" in appearance, f"'count' was not returned for slug {slug}"
-    assert "shows" in appearance, f"'shows' was not returned for slug {slug}"
+    assert "count" in appearance, f"'count' was not returned for slug {guest_slug}"
+    assert "shows" in appearance, f"'shows' was not returned for slug {guest_slug}"

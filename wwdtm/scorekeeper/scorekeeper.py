@@ -168,19 +168,19 @@ class Scorekeeper:
         return ids
 
     @lru_cache(typed=True)
-    def retrieve_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_by_id(self, scorekeeper_id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name
         and slug string for the requested scorekeeper ID.
 
-        :param id: Scorekeeper ID
-        :type id: int
+        :param scorekeeper_id: Scorekeeper ID
+        :type scorekeeper_id: int
         :return: Dictionary containing scorekeeper information. If
             scorekeeper information could not be retrieved, an empty
             dictionary will be returned.
         :rtype: Dict[str, Any]
         """
         try:
-            id = int(id)
+            id_ = int(scorekeeper_id)
         except ValueError:
             return {}
 
@@ -190,7 +190,7 @@ class Scorekeeper:
                  "FROM ww_scorekeepers "
                  "WHERE scorekeeperid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (id_, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -207,78 +207,78 @@ class Scorekeeper:
         return info
 
     @lru_cache(typed=True)
-    def retrieve_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_by_slug(self, scorekeeper_slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name
         and slug string for the requested scorekeeper slug string.
 
-        :param slug: Scorekeeper slug string
-        :type slug: str
+        :param scorekeeper_slug: Scorekeeper slug string
+        :type scorekeeper_slug: str
         :return: Dictionary containing scorekeeper information. If
             scorekeeper information could not be retrieved, an empty
             dictionary will be returned.
         :rtype: Dict[str, Any]
         """
         try:
-            slug = slug.strip()
+            slug = scorekeeper_slug.strip()
             if not slug:
                 return {}
         except AttributeError:
             return {}
 
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
+        id_ = self.utility.convert_slug_to_id(slug)
+        if not id_:
             return {}
 
-        return self.retrieve_by_id(id)
+        return self.retrieve_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_details_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_details_by_id(self, scorekeeper_id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name,
         slug string and appearance information for the requested
         scorekeeper ID.
 
-        :param id: Scorekeeper ID
-        :type id: int
+        :param scorekeeper_id: Scorekeeper ID
+        :type scorekeeper_id: int
         :return: Dictionary containing scorekeeper information and
             their appearances. If scorekeeper information could not be
             retrieved, an empty dictionary will be returned.
         :rtype: Dict[str, Any]
         """
         try:
-            id = int(id)
+            id_ = int(scorekeeper_id)
         except ValueError:
             return {}
 
-        info = self.retrieve_by_id(id)
+        info = self.retrieve_by_id(id_)
         if not info:
             return {}
 
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(id)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(id_)
 
         return info
 
     @lru_cache(typed=True)
-    def retrieve_details_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_details_by_slug(self, scorekeeper_slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name,
         slug string and appearance information for the requested
         scorekeeper slug string.
 
-        :param slug: Scorekeeper slug string
-        :type slug: str
+        :param scorekeeper_slug: Scorekeeper slug string
+        :type scorekeeper_slug: str
         :return: Dictionary containing scorekeeper information and
             their appearances. If scorekeeper information could not be
             retrieved, an empty dictionary will be returned.
         :rtype: Dict[str, Any]
         """
         try:
-            slug = slug.strip()
+            slug = scorekeeper_slug.strip()
             if not slug:
                 return {}
         except AttributeError:
             return {}
 
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
+        id_ = self.utility.convert_slug_to_id(slug)
+        if not id_:
             return {}
 
-        return self.retrieve_details_by_id(id)
+        return self.retrieve_details_by_id(id_)

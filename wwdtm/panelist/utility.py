@@ -39,17 +39,17 @@ class PanelistUtility:
             self.database_connection = database_connection
 
     @lru_cache(typed=True)
-    def convert_id_to_slug(self, id: int) -> Optional[str]:
+    def convert_id_to_slug(self, panelist_id: int) -> Optional[str]:
         """Converts a panelist's ID to the matching panelist slug
         string value.
 
-        :param id: Panelist ID
-        :type id: int
+        :param panelist_id: Panelist ID
+        :type panelist_id: int
         :return: Panelist slug string, if a match is found
         :rtype: str
         """
         try:
-            id = int(id)
+            id_ = int(panelist_id)
         except ValueError:
             return None
 
@@ -57,7 +57,7 @@ class PanelistUtility:
         query = ("SELECT panelistslug FROM ww_panelists "
                  "WHERE panelistid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (id_, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -67,17 +67,17 @@ class PanelistUtility:
         return None
 
     @lru_cache(typed=True)
-    def convert_slug_to_id(self, slug: str) -> Optional[int]:
+    def convert_slug_to_id(self, panelist_slug: str) -> Optional[int]:
         """Converts a panelist's slug string to the matching panelist ID
         value.
 
-        :param slug: Panelist slug string
-        :type slug: str
+        :param panelist_slug: Panelist slug string
+        :type panelist_slug: str
         :return: Panelists ID, if a match is found
         :rtype: int
         """
         try:
-            slug = slug.strip()
+            slug = panelist_slug.strip()
             if not slug:
                 return None
         except ValueError:
@@ -97,16 +97,16 @@ class PanelistUtility:
         return None
 
     @lru_cache(typed=True)
-    def id_exists(self, id: int) -> bool:
+    def id_exists(self, panelist_id: int) -> bool:
         """Checks to see if a panelist ID exists.
 
-        :param id: Panelist ID
-        :type id: int
+        :param panelist_id: Panelist ID
+        :type panelist_id: int
         :return: True or False, based on whether the panelist ID exists
         :rtype: bool
         """
         try:
-            id = int(id)
+            id_ = int(panelist_id)
         except ValueError:
             return False
 
@@ -114,24 +114,24 @@ class PanelistUtility:
         query = ("SELECT panelistid FROM ww_panelists "
                  "WHERE panelistid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (id_, ))
         result = cursor.fetchone()
         cursor.close()
 
         return bool(result)
 
     @lru_cache(typed=True)
-    def slug_exists(self, slug: str) -> bool:
+    def slug_exists(self, panelist_slug: str) -> bool:
         """Checks to see if a panelist slug string exists.
 
-        :param slug: Panelist slug string
-        :type slug: str
+        :param panelist_slug: Panelist slug string
+        :type panelist_slug: str
         :return: True or False, based on whether the panelist slug
             string exists
         :rtype: bool
         """
         try:
-            slug = slug.strip()
+            slug = panelist_slug.strip()
             if not slug:
                 return False
         except ValueError:

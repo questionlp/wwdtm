@@ -105,12 +105,12 @@ class Show:
 
         shows = []
         for row in results:
-            id = row["id"]
-            info = self.info.retrieve_core_info_by_id(id)
+            id_ = row["id"]
+            info = self.info.retrieve_core_info_by_id(id_)
             if info:
-                info["panelists"] = self.info.retrieve_panelist_info_by_id(id)
-                info["bluff"] = self.info.retrieve_bluff_info_by_id(id)
-                info["guests"] = self.info.retrieve_guest_info_by_id(id)
+                info["panelists"] = self.info.retrieve_panelist_info_by_id(id_)
+                info["bluff"] = self.info.retrieve_bluff_info_by_id(id_)
+                info["guests"] = self.info.retrieve_guest_info_by_id(id_)
 
             shows.append(info)
 
@@ -261,11 +261,11 @@ class Show:
             be returned.
         :rtype: Dict[str, Any]
         """
-        id = self.utility.convert_date_to_id(year, month, day)
-        if not id:
+        id_ = self.utility.convert_date_to_id(year, month, day)
+        if not id_:
             return {}
 
-        return self.retrieve_by_id(id)
+        return self.retrieve_by_id(id_)
 
     @lru_cache(typed=True)
     def retrieve_by_date_string(self,
@@ -286,26 +286,26 @@ class Show:
         except ValueError:
             return {}
 
-        id = self.utility.convert_date_to_id(parsed_date_string.year,
-                                             parsed_date_string.month,
-                                             parsed_date_string.day)
+        id_ = self.utility.convert_date_to_id(parsed_date_string.year,
+                                              parsed_date_string.month,
+                                              parsed_date_string.day)
 
-        return self.retrieve_by_id(id)
+        return self.retrieve_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_by_id(self, show_id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing show ID, show date,
         Best Of and Repeat Show information for the requested show ID.
 
-        :param id: Show ID
-        :type id: int
+        :param show_id: Show ID
+        :type show_id: int
         :return: Dictionary containing show information. If show
             information could not be retrieved, an empty dictionary will
             be returned.
         :rtype: Dict[str, Any]
         """
         try:
-            id = int(id)
+            id_ = int(show_id)
         except ValueError:
             return {}
 
@@ -315,7 +315,7 @@ class Show:
                  "FROM ww_shows "
                  "WHERE showid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (id_, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -432,11 +432,11 @@ class Show:
             will be returned.
         :rtype: Dict[str, Any]
         """
-        id = self.utility.convert_date_to_id(year, month, day)
-        if not id:
+        id_ = self.utility.convert_date_to_id(year, month, day)
+        if not id_:
             return {}
 
-        return self.retrieve_details_by_id(id)
+        return self.retrieve_details_by_id(id_)
 
     @lru_cache(typed=True)
     def retrieve_details_by_date_string(self,
@@ -457,37 +457,37 @@ class Show:
         except ValueError:
             return {}
 
-        id = self.utility.convert_date_to_id(parsed_date_string.year,
-                                             parsed_date_string.month,
-                                             parsed_date_string.day)
+        id_ = self.utility.convert_date_to_id(parsed_date_string.year,
+                                              parsed_date_string.month,
+                                              parsed_date_string.day)
 
-        return self.retrieve_details_by_id(id)
+        return self.retrieve_details_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_details_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_details_by_id(self, show_id: int) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
         for the requested show ID.
 
-        :param id: Show ID
-        :type id: int
+        :param show_id: Show ID
+        :type show_id: int
         :return: Dictionary containing show information and details. If
             show information could not be retrieved, an empty dictionary
             will be returned.
         :rtype: Dict[str, Any]
         """
         try:
-            id = int(id)
+            id_ = int(show_id)
         except ValueError:
             return {}
 
-        info = self.info.retrieve_core_info_by_id(id)
+        info = self.info.retrieve_core_info_by_id(id_)
         if not info:
             return {}
 
-        info["panelists"] = self.info.retrieve_panelist_info_by_id(id)
-        info["bluff"] = self.info.retrieve_bluff_info_by_id(id)
-        info["guests"] = self.info.retrieve_guest_info_by_id(id)
+        info["panelists"] = self.info.retrieve_panelist_info_by_id(id_)
+        info["bluff"] = self.info.retrieve_bluff_info_by_id(id_)
+        info["guests"] = self.info.retrieve_guest_info_by_id(id_)
 
         return info
 
@@ -701,7 +701,7 @@ class Show:
         return shows
 
     @lru_cache(typed=True)
-    def retrieve_scores_by_year(self, year: int) -> List[Tuple]: #List[Tuple[str, int, int, int]]:
+    def retrieve_scores_by_year(self, year: int) -> List[Tuple]:
         """Returns a list of tuples containing panelist scores for all
         shows in the requested year, sorted by show date.
 

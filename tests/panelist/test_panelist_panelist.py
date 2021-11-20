@@ -67,61 +67,62 @@ def test_panelist_retrieve_all_slugs():
     assert slugs, "No panelist slug strings could be retrieved"
 
 
-@pytest.mark.parametrize("id", [14])
-def test_panelist_retrieve_by_id(id: int):
+@pytest.mark.parametrize("panelist_id", [14])
+def test_panelist_retrieve_by_id(panelist_id: int):
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_by_id`
 
-    :param id: Panelist ID to test retrieving panelist information
-    :type id: int
+    :param panelist_id: Panelist ID to test retrieving panelist
+        information
+    :type panelist_id: int
     """
     panelist = Panelist(connect_dict=get_connect_dict())
-    info = panelist.retrieve_by_id(id)
+    info = panelist.retrieve_by_id(panelist_id)
 
-    assert info, f"Panelist ID {id} not found"
-    assert "name" in info, f"'name' was not returned for ID {id}"
+    assert info, f"Panelist ID {panelist_id} not found"
+    assert "name" in info, f"'name' was not returned for ID {panelist_id}"
 
 
-@pytest.mark.parametrize("id", [14])
-def test_panelist_retrieve_details_by_id(id: int):
+@pytest.mark.parametrize("panelist_id", [14])
+def test_panelist_retrieve_details_by_id(panelist_id: int):
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_details_by_id`
 
-    :param id: Panelist ID to test retrieving panelist details
-    :type id: int
+    :param panelist_id: Panelist ID to test retrieving panelist details
+    :type panelist_id: int
     """
     panelist = Panelist(connect_dict=get_connect_dict())
-    info = panelist.retrieve_details_by_id(id)
+    info = panelist.retrieve_details_by_id(panelist_id)
 
-    assert info, f"Panelist ID {id} not found"
-    assert "name" in info, f"'name' was not returned for ID {id}"
-    assert "appearances" in info, f"'appearances' was not returned for ID {id}"
+    assert info, f"Panelist ID {panelist_id} not found"
+    assert "name" in info, f"'name' was not returned for ID {panelist_id}"
+    assert "appearances" in info, f"'appearances' was not returned for ID {panelist_id}"
 
 
-@pytest.mark.parametrize("slug", ["luke-burbank", "drew-carey"])
-def test_panelist_retrieve_by_slug(slug: str):
+@pytest.mark.parametrize("panelist_slug", ["luke-burbank", "drew-carey"])
+def test_panelist_retrieve_by_slug(panelist_slug: str):
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_by_slug`
 
-    :param slug: Panelist slug string to test retrieving panelist
-        information
-    :type slug: str
+    :param panelist_slug: Panelist slug string to test retrieving
+        panelist information
+    :type panelist_slug: str
     """
     panelist = Panelist(connect_dict=get_connect_dict())
-    info = panelist.retrieve_by_slug(slug)
+    info = panelist.retrieve_by_slug(panelist_slug)
 
-    assert info, f"Panelist slug {slug} not found"
-    assert "name" in info, f"'name' was not returned for slug {slug}"
+    assert info, f"Panelist slug {panelist_slug} not found"
+    assert "name" in info, f"'name' was not returned for slug {panelist_slug}"
 
 
-@pytest.mark.parametrize("slug", ["luke-burbank"])
-def test_panelist_retrieve_details_by_slug(slug: str):
+@pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
+def test_panelist_retrieve_details_by_slug(panelist_slug: str):
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_details_by_slug`
 
-    :param slug: Panelist slug string to test retrieving panelist
-        details
-    :type slug: str
+    :param panelist_slug: Panelist slug string to test retrieving
+        panelist details
+    :type panelist_slug: str
     """
     panelist = Panelist(connect_dict=get_connect_dict())
-    info = panelist.retrieve_details_by_slug(slug)
+    info = panelist.retrieve_details_by_slug(panelist_slug)
 
-    assert info, f"Panelist slug {slug} not found"
-    assert "name" in info, f"'name' was not returned for slug {slug}"
-    assert "appearances" in info, f"'appearances' was not returned for slug {slug}"
+    assert info, f"Panelist slug {panelist_slug} not found"
+    assert "name" in info, f"'name' was not returned for slug {panelist_slug}"
+    assert "appearances" in info, f"'appearances' was not returned for slug {panelist_slug}"

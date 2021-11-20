@@ -67,61 +67,62 @@ def test_location_retrieve_all_slugs():
     assert slugs, "No location slug strings could be retrieved"
 
 
-@pytest.mark.parametrize("id", [95])
-def test_location_retrieve_by_id(id: int):
+@pytest.mark.parametrize("location_id", [95])
+def test_location_retrieve_by_id(location_id: int):
     """Testing for :py:meth:`wwdtm.location.Location.retrieve_by_id`
 
-    :param id: Location ID to test retrieving location information
-    :type id: int
+    :param location_id: Location ID to test retrieving location
+        information
+    :type location_id: int
     """
     location = Location(connect_dict=get_connect_dict())
-    info = location.retrieve_by_id(id)
+    info = location.retrieve_by_id(location_id)
 
-    assert info, f"Location ID {id} not found"
-    assert "venue" in info, f"'venue' was not returned for ID {id}"
+    assert info, f"Location ID {location_id} not found"
+    assert "venue" in info, f"'venue' was not returned for ID {location_id}"
 
 
-@pytest.mark.parametrize("id", [95])
-def test_location_retrieve_details_by_id(id: int):
+@pytest.mark.parametrize("location_id", [95])
+def test_location_retrieve_details_by_id(location_id: int):
     """Testing for :py:meth:`wwdtm.location.location.retrieve_details_by_id`
 
-    :param id: Location ID to test retrieving location details
-    :type id: int
+    :param location_id: Location ID to test retrieving location details
+    :type location_id: int
     """
     location = Location(connect_dict=get_connect_dict())
-    info = location.retrieve_details_by_id(id)
+    info = location.retrieve_details_by_id(location_id)
 
-    assert info, f"Location ID {id} not found"
-    assert "venue" in info, f"'venue' was not returned for ID {id}"
-    assert "recordings" in info, f"'recordings' was not returned for ID {id}"
+    assert info, f"Location ID {location_id} not found"
+    assert "venue" in info, f"'venue' was not returned for ID {location_id}"
+    assert "recordings" in info, f"'recordings' was not returned for ID {location_id}"
 
 
-@pytest.mark.parametrize("slug", ["the-chicago-theatre-chicago-il"])
-def test_location_retrieve_by_slug(slug: str):
+@pytest.mark.parametrize("location_slug", ["the-chicago-theatre-chicago-il"])
+def test_location_retrieve_by_slug(location_slug: str):
     """Testing for :py:meth:`wwdtm.location.Location.retrieve_by_slug`
 
-    :param slug: Location slug string to test retrieving location
-        information
-    :type slug: str
+    :param location_slug: Location slug string to test retrieving
+        location information
+    :type location_slug: str
     """
     location = Location(connect_dict=get_connect_dict())
-    info = location.retrieve_by_slug(slug)
+    info = location.retrieve_by_slug(location_slug)
 
-    assert info, f"Location slug {slug} not found"
-    assert "venue" in info, f"'venue' was not returned for slug {slug}"
+    assert info, f"Location slug {location_slug} not found"
+    assert "venue" in info, f"'venue' was not returned for slug {location_slug}"
 
 
-@pytest.mark.parametrize("slug", ["the-chicago-theatre-chicago-il"])
-def test_location_retrieve_details_by_slug(slug: str):
+@pytest.mark.parametrize("location_slug", ["the-chicago-theatre-chicago-il"])
+def test_location_retrieve_details_by_slug(location_slug: str):
     """Testing for :py:meth:`wwdtm.location.Location.retrieve_details_by_slug`
 
-    :param slug: Location slug string to test retrieving location
-        details
-    :type slug: str
+    :param location_slug: Location slug string to test retrieving
+        location details
+    :type location_slug: str
     """
     location = Location(connect_dict=get_connect_dict())
-    info = location.retrieve_details_by_slug(slug)
+    info = location.retrieve_details_by_slug(location_slug)
 
-    assert info, f"Location slug {slug} not found"
-    assert "venue" in info, f"'venue' was not returned for slug {slug}"
-    assert "recordings" in info, f"'recordings' was not returned for slug {slug}"
+    assert info, f"Location slug {location_slug} not found"
+    assert "venue" in info, f"'venue' was not returned for slug {location_slug}"
+    assert "recordings" in info, f"'recordings' was not returned for slug {location_slug}"
