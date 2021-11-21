@@ -11,6 +11,7 @@ from typing import Any, Dict, Optional
 
 from mysql.connector import connect
 from wwdtm.scorekeeper.utility import ScorekeeperUtility
+from wwdtm.validation import valid_int_id
 
 
 class ScorekeeperAppearances:
@@ -54,9 +55,7 @@ class ScorekeeperAppearances:
             returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(scorekeeper_id)
-        except ValueError:
+        if not valid_int_id(scorekeeper_id):
             return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
@@ -68,7 +67,7 @@ class ScorekeeperAppearances:
                  "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
                  "JOIN ww_shows s ON s.showid = skm.showid "
                  "WHERE skm.scorekeeperid = %s ) AS all_shows;")
-        cursor.execute(query, (id_, id_, ))
+        cursor.execute(query, (scorekeeper_id, scorekeeper_id, ))
         result = cursor.fetchone()
 
         if result:
@@ -90,7 +89,7 @@ class ScorekeeperAppearances:
                  "JOIN ww_shows s ON s.showid = skm.showid "
                  "WHERE sk.scorekeeperid = %s "
                  "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (scorekeeper_id, ))
         results = cursor.fetchall()
         cursor.close()
 

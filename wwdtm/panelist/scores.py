@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from mysql.connector import connect
 from wwdtm.panelist.utility import PanelistUtility
+from wwdtm.validation import valid_int_id
 
 
 class PanelistScores:
@@ -51,6 +52,9 @@ class PanelistScores:
             could not be retrieved, an empty list is returned.
         :rtype: List[int]
         """
+        if not valid_int_id(panelist_id):
+            return []
+
         scores = []
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT s.showdate, pm.panelistscore "
@@ -103,6 +107,9 @@ class PanelistScores:
             returned.
         :rtype: Dict[str, List[int]]
         """
+        if not valid_int_id(panelist_id):
+            return {}
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT MIN(pm.panelistscore) AS min, "
                  "MAX(pm.panelistscore) AS max "
@@ -182,6 +189,9 @@ class PanelistScores:
             returned.
         :rtype: List[Tuple[int, int]]
         """
+        if not valid_int_id(panelist_id):
+            return []
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT MIN(pm.panelistscore) AS min, "
                  "MAX(pm.panelistscore) AS max "
@@ -255,6 +265,9 @@ class PanelistScores:
             empty dictionary is returned.
         :rtype: Dict[str, List]
         """
+        if not valid_int_id(panelist_id):
+            return {}
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT s.showdate, pm.panelistscore "
                  "FROM ww_showpnlmap pm "
@@ -316,6 +329,9 @@ class PanelistScores:
             returned.
         :rtype: List[Tuple[str, int]]
         """
+        if not valid_int_id(panelist_id):
+            return []
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT s.showdate, pm.panelistscore "
                  "FROM ww_showpnlmap pm "

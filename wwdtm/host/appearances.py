@@ -10,6 +10,7 @@ from typing import Any, Dict, Optional
 
 from mysql.connector import connect
 from wwdtm.host.utility import HostUtility
+from wwdtm.validation import valid_int_id
 
 
 class HostAppearances:
@@ -52,9 +53,7 @@ class HostAppearances:
             retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(host_id)
-        except ValueError:
+        if not valid_int_id(host_id):
             return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
@@ -66,7 +65,7 @@ class HostAppearances:
                  "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
                  "JOIN ww_shows s ON s.showid = hm.showid "
                  "WHERE hm.hostid = %s ) AS all_shows;")
-        cursor.execute(query, (id_, id_, ))
+        cursor.execute(query, (host_id, host_id, ))
         result = cursor.fetchone()
 
         if result:
@@ -88,7 +87,7 @@ class HostAppearances:
                  "JOIN ww_shows s ON s.showid = hm.showid "
                  "WHERE hm.hostid = %s "
                  "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (host_id, ))
         results = cursor.fetchall()
         cursor.close()
 

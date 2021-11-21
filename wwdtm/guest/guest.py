@@ -12,6 +12,7 @@ from mysql.connector import connect
 from slugify import slugify
 from wwdtm.guest.appearances import GuestAppearances
 from wwdtm.guest.utility import GuestUtility
+from wwdtm.validation import valid_int_id
 
 
 class Guest:
@@ -174,9 +175,7 @@ class Guest:
             returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(guest_id)
-        except ValueError:
+        if not valid_int_id(guest_id):
             return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
@@ -184,7 +183,7 @@ class Guest:
                  "FROM ww_guests "
                  "WHERE guestid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (guest_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -236,16 +235,14 @@ class Guest:
             an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(guest_id)
-        except ValueError:
+        if not valid_int_id(guest_id):
             return {}
 
-        info = self.retrieve_by_id(id_)
+        info = self.retrieve_by_id(guest_id)
         if not info:
             return {}
 
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(id_)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(guest_id)
 
         return info
 

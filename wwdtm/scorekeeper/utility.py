@@ -9,6 +9,7 @@ from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
+from wwdtm.validation import valid_int_id
 
 
 class ScorekeeperUtility:
@@ -48,16 +49,14 @@ class ScorekeeperUtility:
         :return: Scorekeeper slug string, if a match is found
         :rtype: str
         """
-        try:
-            id_ = int(scorekeeper_id)
-        except ValueError:
+        if not valid_int_id(scorekeeper_id):
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT scorekeeperslug FROM ww_scorekeepers "
                  "WHERE scorekeeperid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (scorekeeper_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -106,16 +105,14 @@ class ScorekeeperUtility:
             exists
         :rtype: bool
         """
-        try:
-            id_ = int(scorekeeper_id)
-        except ValueError:
+        if not valid_int_id(scorekeeper_id):
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT scorekeeperid FROM ww_scorekeepers "
                  "WHERE scorekeeperid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (scorekeeper_id, ))
         result = cursor.fetchone()
         cursor.close()
 

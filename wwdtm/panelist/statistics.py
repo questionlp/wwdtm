@@ -12,6 +12,7 @@ from mysql.connector import connect
 import numpy
 from wwdtm.panelist.scores import PanelistScores
 from wwdtm.panelist.utility import PanelistUtility
+from wwdtm.validation import valid_int_id
 
 
 class PanelistStatistics:
@@ -110,6 +111,9 @@ class PanelistStatistics:
             dictionary will be returned.
         :rtype: Dict[str, int]
         """
+        if not valid_int_id(panelist_id):
+            return {}
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT ( "
                  "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
@@ -181,6 +185,9 @@ class PanelistStatistics:
             be returned.
         :rtype: Dict[str, Any]
         """
+        if not valid_int_id(panelist_id):
+            return {}
+
         score_data = self.scores.retrieve_scores_by_id(panelist_id)
         ranks = self.retrieve_rank_info_by_id(panelist_id)
 

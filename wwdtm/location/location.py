@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Optional
 from mysql.connector import connect
 from wwdtm.location.recordings import LocationRecordings
 from wwdtm.location.utility import LocationUtility
+from wwdtm.validation import valid_int_id
 
 
 class Location:
@@ -212,9 +213,7 @@ class Location:
             dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(location_id)
-        except ValueError:
+        if not valid_int_id(location_id):
             return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
@@ -223,7 +222,7 @@ class Location:
                  "FROM ww_locations "
                  "WHERE locationid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (location_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -282,16 +281,14 @@ class Location:
             an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(location_id)
-        except ValueError:
+        if not valid_int_id(location_id):
             return {}
 
-        info = self.retrieve_by_id(id_)
+        info = self.retrieve_by_id(location_id)
         if not info:
             return {}
 
-        info["recordings"] = self.recordings.retrieve_recordings_by_id(id_)
+        info["recordings"] = self.recordings.retrieve_recordings_by_id(location_id)
 
         return info
 

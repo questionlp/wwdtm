@@ -9,6 +9,7 @@ from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
+from wwdtm.validation import valid_int_id
 
 
 class GuestUtility:
@@ -47,16 +48,14 @@ class GuestUtility:
         :return: Guest slug string, if a match is found
         :rtype: str
         """
-        try:
-            id_ = int(guest_id)
-        except ValueError:
+        if not valid_int_id(guest_id):
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT guestslug FROM ww_guests "
                  "WHERE guestid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (guest_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -104,16 +103,14 @@ class GuestUtility:
         :return: True or False, based on whether the guest ID exists
         :rtype: bool
         """
-        try:
-            id_ = int(guest_id)
-        except ValueError:
+        if not valid_int_id(guest_id):
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT guestid FROM ww_guests "
                  "WHERE guestid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (guest_id, ))
         result = cursor.fetchone()
         cursor.close()
 

@@ -13,6 +13,7 @@ from slugify import slugify
 from wwdtm.panelist.appearances import PanelistAppearances
 from wwdtm.panelist.statistics import PanelistStatistics
 from wwdtm.panelist.utility import PanelistUtility
+from wwdtm.validation import valid_int_id
 
 
 class Panelist:
@@ -181,9 +182,7 @@ class Panelist:
             returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(panelist_id)
-        except ValueError:
+        if not valid_int_id(panelist_id):
             return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
@@ -192,7 +191,7 @@ class Panelist:
                  "FROM ww_panelists "
                  "WHERE panelistid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (panelist_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -245,18 +244,16 @@ class Panelist:
             an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(panelist_id)
-        except ValueError:
+        if not valid_int_id(panelist_id):
             return {}
 
-        info = self.retrieve_by_id(id_)
+        info = self.retrieve_by_id(panelist_id)
         if not info:
             return {}
 
-        info["statistics"] = self.statistics.retrieve_statistics_by_id(id_)
-        info["bluffs"] = self.statistics.retrieve_bluffs_by_id(id_)
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(id_)
+        info["statistics"] = self.statistics.retrieve_statistics_by_id(panelist_id)
+        info["bluffs"] = self.statistics.retrieve_bluffs_by_id(panelist_id)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(panelist_id)
 
         return info
 

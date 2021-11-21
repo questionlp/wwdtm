@@ -10,6 +10,7 @@ from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
+from wwdtm.validation import valid_int_id
 
 
 class ShowUtility:
@@ -82,16 +83,14 @@ class ShowUtility:
         :return: Show date, if a match is found
         :rtype: str
         """
-        try:
-            id_ = int(show_id)
-        except ValueError:
+        if not valid_int_id(show_id):
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT showdate FROM ww_shows "
                  "WHERE showid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (show_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -140,16 +139,14 @@ class ShowUtility:
         :return: True or False, based on whether the show ID exists
         :rtype: bool
         """
-        try:
-            id_ = int(show_id)
-        except ValueError:
+        if not valid_int_id(show_id):
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT showid FROM ww_shows "
                  "WHERE showid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (show_id, ))
         result = cursor.fetchone()
         cursor.close()
 

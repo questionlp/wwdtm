@@ -5,6 +5,8 @@
 # wwdtm is released under the terms of the Apache License 2.0
 """Explicitly listing all modules in this package"""
 
+from wwdtm import validation
+
 from wwdtm.guest import (Guest,
                          GuestAppearances,
                          GuestUtility)

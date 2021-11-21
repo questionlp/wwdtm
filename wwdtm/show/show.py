@@ -13,6 +13,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from mysql.connector import connect
 from wwdtm.show.info import ShowInfo
 from wwdtm.show.utility import ShowUtility
+from wwdtm.validation import valid_int_id
 
 
 class Show:
@@ -304,9 +305,7 @@ class Show:
             be returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(show_id)
-        except ValueError:
+        if not valid_int_id(show_id):
             return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
@@ -315,7 +314,7 @@ class Show:
                  "FROM ww_shows "
                  "WHERE showid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (show_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -476,18 +475,16 @@ class Show:
             will be returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(show_id)
-        except ValueError:
+        if not valid_int_id(show_id):
             return {}
 
-        info = self.info.retrieve_core_info_by_id(id_)
+        info = self.info.retrieve_core_info_by_id(show_id)
         if not info:
             return {}
 
-        info["panelists"] = self.info.retrieve_panelist_info_by_id(id_)
-        info["bluff"] = self.info.retrieve_bluff_info_by_id(id_)
-        info["guests"] = self.info.retrieve_guest_info_by_id(id_)
+        info["panelists"] = self.info.retrieve_panelist_info_by_id(show_id)
+        info["bluff"] = self.info.retrieve_bluff_info_by_id(show_id)
+        info["guests"] = self.info.retrieve_guest_info_by_id(show_id)
 
         return info
 

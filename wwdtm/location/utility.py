@@ -10,6 +10,7 @@ from typing import Any, Dict, Optional
 
 from mysql.connector import connect
 from slugify import slugify
+from wwdtm.validation import valid_int_id
 
 
 class LocationUtility:
@@ -49,16 +50,14 @@ class LocationUtility:
         :return: Location slug string, if a match is found
         :rtype: str
         """
-        try:
-            id_ = int(location_id)
-        except ValueError:
+        if not valid_int_id(location_id):
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT locationslug FROM ww_locations "
                  "WHERE locationid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (location_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -106,16 +105,14 @@ class LocationUtility:
         :return: True or False, based on whether the location ID exists
         :rtype: bool
         """
-        try:
-            id_ = int(location_id)
-        except ValueError:
+        if not valid_int_id(location_id):
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT locationid FROM ww_locations "
                  "WHERE locationid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (location_id, ))
         result = cursor.fetchone()
         cursor.close()
 

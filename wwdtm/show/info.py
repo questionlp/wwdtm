@@ -13,6 +13,7 @@ from mysql.connector import connect
 from slugify import slugify
 from wwdtm.show.utility import ShowUtility
 from wwdtm.location.location import LocationUtility
+from wwdtm.validation import valid_int_id
 
 
 class ShowInfo:
@@ -56,6 +57,9 @@ class ShowInfo:
             Listener information.
         :rtype: Dict[str, Any]
         """
+        if not valid_int_id(show_id):
+            return {}
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT blm.chosenbluffpnlid AS id, "
                  "p.panelist AS name, p.panelistslug As slug "
@@ -115,6 +119,9 @@ class ShowInfo:
             retrieved, an empty dictionary will be returned.
         :rtype: Dict[str, Any]
         """
+        if not valid_int_id(show_id):
+            return {}
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT s.showid, s.showdate, s.bestof, "
                  "s.repeatshowid, l.locationid, l.city, l.state, "
@@ -217,6 +224,9 @@ class ShowInfo:
             will be returned.
         :rtype: List[Dict[str, Any]]
         """
+        if not valid_int_id(show_id):
+            return []
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT gm.guestid AS id, g.guest AS name, "
                  "g.guestslug AS slug, gm.guestscore AS score, "
@@ -259,6 +269,9 @@ class ShowInfo:
             retrieved, an empty list will be returned.
         :rtype: List[Dict[str, Any]]
         """
+        if not valid_int_id(show_id):
+            return []
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT pm.panelistid AS id, p.panelist AS name, "
                  "p.panelistslug AS slug, "

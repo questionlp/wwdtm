@@ -10,6 +10,7 @@ from typing import Any, Dict, Optional
 
 from mysql.connector import connect
 from wwdtm.location.utility import LocationUtility
+from wwdtm.validation import valid_int_id
 
 
 class LocationRecordings:
@@ -52,9 +53,7 @@ class LocationRecordings:
             not be retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(location_id)
-        except ValueError:
+        if not valid_int_id(location_id):
             return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
@@ -66,7 +65,7 @@ class LocationRecordings:
                  "SELECT COUNT(lm.showid) FROM ww_showlocationmap lm "
                  "JOIN ww_shows s ON s.showid = lm.showid "
                  "WHERE lm.locationid = %s ) AS all_shows;")
-        cursor.execute(query, (id_, id_, ))
+        cursor.execute(query, (location_id, location_id, ))
         result = cursor.fetchone()
 
         recording_counts = {
@@ -81,7 +80,7 @@ class LocationRecordings:
                  "JOIN ww_shows s ON s.showid = lm.showid "
                  "WHERE lm.locationid = %s "
                  "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (location_id, ))
         results = cursor.fetchall()
         cursor.close()
 

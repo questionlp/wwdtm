@@ -10,6 +10,7 @@ from typing import Any, Dict, Optional
 
 from mysql.connector import connect
 from wwdtm.guest.utility import GuestUtility
+from wwdtm.validation import valid_int_id
 
 
 class GuestAppearances:
@@ -52,9 +53,7 @@ class GuestAppearances:
             retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(guest_id)
-        except ValueError:
+        if not valid_int_id(guest_id):
             return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
@@ -66,7 +65,7 @@ class GuestAppearances:
                  "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
                  "JOIN ww_shows s ON s.showid = gm.showid "
                  "WHERE gm.guestid = %s ) AS all_shows;")
-        cursor.execute(query, (id_, id_, ))
+        cursor.execute(query, (guest_id, guest_id, ))
         result = cursor.fetchone()
 
         if result:
@@ -89,7 +88,7 @@ class GuestAppearances:
                  "JOIN ww_shows s ON s.showid = gm.showid "
                  "WHERE gm.guestid = %s "
                  "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (guest_id, ))
         results = cursor.fetchall()
         cursor.close()
 

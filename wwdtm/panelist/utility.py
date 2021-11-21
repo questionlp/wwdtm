@@ -9,6 +9,7 @@ from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
+from wwdtm.validation import valid_int_id
 
 
 class PanelistUtility:
@@ -48,16 +49,14 @@ class PanelistUtility:
         :return: Panelist slug string, if a match is found
         :rtype: str
         """
-        try:
-            id_ = int(panelist_id)
-        except ValueError:
+        if not valid_int_id(panelist_id):
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT panelistslug FROM ww_panelists "
                  "WHERE panelistid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (panelist_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -105,16 +104,14 @@ class PanelistUtility:
         :return: True or False, based on whether the panelist ID exists
         :rtype: bool
         """
-        try:
-            id_ = int(panelist_id)
-        except ValueError:
+        if not valid_int_id(panelist_id):
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT panelistid FROM ww_panelists "
                  "WHERE panelistid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (panelist_id, ))
         result = cursor.fetchone()
         cursor.close()
 

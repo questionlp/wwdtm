@@ -10,7 +10,7 @@ from typing import Any, Dict, Optional
 
 from mysql.connector import connect
 from wwdtm.panelist.utility import PanelistUtility
-
+from wwdtm.validation import valid_int_id
 
 class PanelistAppearances:
     """This class contains functions that retrieve panelist appearance
@@ -52,9 +52,7 @@ class PanelistAppearances:
             not be retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(panelist_id)
-        except ValueError:
+        if not valid_int_id(panelist_id):
             return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
@@ -72,7 +70,7 @@ class PanelistAppearances:
                  "s.repeatshowid IS NULL "
                  "AND pm.panelistscore IS NOT NULL ) "
                  "AS shows_with_scores;")
-        cursor.execute(query, (id_, id_, id_, ))
+        cursor.execute(query, (panelist_id, panelist_id, panelist_id, ))
         result = cursor.fetchone()
 
         if result:
@@ -96,7 +94,7 @@ class PanelistAppearances:
                  "WHERE s.bestof = 0 AND s.repeatshowid IS NULL "
                  "AND pm.panelistid = %s "
                  "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (panelist_id, ))
         result = cursor.fetchone()
 
         if result and result["first_id"]:
@@ -134,7 +132,7 @@ class PanelistAppearances:
                  "JOIN ww_shows s ON s.showid = pm.showid "
                  "WHERE pm.panelistid = %s "
                  "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (panelist_id, ))
         results = cursor.fetchall()
         cursor.close()
 
@@ -195,6 +193,9 @@ class PanelistAppearances:
             dictionary is returned.
         :rtype: Dict[int, int]
         """
+        if not valid_int_id(panelist_id):
+            return {}
+
         years = {}
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT DISTINCT YEAR(s.showdate) AS year "

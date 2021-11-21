@@ -12,6 +12,7 @@ from mysql.connector import connect
 from slugify import slugify
 from wwdtm.host.appearances import HostAppearances
 from wwdtm.host.utility import HostUtility
+from wwdtm.validation import valid_int_id
 
 
 class Host:
@@ -176,9 +177,7 @@ class Host:
             returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(host_id)
-        except ValueError:
+        if not valid_int_id(host_id):
             return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
@@ -187,7 +186,7 @@ class Host:
                  "FROM ww_hosts "
                  "WHERE hostid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (host_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -240,16 +239,14 @@ class Host:
             empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(host_id)
-        except ValueError:
+        if not valid_int_id(host_id):
             return {}
 
-        info = self.retrieve_by_id(id_)
+        info = self.retrieve_by_id(host_id)
         if not info:
             return {}
 
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(id_)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(host_id)
 
         return info
 

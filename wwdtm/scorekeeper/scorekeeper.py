@@ -12,6 +12,7 @@ from mysql.connector import connect
 from slugify import slugify
 from wwdtm.scorekeeper.appearances import ScorekeeperAppearances
 from wwdtm.scorekeeper.utility import ScorekeeperUtility
+from wwdtm.validation import valid_int_id
 
 
 class Scorekeeper:
@@ -179,9 +180,7 @@ class Scorekeeper:
             dictionary will be returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(scorekeeper_id)
-        except ValueError:
+        if not valid_int_id(scorekeeper_id):
             return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
@@ -190,7 +189,7 @@ class Scorekeeper:
                  "FROM ww_scorekeepers "
                  "WHERE scorekeeperid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id_, ))
+        cursor.execute(query, (scorekeeper_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -244,16 +243,14 @@ class Scorekeeper:
             retrieved, an empty dictionary will be returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id_ = int(scorekeeper_id)
-        except ValueError:
+        if not valid_int_id(scorekeeper_id):
             return {}
 
-        info = self.retrieve_by_id(id_)
+        info = self.retrieve_by_id(scorekeeper_id)
         if not info:
             return {}
 
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(id_)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(scorekeeper_id)
 
         return info
 
