@@ -16,6 +16,9 @@ def valid_int_id(id: int) -> bool:
     :rtype: bool
     """
     try:
+        if not id:
+            return False
+
         id_ = int(id)
     except ValueError:
         return False
