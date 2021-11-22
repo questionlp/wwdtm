@@ -16,9 +16,9 @@ Migrating to v2
 ===============
 
 With the new major version bump for the ``wwdtm`` library, there have been a
-large number of API changes from ``libwwdtm`` version 1.x to the current
-version. This section of the documentation will provide a summary of changes
-and changes to function/method locations.
+large number of API changes from ``wwdtm`` version 1.x to the current version.
+This section of the documentation will provide a summary of changes and
+changes to function/method locations.
 
 Table of Contents
 =================
