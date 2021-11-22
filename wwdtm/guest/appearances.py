@@ -100,7 +100,7 @@ class GuestAppearances:
                     "date": appearance["date"].isoformat(),
                     "best_of": bool(appearance["best_of"]),
                     "repeat_show": bool(appearance["repeatshowid"]),
-                    "score": appearance["score"],
+                    "score": appearance["score"] if appearance["score"] else None,
                     "score_exception": bool(appearance["score_exception"]),
                 }
                 appearances.append(info)

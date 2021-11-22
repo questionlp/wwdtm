@@ -249,8 +249,8 @@ class ShowInfo:
                 "id": guest["id"],
                 "name": guest["name"],
                 "slug": guest["slug"] if guest["slug"] else slugify(guest["name"]),
-                "score": guest["score"],
-                "score_exception": guest["score_exception"],
+                "score": guest["score"] if guest["score"] else None,
+                "score_exception": bool(guest["score_exception"]),
             }
 
             guests.append(info)
@@ -295,10 +295,10 @@ class ShowInfo:
                 "id": row["id"],
                 "name": row["name"],
                 "slug": row["slug"] if row["slug"] else slugify(row["name"]),
-                "lightning_round_start": row["start"],
-                "lightning_round_correct": row["correct"],
-                "score": row["score"],
-                "rank": row["rank"],
+                "lightning_round_start": row["start"] if row["start"] else None,
+                "lightning_round_correct": row["correct"] if row["correct"] else None,
+                "score": row["score"] if row["score"] else None,
+                "rank": row["rank"] if row["rank"] else None,
             }
 
             panelists.append(info)

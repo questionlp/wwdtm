@@ -139,19 +139,15 @@ class PanelistAppearances:
         if result:
             appearances = []
             for appearance in results:
-                rank = appearance["showpnlrank"]
-                if not rank:
-                    rank = None
-
                 info = {
                     "show_id": appearance["show_id"],
                     "date": appearance["date"].isoformat(),
                     "best_of": bool(appearance["best_of"]),
                     "repeat_show": bool(appearance["repeatshowid"]),
-                    "lightning_round_start": appearance["start"],
-                    "lightning_round_correct": appearance["correct"],
-                    "score": appearance["score"],
-                    "rank": rank,
+                    "lightning_round_start": appearance["start"] if appearance["start"] else None,
+                    "lightning_round_correct": appearance["correct"] if appearance["correct"] else None,
+                    "score": appearance["score"] if appearance["score"] else None,
+                    "rank": appearance["showpnlrank"] if appearance["showpnlrank"] else None,
                 }
                 appearances.append(info)
 
