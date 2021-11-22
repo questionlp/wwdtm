@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Location Data Utility Functions
 """
 from functools import lru_cache
@@ -10,6 +10,8 @@ from typing import Any, Dict, Optional
 
 from mysql.connector import connect
 from slugify import slugify
+from wwdtm.validation import valid_int_id
+
 
 class LocationUtility:
     """This class contains supporting functions used to check whether
@@ -38,27 +40,24 @@ class LocationUtility:
 
             self.database_connection = database_connection
 
-
     @lru_cache(typed=True)
-    def convert_id_to_slug(self, id: int) -> str:
+    def convert_id_to_slug(self, location_id: int) -> Optional[str]:
         """Converts a location's ID to the matching location slug
         string value.
 
-        :param id: Location ID
-        :type id: int
+        :param location_id: Location ID
+        :type location_id: int
         :return: Location slug string, if a match is found
         :rtype: str
         """
-        try:
-            id = int(id)
-        except ValueError:
+        if not valid_int_id(location_id):
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT locationslug FROM ww_locations "
                  "WHERE locationid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (location_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -68,17 +67,17 @@ class LocationUtility:
         return None
 
     @lru_cache(typed=True)
-    def convert_slug_to_id(self, slug: str) -> int:
+    def convert_slug_to_id(self, location_slug: str) -> Optional[int]:
         """Converts a location's slug string to the matching location
         ID value.
 
-        :param slug: Location slug string
-        :type slug: str
+        :param location_slug: Location slug string
+        :type location_slug: str
         :return: Location ID, if a match if found
         :rtype: int
         """
         try:
-            slug = slug.strip()
+            slug = location_slug.strip()
             if not slug:
                 return None
         except ValueError:
@@ -98,41 +97,39 @@ class LocationUtility:
         return None
 
     @lru_cache(typed=True)
-    def id_exists(self, id: int) -> bool:
+    def id_exists(self, location_id: int) -> bool:
         """Checks to see if a location ID exists.
 
-        :param id: Location ID
-        :type id: int
+        :param location_id: Location ID
+        :type location_id: int
         :return: True or False, based on whether the location ID exists
         :rtype: bool
         """
-        try:
-            id = int(id)
-        except ValueError:
+        if not valid_int_id(location_id):
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT locationid FROM ww_locations "
                  "WHERE locationid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (location_id, ))
         result = cursor.fetchone()
         cursor.close()
 
         return bool(result)
 
     @lru_cache(typed=True)
-    def slug_exists(self, slug: str) -> bool:
+    def slug_exists(self, location_slug: str) -> bool:
         """Checks to see if a location slug string exists.
 
-        :param slug: Location slug string
-        :type slug: str
+        :param location_slug: Location slug string
+        :type location_slug: str
         :return: True or False, based on whether the location slug
             string exists
         :rtype: bool
         """
         try:
-            slug = slug.strip()
+            slug = location_slug.strip()
             if not slug:
                 return False
         except ValueError:
@@ -148,17 +145,17 @@ class LocationUtility:
 
         return bool(result)
 
-    def slugify_location(self,
-                         id: int=None,
-                         venue: str=None,
-                         city: str=None,
-                         state: str=None
-                        ) -> str:
+    @staticmethod
+    def slugify_location(location_id: int = None,
+                         venue: str = None,
+                         city: str = None,
+                         state: str = None
+                         ) -> str:
         """Generates a slug string based on the location's venue name,
         city, state and/or location ID.
 
-        :param id: Location ID
-        :type id: int
+        :param location_id: Location ID
+        :type location_id: int
         :param venue: Location venue name
         :type venue: str
         :param city: City where the location venue is located
@@ -173,9 +170,11 @@ class LocationUtility:
             return slugify(f"{venue} {city} {state}")
         elif venue and city and not state:
             return slugify(f"{venue} {city}")
-        elif venue and (not city and not state):
-            return slugify(venue)
-        elif id:
-            return slugify(f"locationid-{id}")
+        elif location_id and venue and (not city and not state):
+            return slugify(f"{id}-{venue}")
+        elif location_id and city and state and not venue:
+            return slugify(f"{id} {city} {state}")
+        elif location_id:
+            return f"location-{location_id}"
         else:
             raise ValueError("Invalid location information provided")

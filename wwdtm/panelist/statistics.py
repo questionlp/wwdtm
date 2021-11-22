@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Statistics Retrieval Functions
 """
 from functools import lru_cache
@@ -12,6 +12,8 @@ from mysql.connector import connect
 import numpy
 from wwdtm.panelist.scores import PanelistScores
 from wwdtm.panelist.utility import PanelistUtility
+from wwdtm.validation import valid_int_id
+
 
 class PanelistStatistics:
     """This class contains functions used to retrieve data from a copy
@@ -44,13 +46,15 @@ class PanelistStatistics:
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
-    def retrieve_bluffs_by_id(self, id: int) -> Dict[str, int]:
+    def retrieve_bluffs_by_id(self, panelist_id: int) -> Dict[str, int]:
         """Returns a dictionary containing the number of chosen Bluffs
         and correct Bluffs for the requested panelist ID.
 
-        :param id: Panelist ID
-        :type id: int
-        :return: Dictionary containing panelist Bluff counts
+        :param panelist_id: Panelist ID
+        :type panelist_id: int
+        :return: Dictionary containing panelist Bluff counts. If
+            panelist Bluff counts could not be returned, an empty
+            dictionary will be returned.
         :rtype: Dict[str, int]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -63,12 +67,12 @@ class PanelistStatistics:
                  "JOIN ww_shows s ON s.showid = blm.showid "
                  "WHERE s.repeatshowid IS NULL AND blm.correctbluffpnlid = %s "
                  ") AS correct;")
-        cursor.execute(query, (id, id, ))
+        cursor.execute(query, (panelist_id, panelist_id, ))
         result = cursor.fetchone()
         cursor.close()
 
         if not result:
-            return None
+            return {}
 
         bluffs = {
             "chosen": result["chosen"],
@@ -78,31 +82,38 @@ class PanelistStatistics:
         return bluffs
 
     @lru_cache(typed=True)
-    def retrieve_bluffs_by_slug(self, slug: str) -> Dict[str, int]:
+    def retrieve_bluffs_by_slug(self, panelist_slug: str) -> Dict[str, int]:
         """Returns a dictionary containing the number of chosen Bluffs
         and correct Bluffs for the requested panelist slug string.
 
-        :param slug: Panelist slug string
-        :type slug: str
-        :return: Dictionary containing panelist Bluff counts
+        :param panelist_slug: Panelist slug string
+        :type panelist_slug: str
+        :return: Dictionary containing panelist Bluff counts. If
+            panelist Bluff counts could not be returned, an empty
+            dictionary will be returned.
         :rtype: Dict[str, int]
         """
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
-            return None
+        id_ = self.utility.convert_slug_to_id(panelist_slug)
+        if not id_:
+            return {}
 
-        return self.retrieve_bluffs_by_id(id)
+        return self.retrieve_bluffs_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_rank_info_by_id(self, id: int) -> Dict[str, int]:
+    def retrieve_rank_info_by_id(self, panelist_id: int) -> Dict[str, int]:
         """Returns a dictionary with ranking information for the
         requested panelist ID.
 
-        :param id: Panelist ID
-        :type id: int
-        :return: Dictionary containing panelist ranking information
+        :param panelist_id: Panelist ID
+        :type panelist_id: int
+        :return: Dictionary containing panelist ranking information. If
+            panelist ranking information could not be returned, an empty
+            dictionary will be returned.
         :rtype: Dict[str, int]
         """
+        if not valid_int_id(panelist_id):
+            return {}
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT ( "
                  "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
@@ -126,9 +137,13 @@ class PanelistStatistics:
                  "WHERE pm.panelistid = %s AND pm.showpnlrank = '3' AND "
                  "s.bestof = 0 and s.repeatshowid IS NULL "
                  ") as '3';")
-        cursor.execute(query, (id, id, id, id, id, ))
+        cursor.execute(query, (panelist_id, panelist_id, panelist_id,
+                               panelist_id, panelist_id, ))
         result = cursor.fetchone()
         cursor.close()
+
+        if not result:
+            return {}
 
         rank_info = {
             "first": result["1"],
@@ -141,36 +156,43 @@ class PanelistStatistics:
         return rank_info
 
     @lru_cache(typed=True)
-    def retrieve_rank_info_by_slug(self, slug: str) -> Dict[str, int]:
+    def retrieve_rank_info_by_slug(self, panelist_slug: str) -> Dict[str, int]:
         """Returns a dictionary with ranking information for the
         requested panelist slug string.
 
-        :param slug: Panelist slug string
-        :type slug: str
-        :return: Dictionary containing panelist ranking information
+        :param panelist_slug: Panelist slug string
+        :type panelist_slug: str
+        :return: Dictionary containing panelist ranking information. If
+            panelist ranking information could not be returned, an empty
+            dictionary will be returned.
         :rtype: Dict[str, int]
         """
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
-            return None
+        id_ = self.utility.convert_slug_to_id(panelist_slug)
+        if not id_:
+            return {}
 
-        return self.retrieve_rank_info_by_id(id)
+        return self.retrieve_rank_info_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_statistics_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_statistics_by_id(self, panelist_id: int) -> Dict[str, Any]:
         """Returns a dictionary containing panelist statistics, ranking
         data, and scoring data for the requested panelist ID.
 
-        :param id: Panelist ID
-        :type id: int
-        :return: Dictionary containing panelist statistics
+        :param panelist_id: Panelist ID
+        :type panelist_id: int
+        :return: Dictionary containing panelist statistics. If panelist
+            statistics could not be returned, an empty dictionary will
+            be returned.
         :rtype: Dict[str, Any]
         """
-        score_data = self.scores.retrieve_scores_by_id(id)
-        ranks = self.retrieve_rank_info_by_id(id)
+        if not valid_int_id(panelist_id):
+            return {}
+
+        score_data = self.scores.retrieve_scores_by_id(panelist_id)
+        ranks = self.retrieve_rank_info_by_id(panelist_id)
 
         if not score_data or not ranks:
-            return None
+            return {}
 
         appearance_count = len(score_data)
         scoring = {
@@ -209,17 +231,19 @@ class PanelistStatistics:
         return statistics
 
     @lru_cache(typed=True)
-    def retrieve_statistics_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_statistics_by_slug(self, panelist_slug: str) -> Dict[str, Any]:
         """Returns a dictionary containing panelist statistics, ranking
         data, and scoring data for the requested panelist slug string.
 
-        :param slug: Panelist slug string
-        :type slug: str
-        :return: Dictionary containing panelist statistics
+        :param panelist_slug: Panelist slug string
+        :type panelist_slug: str
+        :return: Dictionary containing panelist statistics. If panelist
+            statistics could not be returned, an empty dictionary will
+            be returned.
         :rtype: Dict[str, Any]
         """
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
-            return None
+        id_ = self.utility.convert_slug_to_id(panelist_slug)
+        if not id_:
+            return {}
 
-        return self.retrieve_statistics_by_id(id)
+        return self.retrieve_statistics_by_id(id_)

@@ -2,13 +2,15 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Scorekeeper Data Utility Functions
 """
 from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
+from wwdtm.validation import valid_int_id
+
 
 class ScorekeeperUtility:
     """This class contains supporting functions used to check whether
@@ -38,25 +40,23 @@ class ScorekeeperUtility:
             self.database_connection = database_connection
 
     @lru_cache(typed=True)
-    def convert_id_to_slug(self, id: int) -> str:
+    def convert_id_to_slug(self, scorekeeper_id: int) -> Optional[str]:
         """Converts a scorekeeper's ID to the matching scorekeeper slug
         string value.
 
-        :param id: Scorekeeper ID
-        :type id: int
+        :param scorekeeper_id: Scorekeeper ID
+        :type scorekeeper_id: int
         :return: Scorekeeper slug string, if a match is found
         :rtype: str
         """
-        try:
-            id = int(id)
-        except ValueError:
+        if not valid_int_id(scorekeeper_id):
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT scorekeeperslug FROM ww_scorekeepers "
                  "WHERE scorekeeperid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (scorekeeper_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -66,17 +66,17 @@ class ScorekeeperUtility:
         return None
 
     @lru_cache(typed=True)
-    def convert_slug_to_id(self, slug: str) -> int:
+    def convert_slug_to_id(self, scorekeeper_slug: str) -> Optional[int]:
         """Converts a scorekeeper's slug string to the matching
         scorekeeper ID value.
 
-        :param slug: Scorekeeper slug string
-        :type slug: str
+        :param scorekeeper_slug: Scorekeeper slug string
+        :type scorekeeper_slug: str
         :return: Scorekeeper ID, if a match is found
         :rtype: int
         """
         try:
-            slug = slug.strip()
+            slug = scorekeeper_slug.strip()
             if not slug:
                 return None
         except ValueError:
@@ -96,42 +96,40 @@ class ScorekeeperUtility:
         return None
 
     @lru_cache(typed=True)
-    def id_exists(self, id: int) -> bool:
+    def id_exists(self, scorekeeper_id: int) -> bool:
         """Checks to see if a scorekeeper ID exists.
 
-        :param id: Scorekeeper ID
-        :type id: int
+        :param scorekeeper_id: Scorekeeper ID
+        :type scorekeeper_id: int
         :return: True or False, based on whether the scorekeeper ID
             exists
         :rtype: bool
         """
-        try:
-            id = int(id)
-        except ValueError:
+        if not valid_int_id(scorekeeper_id):
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT scorekeeperid FROM ww_scorekeepers "
                  "WHERE scorekeeperid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (scorekeeper_id, ))
         result = cursor.fetchone()
         cursor.close()
 
         return bool(result)
 
     @lru_cache(typed=True)
-    def slug_exists(self, slug: str) -> bool:
+    def slug_exists(self, scorekeeper_slug: str) -> bool:
         """Checks to see if a scorekeeper slug string exists.
 
-        :param slug: Scorekeeper slug string
-        :type slug: str
+        :param scorekeeper_slug: Scorekeeper slug string
+        :type scorekeeper_slug: str
         :return: True or False, based on whether the scorekeeper slug
             string exists
         :rtype: bool
         """
         try:
-            slug = slug.strip()
+            slug = scorekeeper_slug.strip()
             if not slug:
                 return False
         except ValueError:

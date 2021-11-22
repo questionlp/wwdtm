@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Guest Data Retrieval Functions
 """
 from functools import lru_cache
@@ -12,6 +12,8 @@ from mysql.connector import connect
 from slugify import slugify
 from wwdtm.guest.appearances import GuestAppearances
 from wwdtm.guest.utility import GuestUtility
+from wwdtm.validation import valid_int_id
+
 
 class Guest:
     """This class contains functions used to retrieve guest data from a
@@ -47,10 +49,11 @@ class Guest:
         name and slug string for all guests.
 
         :return: List of all guests and their corresponding
-            information
+            information. If guests could not be retrieved, an empty list
+            is returned.
         :rtype: List[Dict[str, Any]]
         """
-        self.database_connection.is_connected
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT guestid AS id, guest, guestslug AS slug "
                  "FROM ww_guests "
@@ -61,7 +64,7 @@ class Guest:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         guests = []
         for row in results:
@@ -80,7 +83,8 @@ class Guest:
         name, slug string and appearance information for all guests.
 
         :return: List of all guests and their corresponding
-            information and appearances
+            information and appearances. If guests could not be
+            retrieved, an empty list is returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -93,7 +97,7 @@ class Guest:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         guests = []
         for row in results:
@@ -113,7 +117,8 @@ class Guest:
         """Returns a list of all guest IDs from the database, sorted by
         guest name.
 
-        :return: List of all guest IDs
+        :return: List of all guest IDs. If guest IDs could not be
+            retrieved, an emtpy list is returned.
         :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -125,7 +130,7 @@ class Guest:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:
@@ -137,7 +142,8 @@ class Guest:
         """Returns a list of all guest slug strings from the database,
         sorted by guest name.
 
-        :return: List of all guest slug strings
+        :return: List of all guest slug strings. If guest slug strings
+            could not be retrieved, an emtpy list is returned.
         :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -149,7 +155,7 @@ class Guest:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:
@@ -158,31 +164,31 @@ class Guest:
         return ids
 
     @lru_cache(typed=True)
-    def retrieve_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_by_id(self, guest_id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing guest ID, name and
         slug string for the requested guest ID.
 
-        :param id: Guest ID
-        :type id: int
-        :return: Dictionary containing guest information
+        :param guest_id: Guest ID
+        :type guest_id: int
+        :return: Dictionary containing guest information. If guest
+            information could not be retrieved, an empty dictionary is
+            returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id = int(id)
-        except ValueError:
-            return None
+        if not valid_int_id(guest_id):
+            return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT guestid AS id, guest, guestslug AS slug "
                  "FROM ww_guests "
                  "WHERE guestid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (guest_id, ))
         result = cursor.fetchone()
         cursor.close()
 
         if not result:
-            return None
+            return {}
 
         info = {
             "id": result["id"],
@@ -193,73 +199,75 @@ class Guest:
         return info
 
     @lru_cache(typed=True)
-    def retrieve_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_by_slug(self, guest_slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing guest ID, name and
         slug string for the requested guest slug string.
 
-        :param slug: Guest slug string
-        :type slug: str
-        :return: Dictionary containing guest information
+        :param guest_slug: Guest slug string
+        :type guest_slug: str
+        :return: Dictionary containing guest information. If guest
+            information could not be retrieved, an empty dictionary is
+            returned.
         :rtype: Dict[str, Any]
         """
         try:
-            slug = slug.strip()
+            slug = guest_slug.strip()
             if not slug:
-                return False
+                return {}
         except AttributeError:
-            return False
+            return {}
 
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
-            return None
+        id_ = self.utility.convert_slug_to_id(slug)
+        if not id_:
+            return {}
 
-        return self.retrieve_by_id(id)
+        return self.retrieve_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_details_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_details_by_id(self, guest_id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing guest ID, name, slug
         string and appearance information for the requested Guest ID.
 
-        :param id: Guest ID
-        :type id: int
+        :param guest_id: Guest ID
+        :type guest_id: int
         :return: Dictionary containing guest information and their
-            appearances
+            appearances. If guest information could not be retrieved,
+            an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id = int(id)
-        except ValueError:
-            return None
+        if not valid_int_id(guest_id):
+            return {}
 
-        info = self.retrieve_by_id(id)
+        info = self.retrieve_by_id(guest_id)
         if not info:
-            return None
+            return {}
 
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(id)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(guest_id)
 
         return info
 
     @lru_cache(typed=True)
-    def retrieve_details_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_details_by_slug(self, guest_slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing guest ID, name, slug
         string and appearance information for the requested Guest slug
         string.
 
-        :param slug: Guest slug string
-        :type slug: str
+        :param guest_slug: Guest slug string
+        :type guest_slug: str
         :return: Dictionary containing guest information and their
-            appearances
+            appearances. If guest information could not be retrieved,
+            an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
-            slug = slug.strip()
+            slug = guest_slug.strip()
             if not slug:
-                return False
+                return {}
         except AttributeError:
-            return False
+            return {}
 
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
-            return None
+        id_ = self.utility.convert_slug_to_id(slug)
+        if not id_:
+            return {}
 
-        return self.retrieve_details_by_id(id)
+        return self.retrieve_details_by_id(id_)

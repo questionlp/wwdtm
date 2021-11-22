@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Appearance Retrieval Functions
 """
 from functools import lru_cache
@@ -10,6 +10,7 @@ from typing import Any, Dict, Optional
 
 from mysql.connector import connect
 from wwdtm.panelist.utility import PanelistUtility
+from wwdtm.validation import valid_int_id
 
 class PanelistAppearances:
     """This class contains functions that retrieve panelist appearance
@@ -40,20 +41,19 @@ class PanelistAppearances:
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_appearances_by_id(self, panelist_id: int) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested panelist ID.
 
-        :param id: Panelist ID
-        :type id: int
+        :param panelist_id: Panelist ID
+        :type panelist_id: int
         :return:  Dictionary containing appearance counts and list of
-            appearances for a panelist
+            appearances for a panelist. If panelist appearances could
+            not be retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id = int(id)
-        except ValueError:
-            return None
+        if not valid_int_id(panelist_id):
+            return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT ( "
@@ -70,7 +70,7 @@ class PanelistAppearances:
                  "s.repeatshowid IS NULL "
                  "AND pm.panelistscore IS NOT NULL ) "
                  "AS shows_with_scores;")
-        cursor.execute(query, (id, id, id, ))
+        cursor.execute(query, (panelist_id, panelist_id, panelist_id, ))
         result = cursor.fetchone()
 
         if result:
@@ -94,7 +94,7 @@ class PanelistAppearances:
                  "WHERE s.bestof = 0 AND s.repeatshowid IS NULL "
                  "AND pm.panelistid = %s "
                  "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (panelist_id, ))
         result = cursor.fetchone()
 
         if result and result["first_id"]:
@@ -132,26 +132,22 @@ class PanelistAppearances:
                  "JOIN ww_shows s ON s.showid = pm.showid "
                  "WHERE pm.panelistid = %s "
                  "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (panelist_id, ))
         results = cursor.fetchall()
         cursor.close()
 
         if result:
             appearances = []
             for appearance in results:
-                rank = appearance["showpnlrank"]
-                if not rank:
-                    rank = None
-
                 info = {
                     "show_id": appearance["show_id"],
                     "date": appearance["date"].isoformat(),
                     "best_of": bool(appearance["best_of"]),
                     "repeat_show": bool(appearance["repeatshowid"]),
-                    "lightning_round_start": appearance["start"],
-                    "lightning_round_correct": appearance["correct"],
-                    "score": appearance["score"],
-                    "rank": rank,
+                    "lightning_round_start": appearance["start"] if appearance["start"] else None,
+                    "lightning_round_correct": appearance["correct"] if appearance["correct"] else None,
+                    "score": appearance["score"] if appearance["score"] else None,
+                    "rank": appearance["showpnlrank"] if appearance["showpnlrank"] else None,
                 }
                 appearances.append(info)
 
@@ -164,42 +160,48 @@ class PanelistAppearances:
         return appearance_info
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_appearances_by_slug(self, panelist_slug: str) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested panelist slug string.
 
-        :param slug: Panelist slug string
-        :type slug: str
+        :param panelist_slug: Panelist slug string
+        :type panelist_slug: str
         :return:  Dictionary containing appearance counts and list of
-            appearances for a panelist
+            appearances for a panelist. If panelist appearances could
+            not be retrieved, an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
-            return None
+        id_ = self.utility.convert_slug_to_id(panelist_slug)
+        if not id_:
+            return {}
 
-        return self.retrieve_appearances_by_id(id)
+        return self.retrieve_appearances_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_yearly_appearances_by_id(self, id: int) -> Dict[int, int]:
+    def retrieve_yearly_appearances_by_id(self, panelist_id: int) -> Dict[int, int]:
         """Returns a dictionary containing panelist appearances broken
         down by year, for the requested panelist ID.
 
-        :param id: Panelist ID
-        :type id: int
-        :return: Dictionary containing scoring breakdown by year
+        :param panelist_id: Panelist ID
+        :type panelist_id: int
+        :return: Dictionary containing scoring breakdown by year. If
+            panelist appearances could not be retrieved, an empty
+            dictionary is returned.
         :rtype: Dict[int, int]
         """
+        if not valid_int_id(panelist_id):
+            return {}
+
         years = {}
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT DISTINCT YEAR(s.showdate) AS year "
-                    "FROM ww_shows s "
-                    "ORDER BY YEAR(s.showdate) ASC;")
+                 "FROM ww_shows s "
+                 "ORDER BY YEAR(s.showdate) ASC;")
         cursor.execute(query)
         results = cursor.fetchall()
 
         if not results:
-            return None
+            return {}
 
         for row in results:
             years[row["year"]] = 0
@@ -214,12 +216,12 @@ class PanelistAppearances:
                  "AND s.repeatshowid IS NULL "
                  "GROUP BY p.panelist, YEAR(s.showdate) "
                  "ORDER BY p.panelist ASC, YEAR(s.showdate) ASC;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (panelist_id, ))
         results = cursor.fetchall()
         cursor.close()
 
         if not results:
-            return None
+            return {}
 
         for row in results:
             years[row["year"]] = row["count"]
@@ -227,17 +229,20 @@ class PanelistAppearances:
         return years
 
     @lru_cache(typed=True)
-    def retrieve_yearly_appearances_by_slug(self, slug: str) -> Dict[int, int]:
+    def retrieve_yearly_appearances_by_slug(self, panelist_slug: str
+                                            ) -> Dict[int, int]:
         """Returns a dictionary containing panelist appearances broken
         down by year, for the requested panelist slug string.
 
-        :param slug: Panelist slug string
-        :type slug: str
-        :return: Dictionary containing scoring breakdown by year
+        :param panelist_slug: Panelist slug string
+        :type panelist_slug: str
+        :return: Dictionary containing scoring breakdown by year. If
+            panelist appearances could not be retrieved, an empty
+            dictionary is returned.
         :rtype: Dict[int, int]
         """
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
-            return None
+        id_ = self.utility.convert_slug_to_id(panelist_slug)
+        if not id_:
+            return {}
 
-        return self.retrieve_yearly_appearances_by_id(id)
+        return self.retrieve_yearly_appearances_by_id(id_)

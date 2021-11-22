@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Scorekeeper Data Retrieval Functions
 """
 from functools import lru_cache
@@ -12,6 +12,8 @@ from mysql.connector import connect
 from slugify import slugify
 from wwdtm.scorekeeper.appearances import ScorekeeperAppearances
 from wwdtm.scorekeeper.utility import ScorekeeperUtility
+from wwdtm.validation import valid_int_id
+
 
 class Scorekeeper:
     """This class contains functions used to retrieve scorekeeper data
@@ -47,7 +49,8 @@ class Scorekeeper:
         ID, name and slug string for all scorekeepers.
 
         :return: List of all scorekeepers and their corresponding
-            information
+            information. If scorekeeper information could not be
+            retrieved, an empty list will be returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -61,7 +64,7 @@ class Scorekeeper:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         scorekeepers = []
         for row in results:
@@ -82,7 +85,8 @@ class Scorekeeper:
         scorekeepers.
 
         :return: List of all scorekeepers and their corresponding
-            information and appearances
+            information and appearances. If scorekeeper information
+            could not be retrieved, an empty list will be returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -96,7 +100,7 @@ class Scorekeeper:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         scorekeepers = []
         for row in results:
@@ -117,7 +121,8 @@ class Scorekeeper:
         """Returns a list of all scorekeeper IDs from the database,
         sorted by scorekeeper name.
 
-        :return: List of all scorekeeper IDs
+        :return: List of all scorekeeper IDs. If scorekeeper IDs could
+            not be retrieved, an empty list would be returned.
         :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -129,7 +134,7 @@ class Scorekeeper:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:
@@ -141,7 +146,9 @@ class Scorekeeper:
         """Returns a list of all scorekeeper slug strings from the
         database, sorted by scorekeeper name.
 
-        :return: List of all scorekeeper slug strings
+        :return: List of all scorekeeper slug strings. If scorekeeper
+            slug strings could not be retrieved, an empty list will be
+            returned.
         :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -153,7 +160,7 @@ class Scorekeeper:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:
@@ -162,19 +169,19 @@ class Scorekeeper:
         return ids
 
     @lru_cache(typed=True)
-    def retrieve_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_by_id(self, scorekeeper_id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name
         and slug string for the requested scorekeeper ID.
 
-        :param id: Scorekeeper ID
-        :type id: int
-        :return: Dictionary containing scorekeeper information
+        :param scorekeeper_id: Scorekeeper ID
+        :type scorekeeper_id: int
+        :return: Dictionary containing scorekeeper information. If
+            scorekeeper information could not be retrieved, an empty
+            dictionary will be returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id = int(id)
-        except ValueError:
-            return None
+        if not valid_int_id(scorekeeper_id):
+            return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT scorekeeperid AS id, scorekeeper, "
@@ -182,12 +189,12 @@ class Scorekeeper:
                  "FROM ww_scorekeepers "
                  "WHERE scorekeeperid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (scorekeeper_id, ))
         result = cursor.fetchone()
         cursor.close()
 
         if not result:
-            return None
+            return {}
 
         info = {
             "id": result["id"],
@@ -199,74 +206,76 @@ class Scorekeeper:
         return info
 
     @lru_cache(typed=True)
-    def retrieve_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_by_slug(self, scorekeeper_slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name
         and slug string for the requested scorekeeper slug string.
 
-        :param slug: Scorekeeper slug string
-        :type slug: str
-        :return: Dictionary containing scorekeeper information
+        :param scorekeeper_slug: Scorekeeper slug string
+        :type scorekeeper_slug: str
+        :return: Dictionary containing scorekeeper information. If
+            scorekeeper information could not be retrieved, an empty
+            dictionary will be returned.
         :rtype: Dict[str, Any]
         """
         try:
-            slug = slug.strip()
+            slug = scorekeeper_slug.strip()
             if not slug:
-                return False
+                return {}
         except AttributeError:
-            return False
+            return {}
 
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
-            return None
+        id_ = self.utility.convert_slug_to_id(slug)
+        if not id_:
+            return {}
 
-        return self.retrieve_by_id(id)
+        return self.retrieve_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_details_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_details_by_id(self, scorekeeper_id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name,
         slug string and appearance information for the requested
         scorekeeper ID.
 
-        :param id: Scorekeeper ID
-        :type id: int
+        :param scorekeeper_id: Scorekeeper ID
+        :type scorekeeper_id: int
         :return: Dictionary containing scorekeeper information and
-            their appearances
+            their appearances. If scorekeeper information could not be
+            retrieved, an empty dictionary will be returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id = int(id)
-        except ValueError:
-            return None
+        if not valid_int_id(scorekeeper_id):
+            return {}
 
-        info = self.retrieve_by_id(id)
+        info = self.retrieve_by_id(scorekeeper_id)
         if not info:
-            return None
+            return {}
 
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(id)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(scorekeeper_id)
 
         return info
 
     @lru_cache(typed=True)
-    def retrieve_details_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_details_by_slug(self, scorekeeper_slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name,
         slug string and appearance information for the requested
         scorekeeper slug string.
 
-        :param slug: Scorekeeper slug string
-        :type slug: str
+        :param scorekeeper_slug: Scorekeeper slug string
+        :type scorekeeper_slug: str
         :return: Dictionary containing scorekeeper information and
-            their appearances
+            their appearances. If scorekeeper information could not be
+            retrieved, an empty dictionary will be returned.
         :rtype: Dict[str, Any]
         """
         try:
-            slug = slug.strip()
+            slug = scorekeeper_slug.strip()
             if not slug:
-                return False
+                return {}
         except AttributeError:
-            return False
+            return {}
 
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
-            return None
+        id_ = self.utility.convert_slug_to_id(slug)
+        if not id_:
+            return {}
 
-        return self.retrieve_details_by_id(id)
+        return self.retrieve_details_by_id(id_)

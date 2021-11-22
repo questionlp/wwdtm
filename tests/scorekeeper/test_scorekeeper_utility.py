@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.scorekeeper.ScorekeeperUtility`
 """
 import json
@@ -10,6 +10,7 @@ from typing import Any, Dict
 
 import pytest
 from wwdtm.scorekeeper import ScorekeeperUtility
+
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
@@ -21,105 +22,117 @@ def get_connect_dict() -> Dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
-@pytest.mark.parametrize("id", [2])
-def test_scorekeeper_utility_convert_id_to_slug(id: int):
+
+@pytest.mark.parametrize("scorekeeper_id", [2])
+def test_scorekeeper_utility_convert_id_to_slug(scorekeeper_id: int):
     """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.convert_id_to_slug`
 
-    :param id: Scorekeeper ID to test converting into scorekeeper slug
-        string
-    :type id: int
+    :param scorekeeper_id: Scorekeeper ID to test converting into
+        scorekeeper slug string
+    :type scorekeeper_id: int
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
-    slug = utility.convert_id_to_slug(id)
+    slug = utility.convert_id_to_slug(scorekeeper_id)
 
-    assert slug, f"Scorekeeper slug for ID {id} was not found"
-    assert isinstance(slug, str), f"Invalid value returned for ID {id}"
+    assert slug, f"Scorekeeper slug for ID {scorekeeper_id} was not found"
+    assert isinstance(slug, str), f"Invalid value returned for ID {scorekeeper_id}"
 
-@pytest.mark.parametrize("id", [-1])
-def test_scorekeeper_utility_convert_invalid_id_to_slug(id: int):
+
+@pytest.mark.parametrize("scorekeeper_id", [-1])
+def test_scorekeeper_utility_convert_invalid_id_to_slug(scorekeeper_id: int):
     """Negative testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.convert_id_to_slug`
 
-    :param id: Scorekeeper ID to test failing to convert into
-        scorekeeper slug string
-    :type id: int
+    :param scorekeeper_id: Scorekeeper ID to test failing to convert
+        into scorekeeper slug string
+    :type scorekeeper_id: int
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
-    slug = utility.convert_id_to_slug(id)
+    slug = utility.convert_id_to_slug(scorekeeper_id)
 
-    assert not slug, f"Scorekeeper slug for ID {id} was found"
+    assert not slug, f"Scorekeeper slug for ID {scorekeeper_id} was found"
 
-@pytest.mark.parametrize("slug", ["korva-coleman"])
-def test_scorekeeper_utility_convert_slug_to_id(slug: str):
+
+@pytest.mark.parametrize("scorekeeper_slug", ["korva-coleman"])
+def test_scorekeeper_utility_convert_slug_to_id(scorekeeper_slug: str):
     """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.convert_slug_to_id`
 
-    :param slug: Scorekeeper slug string to test converting into
-        scorekeeper ID
-    :type slug: str
+    :param scorekeeper_slug: Scorekeeper slug string to test converting
+        into scorekeeper ID
+    :type scorekeeper_slug: str
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
-    id = utility.convert_slug_to_id(slug)
+    id_ = utility.convert_slug_to_id(scorekeeper_slug)
 
-    assert slug, f"Scorekeeper ID for slug {slug} was found"
-    assert isinstance(slug, str), f"Invalid value returned for slug {slug}"
+    assert id_, f"Scorekeeper ID for slug {scorekeeper_slug} was found"
+    assert isinstance(id_, int), f"Invalid value returned for slug {scorekeeper_slug}"
 
-@pytest.mark.parametrize("slug", ["corva-coleman"])
-def test_scorekeeper_utility_convert_invalid_slug_to_id(slug: str):
+
+@pytest.mark.parametrize("scorekeeper_slug", ["corva-coleman"])
+def test_scorekeeper_utility_convert_invalid_slug_to_id(scorekeeper_slug: str):
     """Negative testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.convert_slug_to_id`
 
-    :param slug: Scorekeeper slug string to test failing to convert
-        into scorekeeper ID
-    :type slug: str
+    :param scorekeeper_slug: Scorekeeper slug string to test failing to
+        convert into scorekeeper ID
+    :type scorekeeper_slug: str
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
-    slug = utility.convert_slug_to_id(slug)
+    id_ = utility.convert_slug_to_id(scorekeeper_slug)
 
-    assert not slug, f"Scorekeeper ID for slug {slug} was not found"
+    assert not id_, f"Scorekeeper ID for slug {scorekeeper_slug} was not found"
 
-@pytest.mark.parametrize("id", [2])
-def test_scorekeeper_utility_id_exists(id: int):
+
+@pytest.mark.parametrize("scorekeeper_id", [2])
+def test_scorekeeper_utility_id_exists(scorekeeper_id: int):
     """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.id_exists`
 
-    :param id: Scorekeeper ID to test if a scorekeeper exists
-    :type id: int
+    :param scorekeeper_id: Scorekeeper ID to test if a scorekeeper
+        exists
+    :type scorekeeper_id: int
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
-    result = utility.id_exists(id)
+    result = utility.id_exists(scorekeeper_id)
 
-    assert result, f"Scorekeeper ID {id} does not exist"
+    assert result, f"Scorekeeper ID {scorekeeper_id} does not exist"
 
-@pytest.mark.parametrize("id", [-1])
-def test_scorekeeper_utility_id_not_exists(id: int):
+
+@pytest.mark.parametrize("scorekeeper_id", [-1])
+def test_scorekeeper_utility_id_not_exists(scorekeeper_id: int):
     """Negative testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.id_exists`
 
-    :param id: Scorekeeper ID to test if a scorekeeper does not exist
-    :type id: int
+    :param scorekeeper_id: Scorekeeper ID to test if a scorekeeper does
+        not exist
+    :type scorekeeper_id: int
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
-    result = utility.id_exists(id)
+    result = utility.id_exists(scorekeeper_id)
 
-    assert not result, f"Scorekeeper ID {id} exists"
+    assert not result, f"Scorekeeper ID {scorekeeper_id} exists"
 
-@pytest.mark.parametrize("slug", ["korva-coleman"])
-def test_scorekeeper_utility_slug_exists(slug: str):
+
+@pytest.mark.parametrize("scorekeeper_slug", ["korva-coleman"])
+def test_scorekeeper_utility_slug_exists(scorekeeper_slug: str):
     """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.slug_exists`
 
-    :param slug: Scorekeeper slug string to test if a scorekeeper exists
-    :type slug: str
+    :param scorekeeper_slug: Scorekeeper slug string to test if a
+        scorekeeper exists
+    :type scorekeeper_slug: str
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
-    result = utility.slug_exists(slug)
+    result = utility.slug_exists(scorekeeper_slug)
 
-    assert result, f"Scorekeeper slug {slug} does not exist"
+    assert result, f"Scorekeeper slug {scorekeeper_slug} does not exist"
 
-@pytest.mark.parametrize("slug", ["corva-coleman"])
-def test_scorekeeper_utility_slug_not_exists(slug: str):
+
+@pytest.mark.parametrize("scorekeeper_slug", ["corva-coleman"])
+def test_scorekeeper_utility_slug_not_exists(scorekeeper_slug: str):
     """Negative testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.slug_exists`
 
-    :param slug: Scorekeeper slug string to test if a scorekeeper does
+    :param scorekeeper_slug: Scorekeeper slug string to test if a
+        scorekeeper does
         not exist
-    :type slug: str
+    :type scorekeeper_slug: str
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
-    result = utility.slug_exists(slug)
+    result = utility.slug_exists(scorekeeper_slug)
 
-    assert not result, f"Scorekeeper slug {slug} exists"
+    assert not result, f"Scorekeeper slug {scorekeeper_slug} exists"

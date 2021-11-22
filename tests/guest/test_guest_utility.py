@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wdtm.guest.GuestUtility`
 """
 import json
@@ -10,6 +10,7 @@ from typing import Any, Dict
 
 import pytest
 from wwdtm.guest import GuestUtility
+
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
@@ -25,102 +26,112 @@ def get_connect_dict() -> Dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
-@pytest.mark.parametrize("id", [54])
-def test_guest_utility_convert_id_to_slug(id: int):
+
+@pytest.mark.parametrize("guest_id", [54])
+def test_guest_utility_convert_id_to_slug(guest_id: int):
     """Testing for :py:meth:`wwdtm.guest.GuestUtility.convert_id_to_slug`
 
-    :param id: Guest ID to test converting into guest slug string
-    :type id: int
+    :param guest_id: Guest ID to test converting into guest slug string
+    :type guest_id: int
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
-    slug = utility.convert_id_to_slug(id)
+    slug = utility.convert_id_to_slug(guest_id)
 
-    assert slug, f"Guest slug for ID {id} was not found"
-    assert isinstance(slug, str), f"Invalid value returned for ID {id}"
+    assert slug, f"Guest slug for ID {guest_id} was not found"
+    assert isinstance(slug, str), f"Invalid value returned for ID {guest_id}"
 
-@pytest.mark.parametrize("id", [-54])
-def test_guest_utility_convert_invalid_id_to_slug(id: int):
+
+@pytest.mark.parametrize("guest_id", [-54])
+def test_guest_utility_convert_invalid_id_to_slug(guest_id: int):
     """Negative testing for :py:meth:`wwdtm.guest.GuestUtility.convert_id_to_slug`
 
-    :param id: Guest ID to test failing to convert into guest slug
+    :param guest_id: Guest ID to test failing to convert into guest slug
         string
-    :type id: int
+    :type guest_id: int
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
-    slug = utility.convert_id_to_slug(id)
+    slug = utility.convert_id_to_slug(guest_id)
 
-    assert not slug, f"Guest slug for ID {id} was found"
+    assert not slug, f"Guest slug for ID {guest_id} was found"
 
-@pytest.mark.parametrize("slug", ["tom-hanks", "stephen-colbert"])
-def test_guest_utility_convert_slug_to_id(slug: str):
+
+@pytest.mark.parametrize("guest_slug", ["tom-hanks", "stephen-colbert"])
+def test_guest_utility_convert_slug_to_id(guest_slug: str):
     """Testing for :py:meth:`wwdtm.guest.GuestUtility.convert_slug_to_id`
 
-    :param slug: Guest slug string to test converting into guest ID
-    :type slug: str
+    :param guest_slug: Guest slug string to test converting into guest
+        ID
+    :type guest_slug: str
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
-    id = utility.convert_slug_to_id(slug)
+    id_ = utility.convert_slug_to_id(guest_slug)
 
-    assert id, f"Guest ID for slug {slug} was not found"
-    assert isinstance(id, int), f"Invalid value returned for slug {slug}"
+    assert id_, f"Guest ID for slug {guest_slug} was not found"
+    assert isinstance(id_, int), f"Invalid value returned for slug {guest_slug}"
 
-@pytest.mark.parametrize("slug", ["tom-hanx", "steven-colbert"])
-def test_guest_utility_convert_invalid_slug_to_id(slug: str):
+
+@pytest.mark.parametrize("guest_slug", ["tom-hanx", "steven-colbert"])
+def test_guest_utility_convert_invalid_slug_to_id(guest_slug: str):
     """Negative testing for :py:meth:`wwdtm.guest.GuestUtility.convert_slug_to_id`
 
-    :param slug: Guest slug string to test failing to convert into guest
-        ID
-    :type slug: str
+    :param guest_slug: Guest slug string to test failing to convert into
+        guest ID
+    :type guest_slug: str
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
-    id = utility.convert_slug_to_id(slug)
+    id_ = utility.convert_slug_to_id(guest_slug)
 
-    assert not id, f"Guest ID for slug {slug} was found"
+    assert not id_, f"Guest ID for slug {guest_slug} was found"
 
-@pytest.mark.parametrize("id", [54])
-def test_guest_utility_id_exists(id: int):
+
+@pytest.mark.parametrize("guest_id", [54])
+def test_guest_utility_id_exists(guest_id: int):
     """Testing for :py:meth:`wwdtm.guest.GuestUtility.id_exists`
 
-    :param id: Guest ID to test if a guest exists
-    :type id: int
+    :param guest_id: Guest ID to test if a guest exists
+    :type guest_id: int
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
-    result = utility.id_exists(id)
+    result = utility.id_exists(guest_id)
 
-    assert result, f"Guest ID {id} does not exist"
+    assert result, f"Guest ID {guest_id} does not exist"
 
-@pytest.mark.parametrize("id", [-1])
-def test_guest_utility_id_not_exists(id: int):
+
+@pytest.mark.parametrize("guest_id", [-1])
+def test_guest_utility_id_not_exists(guest_id: int):
     """Negative testing for :py:meth:`wwdtm.guest.GuestUtility.id_exists`
 
-    :param id: Guest ID to test if a guest does not exist
-    :type id: int
+    :param guest_id: Guest ID to test if a guest does not exist
+    :type guest_id: int
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
-    result = utility.id_exists(id)
+    result = utility.id_exists(guest_id)
 
-    assert not result, f"Guest ID {id} exists"
+    assert not result, f"Guest ID {guest_id} exists"
 
-@pytest.mark.parametrize("slug", ["tom-hanks", "stephen-colbert"])
-def test_guest_utility_slug_exists(slug: str):
+
+@pytest.mark.parametrize("guest_slug", ["tom-hanks", "stephen-colbert"])
+def test_guest_utility_slug_exists(guest_slug: str):
     """Testing for :py:meth:`wwdtm.guest.GuestUtility.slug_exists`
 
-    :param slug: Guest slug string to test if a guest exists
-    :type slug: str
+    :param guest_slug: Guest slug string to test if a guest exists
+    :type guest_slug: str
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
-    result = utility.slug_exists(slug)
+    result = utility.slug_exists(guest_slug)
 
-    assert result, f"Guest slug {slug} does not exist"
+    assert result, f"Guest slug {guest_slug} does not exist"
 
-@pytest.mark.parametrize("slug", ["tom-hanx", "steven-colbert"])
-def test_guest_utility_slug_not_exists(slug: str):
+
+@pytest.mark.parametrize("guest_slug", ["tom-hanx", "steven-colbert"])
+def test_guest_utility_slug_not_exists(guest_slug: str):
     """Negative testing for :py:meth:`wwdtm.guest.GuestUtility.slug_exists`
 
-    :param slug: Guest slug string to test if a guest does not exist
-    :type slug: str
+    :param guest_slug: Guest slug string to test if a guest does not
+        exist
+    :type guest_slug: str
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
-    result = utility.slug_exists(slug)
+    result = utility.slug_exists(guest_slug)
 
-    assert not result, f"Guest slug {slug} exists"
+    assert not result, f"Guest slug {guest_slug} exists"

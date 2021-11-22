@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Show Data Utility Functions
 """
 import datetime
@@ -10,6 +10,8 @@ from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
+from wwdtm.validation import valid_int_id
+
 
 class ShowUtility:
     """This class contains supporting functions used to check whether
@@ -42,7 +44,7 @@ class ShowUtility:
     def convert_date_to_id(self,
                            year: int,
                            month: int,
-                           day: int) -> int:
+                           day: int) -> Optional[int]:
         """Converts a show date to the matching show ID value.
 
         :param year: Year portion of a show date
@@ -73,24 +75,22 @@ class ShowUtility:
         return None
 
     @lru_cache(typed=True)
-    def convert_id_to_date(self, id: int) -> str:
+    def convert_id_to_date(self, show_id: int) -> Optional[str]:
         """Converts a show's ID to the matching show date.
 
-        :param id: Show ID
-        :type id: int
+        :param show_id: Show ID
+        :type show_id: int
         :return: Show date, if a match is found
         :rtype: str
         """
-        try:
-            id = int(id)
-        except ValueError:
+        if not valid_int_id(show_id):
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT showdate FROM ww_shows "
                  "WHERE showid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (show_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -131,24 +131,22 @@ class ShowUtility:
         return bool(result)
 
     @lru_cache(typed=True)
-    def id_exists(self, id: int) -> bool:
+    def id_exists(self, show_id: int) -> bool:
         """Checks to see if a show ID exists.
 
-        :param id: Show ID
-        :type id: int
+        :param show_id: Show ID
+        :type show_id: int
         :return: True or False, based on whether the show ID exists
         :rtype: bool
         """
-        try:
-            id = int(id)
-        except ValueError:
+        if not valid_int_id(show_id):
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT showid FROM ww_shows "
                  "WHERE showid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (show_id, ))
         result = cursor.fetchone()
         cursor.close()
 

@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Data Retrieval Functions
 """
 from functools import lru_cache
@@ -13,6 +13,8 @@ from slugify import slugify
 from wwdtm.panelist.appearances import PanelistAppearances
 from wwdtm.panelist.statistics import PanelistStatistics
 from wwdtm.panelist.utility import PanelistUtility
+from wwdtm.validation import valid_int_id
+
 
 class Panelist:
     """This class contains functions used to retrieve panelist data
@@ -49,7 +51,8 @@ class Panelist:
         name and slug string for all panelists.
 
         :return: List of all panelists and their corresponding
-            information
+            information. If panelists could not be retrieved, an empty
+            list is returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -63,7 +66,7 @@ class Panelist:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         panelists = []
         for row in results:
@@ -83,7 +86,8 @@ class Panelist:
         name, slug string and appearance information for all panelists.
 
         :return: List of all panelists and their corresponding
-            information and appearances
+            information and appearances. If panelists could not be
+            retrieved, an empty list is returned.
         :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -97,19 +101,19 @@ class Panelist:
         cursor.close()
 
         if not results:
-            return None
+            return []
 
         panelists = []
         for row in results:
-            id = row["id"]
+            id_ = row["id"]
             panelist = {
-                "id": id,
+                "id": id_,
                 "name": row["panelist"],
                 "slug": row["slug"] if row["slug"] else slugify(row["panelist"]),
                 "gender": row["gender"],
-                "statistics": self.statistics.retrieve_statistics_by_id(id),
-                "bluff": self.statistics.retrieve_bluffs_by_id(id),
-                "appearances": self.appearances.retrieve_appearances_by_id(id),
+                "statistics": self.statistics.retrieve_statistics_by_id(id_),
+                "bluff": self.statistics.retrieve_bluffs_by_id(id_),
+                "appearances": self.appearances.retrieve_appearances_by_id(id_),
             }
 
             panelists.append(panelist)
@@ -120,7 +124,8 @@ class Panelist:
         """Returns a list of all panelist IDs from the database, sorted
         by panelist name.
 
-        :return: List of all panelist IDs
+        :return: List of all panelist IDs. If panelist IDs could not be
+            retrieved, an empty list is returned.
         :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -132,7 +137,7 @@ class Panelist:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:
@@ -144,7 +149,8 @@ class Panelist:
         """Returns a list of all panelist slug strings from the
         database, sorted by panelist name.
 
-        :return: List of all panelist slug strings
+        :return: List of all panelist slug strings. If panelist slug
+            strings could not be retrieved, an empty list is returned.
         :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -156,7 +162,7 @@ class Panelist:
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         ids = []
         for row in result:
@@ -165,19 +171,19 @@ class Panelist:
         return ids
 
     @lru_cache(typed=True)
-    def retrieve_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_by_id(self, panelist_id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing panelist ID, name and
         slug string for the requested panelist ID.
 
-        :param id: Panelist ID
-        :type id: int
-        :return: Dictionary containing panelist information
+        :param panelist_id: Panelist ID
+        :type panelist_id: int
+        :return: Dictionary containing panelist information. If panelist
+            information could not be retrieved, an empty dictionary is
+            returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id = int(id)
-        except ValueError:
-            return None
+        if not valid_int_id(panelist_id):
+            return {}
 
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT panelistid AS id, panelist, panelistslug AS slug, "
@@ -185,12 +191,12 @@ class Panelist:
                  "FROM ww_panelists "
                  "WHERE panelistid = %s "
                  "LIMIT 1;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (panelist_id, ))
         result = cursor.fetchone()
         cursor.close()
 
         if not result:
-            return None
+            return {}
 
         info = {
             "id": result["id"],
@@ -202,75 +208,77 @@ class Panelist:
         return info
 
     @lru_cache(typed=True)
-    def retrieve_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_by_slug(self, panelist_slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing panelist ID, name and
         slug string for the requested panelist slug string.
 
-        :param slug: Panelist slug string
-        :type slug: str
-        :return: Dictionary containing panelist information
+        :param panelist_slug: Panelist slug string
+        :type panelist_slug: str
+        :return: Dictionary containing panelist information. If panelist
+            information could not be retrieved, an empty dictionary is
+            returned.
         :rtype: Dict[str, Any]
         """
         try:
-            slug = slug.strip()
+            slug = panelist_slug.strip()
             if not slug:
-                return False
+                return {}
         except AttributeError:
-            return False
+            return {}
 
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
-            return None
+        id_ = self.utility.convert_slug_to_id(slug)
+        if not id_:
+            return {}
 
-        return self.retrieve_by_id(id)
+        return self.retrieve_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_details_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_details_by_id(self, panelist_id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing panelist ID, name, slug
         string and appearance information for the requested panelist ID.
 
-        :param id: Panelist ID
-        :type id: int
+        :param panelist_id: Panelist ID
+        :type panelist_id: int
         :return: Dictionary containing panelist information and their
-            appearances
+            appearances. If panelist information could not be retrieved,
+            an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
-        try:
-            id = int(id)
-        except ValueError:
-            return None
+        if not valid_int_id(panelist_id):
+            return {}
 
-        info = self.retrieve_by_id(id)
+        info = self.retrieve_by_id(panelist_id)
         if not info:
-            return None
+            return {}
 
-        info["statistics"] = self.statistics.retrieve_statistics_by_id(id)
-        info["bluffs"] = self.statistics.retrieve_bluffs_by_id(id)
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(id)
+        info["statistics"] = self.statistics.retrieve_statistics_by_id(panelist_id)
+        info["bluffs"] = self.statistics.retrieve_bluffs_by_id(panelist_id)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(panelist_id)
 
         return info
 
     @lru_cache(typed=True)
-    def retrieve_details_by_slug(self, slug: str) -> Dict[str, Any]:
+    def retrieve_details_by_slug(self, panelist_slug: str) -> Dict[str, Any]:
         """Returns a dictionary object containing panelist ID, name, slug
         string and appearance information for the requested Panelist slug
         string.
 
-        :param slug: Panelist slug string
-        :type slug: str
+        :param panelist_slug: Panelist slug string
+        :type panelist_slug: str
         :return: Dictionary containing panelist information and their
-            appearances
+            appearances. If panelist information could not be retrieved,
+            an empty dictionary is returned.
         :rtype: Dict[str, Any]
         """
         try:
-            slug = slug.strip()
+            slug = panelist_slug.strip()
             if not slug:
-                return False
+                return {}
         except AttributeError:
-            return False
+            return {}
 
-        id = self.utility.convert_slug_to_id(slug)
-        if not id:
-            return None
+        id_ = self.utility.convert_slug_to_id(slug)
+        if not id_:
+            return {}
 
-        return self.retrieve_details_by_id(id)
+        return self.retrieve_details_by_id(id_)

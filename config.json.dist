@@ -6,7 +6,7 @@
         "database": "",
         "port": 3306,
         "raise_on_warnings": true,
-        "compress": true,
+        "compress": false,
         "charset": "",
         "collation": ""
     }

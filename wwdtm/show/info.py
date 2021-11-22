@@ -2,7 +2,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
 # Copyright (c) 2018-2021 Linh Pham
-# wwdtm is relased under the terms of the Apache License 2.0
+# wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Supplemental Show Information
 Retrieval Functions
 """
@@ -10,10 +10,11 @@ from functools import lru_cache
 from typing import Any, Dict, List, Optional
 
 from mysql.connector import connect
-from mysql.connector.errors import DatabaseError, ProgrammingError
 from slugify import slugify
 from wwdtm.show.utility import ShowUtility
 from wwdtm.location.location import LocationUtility
+from wwdtm.validation import valid_int_id
+
 
 class ShowInfo:
     """This class contains functions that retrieve show supplemental
@@ -46,16 +47,19 @@ class ShowInfo:
         self.loc_util = LocationUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
-    def retrieve_bluff_info_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_bluff_info_by_id(self, show_id: int) -> Dict[str, Any]:
         """Returns a dictionary containing Bluff the Listener information
         for the requested show ID.
 
-        :param id: Show ID
-        :type id: int
+        :param show_id: Show ID
+        :type show_id: int
         :return: Dictionary containing correct and chosen Bluff the
-            Listener information
+            Listener information.
         :rtype: Dict[str, Any]
         """
+        if not valid_int_id(show_id):
+            return {}
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT blm.chosenbluffpnlid AS id, "
                  "p.panelist AS name, p.panelistslug As slug "
@@ -64,7 +68,7 @@ class ShowInfo:
                  "JOIN ww_panelists p ON "
                  "p.panelistid = blm.chosenbluffpnlid "
                  "WHERE s.showid = %s;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (show_id, ))
         chosen_result = cursor.fetchone()
 
         if chosen_result:
@@ -83,7 +87,7 @@ class ShowInfo:
                  "JOIN ww_panelists p ON "
                  "p.panelistid = blm.correctbluffpnlid "
                  "WHERE s.showid = %s;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (show_id, ))
         correct_result = cursor.fetchone()
         cursor.close()
 
@@ -104,16 +108,20 @@ class ShowInfo:
         return bluff_info
 
     @lru_cache(typed=True)
-    def retrieve_core_info_by_id(self, id: int) -> Dict[str, Any]:
+    def retrieve_core_info_by_id(self, show_id: int) -> Dict[str, Any]:
         """Returns a dictionary with core information for the requested
         show ID.
 
-        :param id: Show ID
-        :type id: int
+        :param show_id: Show ID
+        :type show_id: int
         :return: Dictionary containing host, scorekeeper, location,
-            description and notes
+            description and notes. If show core information could not be
+            retrieved, an empty dictionary will be returned.
         :rtype: Dict[str, Any]
         """
+        if not valid_int_id(show_id):
+            return {}
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT s.showid, s.showdate, s.bestof, "
                  "s.repeatshowid, l.locationid, l.city, l.state, "
@@ -133,12 +141,12 @@ class ShowInfo:
                  "JOIN ww_showdescriptions sd ON sd.showid = s.showid "
                  "JOIN ww_shownotes sn ON sn.showid = s.showid "
                  "WHERE s.showid = %s;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (show_id, ))
         result = cursor.fetchone()
         cursor.close()
 
         if not result:
-            return None
+            return {}
 
         location_info = {
             "id": result["locationid"],
@@ -149,7 +157,7 @@ class ShowInfo:
         }
 
         if not result["locationslug"]:
-            location_info["slug"] = self.loc_util.slugify_location(id=result["locationid"],
+            location_info["slug"] = self.loc_util.slugify_location(location_id=result["locationid"],
                                                                    venue=result["venue"],
                                                                    city=result["city"],
                                                                    state=result["state"])
@@ -180,7 +188,7 @@ class ShowInfo:
             notes = None
 
         show_info = {
-            "id": id,
+            "id": show_id,
             "date": result["showdate"].isoformat(),
             "best_of": bool(result["bestof"]),
             "repeat_show": bool(result["repeatshowid"]),
@@ -205,15 +213,20 @@ class ShowInfo:
         return show_info
 
     @lru_cache(typed=True)
-    def retrieve_guest_info_by_id(self, id: int) -> List[Dict[str, Any]]:
+    def retrieve_guest_info_by_id(self, show_id: int) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing Not My Job
         guest information for the requested show ID.
 
-        :param id: Show ID
-        :type id: int
-        :return: Dictionary containing Not My Job guest information
+        :param show_id: Show ID
+        :type show_id: int
+        :return: Dictionary containing Not My Job guest information. If
+            Not My Job information could not be retrieved, an empty list
+            will be returned.
         :rtype: List[Dict[str, Any]]
         """
+        if not valid_int_id(show_id):
+            return []
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT gm.guestid AS id, g.guest AS name, "
                  "g.guestslug AS slug, gm.guestscore AS score, "
@@ -223,12 +236,12 @@ class ShowInfo:
                  "JOIN ww_shows s on s.showid = gm.showid "
                  "WHERE gm.showid = %s "
                  "ORDER by gm.showguestmapid ASC;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (show_id, ))
         result = cursor.fetchall()
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         guests = []
         for guest in result:
@@ -236,8 +249,8 @@ class ShowInfo:
                 "id": guest["id"],
                 "name": guest["name"],
                 "slug": guest["slug"] if guest["slug"] else slugify(guest["name"]),
-                "score": guest["score"],
-                "score_exception": guest["score_exception"],
+                "score": guest["score"] if guest["score"] else None,
+                "score_exception": bool(guest["score_exception"]),
             }
 
             guests.append(info)
@@ -245,16 +258,20 @@ class ShowInfo:
         return guests
 
     @lru_cache(typed=True)
-    def retrieve_panelist_info_by_id(self, id: int) -> List[Dict[str, Any]]:
+    def retrieve_panelist_info_by_id(self, show_id: int) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing panelist
         information for the requested show ID.
 
-        :param id: Show ID
-        :type id: int
+        :param show_id: Show ID
+        :type show_id: int
         :return: List of panelists with corresponding scores and
-            ranking information
+            ranking information. If panelist information could not be
+            retrieved, an empty list will be returned.
         :rtype: List[Dict[str, Any]]
         """
+        if not valid_int_id(show_id):
+            return []
+
         cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT pm.panelistid AS id, p.panelist AS name, "
                  "p.panelistslug AS slug, "
@@ -265,12 +282,12 @@ class ShowInfo:
                  "JOIN ww_panelists p on p.panelistid = pm.panelistid "
                  "WHERE pm.showid = %s "
                  "ORDER by pm.panelistscore DESC, pm.showpnlmapid ASC;")
-        cursor.execute(query, (id, ))
+        cursor.execute(query, (show_id, ))
         result = cursor.fetchall()
         cursor.close()
 
         if not result:
-            return None
+            return []
 
         panelists = []
         for row in result:
@@ -278,10 +295,10 @@ class ShowInfo:
                 "id": row["id"],
                 "name": row["name"],
                 "slug": row["slug"] if row["slug"] else slugify(row["name"]),
-                "lightning_round_start": row["start"],
-                "lightning_round_correct": row["correct"],
-                "score": row["score"],
-                "rank": row["rank"],
+                "lightning_round_start": row["start"] if row["start"] else None,
+                "lightning_round_correct": row["correct"] if row["correct"] else None,
+                "score": row["score"] if row["score"] else None,
+                "rank": row["rank"] if row["rank"] else None,
             }
 
             panelists.append(info)
