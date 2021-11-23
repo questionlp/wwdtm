@@ -38,7 +38,7 @@ Conduct. A copy of the `Code of Conduct`_ document is included in this
 repository.
 
 .. _Contributor Convenant's: https://www.contributor-covenant.org/
-.. _Code of Conduct: https://github.com/questionlp/wwdtm/CODE_OF_CONDUCT.md
+.. _Code of Conduct: https://github.com/questionlp/wwdtm/blob/main/CODE_OF_CONDUCT.md
 
 License
 =======
@@ -47,4 +47,4 @@ This library is licensed under the terms of the `Apache License 2.0`_.
 
 .. _libwwdtm: https://github.com/questionlp/libwwdtm
 .. _Wait Wait Stats Database: https://github.com/questionlp/wwdtm_database
-.. _Apache License 2.0: https://github.com/questionlp/wwdtm/LICENSE
+.. _Apache License 2.0: https://github.com/questionlp/wwdtm/blob/main/LICENSE
