@@ -38,7 +38,7 @@ html_theme = "flask"
 
 html_context = {
     "project_links": [
-        ProjectLink("Github", "https://github.com/questionlp"),
+        ProjectLink("GitHub", "https://github.com/questionlp"),
         ProjectLink("Repository", "https://github.com/questionlp/wwdtm"),
     ]
 }
@@ -66,7 +66,7 @@ html_css_files = [
     "css/custom.css",
 ]
 
-html_show_sourcelink = False
+html_show_sourcelink = True
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None)
