@@ -9,4 +9,3 @@ Functions
 
 .. automodule:: wwdtm.validation
     :members:
-    :inherited-members:
