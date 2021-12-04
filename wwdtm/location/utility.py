@@ -15,8 +15,8 @@ from wwdtm.validation import valid_int_id
 
 class LocationUtility:
     """This class contains supporting functions used to check whether
-    or not a Location ID or slug string exists or to convert an ID to a
-    slug string, or vice versa.
+    a Location ID or slug string exists or to convert an ID to a slug
+    string, or vice versa.
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
@@ -73,7 +73,7 @@ class LocationUtility:
 
         :param location_slug: Location slug string
         :type location_slug: str
-        :return: Location ID, if a match if found
+        :return: Location ID, if a match is found
         :rtype: int
         """
         try:

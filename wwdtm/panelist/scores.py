@@ -178,7 +178,7 @@ class PanelistScores:
     @lru_cache(typed=True)
     def retrieve_scores_grouped_ordered_pair_by_id(self, panelist_id: int
                                                    ) -> List[Tuple[int, int]]:
-        """Returns an list of tuples containing a score and the
+        """Returns a list of tuples containing a score and the
         corresponding number of instances a panelist has scored that amount
         for the requested panelist ID.
 
@@ -234,7 +234,7 @@ class PanelistScores:
     @lru_cache(typed=True)
     def retrieve_scores_grouped_ordered_pair_by_slug(self, panelist_slug: str,
                                                      ) -> List[Tuple[int, int]]:
-        """Returns an list of tuples containing a score and the
+        """Returns a list of tuples containing a score and the
         corresponding number of instances a panelist has scored that amount
         for the requested panelist slug string.
 
@@ -319,7 +319,7 @@ class PanelistScores:
     @lru_cache(typed=True)
     def retrieve_scores_ordered_pair_by_id(self, panelist_id: int
                                            ) -> List[Tuple[str, int]]:
-        """Returns an list of tuples containing a show date and the
+        """Returns a list of tuples containing a show date and the
         corresponding score for the requested panelist ID.
 
         :param panelist_id: Panelist ID
@@ -358,7 +358,7 @@ class PanelistScores:
     @lru_cache(typed=True)
     def retrieve_scores_ordered_pair_by_slug(self, panelist_slug: str,
                                              ) -> List[Tuple[str, int]]:
-        """Returns an list of tuples containing a show date and the
+        """Returns a list of tuples containing a show date and the
         corresponding score for the requested panelist slug string.
 
         :param panelist_slug: Panelist slug string

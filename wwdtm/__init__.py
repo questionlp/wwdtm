@@ -25,4 +25,4 @@ from wwdtm.scorekeeper import (Scorekeeper,
                                ScorekeeperAppearances,
                                ScorekeeperUtility)
 
-VERSION = "2.0.0-alpha.2"
+VERSION = "2.0.0-alpha.3"

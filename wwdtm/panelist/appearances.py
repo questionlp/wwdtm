@@ -12,6 +12,7 @@ from mysql.connector import connect
 from wwdtm.panelist.utility import PanelistUtility
 from wwdtm.validation import valid_int_id
 
+
 class PanelistAppearances:
     """This class contains functions that retrieve panelist appearance
     information from a copy of the Wait Wait Stats database.

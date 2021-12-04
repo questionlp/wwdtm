@@ -251,11 +251,11 @@ class Show:
         """Returns a dictionary object containing show ID, show date,
         Best Of and Repeat Show information for the requested show date.
 
-        :param year: Four digit year
+        :param year: Four-digit year
         :type year: int
-        :param month: One or two digit month
+        :param month: One or two-digit month
         :type month: int
-        :param day: One or two digit day
+        :param day: One or two-digit day
         :type day: int
         :return: Dictionary containing show information. If show
             information could not be retrieved, an empty dictionary will
@@ -340,7 +340,7 @@ class Show:
         """Returns a list of dictionary objects containing with show
         information for the requested year, sorted by show date.
 
-        :param year: Four digit year
+        :param year: Four-digit year
         :type year: int
         :return: List of shows for the requested year and corresponding
             information. If show information could not be retrieved,
@@ -378,13 +378,13 @@ class Show:
         information for the requested year and month, sorted by show
         date.
 
-        :param year: Four digit year
+        :param year: Four-digit year
         :type year: int
-        :param month: One or two digit month
+        :param month: One or two-digit month
         :type month: int
         :return: List of shows for the requested year and month, and
             corresponding information. If show information could not be
-            retrieved, an list dictionary will be returned.
+            retrieved, a list of dictionaries will be returned.
         :rtype: List[Dict[str, Any]]
         """
         try:
@@ -420,9 +420,9 @@ class Show:
         show date, host, scorekeeper, panelist and guest information
         for the requested show date.
 
-        :param year: Four digit year
+        :param year: Four-digit year
         :type year: int
-        :param month: One or two digit month
+        :param month: One or two-digit month
         :type month: int
         :param day: One or two digit day
         :type day: int
@@ -494,7 +494,7 @@ class Show:
         show date, host, scorekeeper, panelist and guest information for
         the requested year, sorted by show date.
 
-        :param year: Four digit year
+        :param year: Four-digit year
         :type year: int
         :return: List of shows for the requested year and corresponding
             details. If show information could not be retrieved, an
@@ -531,9 +531,9 @@ class Show:
         show date, host, scorekeeper, panelist and guest information for
         the requested year and month, sorted by show date.
 
-        :param year: Four digit year
+        :param year: Four-digit year
         :type year: int
-        :param month: One or two digit month
+        :param month: One or two-digit month
         :type month: int
         :return: List of shows for the requested year and month, and
             corresponding details. If show information could not be
@@ -570,7 +570,7 @@ class Show:
         """Returns a list of show months available for the requested
         year, sorted by month.
 
-        :param year: Four digit year
+        :param year: Four-digit year
         :type year: int
         :return: List of available show months. If show information
             could not be retrieved, an empty list will be returned.
@@ -702,7 +702,7 @@ class Show:
         """Returns a list of tuples containing panelist scores for all
         shows in the requested year, sorted by show date.
 
-        :param year: Four digit year
+        :param year: Four-digit year
         :type year: int
         :return: List of tuples each containing show date and panelist
             scores. If show scores could not be retrieved, an empty list

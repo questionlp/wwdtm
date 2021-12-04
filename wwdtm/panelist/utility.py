@@ -14,8 +14,8 @@ from wwdtm.validation import valid_int_id
 
 class PanelistUtility:
     """This class contains supporting functions used to check whether
-    or not a panelist ID or slug string exists or to convert an ID to a
-    slug string, or vice versa.
+    a panelist ID or slug string exists or to convert an ID to a slug
+    string, or vice versa.
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect

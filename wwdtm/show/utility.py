@@ -15,8 +15,8 @@ from wwdtm.validation import valid_int_id
 
 class ShowUtility:
     """This class contains supporting functions used to check whether
-    or not a show ID or show date exists or to convert between show ID,
-    and show dates.
+    a show ID or show date exists or to convert between show ID, and
+    show dates.
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
