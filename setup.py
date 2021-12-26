@@ -9,10 +9,10 @@ from setuptools import setup
 
 setup(name="wwdtm",
       install_requires=[
-          "mysql-connector-python==8.0.26",
-          "numpy==1.21.2",
+          "mysql-connector-python==8.0.27",
+          "numpy==1.21.5",
           "python-dateutil==2.8.2",
-          "python-slugify==5.0.1",
-          "pytz==2021.1",
+          "python-slugify==5.0.2",
+          "pytz==2021.3",
       ]
-)
+      )
