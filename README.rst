@@ -30,6 +30,11 @@ Running Tests
 Included in this repository are tests that are written for use with ``pytest``.
 To run the tests, simply run: ``pytest`` from the root of the repository.
 
+A performance testing script is also included in the repository named,
+``perf_test.py`` that tests the core class methods. This script can be used
+to create a performance baseline and also used to track changes in performance
+between code changes or configuration changes.
+
 Documentation
 =============
 
