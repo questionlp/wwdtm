@@ -3,8 +3,7 @@
 #
 # Copyright (c) 2018-2021 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Stats: Panelist module
-"""
+"""Wait Wait Stats: Panelist module"""
 from wwdtm.panelist.appearances import PanelistAppearances
 from wwdtm.panelist.panelist import Panelist
 from wwdtm.panelist.scores import PanelistScores
