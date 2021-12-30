@@ -56,7 +56,7 @@ class HostAppearances:
         if not valid_int_id(host_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT ( "
                  "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
                  "JOIN ww_shows s ON s.showid = hm.showid "
@@ -70,8 +70,8 @@ class HostAppearances:
 
         if result:
             appearance_counts = {
-                "regular_shows": result["regular_shows"],
-                "all_shows": result["all_shows"],
+                "regular_shows": result.regular_shows,
+                "all_shows": result.all_shows,
             }
         else:
             appearance_counts = {
@@ -79,9 +79,8 @@ class HostAppearances:
                 "all_shows": 0,
             }
 
-        cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT hm.showid AS show_id, s.showdate AS date, "
-                 "s.bestof AS best_of, s.repeatshowid, "
+                 "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
                  "hm.guest FROM ww_showhostmap hm "
                  "JOIN ww_hosts h ON h.hostid = hm.hostid "
                  "JOIN ww_shows s ON s.showid = hm.showid "
@@ -95,25 +94,23 @@ class HostAppearances:
             appearances = []
             for appearance in results:
                 info = {
-                    "show_id": appearance["show_id"],
-                    "date": appearance["date"].isoformat(),
-                    "best_of": bool(appearance["best_of"]),
-                    "repeat_show": bool(appearance["repeatshowid"]),
-                    "guest": bool(appearance["guest"]),
+                    "show_id": appearance.show_id,
+                    "date": appearance.date.isoformat(),
+                    "best_of": bool(appearance.best_of),
+                    "repeat_show": bool(appearance.repeat_show_id),
+                    "guest": bool(appearance.guest),
                 }
                 appearances.append(info)
 
-            appearance_info = {
+            return {
                 "count": appearance_counts,
                 "shows": appearances,
             }
         else:
-            appearance_info = {
+            return {
                 "count": appearance_counts,
                 "shows": [],
             }
-
-        return appearance_info
 
     @lru_cache(typed=True)
     def retrieve_appearances_by_slug(self, host_slug: str) -> Dict[str, Any]:

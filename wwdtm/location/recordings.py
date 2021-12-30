@@ -56,7 +56,7 @@ class LocationRecordings:
         if not valid_int_id(location_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT ( "
                  "SELECT COUNT(lm.showid) FROM ww_showlocationmap lm "
                  "JOIN ww_shows s ON s.showid = lm.showid "
@@ -69,13 +69,12 @@ class LocationRecordings:
         result = cursor.fetchone()
 
         recording_counts = {
-            "regular_shows": result["regular_shows"],
-            "all_shows": result["all_shows"],
+            "regular_shows": result.regular_shows,
+            "all_shows": result.all_shows,
         }
 
-        cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT lm.showid AS show_id, s.showdate AS date, "
-                 "s.bestof AS best_of, s.repeatshowid "
+                 "s.bestof AS best_of, s.repeatshowid AS repeat_show_id "
                  "FROM ww_showlocationmap lm "
                  "JOIN ww_shows s ON s.showid = lm.showid "
                  "WHERE lm.locationid = %s "
@@ -88,24 +87,22 @@ class LocationRecordings:
             recordings = []
             for recording in results:
                 info = {
-                    "show_id": recording["show_id"],
-                    "date": recording["date"].isoformat(),
-                    "best_of": bool(recording["best_of"]),
-                    "repeat_show": bool(recording["repeatshowid"]),
+                    "show_id": recording.show_id,
+                    "date": recording.date.isoformat(),
+                    "best_of": bool(recording.best_of),
+                    "repeat_show": bool(recording.repeat_show_id),
                 }
                 recordings.append(info)
 
-            recording_info = {
+            return {
                 "count": recording_counts,
                 "shows": recordings,
             }
         else:
-            recording_info = {
+            return {
                 "count": recording_counts,
                 "shows": [],
             }
-
-        return recording_info
 
     @lru_cache(typed=True)
     def retrieve_recordings_by_slug(self, location_slug: str) -> Dict[str, Any]:

@@ -55,7 +55,7 @@ class Location:
             list is returned.
         :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT locationid AS id, city, state, venue, "
                  "locationslug AS slug "
                  "FROM ww_locations "
@@ -74,19 +74,16 @@ class Location:
 
         locations = []
         for row in results:
-            slug = self.utility.slugify_location(location_id=row["id"],
-                                                 venue=row["venue"],
-                                                 city=row["city"],
-                                                 state=row["state"])
-            location = {
-                "id": row["id"],
-                "city": row["city"],
-                "state": row["state"],
-                "venue": row["venue"],
-                "slug": row["slug"] if row["slug"] else slug,
-            }
-
-            locations.append(location)
+            locations.append({
+                "id": row.id,
+                "city": row.city,
+                "state": row.state,
+                "venue": row.venue,
+                "slug": row.slug if row.slug else self.utility.slugify_location(location_id=row.id,
+                                                                                venue=row.venue,
+                                                                                city=row.city,
+                                                                                state=row.state),
+            })
 
         return locations
 
@@ -104,7 +101,7 @@ class Location:
             retrieved, an empty list is returned.
         :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT locationid AS id, city, state, venue, "
                  "locationslug AS slug "
                  "FROM ww_locations "
@@ -122,21 +119,17 @@ class Location:
 
         locations = []
         for row in results:
-            slug = self.utility.slugify_location(location_id=row["id"],
-                                                 venue=row["venue"],
-                                                 city=row["city"],
-                                                 state=row["state"])
-            recordings = self.recordings.retrieve_recordings_by_id(row["id"])
-            location = {
-                "id": row["id"],
-                "city": row["city"],
-                "state": row["state"],
-                "venue": row["venue"],
-                "slug": row["slug"] if row["slug"] else slug,
-                "recordings": recordings,
-            }
-
-            locations.append(location)
+            locations.append({
+                "id": row.id,
+                "city": row.city,
+                "state": row.state,
+                "venue": row.venue,
+                "slug": row.slug if row.slug else self.utility.slugify_location(location_id=row.id,
+                                                                                venue=row.venue,
+                                                                                city=row.city,
+                                                                                state=row.state),
+                "recordings": self.recordings.retrieve_recordings_by_id(row.id),
+            })
 
         return locations
 
@@ -158,17 +151,13 @@ class Location:
         else:
             query = query + "ORDER BY state ASC, city ASC, venue ASC;"
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0])
-
-        return ids
+        return [v[0] for v in results]
 
     def retrieve_all_slugs(self, sort_by_venue: bool = False) -> List[str]:
         """Returns a list of all location slug strings from the
@@ -189,17 +178,13 @@ class Location:
         else:
             query = query + "ORDER BY state ASC, city ASC, venue ASC;"
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0])
-
-        return ids
+        return [v[0] for v in results]
 
     @lru_cache(typed=True)
     def retrieve_by_id(self, location_id: int) -> Dict[str, Any]:
@@ -216,7 +201,7 @@ class Location:
         if not valid_int_id(location_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT locationid AS id, city, state, venue, "
                  "locationslug AS slug "
                  "FROM ww_locations "
@@ -229,19 +214,16 @@ class Location:
         if not result:
             return {}
 
-        slug = self.utility.slugify_location(location_id=result["id"],
-                                             venue=result["venue"],
-                                             city=result["city"],
-                                             state=result["state"])
-        location = {
-            "id": result["id"],
-            "city": result["city"],
-            "state": result["state"],
-            "venue": result["venue"],
-            "slug": result["slug"] if result["slug"] else slug,
+        return {
+            "id": result.id,
+            "city": result.city,
+            "state": result.state,
+            "venue": result.venue,
+            "slug": result.slug if result.slug else self.utility.slugify_location(location_id=result.id,
+                                                                                  venue=result.venue,
+                                                                                  city=result.city,
+                                                                                  state=result.state),
         }
-
-        return location
 
     @lru_cache(typed=True)
     def retrieve_by_slug(self, location_slug: str) -> Dict[str, Any]:

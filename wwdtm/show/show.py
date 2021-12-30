@@ -54,9 +54,9 @@ class Show:
             will be returned.
         :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT showid AS id, showdate AS date, "
-                 "bestof AS best_of, repeatshowid "
+                 "bestof AS best_of, repeatshowid AS repeat_show_id "
                  "FROM ww_shows "
                  "ORDER BY showdate ASC;")
         cursor.execute(query)
@@ -68,17 +68,16 @@ class Show:
 
         shows = []
         for row in results:
-            repeat_show_id = row["repeatshowid"]
             show = {
-                "id": row["id"],
-                "date": row["date"].isoformat(),
-                "best_of": bool(row["best_of"]),
-                "repeat_show": bool(repeat_show_id),
+                "id": row.id,
+                "date": row.date.isoformat(),
+                "best_of": bool(row.best_of),
+                "repeat_show": bool(row.repeat_show_id),
             }
 
-            if repeat_show_id:
-                show["original_show_id"] = repeat_show_id
-                show["original_show_date"] = self.utility.convert_id_to_date(repeat_show_id)
+            if row.repeat_show_id:
+                show["original_show_id"] = row.repeat_show_id
+                show["original_show_date"] = self.utility.convert_id_to_date(row.repeat_show_id)
 
             shows.append(show)
 
@@ -94,7 +93,7 @@ class Show:
             will be returned.
         :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT showid AS id FROM ww_shows "
                  "ORDER BY showdate ASC;")
         cursor.execute(query)
@@ -106,12 +105,11 @@ class Show:
 
         shows = []
         for row in results:
-            id_ = row["id"]
-            info = self.info.retrieve_core_info_by_id(id_)
+            info = self.info.retrieve_core_info_by_id(row.id)
             if info:
-                info["panelists"] = self.info.retrieve_panelist_info_by_id(id_)
-                info["bluff"] = self.info.retrieve_bluff_info_by_id(id_)
-                info["guests"] = self.info.retrieve_guest_info_by_id(id_)
+                info["panelists"] = self.info.retrieve_panelist_info_by_id(row.id)
+                info["bluff"] = self.info.retrieve_bluff_info_by_id(row.id)
+                info["guests"] = self.info.retrieve_guest_info_by_id(row.id)
 
             shows.append(info)
 
@@ -129,17 +127,13 @@ class Show:
         query = ("SELECT showid FROM ww_shows "
                  "ORDER BY showdate ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0])
-
-        return ids
+        return [[v[0] for v in results]]
 
     def retrieve_all_dates(self) -> List[str]:
         """Returns a list of all show dates from the database, sorted
@@ -153,17 +147,13 @@ class Show:
         query = ("SELECT showdate FROM ww_shows "
                  "ORDER BY showdate ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0].isoformat())
-
-        return ids
+        return [[v[0].isoformat() for v in results]]
 
     def retrieve_all_dates_tuple(self) -> List[Tuple[int, int, int]]:
         """Returns a list of all show dates as a tuple of year, month,
@@ -179,17 +169,13 @@ class Show:
                  "FROM ww_shows "
                  "ORDER BY showdate ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        show_dates = []
-        for show in result:
-            show_dates.append((show[0], show[1], show[2]))
-
-        return show_dates
+        return [tuple(v) for v in results]
 
     def retrieve_all_show_years_months(self) -> List[str]:
         """Returns a list of all show years and months as a string,
@@ -205,17 +191,13 @@ class Show:
                  "FROM ww_shows "
                  "ORDER BY showdate ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        show_years_months = []
-        for row in result:
-            show_years_months.append(f"{row[0]}-{row[1]}")
-
-        return show_years_months
+        return [f"{v[0]}-{v[1]}" for v in results]
 
     def retrieve_all_shows_years_months_tuple(self) -> List[Tuple[int, int]]:
         """Returns a list of all show years and months as a tuple of
@@ -231,17 +213,13 @@ class Show:
                  "FROM ww_shows "
                  "ORDER BY showdate ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        show_years_months = []
-        for row in result:
-            show_years_months.append((row[0], row[1]))
-
-        return show_years_months
+        return [tuple(v) for v in results]
 
     @lru_cache(typed=True)
     def retrieve_by_date(self,
@@ -308,9 +286,9 @@ class Show:
         if not valid_int_id(show_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT showid AS id, showdate AS date, "
-                 "bestof AS best_of, repeatshowid "
+                 "bestof AS best_of, repeatshowid AS repeat_show_id "
                  "FROM ww_shows "
                  "WHERE showid = %s "
                  "LIMIT 1;")
@@ -321,17 +299,16 @@ class Show:
         if not result:
             return {}
 
-        repeat_show_id = result["repeatshowid"]
         info = {
-            "id": result["id"],
-            "date": result["date"].isoformat(),
-            "best_of": bool(result["best_of"]),
-            "repeat_show": bool(repeat_show_id),
+            "id": result.id,
+            "date": result.date.isoformat(),
+            "best_of": bool(result.best_of),
+            "repeat_show": bool(result.repeat_show_id),
         }
 
-        if repeat_show_id:
-            info["original_show_id"] = repeat_show_id
-            info["original_show_date"] = self.utility.convert_id_to_date(repeat_show_id)
+        if result.repeat_show_id:
+            info["original_show_id"] = result.repeat_show_id
+            info["original_show_date"] = self.utility.convert_id_to_date(result.repeat_show_id)
 
         return info
 
@@ -352,23 +329,18 @@ class Show:
         except ValueError:
             return []
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT showid FROM ww_shows "
                  "WHERE YEAR(showdate) = %s "
                  "ORDER BY showdate ASC;")
         cursor.execute(query, (parsed_year.year, ))
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        shows = []
-        for show in result:
-            show_info = self.retrieve_by_id(show["showid"])
-            shows.append(show_info)
-
-        return shows
+        return [self.retrieve_by_id(v[0]) for v in results]
 
     @lru_cache(typed=True)
     def retrieve_by_year_month(self,
@@ -392,24 +364,19 @@ class Show:
         except ValueError:
             return []
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT showid FROM ww_shows "
                  "WHERE YEAR(showdate) = %s "
                  "AND MONTH(showdate) = %s ORDER BY showdate ASC;")
         cursor.execute(query, (parsed_year_month.year,
                                parsed_year_month.month, ))
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        shows = []
-        for show in result:
-            show_info = self.retrieve_by_id(show["showid"])
-            shows.append(show_info)
-
-        return shows
+        return [self.retrieve_by_id(v[0]) for v in results]
 
     @lru_cache(typed=True)
     def retrieve_details_by_date(self,
@@ -506,22 +473,18 @@ class Show:
         except ValueError:
             return []
 
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT showid AS id FROM ww_shows "
+        cursor = self.database_connection.cursor(dictionary=False)
+        query = ("SELECT showid FROM ww_shows "
                  "WHERE YEAR(showdate) = %s "
                  "ORDER BY showdate ASC;")
         cursor.execute(query, (parsed_year.year, ))
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        shows = []
-        for show in result:
-            shows.append(self.retrieve_details_by_id(show["id"]))
-
-        return shows
+        return [self.retrieve_details_by_id(v[0]) for v in results]
 
     @lru_cache(typed=True)
     def retrieve_details_by_year_month(self,
@@ -545,24 +508,20 @@ class Show:
         except ValueError:
             return []
 
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT showid AS id FROM ww_shows "
+        cursor = self.database_connection.cursor(dictionary=False)
+        query = ("SELECT showid FROM ww_shows "
                  "WHERE YEAR(showdate) = %s "
                  "AND MONTH(showdate) = %s "
                  "ORDER BY showdate ASC;")
         cursor.execute(query, (parsed_year_month.year,
                                parsed_year_month.month, ))
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        shows = []
-        for show in result:
-            shows.append(self.retrieve_details_by_id(show["id"]))
-
-        return shows
+        return [self.retrieve_details_by_id(v[0]) for v in results]
 
     @lru_cache(typed=True)
     def retrieve_months_by_year(self,
@@ -587,17 +546,13 @@ class Show:
                  "WHERE YEAR(showdate) = %s "
                  "ORDER BY MONTH(showdate) ASC;")
         cursor.execute(query, (year,))
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        months = []
-        for row in result:
-            months.append(row[0])
-
-        return months
+        return [v[0] for v in results]
 
     @lru_cache(typed=True)
     def retrieve_recent(self,
@@ -629,23 +584,19 @@ class Show:
         except OverflowError:
             return []
 
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT showid AS id FROM ww_shows "
+        cursor = self.database_connection.cursor(dictionary=False)
+        query = ("SELECT showid FROM ww_shows "
                  "WHERE showdate >= %s AND "
                  "showdate <= %s ORDER BY showdate ASC;")
         cursor.execute(query, (past_date.isoformat(),
                                future_date.isoformat(), ))
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        shows = []
-        for show in result:
-            shows.append(self.retrieve_by_id(show["id"]))
-
-        return shows
+        return [self.retrieve_by_id(v[0]) for v in results]
 
     @lru_cache(typed=True)
     def retrieve_recent_details(self,
@@ -679,23 +630,19 @@ class Show:
         except OverflowError:
             return []
 
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT showid AS id FROM ww_shows "
+        cursor = self.database_connection.cursor(dictionary=False)
+        query = ("SELECT showid FROM ww_shows "
                  "WHERE showdate >= %s AND "
                  "showdate <= %s ORDER BY showdate ASC;")
         cursor.execute(query, (past_date.isoformat(),
                                future_date.isoformat(), ))
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        shows = []
-        for show in result:
-            shows.append(self.retrieve_details_by_id(show["id"]))
-
-        return shows
+        return [self.retrieve_details_by_id(v[0]) for v in results]
 
     @lru_cache(typed=True)
     def retrieve_scores_by_year(self, year: int) -> List[Tuple]:
@@ -714,7 +661,7 @@ class Show:
         except ValueError:
             return []
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT s.showdate AS date, pm.panelistscore AS score "
                  "FROM ww_showpnlmap pm "
                  "JOIN ww_shows s ON s.showid = pm.showid "
@@ -723,18 +670,18 @@ class Show:
                  "AND YEAR(s.showdate) = %s "
                  "ORDER BY s.showdate ASC, pm.panelistscore ASC;")
         cursor.execute(query, (year, ))
-        result = cursor.fetchall()
+        results = cursor.fetchall()
 
-        if not result:
+        if not results:
             return []
 
         shows = {}
-        for row in result:
-            date = row["date"].isoformat()
+        for row in results:
+            date = row.date.isoformat()
             if date not in shows:
                 shows[date] = []
 
-            shows[date].append(row["score"])
+            shows[date].append(row.score)
 
         show_scores = []
         for show in shows:
@@ -756,14 +703,10 @@ class Show:
                  "FROM ww_shows "
                  "ORDER BY YEAR(showdate) ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        years = []
-        for row in result:
-            years.append(row[0])
-
-        return years
+        return [v[0] for v in results]

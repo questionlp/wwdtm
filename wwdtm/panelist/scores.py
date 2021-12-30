@@ -56,12 +56,13 @@ class PanelistScores:
             return []
 
         scores = []
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT s.showdate, pm.panelistscore "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT pm.panelistscore AS score "
                  "FROM ww_showpnlmap pm "
                  "JOIN ww_shows s ON s.showid = pm.showid "
                  "WHERE panelistid = %s "
-                 "AND s.bestof = 0 and s.repeatshowid IS NULL;")
+                 "AND s.bestof = 0 and s.repeatshowid IS NULL "
+                 "ORDER BY s.showdate ASC;")
         cursor.execute(query, (panelist_id, ))
         result = cursor.fetchall()
         cursor.close()
@@ -70,8 +71,8 @@ class PanelistScores:
             return []
 
         for appearance in result:
-            if appearance["panelistscore"]:
-                scores.append(appearance["panelistscore"])
+            if appearance.score:
+                scores.append(appearance.score)
 
         return scores
 
@@ -110,7 +111,7 @@ class PanelistScores:
         if not valid_int_id(panelist_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT MIN(pm.panelistscore) AS min, "
                  "MAX(pm.panelistscore) AS max "
                  "FROM ww_showpnlmap pm "
@@ -121,14 +122,13 @@ class PanelistScores:
         if not result:
             return {}
 
-        min_score = result["min"]
-        max_score = result["max"]
+        min_score = result.min
+        max_score = result.max
 
         scores = {}
         for score in range(min_score, max_score + 1):
             scores[score] = 0
 
-        cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT pm.panelistscore AS score, "
                  "COUNT(pm.panelistscore) AS score_count "
                  "FROM ww_showpnlmap pm "
@@ -146,14 +146,12 @@ class PanelistScores:
             return {}
 
         for row in results:
-            scores[row["score"]] = row["score_count"]
+            scores[row.score] = row.score_count
 
-        scores_list = {
+        return {
             "score": list(scores.keys()),
             "count": list(scores.values()),
         }
-
-        return scores_list
 
     @lru_cache(typed=True)
     def retrieve_scores_grouped_list_by_slug(self, panelist_slug: str
@@ -192,7 +190,7 @@ class PanelistScores:
         if not valid_int_id(panelist_id):
             return []
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT MIN(pm.panelistscore) AS min, "
                  "MAX(pm.panelistscore) AS max "
                  "FROM ww_showpnlmap pm;")
@@ -202,14 +200,13 @@ class PanelistScores:
         if not result:
             return []
 
-        min_score = result["min"]
-        max_score = result["max"]
+        min_score = result.min
+        max_score = result.max
 
         scores = {}
         for score in range(min_score, max_score + 1):
             scores[score] = 0
 
-        cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT pm.panelistscore AS score, "
                  "COUNT(pm.panelistscore) AS score_count "
                  "FROM ww_showpnlmap pm "
@@ -227,7 +224,7 @@ class PanelistScores:
             return []
 
         for row in results:
-            scores[row["score"]] = row["score_count"]
+            scores[row.score] = row.score_count
 
         return list(scores.items())
 
@@ -268,8 +265,8 @@ class PanelistScores:
         if not valid_int_id(panelist_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT s.showdate, pm.panelistscore "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT s.showdate AS date, pm.panelistscore AS score "
                  "FROM ww_showpnlmap pm "
                  "JOIN ww_shows s ON s.showid = pm.showid "
                  "WHERE pm.panelistid = %s "
@@ -286,15 +283,13 @@ class PanelistScores:
         show_list = []
         score_list = []
         for shows in results:
-            show_list.append(shows["showdate"].isoformat())
-            score_list.append(shows["panelistscore"])
+            show_list.append(shows.date.isoformat())
+            score_list.append(shows.score)
 
-        scores = {
+        return {
             "shows": show_list,
             "scores": score_list,
         }
-
-        return scores
 
     @lru_cache(typed=True)
     def retrieve_scores_list_by_slug(self, panelist_slug: str,
@@ -332,8 +327,8 @@ class PanelistScores:
         if not valid_int_id(panelist_id):
             return []
 
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT s.showdate, pm.panelistscore "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT s.showdate AS date, pm.panelistscore AS score "
                  "FROM ww_showpnlmap pm "
                  "JOIN ww_shows s ON s.showid = pm.showid "
                  "WHERE pm.panelistid = %s "
@@ -349,8 +344,8 @@ class PanelistScores:
 
         scores = []
         for show in results:
-            show_date = show["showdate"].isoformat()
-            score = show["panelistscore"]
+            show_date = show.date.isoformat()
+            score = show.score
             scores.append((show_date, score))
 
         return scores

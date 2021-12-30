@@ -55,8 +55,8 @@ class Panelist:
             list is returned.
         :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT panelistid AS id, panelist, panelistslug AS slug, "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
                  "panelistgender AS gender "
                  "FROM ww_panelists "
                  "WHERE panelistslug != 'multiple' "
@@ -70,14 +70,12 @@ class Panelist:
 
         panelists = []
         for row in results:
-            panelist = {
-                "id": row["id"],
-                "name": row["panelist"],
-                "slug": row["slug"] if row["slug"] else slugify(row["panelist"]),
-                "gender": row["gender"],
-            }
-
-            panelists.append(panelist)
+            panelists.append({
+                "id": row.id,
+                "name": row.name,
+                "slug": row.slug if row.slug else slugify(row.name),
+                "gender": row.gender,
+            })
 
         return panelists
 
@@ -90,8 +88,8 @@ class Panelist:
             retrieved, an empty list is returned.
         :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT panelistid AS id, panelist, panelistslug AS slug, "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
                  "panelistgender AS gender "
                  "FROM ww_panelists "
                  "WHERE panelistslug != 'multiple' "
@@ -105,18 +103,15 @@ class Panelist:
 
         panelists = []
         for row in results:
-            id_ = row["id"]
-            panelist = {
-                "id": id_,
-                "name": row["panelist"],
-                "slug": row["slug"] if row["slug"] else slugify(row["panelist"]),
-                "gender": row["gender"],
-                "statistics": self.statistics.retrieve_statistics_by_id(id_),
-                "bluff": self.statistics.retrieve_bluffs_by_id(id_),
-                "appearances": self.appearances.retrieve_appearances_by_id(id_),
-            }
-
-            panelists.append(panelist)
+            panelists.append({
+                "id": row.id,
+                "name": row.name,
+                "slug": row.slug if row.slug else slugify(row.name),
+                "gender": row.gender,
+                "statistics": self.statistics.retrieve_statistics_by_id(row.id),
+                "bluff": self.statistics.retrieve_bluffs_by_id(row.id),
+                "appearances": self.appearances.retrieve_appearances_by_id(row.id),
+            })
 
         return panelists
 
@@ -133,17 +128,13 @@ class Panelist:
                  "WHERE panelistslug != 'multiple' "
                  "ORDER BY panelist ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0])
-
-        return ids
+        return [v[0] for v in results]
 
     def retrieve_all_slugs(self) -> List[str]:
         """Returns a list of all panelist slug strings from the
@@ -158,17 +149,13 @@ class Panelist:
                  "WHERE panelistslug != 'multiple' "
                  "ORDER BY panelist ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0])
-
-        return ids
+        return [v[0] for v in results]
 
     @lru_cache(typed=True)
     def retrieve_by_id(self, panelist_id: int) -> Dict[str, Any]:
@@ -185,8 +172,8 @@ class Panelist:
         if not valid_int_id(panelist_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT panelistid AS id, panelist, panelistslug AS slug, "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
                  "panelistgender AS gender "
                  "FROM ww_panelists "
                  "WHERE panelistid = %s "
@@ -198,14 +185,12 @@ class Panelist:
         if not result:
             return {}
 
-        info = {
-            "id": result["id"],
-            "name": result["panelist"],
-            "slug": result["slug"] if result["slug"] else slugify(result["panelist"]),
-            "gender": result["gender"],
+        return {
+            "id": result.id,
+            "name": result.name,
+            "slug": result.slug if result.slug else slugify(result.name),
+            "gender": result.gender,
         }
-
-        return info
 
     @lru_cache(typed=True)
     def retrieve_by_slug(self, panelist_slug: str) -> Dict[str, Any]:

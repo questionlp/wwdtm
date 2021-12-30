@@ -56,7 +56,7 @@ class PanelistAppearances:
         if not valid_int_id(panelist_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT ( "
                  "SELECT COUNT(pm.showid) FROM ww_showpnlmap pm "
                  "JOIN ww_shows s ON s.showid = pm.showid "
@@ -76,9 +76,9 @@ class PanelistAppearances:
 
         if result:
             appearance_counts = {
-                "regular_shows": result["regular_shows"],
-                "all_shows": result["all_shows"],
-                "shows_with_scores": result["shows_with_scores"],
+                "regular_shows": result.regular_shows,
+                "all_shows": result.all_shows,
+                "shows_with_scores": result.shows_with_scores,
             }
         else:
             appearance_counts = {
@@ -87,7 +87,6 @@ class PanelistAppearances:
                 "shows_with_scores": 0,
             }
 
-        cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT MIN(s.showid) AS first_id, MIN(s.showdate) AS first, "
                  "MAX(s.showid) AS most_recent_id, MAX(s.showdate) AS most_recent "
                  "FROM ww_showpnlmap pm "
@@ -98,15 +97,15 @@ class PanelistAppearances:
         cursor.execute(query, (panelist_id, ))
         result = cursor.fetchone()
 
-        if result and result["first_id"]:
+        if result and result.first_id:
             first = {
-                "show_id": result["first_id"],
-                "show_date": result["first"].isoformat(),
+                "show_id": result.first_id,
+                "show_date": result.first.isoformat(),
             }
 
             most_recent = {
-                "show_id": result["most_recent_id"],
-                "show_date": result["most_recent"].isoformat(),
+                "show_id": result.most_recent_id,
+                "show_date": result.most_recent.isoformat(),
             }
 
             milestones = {
@@ -122,13 +121,12 @@ class PanelistAppearances:
                 "milestones": None,
             }
 
-        cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT pm.showid AS show_id, s.showdate AS date, "
-                 "s.bestof AS best_of, s.repeatshowid, "
+                 "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
                  "pm.panelistlrndstart AS start, "
                  "pm.panelistlrndcorrect AS correct, "
                  "pm.panelistscore AS score, "
-                 "pm.showpnlrank FROM ww_showpnlmap pm "
+                 "pm.showpnlrank AS rank FROM ww_showpnlmap pm "
                  "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
                  "JOIN ww_shows s ON s.showid = pm.showid "
                  "WHERE pm.panelistid = %s "
@@ -141,14 +139,14 @@ class PanelistAppearances:
             appearances = []
             for appearance in results:
                 info = {
-                    "show_id": appearance["show_id"],
-                    "date": appearance["date"].isoformat(),
-                    "best_of": bool(appearance["best_of"]),
-                    "repeat_show": bool(appearance["repeatshowid"]),
-                    "lightning_round_start": appearance["start"] if appearance["start"] else None,
-                    "lightning_round_correct": appearance["correct"] if appearance["correct"] else None,
-                    "score": appearance["score"] if appearance["score"] else None,
-                    "rank": appearance["showpnlrank"] if appearance["showpnlrank"] else None,
+                    "show_id": appearance.show_id,
+                    "date": appearance.date.isoformat(),
+                    "best_of": bool(appearance.best_of),
+                    "repeat_show": bool(appearance.repeat_show_id),
+                    "lightning_round_start": appearance.start if appearance.start else None,
+                    "lightning_round_correct": appearance.correct if appearance.correct else None,
+                    "score": appearance.score if appearance.score else None,
+                    "rank": appearance.rank if appearance.rank else None,
                 }
                 appearances.append(info)
 
@@ -194,7 +192,7 @@ class PanelistAppearances:
             return {}
 
         years = {}
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT DISTINCT YEAR(s.showdate) AS year "
                  "FROM ww_shows s "
                  "ORDER BY YEAR(s.showdate) ASC;")
@@ -205,9 +203,8 @@ class PanelistAppearances:
             return {}
 
         for row in results:
-            years[row["year"]] = 0
+            years[row.year] = 0
 
-        cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT YEAR(s.showdate) AS year, "
                  "COUNT(p.panelist) AS count "
                  "FROM ww_showpnlmap pm "
@@ -225,7 +222,7 @@ class PanelistAppearances:
             return {}
 
         for row in results:
-            years[row["year"]] = row["count"]
+            years[row.year] = row.count
 
         return years
 

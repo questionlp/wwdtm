@@ -58,7 +58,7 @@ class ScorekeeperAppearances:
         if not valid_int_id(scorekeeper_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT ( "
                  "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
                  "JOIN ww_shows s ON s.showid = skm.showid "
@@ -72,8 +72,8 @@ class ScorekeeperAppearances:
 
         if result:
             appearance_counts = {
-                "regular_shows": result["regular_shows"],
-                "all_shows": result["all_shows"],
+                "regular_shows": result.regular_shows,
+                "all_shows": result.all_shows,
             }
         else:
             appearance_counts = {
@@ -81,9 +81,9 @@ class ScorekeeperAppearances:
                 "all_shows": 0,
             }
 
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT skm.showid AS show_id, s.showdate AS date, s.bestof AS best_of, "
-                 "s.repeatshowid, skm.guest, skm.description "
+        query = ("SELECT skm.showid AS show_id, s.showdate AS date, "
+                 "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
+                 "skm.guest, skm.description "
                  "FROM ww_showskmap skm "
                  "JOIN ww_scorekeepers sk ON sk.scorekeeperid = skm.scorekeeperid "
                  "JOIN ww_shows s ON s.showid = skm.showid "
@@ -97,27 +97,25 @@ class ScorekeeperAppearances:
             appearances = []
             for appearance in results:
                 info = {
-                    "show_id": appearance["show_id"],
-                    "date": appearance["date"].isoformat(),
-                    "best_of": bool(appearance["best_of"]),
-                    "repeat_show": bool(appearance["repeatshowid"]),
-                    "guest": bool(appearance["guest"]),
-                    "description": appearance["description"],
+                    "show_id": appearance.show_id,
+                    "date": appearance.date.isoformat(),
+                    "best_of": bool(appearance.best_of),
+                    "repeat_show": bool(appearance.repeat_show_id),
+                    "guest": bool(appearance.guest),
+                    "description": appearance.description,
                 }
                 appearances.append(info)
 
-            appearance_info = {
+            return {
                 "count": appearance_counts,
                 "shows": appearances,
             }
 
         else:
-            appearance_info = {
+            return {
                 "count": appearance_counts,
                 "shows": [],
             }
-
-        return appearance_info
 
     @lru_cache(typed=True)
     def retrieve_appearances_by_slug(self, scorekeeper_slug: str) -> Dict[str, Any]:

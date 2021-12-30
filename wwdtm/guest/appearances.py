@@ -56,7 +56,7 @@ class GuestAppearances:
         if not valid_int_id(guest_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT ( "
                  "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
                  "JOIN ww_shows s ON s.showid = gm.showid "
@@ -70,8 +70,8 @@ class GuestAppearances:
 
         if result:
             appearance_counts = {
-                "regular_shows": result["regular_shows"],
-                "all_shows": result["all_shows"]
+                "regular_shows": result.regular_shows,
+                "all_shows": result.all_shows,
             }
         else:
             appearance_counts = {
@@ -79,9 +79,9 @@ class GuestAppearances:
                 "all_shows": 0,
             }
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT gm.showid AS show_id, s.showdate AS date, "
-                 "s.bestof AS best_of, s.repeatshowid, "
+                 "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
                  "gm.guestscore AS score, gm.exception AS score_exception "
                  "FROM ww_showguestmap gm "
                  "JOIN ww_guests g ON g.guestid = gm.guestid "
@@ -96,26 +96,24 @@ class GuestAppearances:
             appearances = []
             for appearance in results:
                 info = {
-                    "show_id": appearance["show_id"],
-                    "date": appearance["date"].isoformat(),
-                    "best_of": bool(appearance["best_of"]),
-                    "repeat_show": bool(appearance["repeatshowid"]),
-                    "score": appearance["score"] if appearance["score"] else None,
-                    "score_exception": bool(appearance["score_exception"]),
+                    "show_id": appearance.show_id,
+                    "date": appearance.date.isoformat(),
+                    "best_of": bool(appearance.best_of),
+                    "repeat_show": bool(appearance.repeat_show_id),
+                    "score": appearance.score if appearance.score else None,
+                    "score_exception": bool(appearance.score_exception),
                 }
                 appearances.append(info)
 
-            appearance_info = {
+            return {
                 "count": appearance_counts,
                 "shows": appearances,
             }
         else:
-            appearance_info = {
+            return {
                 "count": appearance_counts,
                 "shows": [],
             }
-
-        return appearance_info
 
     @lru_cache(typed=True)
     def retrieve_appearances_by_slug(self, guest_slug: str) -> Dict[str, Any]:

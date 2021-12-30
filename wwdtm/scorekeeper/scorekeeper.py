@@ -53,8 +53,8 @@ class Scorekeeper:
             retrieved, an empty list will be returned.
         :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT scorekeeperid AS id, scorekeeper, "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
                  "scorekeeperslug AS slug, scorekeepergender AS gender "
                  "FROM ww_scorekeepers "
                  "WHERE scorekeeperslug != 'tbd' "
@@ -68,14 +68,12 @@ class Scorekeeper:
 
         scorekeepers = []
         for row in results:
-            scorekeeper = {
-                "id": row["id"],
-                "name": row["scorekeeper"],
-                "slug": row["slug"] if row["slug"] else slugify(row["scorekeeper"]),
-                "gender": row["gender"],
-            }
-
-            scorekeepers.append(scorekeeper)
+            scorekeepers.append({
+                "id": row.id,
+                "name": row.name,
+                "slug": row.slug if row.slug else slugify(row.name),
+                "gender": row.gender,
+            })
 
         return scorekeepers
 
@@ -89,8 +87,8 @@ class Scorekeeper:
             could not be retrieved, an empty list will be returned.
         :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT scorekeeperid AS id, scorekeeper, "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
                  "scorekeeperslug AS slug, scorekeepergender AS gender "
                  "FROM ww_scorekeepers "
                  "WHERE scorekeeperslug != 'tbd' "
@@ -104,16 +102,13 @@ class Scorekeeper:
 
         scorekeepers = []
         for row in results:
-            appearance = self.appearances.retrieve_appearances_by_id(row["id"])
-            scorekeeper = {
-                "id": row["id"],
-                "name": row["scorekeeper"],
-                "slug": row["slug"] if row["slug"] else slugify(row["scorekeeper"]),
-                "gender": row["gender"],
-                "appearances": appearance,
-            }
-
-            scorekeepers.append(scorekeeper)
+            scorekeepers.append({
+                "id": row.id,
+                "name": row.name,
+                "slug": row.slug if row.slug else slugify(row.name),
+                "gender": row.gender,
+                "appearances": self.appearances.retrieve_appearances_by_id(row.id)
+            })
 
         return scorekeepers
 
@@ -130,17 +125,13 @@ class Scorekeeper:
                  "WHERE scorekeeperslug != 'tbd' "
                  "ORDER BY scorekeeper ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0])
-
-        return ids
+        return [v[0] for v in results]
 
     def retrieve_all_slugs(self) -> List[str]:
         """Returns a list of all scorekeeper slug strings from the
@@ -156,17 +147,13 @@ class Scorekeeper:
                  "WHERE scorekeeperslug != 'tbd' "
                  "ORDER BY scorekeeper ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0])
-
-        return ids
+        return [v[0] for v in results]
 
     @lru_cache(typed=True)
     def retrieve_by_id(self, scorekeeper_id: int) -> Dict[str, Any]:
@@ -183,8 +170,8 @@ class Scorekeeper:
         if not valid_int_id(scorekeeper_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT scorekeeperid AS id, scorekeeper, "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
                  "scorekeeperslug AS slug, scorekeepergender AS gender "
                  "FROM ww_scorekeepers "
                  "WHERE scorekeeperid = %s "
@@ -196,14 +183,12 @@ class Scorekeeper:
         if not result:
             return {}
 
-        info = {
-            "id": result["id"],
-            "name": result["scorekeeper"],
-            "slug": result["slug"] if result["slug"] else slugify(result["scorekeeper"]),
-            "gender": result["gender"],
+        return {
+            "id": result.id,
+            "name": result.name,
+            "slug": result.slug if result.slug else slugify(result.name),
+            "gender": result.gender,
         }
-
-        return info
 
     @lru_cache(typed=True)
     def retrieve_by_slug(self, scorekeeper_slug: str) -> Dict[str, Any]:

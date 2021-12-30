@@ -60,7 +60,7 @@ class ShowInfo:
         if not valid_int_id(show_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT blm.chosenbluffpnlid AS id, "
                  "p.panelist AS name, p.panelistslug As slug "
                  "FROM ww_showbluffmap blm "
@@ -73,9 +73,9 @@ class ShowInfo:
 
         if chosen_result:
             chosen_bluff_info = {
-                "id": chosen_result["id"],
-                "name": chosen_result["name"],
-                "slug": chosen_result["slug"] if chosen_result["slug"] else slugify(chosen_result["name"]),
+                "id": chosen_result.id,
+                "name": chosen_result.name,
+                "slug": chosen_result.slug if chosen_result.slug else slugify(chosen_result.name),
             }
         else:
             chosen_bluff_info = None
@@ -93,19 +93,17 @@ class ShowInfo:
 
         if correct_result:
             correct_bluff_info = {
-                "id": correct_result["id"],
-                "name": correct_result["name"],
-                "slug": correct_result["slug"] if correct_result["slug"] else slugify(correct_result["name"]),
+                "id": correct_result.id,
+                "name": correct_result.name,
+                "slug": correct_result.slug if correct_result.slug else slugify(correct_result.name),
             }
         else:
             correct_bluff_info = None
 
-        bluff_info = {
+        return {
             "chosen_panelist": chosen_bluff_info,
             "correct_panelist": correct_bluff_info,
         }
-
-        return bluff_info
 
     @lru_cache(typed=True)
     def retrieve_core_info_by_id(self, show_id: int) -> Dict[str, Any]:
@@ -122,14 +120,18 @@ class ShowInfo:
         if not valid_int_id(show_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT s.showid, s.showdate, s.bestof, "
-                 "s.repeatshowid, l.locationid, l.city, l.state, "
-                 "l.venue, l.locationslug , h.hostid, h.host, "
-                 "h.hostslug, hm.guest as hostguest, "
-                 "sk.scorekeeperid, sk.scorekeeper, "
-                 "sk.scorekeeperslug, skm.guest AS scorekeeperguest, "
-                 "skm.description, sd.showdescription, sn.shownotes "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT s.showid AS show_id, s.showdate AS date, "
+                 "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
+                 "l.locationid AS location_id, l.city, l.state, "
+                 "l.venue, l.locationslug AS location_slug, h.hostid AS host_id, "
+                 "h.host, h.hostslug AS host_slug, hm.guest as host_guest, "
+                 "sk.scorekeeperid AS scorekeeper_id, sk.scorekeeper, "
+                 "sk.scorekeeperslug AS scorekeeper_slug, "
+                 "skm.guest AS scorekeeper_guest, "
+                 "skm.description AS scorekeeper_description, "
+                 "sd.showdescription AS show_description, "
+                 "sn.shownotes AS show_notes "
                  "FROM ww_shows s "
                  "JOIN ww_showlocationmap lm ON lm.showid = s.showid "
                  "JOIN ww_locations l ON l.locationid = lm.locationid "
@@ -149,49 +151,49 @@ class ShowInfo:
             return {}
 
         location_info = {
-            "id": result["locationid"],
-            "slug": result["locationslug"],
-            "city": result["city"],
-            "state": result["state"],
-            "venue": result["venue"],
+            "id": result.location_id,
+            "slug": result.location_slug,
+            "city": result.city,
+            "state": result.state,
+            "venue": result.venue,
         }
 
-        if not result["locationslug"]:
-            location_info["slug"] = self.loc_util.slugify_location(location_id=result["locationid"],
-                                                                   venue=result["venue"],
-                                                                   city=result["city"],
-                                                                   state=result["state"])
+        if not result.location_slug:
+            location_info["slug"] = self.loc_util.slugify_location(location_id=result.location_id,
+                                                                   venue=result.venue,
+                                                                   city=result.city,
+                                                                   state=result.state)
 
         host_info = {
-            "id": result["hostid"],
-            "name": result["host"],
-            "slug": result["hostslug"] if result["hostslug"] else slugify(result["host"]),
-            "guest": bool(result["hostguest"]),
+            "id": result.host_id,
+            "name": result.host,
+            "slug": result.host_slug if result.host_slug else slugify(result.host),
+            "guest": bool(result.host_guest),
         }
 
         scorekeeper_info = {
-            "id": result["scorekeeperid"],
-            "name": result["scorekeeper"],
-            "slug": result["scorekeeperslug"] if result["scorekeeperslug"] else slugify(result["scorekeeper"]),
-            "guest": bool(result["scorekeeperguest"]),
-            "description": result["description"] if result["description"] else None,
+            "id": result.scorekeeper_id,
+            "name": result.scorekeeper,
+            "slug": result.scorekeeper_slug if result.scorekeeper_slug else slugify(result.scorekeeper),
+            "guest": bool(result.scorekeeper_guest),
+            "description": result.scorekeeper_description if result.scorekeeper_description else None,
         }
 
-        if result["showdescription"]:
-            description = str(result["showdescription"]).strip()
+        if result.show_description:
+            description = str(result.show_description).strip()
         else:
             description = None
 
-        if result["shownotes"]:
-            notes = str(result["shownotes"]).strip()
+        if result.show_notes:
+            notes = str(result.show_notes).strip()
         else:
             notes = None
 
         show_info = {
-            "id": show_id,
-            "date": result["showdate"].isoformat(),
-            "best_of": bool(result["bestof"]),
-            "repeat_show": bool(result["repeatshowid"]),
+            "id": result.show_id,
+            "date": result.date.isoformat(),
+            "best_of": bool(result.best_of),
+            "repeat_show": bool(result.repeat_show_id),
             "original_show_id": None,
             "original_show_date": None,
             "description": description,
@@ -201,7 +203,7 @@ class ShowInfo:
             "scorekeeper": scorekeeper_info,
         }
 
-        repeat_show_id = result["repeatshowid"]
+        repeat_show_id = result.repeat_show_id
         if repeat_show_id:
             original_date = self.utility.convert_id_to_date(repeat_show_id)
             show_info["original_show_id"] = repeat_show_id
@@ -227,7 +229,7 @@ class ShowInfo:
         if not valid_int_id(show_id):
             return []
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT gm.guestid AS id, g.guest AS name, "
                  "g.guestslug AS slug, gm.guestscore AS score, "
                  "gm.exception AS score_exception "
@@ -237,23 +239,21 @@ class ShowInfo:
                  "WHERE gm.showid = %s "
                  "ORDER by gm.showguestmapid ASC;")
         cursor.execute(query, (show_id, ))
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
         guests = []
-        for guest in result:
-            info = {
-                "id": guest["id"],
-                "name": guest["name"],
-                "slug": guest["slug"] if guest["slug"] else slugify(guest["name"]),
-                "score": guest["score"] if guest["score"] else None,
-                "score_exception": bool(guest["score_exception"]),
-            }
-
-            guests.append(info)
+        for guest in results:
+            guests.append({
+                "id": guest.id,
+                "name": guest.name,
+                "slug": guest.slug if guest.slug else slugify(guest.name),
+                "score": guest.score if guest.score else None,
+                "score_exception": bool(guest.score_exception),
+            })
 
         return guests
 
@@ -272,7 +272,7 @@ class ShowInfo:
         if not valid_int_id(show_id):
             return []
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT pm.panelistid AS id, p.panelist AS name, "
                  "p.panelistslug AS slug, "
                  "pm.panelistlrndstart AS start, "
@@ -283,24 +283,22 @@ class ShowInfo:
                  "WHERE pm.showid = %s "
                  "ORDER by pm.panelistscore DESC, pm.showpnlmapid ASC;")
         cursor.execute(query, (show_id, ))
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
         panelists = []
-        for row in result:
-            info = {
-                "id": row["id"],
-                "name": row["name"],
-                "slug": row["slug"] if row["slug"] else slugify(row["name"]),
-                "lightning_round_start": row["start"] if row["start"] else None,
-                "lightning_round_correct": row["correct"] if row["correct"] else None,
-                "score": row["score"] if row["score"] else None,
-                "rank": row["rank"] if row["rank"] else None,
-            }
-
-            panelists.append(info)
+        for row in results:
+            panelists.append({
+                "id": row.id,
+                "name": row.name,
+                "slug": row.slug if row.slug else slugify(row.name),
+                "lightning_round_start": row.start if row.start else None,
+                "lightning_round_correct": row.correct if row.correct else None,
+                "score": row.score if row.score else None,
+                "rank": row.rank if row.rank else None,
+            })
 
         return panelists

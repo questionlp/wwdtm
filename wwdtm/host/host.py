@@ -52,8 +52,8 @@ class Host:
             If hosts could not be retrieved, an empty list is returned.
         :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT hostid AS id, host, hostslug AS slug, "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT hostid AS id, host AS name, hostslug AS slug, "
                  "hostgender AS gender "
                  "FROM ww_hosts "
                  "WHERE hostslug != 'tbd' "
@@ -67,14 +67,11 @@ class Host:
 
         hosts = []
         for row in results:
-            host = {
-                "id": row["id"],
-                "name": row["host"],
-                "slug": row["slug"] if row["slug"] else slugify(row["host"]),
-                "gender": row["gender"],
-            }
-
-            hosts.append(host)
+            hosts.append({
+                "id": row.id,
+                "name": row.name,
+                "slug": row.slug if row.slug else slugify(row.name),
+            })
 
         return hosts
 
@@ -87,8 +84,8 @@ class Host:
             list is returned.
         :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT hostid AS id, host, hostslug AS slug, "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT hostid AS id, host AS name, hostslug AS slug, "
                  "hostgender AS gender "
                  "FROM ww_hosts "
                  "WHERE hostslug != 'tbd' "
@@ -102,16 +99,12 @@ class Host:
 
         hosts = []
         for row in results:
-            appearances = self.appearances.retrieve_appearances_by_id(row["id"])
-            host = {
-                "id": row["id"],
-                "name": row["host"],
-                "slug": row["slug"] if row["slug"] else slugify(row["host"]),
-                "gender": row["gender"],
-                "appearances": appearances,
-            }
-
-            hosts.append(host)
+            hosts.append({
+                "id": row.id,
+                "name": row.name,
+                "slug": row.slug if row.slug else slugify(row.name),
+                "appearances": self.appearances.retrieve_appearances_by_id(row.id),
+            })
 
         return hosts
 
@@ -128,17 +121,13 @@ class Host:
                  "WHERE hostslug != 'tbd' "
                  "ORDER BY host ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0])
-
-        return ids
+        return [v[0] for v in results]
 
     def retrieve_all_slugs(self) -> List[str]:
         """Returns a list of all host slug strings from the database,
@@ -153,17 +142,13 @@ class Host:
                  "WHERE hostslug != 'tbd' "
                  "ORDER BY host ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0])
-
-        return ids
+        return [v[0] for v in results]
 
     @lru_cache(typed=True)
     def retrieve_by_id(self, host_id: int) -> Dict[str, Any]:
@@ -180,8 +165,8 @@ class Host:
         if not valid_int_id(host_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT hostid AS id, host, hostslug AS slug, "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT hostid AS id, host AS name, hostslug AS slug, "
                  "hostgender AS gender "
                  "FROM ww_hosts "
                  "WHERE hostid = %s "
@@ -193,14 +178,11 @@ class Host:
         if not result:
             return {}
 
-        info = {
-            "id": result["id"],
-            "name": result["host"],
-            "slug": result["slug"] if result["slug"] else slugify(result["host"]),
-            "gender": result["gender"],
+        return {
+            "id": result.id,
+            "name": result.name,
+            "slug": result.slug if result.slug else slugify(result.name),
         }
-
-        return info
 
     @lru_cache(typed=True)
     def retrieve_by_slug(self, host_slug: str) -> Dict[str, Any]:
