@@ -109,7 +109,7 @@ class Panelist:
                 "slug": row.slug if row.slug else slugify(row.name),
                 "gender": row.gender,
                 "statistics": self.statistics.retrieve_statistics_by_id(row.id),
-                "bluff": self.statistics.retrieve_bluffs_by_id(row.id),
+                "bluffs": self.statistics.retrieve_bluffs_by_id(row.id),
                 "appearances": self.appearances.retrieve_appearances_by_id(row.id),
             })
 
