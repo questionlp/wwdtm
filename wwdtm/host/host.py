@@ -102,6 +102,7 @@ class Host:
             hosts.append({
                 "id": row.id,
                 "name": row.name,
+                "gender": row.gender,
                 "slug": row.slug if row.slug else slugify(row.name),
                 "appearances": self.appearances.retrieve_appearances_by_id(row.id),
             })
@@ -181,6 +182,7 @@ class Host:
         return {
             "id": result.id,
             "name": result.name,
+            "gender": result.gender,
             "slug": result.slug if result.slug else slugify(result.name),
         }
 

@@ -71,6 +71,7 @@ class Scorekeeper:
             scorekeepers.append({
                 "id": row.id,
                 "name": row.name,
+                "gender": row.gender,
                 "slug": row.slug if row.slug else slugify(row.name),
                 "gender": row.gender,
             })
