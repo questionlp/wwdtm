@@ -1,5 +1,5 @@
 # Include example configuration file
-include config.dist.json
+include config.json.dist
 
 # Include pytest configuration file
 include pytest.ini
