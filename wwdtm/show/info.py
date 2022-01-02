@@ -105,20 +105,21 @@ class ShowInfo:
             "correct_panelist": correct_bluff_info,
         }
 
-    @lru_cache(typed=True)
-    def retrieve_core_info_by_id(self, show_id: int) -> Dict[str, Any]:
+    # @lru_cache(typed=True)
+    def retrieve_core_info_by_id(self, show_ids: List[int]) -> Dict[str, Any]:
         """Returns a dictionary with core information for the requested
         show ID.
 
-        :param show_id: Show ID
-        :type show_id: int
+        :param show_id: Show IDs
+        :type show_id: List[int]
         :return: Dictionary containing host, scorekeeper, location,
             description and notes. If show core information could not be
             retrieved, an empty dictionary will be returned.
         :rtype: Dict[str, Any]
         """
-        if not valid_int_id(show_id):
-            return {}
+        for show_id in show_ids:
+            if not valid_int_id(show_id):
+                return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT s.showid AS show_id, s.showdate AS date, "
@@ -142,77 +143,82 @@ class ShowInfo:
                  "sk.scorekeeperid = skm.scorekeeperid "
                  "JOIN ww_showdescriptions sd ON sd.showid = s.showid "
                  "JOIN ww_shownotes sn ON sn.showid = s.showid "
-                 "WHERE s.showid = %s;")
-        cursor.execute(query, (show_id, ))
-        result = cursor.fetchone()
+                 "WHERE s.showid IN "
+                 "({ids});".format(ids=", ".join(str(v) for v in show_ids)))
+        cursor.execute(query)
+        result = cursor.fetchall()
         cursor.close()
 
         if not result:
             return {}
 
-        location_info = {
-            "id": result.location_id,
-            "slug": result.location_slug,
-            "city": result.city,
-            "state": result.state,
-            "venue": result.venue,
-        }
+        shows = []
+        for show in result:
+            location_info = {
+                "id": show.location_id,
+                "slug": show.location_slug,
+                "city": show.city,
+                "state": show.state,
+                "venue": show.venue,
+            }
 
-        if not result.location_slug:
-            location_info["slug"] = self.loc_util.slugify_location(location_id=result.location_id,
-                                                                   venue=result.venue,
-                                                                   city=result.city,
-                                                                   state=result.state)
+            if not show.location_slug:
+                location_info["slug"] = self.loc_util.slugify_location(location_id=show.location_id,
+                                                                       venue=show.venue,
+                                                                       city=show.city,
+                                                                       state=show.state)
 
-        host_info = {
-            "id": result.host_id,
-            "name": result.host,
-            "slug": result.host_slug if result.host_slug else slugify(result.host),
-            "guest": bool(result.host_guest),
-        }
+            host_info = {
+                "id": show.host_id,
+                "name": show.host,
+                "slug": show.host_slug if show.host_slug else slugify(show.host),
+                "guest": bool(show.host_guest),
+            }
 
-        scorekeeper_info = {
-            "id": result.scorekeeper_id,
-            "name": result.scorekeeper,
-            "slug": result.scorekeeper_slug if result.scorekeeper_slug else slugify(result.scorekeeper),
-            "guest": bool(result.scorekeeper_guest),
-            "description": result.scorekeeper_description if result.scorekeeper_description else None,
-        }
+            scorekeeper_info = {
+                "id": show.scorekeeper_id,
+                "name": show.scorekeeper,
+                "slug": show.scorekeeper_slug if show.scorekeeper_slug else slugify(show.scorekeeper),
+                "guest": bool(show.scorekeeper_guest),
+                "description": show.scorekeeper_description if show.scorekeeper_description else None,
+            }
 
-        if result.show_description:
-            description = str(result.show_description).strip()
-        else:
-            description = None
+            if show.show_description:
+                description = str(show.show_description).strip()
+            else:
+                description = None
 
-        if result.show_notes:
-            notes = str(result.show_notes).strip()
-        else:
-            notes = None
+            if show.show_notes:
+                notes = str(show.show_notes).strip()
+            else:
+                notes = None
 
-        show_info = {
-            "id": result.show_id,
-            "date": result.date.isoformat(),
-            "best_of": bool(result.best_of),
-            "repeat_show": bool(result.repeat_show_id),
-            "original_show_id": None,
-            "original_show_date": None,
-            "description": description,
-            "notes": notes,
-            "location": location_info,
-            "host": host_info,
-            "scorekeeper": scorekeeper_info,
-        }
+            show_info = {
+                "id": show.show_id,
+                "date": show.date.isoformat(),
+                "best_of": bool(show.best_of),
+                "repeat_show": bool(show.repeat_show_id),
+                "original_show_id": None,
+                "original_show_date": None,
+                "description": description,
+                "notes": notes,
+                "location": location_info,
+                "host": host_info,
+                "scorekeeper": scorekeeper_info,
+            }
 
-        repeat_show_id = result.repeat_show_id
-        if repeat_show_id:
-            original_date = self.utility.convert_id_to_date(repeat_show_id)
-            show_info["original_show_id"] = repeat_show_id
-            show_info["original_show_date"] = original_date
-        else:
-            show_info.pop("original_show_id", None)
-            show_info.pop("original_show_date", None)
+            repeat_show_id = show.repeat_show_id
+            if repeat_show_id:
+                original_date = self.utility.convert_id_to_date(repeat_show_id)
+                show_info["original_show_id"] = repeat_show_id
+                show_info["original_show_date"] = original_date
+            else:
+                show_info.pop("original_show_id", None)
+                show_info.pop("original_show_date", None)
 
-        return show_info
+            shows.append(show_info)
+
+        return(shows)
 
     @lru_cache(typed=True)
     def retrieve_guest_info_by_id(self, show_id: int) -> List[Dict[str, Any]]:

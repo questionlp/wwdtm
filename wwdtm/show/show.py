@@ -93,7 +93,7 @@ class Show:
             will be returned.
         :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT showid AS id FROM ww_shows "
                  "ORDER BY showdate ASC;")
         cursor.execute(query)
@@ -103,15 +103,17 @@ class Show:
         if not results:
             return []
 
-        shows = []
-        for row in results:
-            info = self.info.retrieve_core_info_by_id(row.id)
-            if info:
-                info["panelists"] = self.info.retrieve_panelist_info_by_id(row.id)
-                info["bluff"] = self.info.retrieve_bluff_info_by_id(row.id)
-                info["guests"] = self.info.retrieve_guest_info_by_id(row.id)
+        show_ids = [v[0] for v in results]
+        shows = self.info.retrieve_core_info_by_id(show_ids)
 
-            shows.append(info)
+        if not shows:
+            return []
+
+        for show in shows:
+            if show:
+                show["panelists"] = self.info.retrieve_panelist_info_by_id(show["id"])
+                show["bluff"] = self.info.retrieve_bluff_info_by_id(show["id"])
+                show["guests"] = self.info.retrieve_guest_info_by_id(show["id"])
 
         return shows
 
@@ -133,7 +135,7 @@ class Show:
         if not results:
             return []
 
-        return [[v[0] for v in results]]
+        return [v[0] for v in results]
 
     def retrieve_all_dates(self) -> List[str]:
         """Returns a list of all show dates from the database, sorted
@@ -153,7 +155,7 @@ class Show:
         if not results:
             return []
 
-        return [[v[0].isoformat() for v in results]]
+        return [v[0].isoformat() for v in results]
 
     def retrieve_all_dates_tuple(self) -> List[Tuple[int, int, int]]:
         """Returns a list of all show dates as a tuple of year, month,
@@ -445,15 +447,15 @@ class Show:
         if not valid_int_id(show_id):
             return {}
 
-        info = self.info.retrieve_core_info_by_id(show_id)
+        info = self.info.retrieve_core_info_by_id([show_id])
         if not info:
             return {}
 
-        info["panelists"] = self.info.retrieve_panelist_info_by_id(show_id)
-        info["bluff"] = self.info.retrieve_bluff_info_by_id(show_id)
-        info["guests"] = self.info.retrieve_guest_info_by_id(show_id)
+        info[0]["panelists"] = self.info.retrieve_panelist_info_by_id(show_id)
+        info[0]["bluff"] = self.info.retrieve_bluff_info_by_id(show_id)
+        info[0]["guests"] = self.info.retrieve_guest_info_by_id(show_id)
 
-        return info
+        return info[0]
 
     @lru_cache(typed=True)
     def retrieve_details_by_year(self, year: int) -> List[Dict[str, Any]]:
@@ -484,7 +486,19 @@ class Show:
         if not results:
             return []
 
-        return [self.retrieve_details_by_id(v[0]) for v in results]
+        show_ids = [v[0] for v in results]
+        shows = self.info.retrieve_core_info_by_id(show_ids)
+
+        if not shows:
+            return []
+
+        for show in shows:
+            if show:
+                show["panelists"] = self.info.retrieve_panelist_info_by_id(show["id"])
+                show["bluff"] = self.info.retrieve_bluff_info_by_id(show["id"])
+                show["guests"] = self.info.retrieve_guest_info_by_id(show["id"])
+
+        return shows
 
     @lru_cache(typed=True)
     def retrieve_details_by_year_month(self,
@@ -521,7 +535,19 @@ class Show:
         if not results:
             return []
 
-        return [self.retrieve_details_by_id(v[0]) for v in results]
+        show_ids = [v[0] for v in results]
+        shows = self.info.retrieve_core_info_by_id(show_ids)
+
+        if not shows:
+            return []
+
+        for show in shows:
+            if show:
+                show["panelists"] = self.info.retrieve_panelist_info_by_id(show["id"])
+                show["bluff"] = self.info.retrieve_bluff_info_by_id(show["id"])
+                show["guests"] = self.info.retrieve_guest_info_by_id(show["id"])
+
+        return shows
 
     @lru_cache(typed=True)
     def retrieve_months_by_year(self,
@@ -642,7 +668,19 @@ class Show:
         if not results:
             return []
 
-        return [self.retrieve_details_by_id(v[0]) for v in results]
+        show_ids = [v[0] for v in results]
+        shows = self.info.retrieve_core_info_by_id(show_ids)
+
+        if not shows:
+            return []
+
+        for show in shows:
+            if show:
+                show["panelists"] = self.info.retrieve_panelist_info_by_id(show["id"])
+                show["bluff"] = self.info.retrieve_bluff_info_by_id(show["id"])
+                show["guests"] = self.info.retrieve_guest_info_by_id(show["id"])
+
+        return shows
 
     @lru_cache(typed=True)
     def retrieve_scores_by_year(self, year: int) -> List[Tuple]:

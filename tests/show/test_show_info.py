@@ -50,12 +50,14 @@ def test_show_info_retrieve_core_info_by_id(show_id: int):
     :type show_id: int
     """
     info = ShowInfo(connect_dict=get_connect_dict())
-    core = info.retrieve_core_info_by_id(show_id)
+    core = info.retrieve_core_info_by_id([show_id])
 
     assert core, f"Core information for show ID {show_id} could not be retrieved"
-    assert "id" in core, (f"'id' was not returned with core information for "
+    show = core[0]
+
+    assert "id" in show, (f"'id' was not returned with core information for "
                           f"show ID {show_id}")
-    assert "description" in core, (f"'description' was not returned with show "
+    assert "description" in show, (f"'description' was not returned with show "
                                    f"information for show ID {show_id}")
 
 
