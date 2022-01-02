@@ -23,10 +23,8 @@ class ShowInfo:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -52,10 +50,8 @@ class ShowInfo:
         for the requested show ID.
 
         :param show_id: Show ID
-        :type show_id: int
         :return: Dictionary containing correct and chosen Bluff the
             Listener information.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(show_id):
             return {}
@@ -105,17 +101,14 @@ class ShowInfo:
             "correct_panelist": correct_bluff_info,
         }
 
-    # @lru_cache(typed=True)
-    def retrieve_core_info_by_id(self, show_ids: List[int]) -> Dict[str, Any]:
+    def retrieve_core_info_by_ids(self, show_ids: List[int]) -> Dict[str, Any]:
         """Returns a dictionary with core information for the requested
         show ID.
 
-        :param show_id: Show IDs
-        :type show_id: List[int]
+        :param show_ids: List of show IDs
         :return: Dictionary containing host, scorekeeper, location,
             description and notes. If show core information could not be
             retrieved, an empty dictionary will be returned.
-        :rtype: Dict[str, Any]
         """
         for show_id in show_ids:
             if not valid_int_id(show_id):
@@ -226,11 +219,9 @@ class ShowInfo:
         guest information for the requested show ID.
 
         :param show_id: Show ID
-        :type show_id: int
         :return: Dictionary containing Not My Job guest information. If
             Not My Job information could not be retrieved, an empty list
             will be returned.
-        :rtype: List[Dict[str, Any]]
         """
         if not valid_int_id(show_id):
             return []
@@ -269,11 +260,9 @@ class ShowInfo:
         information for the requested show ID.
 
         :param show_id: Show ID
-        :type show_id: int
         :return: List of panelists with corresponding scores and
             ranking information. If panelist information could not be
             retrieved, an empty list will be returned.
-        :rtype: List[Dict[str, Any]]
         """
         if not valid_int_id(show_id):
             return []

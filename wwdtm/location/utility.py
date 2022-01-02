@@ -20,10 +20,8 @@ class LocationUtility:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -46,9 +44,7 @@ class LocationUtility:
         string value.
 
         :param location_id: Location ID
-        :type location_id: int
         :return: Location slug string, if a match is found
-        :rtype: str
         """
         if not valid_int_id(location_id):
             return None
@@ -72,9 +68,7 @@ class LocationUtility:
         ID value.
 
         :param location_slug: Location slug string
-        :type location_slug: str
         :return: Location ID, if a match is found
-        :rtype: int
         """
         try:
             slug = location_slug.strip()
@@ -101,9 +95,7 @@ class LocationUtility:
         """Checks to see if a location ID exists.
 
         :param location_id: Location ID
-        :type location_id: int
         :return: True or False, based on whether the location ID exists
-        :rtype: bool
         """
         if not valid_int_id(location_id):
             return False
@@ -123,10 +115,8 @@ class LocationUtility:
         """Checks to see if a location slug string exists.
 
         :param location_slug: Location slug string
-        :type location_slug: str
         :return: True or False, based on whether the location slug
             string exists
-        :rtype: bool
         """
         try:
             slug = location_slug.strip()
@@ -146,24 +136,19 @@ class LocationUtility:
         return bool(result)
 
     @staticmethod
-    def slugify_location(location_id: int = None,
-                         venue: str = None,
-                         city: str = None,
-                         state: str = None
+    def slugify_location(location_id: Optional[int] = None,
+                         venue: Optional[str] = None,
+                         city: Optional[str] = None,
+                         state: Optional[str] = None
                          ) -> str:
         """Generates a slug string based on the location's venue name,
         city, state and/or location ID.
 
         :param location_id: Location ID
-        :type location_id: int
         :param venue: Location venue name
-        :type venue: str
         :param city: City where the location venue is located
-        :type city: str
         :param state: State where the location venue is located
-        :type state: str
         :return: Location slug string
-        :rtype: str
         :raises: ValueError
         """
         if venue and city and state:

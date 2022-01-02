@@ -21,10 +21,8 @@ class Guest:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -51,7 +49,6 @@ class Guest:
         :return: List of all guests and their corresponding
             information. If guests could not be retrieved, an empty list
             is returned.
-        :rtype: List[Dict[str, Any]]
         """
 
         cursor = self.database_connection.cursor(named_tuple=True)
@@ -83,7 +80,6 @@ class Guest:
         :return: List of all guests and their corresponding
             information and appearances. If guests could not be
             retrieved, an empty list is returned.
-        :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT guestid AS id, guest AS name, guestslug AS slug "
@@ -114,7 +110,6 @@ class Guest:
 
         :return: List of all guest IDs. If guest IDs could not be
             retrieved, an emtpy list is returned.
-        :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT guestid FROM ww_guests "
@@ -135,7 +130,6 @@ class Guest:
 
         :return: List of all guest slug strings. If guest slug strings
             could not be retrieved, an emtpy list is returned.
-        :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT guestslug FROM ww_guests "
@@ -156,11 +150,9 @@ class Guest:
         slug string for the requested guest ID.
 
         :param guest_id: Guest ID
-        :type guest_id: int
         :return: Dictionary containing guest information. If guest
             information could not be retrieved, an empty dictionary is
             returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(guest_id):
             return {}
@@ -189,11 +181,9 @@ class Guest:
         slug string for the requested guest slug string.
 
         :param guest_slug: Guest slug string
-        :type guest_slug: str
         :return: Dictionary containing guest information. If guest
             information could not be retrieved, an empty dictionary is
             returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = guest_slug.strip()
@@ -214,11 +204,9 @@ class Guest:
         string and appearance information for the requested Guest ID.
 
         :param guest_id: Guest ID
-        :type guest_id: int
         :return: Dictionary containing guest information and their
             appearances. If guest information could not be retrieved,
             an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(guest_id):
             return {}
@@ -238,11 +226,9 @@ class Guest:
         string.
 
         :param guest_slug: Guest slug string
-        :type guest_slug: str
         :return: Dictionary containing guest information and their
             appearances. If guest information could not be retrieved,
             an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = guest_slug.strip()

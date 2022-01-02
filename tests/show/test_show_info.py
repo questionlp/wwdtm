@@ -29,7 +29,6 @@ def test_show_info_retrieve_bluff_info_by_id(show_id: int):
 
     :param show_id: Show ID to test retrieving show Bluff the Listener
         information
-    :type show_id: int
     """
     info = ShowInfo(connect_dict=get_connect_dict())
     bluff = info.retrieve_bluff_info_by_id(show_id)
@@ -43,14 +42,13 @@ def test_show_info_retrieve_bluff_info_by_id(show_id: int):
 
 
 @pytest.mark.parametrize("show_id", [1162])
-def test_show_info_retrieve_core_info_by_id(show_id: int):
-    """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_core_info_by_id`
+def test_show_info_retrieve_core_info_by_ids(show_id: int):
+    """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_core_info_by_ids`
 
     :param show_id: Show ID to test retrieving show core information
-    :type show_id: int
     """
     info = ShowInfo(connect_dict=get_connect_dict())
-    core = info.retrieve_core_info_by_id([show_id])
+    core = info.retrieve_core_info_by_ids([show_id])
 
     assert core, f"Core information for show ID {show_id} could not be retrieved"
     show = core[0]
@@ -66,7 +64,6 @@ def test_show_info_retrieve_guest_info_by_id(show_id: int):
     """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_guest_info_by_id`
 
     :param show_id: Show ID to test retrieving show guest information
-    :type show_id: int
     """
     info = ShowInfo(connect_dict=get_connect_dict())
     guests = info.retrieve_guest_info_by_id(show_id)
@@ -83,7 +80,6 @@ def test_show_info_retrieve_panelist_info_by_id(show_id: int):
     """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_panelist_info_by_id`
 
     :param show_id: Show ID to test retrieving show panelist information
-    :type show_id: int
     """
     info = ShowInfo(connect_dict=get_connect_dict())
     panelists = info.retrieve_panelist_info_by_id(show_id)

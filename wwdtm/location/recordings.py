@@ -19,10 +19,8 @@ class LocationRecordings:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -47,11 +45,9 @@ class LocationRecordings:
         information for the requested location ID.
 
         :param location_id: Location ID
-        :type location_id: int
         :return: Dictionary containing recording counts and a list of
             appearances for a location. If location recordings could
             not be retrieved, an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(location_id):
             return {}
@@ -110,11 +106,9 @@ class LocationRecordings:
         information for the requested location slug string.
 
         :param location_slug: Location slug string
-        :type location_slug: str
         :return: Dictionary containing recording counts and a list of
             appearances for a location. If location recordings could
             not be retrieved, an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         id_ = self.utility.convert_slug_to_id(location_slug)
         if not id_:

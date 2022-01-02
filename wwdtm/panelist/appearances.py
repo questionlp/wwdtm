@@ -19,10 +19,8 @@ class PanelistAppearances:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -47,11 +45,9 @@ class PanelistAppearances:
         information for the requested panelist ID.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
-        :return:  Dictionary containing appearance counts and list of
+        :return: Dictionary containing appearance counts and list of
             appearances for a panelist. If panelist appearances could
             not be retrieved, an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -164,11 +160,9 @@ class PanelistAppearances:
         information for the requested panelist slug string.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
-        :return:  Dictionary containing appearance counts and list of
+        :return: Dictionary containing appearance counts and list of
             appearances for a panelist. If panelist appearances could
             not be retrieved, an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:
@@ -182,11 +176,9 @@ class PanelistAppearances:
         down by year, for the requested panelist ID.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
         :return: Dictionary containing scoring breakdown by year. If
             panelist appearances could not be retrieved, an empty
             dictionary is returned.
-        :rtype: Dict[int, int]
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -233,11 +225,9 @@ class PanelistAppearances:
         down by year, for the requested panelist slug string.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
         :return: Dictionary containing scoring breakdown by year. If
             panelist appearances could not be retrieved, an empty
             dictionary is returned.
-        :rtype: Dict[int, int]
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:

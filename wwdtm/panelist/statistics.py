@@ -22,10 +22,8 @@ class PanelistStatistics:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -51,11 +49,9 @@ class PanelistStatistics:
         and correct Bluffs for the requested panelist ID.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
         :return: Dictionary containing panelist Bluff counts. If
             panelist Bluff counts could not be returned, an empty
             dictionary will be returned.
-        :rtype: Dict[str, int]
         """
         cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT ( "
@@ -85,11 +81,9 @@ class PanelistStatistics:
         and correct Bluffs for the requested panelist slug string.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
         :return: Dictionary containing panelist Bluff counts. If
             panelist Bluff counts could not be returned, an empty
             dictionary will be returned.
-        :rtype: Dict[str, int]
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:
@@ -103,11 +97,9 @@ class PanelistStatistics:
         requested panelist ID.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
         :return: Dictionary containing panelist ranking information. If
             panelist ranking information could not be returned, an empty
             dictionary will be returned.
-        :rtype: Dict[str, int]
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -157,11 +149,9 @@ class PanelistStatistics:
         requested panelist slug string.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
         :return: Dictionary containing panelist ranking information. If
             panelist ranking information could not be returned, an empty
             dictionary will be returned.
-        :rtype: Dict[str, int]
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:
@@ -175,11 +165,9 @@ class PanelistStatistics:
         data, and scoring data for the requested panelist ID.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
         :return: Dictionary containing panelist statistics. If panelist
             statistics could not be returned, an empty dictionary will
             be returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -230,11 +218,9 @@ class PanelistStatistics:
         data, and scoring data for the requested panelist slug string.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
         :return: Dictionary containing panelist statistics. If panelist
             statistics could not be returned, an empty dictionary will
             be returned.
-        :rtype: Dict[str, Any]
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:

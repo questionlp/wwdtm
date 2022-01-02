@@ -19,7 +19,6 @@ def get_connect_dict() -> Dict[str, Any]:
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
-    :rtype: Dict[str, Any]
     """
     with open("config.json", "r") as config_file:
         config_dict = json.load(config_file)
@@ -33,7 +32,6 @@ def test_panelist_scores_retrieve_scores_by_id(panelist_id: int):
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
-    :type panelist_id: int
     """
     scores = PanelistScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_by_id(panelist_id)
@@ -47,7 +45,6 @@ def test_panelist_scores_retrieve_scores_by_slug(panelist_slug: str):
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
-    :type panelist_slug: str
     """
     scores = PanelistScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_by_slug(panelist_slug)
@@ -61,7 +58,6 @@ def test_panelist_scores_retrieve_scores_grouped_list_by_id(panelist_id: int):
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
-    :type panelist_id: int
     """
     scores = PanelistScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_grouped_list_by_id(panelist_id)
@@ -76,7 +72,6 @@ def test_panelist_scores_retrieve_scores_grouped_list_by_slug(panelist_slug: str
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
-    :type panelist_slug: str
     """
     scores = PanelistScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_grouped_list_by_slug(panelist_slug)
@@ -91,7 +86,6 @@ def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_id(panelist_id:
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
-    :type panelist_id: int
     """
     scores = PanelistScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_grouped_ordered_pair_by_id(panelist_id)
@@ -106,7 +100,6 @@ def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_slug(panelist_s
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
-    :type panelist_slug: str
     """
     scores = PanelistScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_grouped_ordered_pair_by_slug(panelist_slug)
@@ -120,7 +113,6 @@ def test_panelist_scores_retrieve_scores_list_by_id(panelist_id: int):
     """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_list_by_id`
 
     :param panelist_id: Panelist ID to test retrieving panelist information
-    :type panelist_id: int
     """
     scores = PanelistScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_list_by_id(panelist_id)
@@ -135,7 +127,6 @@ def test_panelist_scores_retrieve_scores_list_by_slug(panelist_slug: str):
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
-    :type panelist_slug: str
     """
     scores = PanelistScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_list_by_slug(panelist_slug)
@@ -150,7 +141,6 @@ def test_panelist_scores_retrieve_scores_ordered_pair_by_id(panelist_id: int):
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
-    :type panelist_id: int
     """
     scores = PanelistScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_ordered_pair_by_id(panelist_id)
@@ -164,7 +154,6 @@ def test_panelist_scores_retrieve_scores_ordered_pair_by_slug(panelist_slug: str
 
     :param panelist_slug: Panelist slug string to test retrieving panelist
         information
-    :type panelist_slug: str
     """
     scores = PanelistScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_ordered_pair_by_slug(panelist_slug)

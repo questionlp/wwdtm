@@ -19,7 +19,6 @@ def get_connect_dict() -> Dict[str, Any]:
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
-    :rtype: Dict[str, Any]
     """
     with open("config.json", "r") as config_file:
         config_dict = json.load(config_file)
@@ -72,7 +71,6 @@ def test_host_retrieve_by_id(host_id: int):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_by_id`
 
     :param host_id: Host ID to test retrieving host information
-    :type host_id: int
     """
     host = Host(connect_dict=get_connect_dict())
     info = host.retrieve_by_id(host_id)
@@ -86,7 +84,6 @@ def test_host_retrieve_details_by_id(host_id: int):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_details_by_id`
 
     :param host_id: Host ID to test retrieving host details
-    :type host_id: int
     """
     host = Host(connect_dict=get_connect_dict())
     info = host.retrieve_details_by_id(host_id)
@@ -102,7 +99,6 @@ def test_host_retrieve_by_slug(host_slug: str):
 
     :param host_slug: Host slug string to test retrieving host
         information
-    :type host_slug: str
     """
     host = Host(connect_dict=get_connect_dict())
     info = host.retrieve_by_slug(host_slug)
@@ -116,7 +112,6 @@ def test_host_retrieve_details_by_slug(host_slug: str):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_details_by_slug`
 
     :param host_slug: Host slug string to test retrieving host details
-    :type host_slug: str
     """
     host = Host(connect_dict=get_connect_dict())
     info = host.retrieve_details_by_slug(host_slug)

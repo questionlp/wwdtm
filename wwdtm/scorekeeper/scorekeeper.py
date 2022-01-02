@@ -21,10 +21,8 @@ class Scorekeeper:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -51,7 +49,6 @@ class Scorekeeper:
         :return: List of all scorekeepers and their corresponding
             information. If scorekeeper information could not be
             retrieved, an empty list will be returned.
-        :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
@@ -85,7 +82,6 @@ class Scorekeeper:
         :return: List of all scorekeepers and their corresponding
             information and appearances. If scorekeeper information
             could not be retrieved, an empty list will be returned.
-        :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
@@ -118,7 +114,6 @@ class Scorekeeper:
 
         :return: List of all scorekeeper IDs. If scorekeeper IDs could
             not be retrieved, an empty list would be returned.
-        :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT scorekeeperid FROM ww_scorekeepers "
@@ -140,7 +135,6 @@ class Scorekeeper:
         :return: List of all scorekeeper slug strings. If scorekeeper
             slug strings could not be retrieved, an empty list will be
             returned.
-        :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT scorekeeperslug FROM ww_scorekeepers "
@@ -161,11 +155,9 @@ class Scorekeeper:
         and slug string for the requested scorekeeper ID.
 
         :param scorekeeper_id: Scorekeeper ID
-        :type scorekeeper_id: int
         :return: Dictionary containing scorekeeper information. If
             scorekeeper information could not be retrieved, an empty
             dictionary will be returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(scorekeeper_id):
             return {}
@@ -196,11 +188,9 @@ class Scorekeeper:
         and slug string for the requested scorekeeper slug string.
 
         :param scorekeeper_slug: Scorekeeper slug string
-        :type scorekeeper_slug: str
         :return: Dictionary containing scorekeeper information. If
             scorekeeper information could not be retrieved, an empty
             dictionary will be returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = scorekeeper_slug.strip()
@@ -222,11 +212,9 @@ class Scorekeeper:
         scorekeeper ID.
 
         :param scorekeeper_id: Scorekeeper ID
-        :type scorekeeper_id: int
         :return: Dictionary containing scorekeeper information and
             their appearances. If scorekeeper information could not be
             retrieved, an empty dictionary will be returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(scorekeeper_id):
             return {}
@@ -246,11 +234,9 @@ class Scorekeeper:
         scorekeeper slug string.
 
         :param scorekeeper_slug: Scorekeeper slug string
-        :type scorekeeper_slug: str
         :return: Dictionary containing scorekeeper information and
             their appearances. If scorekeeper information could not be
             retrieved, an empty dictionary will be returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = scorekeeper_slug.strip()

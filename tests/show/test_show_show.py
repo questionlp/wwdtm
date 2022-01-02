@@ -97,13 +97,10 @@ def test_show_retrieve_by_date(year: int, month: int, day: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_by_date`
 
     :param year: Four digit year to test retrieving a show's information
-    :type year: int
     :param month: One or two digit month to test retrieving a show's
         information
-    :type month: int
     :param day: One or two digit day to test retrieving a show's
         information
-    :type day: int
     """
     show = Show(connect_dict=get_connect_dict())
     info = show.retrieve_by_date(year, month, day)
@@ -119,7 +116,6 @@ def test_show_retrieve_by_date_string(date: str):
 
     :param date: Show date string in ``YYYY-MM-DD`` format to test
         retrieving a show's information
-    :type date: str
     """
     show = Show(connect_dict=get_connect_dict())
     info = show.retrieve_by_date_string(date)
@@ -133,7 +129,6 @@ def test_show_retrieve_by_id(show_id: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_by_id`
 
     :param show_id: Show ID to test retrieving show information
-    :type show_id: int
     """
     show = Show(connect_dict=get_connect_dict())
     info = show.retrieve_by_id(show_id)
@@ -147,7 +142,6 @@ def test_show_retrieve_by_year(year: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_by_year`
 
     :param year: Four digit year to test retrieving show information
-    :type year: int
     """
     show = Show(connect_dict=get_connect_dict())
     shows = show.retrieve_by_year(year)
@@ -162,10 +156,8 @@ def test_show_retrieve_by_year_month(year: int, month: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_by_year_month`
 
     :param year: Four digit year to test retrieving show information
-    :type year: int
     :param month: One or two digit month to test retrieving show
         information
-    :type month: int
     """
     show = Show(connect_dict=get_connect_dict())
     shows = show.retrieve_by_year_month(year, month)
@@ -181,11 +173,8 @@ def test_show_retrieve_details_by_date(year: int, month: int, day: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_date`
 
     :param year: Four digit year to test retrieving show details
-    :type year: int
     :param month: One or two digit month to test retrieving show details
-    :type month: int
     :param day: One or two digit day to test retrieving show details
-    :type day: int
     """
     show = Show(connect_dict=get_connect_dict())
     info = show.retrieve_details_by_date(year, month, day)
@@ -203,7 +192,6 @@ def test_show_retrieve_details_by_date_string(date: str):
 
     :param date: Show date string in ``YYYY-MM-DD`` format to test
         retrieving show details
-    :type date: str
     """
     show = Show(connect_dict=get_connect_dict())
     info = show.retrieve_details_by_date_string(date)
@@ -218,7 +206,6 @@ def test_show_retrieve_details_by_id(show_id: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_id`
 
     :param show_id: Show ID to test retrieving show details
-    :type show_id: int
     """
     show = Show(connect_dict=get_connect_dict())
     info = show.retrieve_details_by_id(show_id)
@@ -233,7 +220,6 @@ def test_show_retrieve_details_by_year(year: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_year`
 
     :param year: Four digit year to test retrieving show details
-    :type year: int
     """
     show = Show(connect_dict=get_connect_dict())
     info = show.retrieve_details_by_year(year)
@@ -250,9 +236,7 @@ def test_show_retrieve_details_by_year_month(year: int, month: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_year_month`
 
     :param year: Four digit year to test retrieving show details
-    :type year: int
     :param month: One or two digit year to test retrieving show details
-    :type month: int
     """
     show = Show(connect_dict=get_connect_dict())
     info = show.retrieve_details_by_year_month(year, month)
@@ -270,7 +254,6 @@ def test_show_retrieve_months_by_year(year: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_months_by_year`
 
     :param year: Four digit year to test retrieving a list of months
-    :type year: int
     """
     show = Show(connect_dict=get_connect_dict())
     months = show.retrieve_months_by_year(year)
@@ -305,7 +288,6 @@ def test_show_retrieve_scores_by_year(year: int):
 
     :param year: Four digit year to test retrieving scores for a show
         year
-    :type year: int
     """
     show = Show(connect_dict=get_connect_dict())
     scores = show.retrieve_scores_by_year(year)

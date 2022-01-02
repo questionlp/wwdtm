@@ -22,10 +22,8 @@ class Panelist:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -53,7 +51,6 @@ class Panelist:
         :return: List of all panelists and their corresponding
             information. If panelists could not be retrieved, an empty
             list is returned.
-        :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
@@ -86,7 +83,6 @@ class Panelist:
         :return: List of all panelists and their corresponding
             information and appearances. If panelists could not be
             retrieved, an empty list is returned.
-        :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
@@ -121,7 +117,6 @@ class Panelist:
 
         :return: List of all panelist IDs. If panelist IDs could not be
             retrieved, an empty list is returned.
-        :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT panelistid FROM ww_panelists "
@@ -142,7 +137,6 @@ class Panelist:
 
         :return: List of all panelist slug strings. If panelist slug
             strings could not be retrieved, an empty list is returned.
-        :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT panelistslug FROM ww_panelists "
@@ -163,11 +157,9 @@ class Panelist:
         slug string for the requested panelist ID.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
         :return: Dictionary containing panelist information. If panelist
             information could not be retrieved, an empty dictionary is
             returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -198,11 +190,9 @@ class Panelist:
         slug string for the requested panelist slug string.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
         :return: Dictionary containing panelist information. If panelist
             information could not be retrieved, an empty dictionary is
             returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = panelist_slug.strip()
@@ -223,11 +213,9 @@ class Panelist:
         string and appearance information for the requested panelist ID.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
         :return: Dictionary containing panelist information and their
             appearances. If panelist information could not be retrieved,
             an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -249,11 +237,9 @@ class Panelist:
         string.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
         :return: Dictionary containing panelist information and their
             appearances. If panelist information could not be retrieved,
             an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = panelist_slug.strip()

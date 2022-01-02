@@ -11,10 +11,8 @@ def valid_int_id(int_id: int) -> bool:
     in ID fields in MySQL tables.
 
     :param int_id: ID number to validate
-    :type int_id: int
     :return: True or False, based on if the integer falls inclusively
         between 0 and 2147483647
-    :rtype: bool
     """
     try:
         if not int_id:

@@ -21,10 +21,8 @@ class Host:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -50,7 +48,6 @@ class Host:
 
         :return: List of all hosts and their corresponding information.
             If hosts could not be retrieved, an empty list is returned.
-        :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT hostid AS id, host AS name, hostslug AS slug, "
@@ -83,7 +80,6 @@ class Host:
         :return: List of all hosts and their corresponding information
             and appearances. If hosts could not be retrieved, an empty
             list is returned.
-        :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT hostid AS id, host AS name, hostslug AS slug, "
@@ -116,7 +112,6 @@ class Host:
 
         :return: List of all host IDs. If host IDs could not be
             retrieved, an empty list is returned.
-        :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT hostid FROM ww_hosts "
@@ -137,7 +132,6 @@ class Host:
 
         :return: List of all host slug strings. If host slug strings
             could not be retrieved, an empty list is returned.
-        :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT hostslug FROM ww_hosts "
@@ -158,11 +152,9 @@ class Host:
         slug string for the requested host ID.
 
         :param host_id: Host ID
-        :type host_id: int
         :return: Dictionary containing host information. If host
             information could not be retrieved, an empty dictionary is
             returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(host_id):
             return {}
@@ -193,11 +185,9 @@ class Host:
         slug string for the requested host slug string.
 
         :param host_slug: Host slug string
-        :type host_slug: str
         :return: Dictionary containing host information. If host
             information could be retrieved, an empty dictionary is
             returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = host_slug.strip()
@@ -218,11 +208,9 @@ class Host:
         string and appearance information for the requested host ID.
 
         :param host_id: Host ID
-        :type host_id: int
         :return: Dictionary containing host information and their
             appearances. If host information could be retrieved, an
             empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(host_id):
             return {}
@@ -242,11 +230,9 @@ class Host:
         string.
 
         :param host_slug: Host slug string
-        :type host_slug: str
         :return: Dictionary containing host information and their
             appearances. If host information could be retrieved, an
             empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = host_slug.strip()

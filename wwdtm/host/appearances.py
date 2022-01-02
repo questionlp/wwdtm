@@ -19,10 +19,8 @@ class HostAppearances:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -47,11 +45,9 @@ class HostAppearances:
         information for the requested host ID.
 
         :param host_id: Host ID
-        :type host_id: int
         :return:  Dictionary containing appearance counts and list of
             appearances for a host. If host appearances could not be
             retrieved, an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(host_id):
             return {}
@@ -118,11 +114,9 @@ class HostAppearances:
         information for the requested host ID.
 
         :param host_slug: Host slug string
-        :type host_slug: str
         :return:  Dictionary containing appearance counts and list of
             appearances for a host. If host appearances could not be
             retrieved, an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         id_ = self.utility.convert_slug_to_id(host_slug)
         if not id_:

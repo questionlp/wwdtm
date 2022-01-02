@@ -19,10 +19,8 @@ class ScorekeeperUtility:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -45,9 +43,7 @@ class ScorekeeperUtility:
         string value.
 
         :param scorekeeper_id: Scorekeeper ID
-        :type scorekeeper_id: int
         :return: Scorekeeper slug string, if a match is found
-        :rtype: str
         """
         if not valid_int_id(scorekeeper_id):
             return None
@@ -71,9 +67,7 @@ class ScorekeeperUtility:
         scorekeeper ID value.
 
         :param scorekeeper_slug: Scorekeeper slug string
-        :type scorekeeper_slug: str
         :return: Scorekeeper ID, if a match is found
-        :rtype: int
         """
         try:
             slug = scorekeeper_slug.strip()
@@ -100,10 +94,8 @@ class ScorekeeperUtility:
         """Checks to see if a scorekeeper ID exists.
 
         :param scorekeeper_id: Scorekeeper ID
-        :type scorekeeper_id: int
         :return: True or False, based on whether the scorekeeper ID
             exists
-        :rtype: bool
         """
         if not valid_int_id(scorekeeper_id):
             return False
@@ -123,10 +115,8 @@ class ScorekeeperUtility:
         """Checks to see if a scorekeeper slug string exists.
 
         :param scorekeeper_slug: Scorekeeper slug string
-        :type scorekeeper_slug: str
         :return: True or False, based on whether the scorekeeper slug
             string exists
-        :rtype: bool
         """
         try:
             slug = scorekeeper_slug.strip()

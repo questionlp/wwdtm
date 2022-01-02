@@ -20,10 +20,8 @@ class Location:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -49,11 +47,9 @@ class Location:
 
         :param sort_by_venue: Sets whether to sort by venue first, or
             by state and city first
-        :type sort_by_venue: bool
         :return: List of all locations and their corresponding
             information. If locations could not be retrieved, an empty
             list is returned.
-        :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT locationid AS id, city, state, venue, "
@@ -95,11 +91,9 @@ class Location:
 
         :param sort_by_venue: Sets whether to sort by venue first, or
             by state and city first
-        :type sort_by_venue: bool
         :return: List of all locations and their corresponding
             information and recordings. If locations could not be
             retrieved, an empty list is returned.
-        :rtype: List[Dict[str, Any]]
         """
         cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT locationid AS id, city, state, venue, "
@@ -138,10 +132,8 @@ class Location:
 
         :param sort_by_venue: Sets whether to sort by venue first, or
             by state and city first
-        :type sort_by_venue: bool
         :return: List of all location IDs. If location IDs could not be
             retrieved, an empty list is returned.
-        :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT locationid FROM ww_locations "
@@ -165,10 +157,8 @@ class Location:
 
         :param sort_by_venue: Sets whether to sort by venue first, or
             by state and city first
-        :type sort_by_venue: bool
         :return: List of all location slug strings. If location slug
             strings could not be retrieved, an empty list is returned.
-        :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT locationslug FROM ww_locations "
@@ -192,11 +182,9 @@ class Location:
         city, state and slug string for the requested location ID.
 
         :param location_id: Location ID
-        :type location_id: int
         :return: Dictionary containing location information. If
             location information could not be retrieved, an empty
             dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(location_id):
             return {}
@@ -231,11 +219,9 @@ class Location:
         city, state and slug string for the requested location ID.
 
         :param location_slug: Location slug string
-        :type location_slug: str
         :return: Dictionary containing location information. If
             location information could not be retrieved, an empty
             dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = location_slug.strip()
@@ -257,11 +243,9 @@ class Location:
         requested location ID.
 
         :param location_id: Location ID
-        :type location_id: int
         :return: Dictionary containing location information and their
             recordings. If location information could not be retrieved,
             an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(location_id):
             return {}
@@ -281,11 +265,9 @@ class Location:
         requested location slug string.
 
         :param location_slug: Location slug string
-        :type location_slug: str
         :return: Dictionary containing location information and their
             recordings. If location information could not be retrieved,
             an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = location_slug.strip()

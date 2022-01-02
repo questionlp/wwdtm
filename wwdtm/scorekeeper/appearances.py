@@ -20,10 +20,8 @@ class ScorekeeperAppearances:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -48,12 +46,10 @@ class ScorekeeperAppearances:
         information for the requested scorekeeper ID.
 
         :param scorekeeper_id: Scorekeeper ID
-        :type scorekeeper_id: int
         :return: Dictionary containing appearance counts and list of
             appearances for a scorekeeper. If scorekeeper appearances
             could not be retrieved, an empty dictionary would be
             returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(scorekeeper_id):
             return {}
@@ -123,12 +119,10 @@ class ScorekeeperAppearances:
         information for the requested scorekeeper ID.
 
         :param scorekeeper_slug: Scorekeeper slug string
-        :type scorekeeper_slug: str
         :return: Dictionary containing appearance counts and list of
             appearances for a scorekeeper. If scorekeeper appearances
             could not be retrieved, an empty dictionary would be
             returned.
-        :rtype: Dict[str, Any]
         """
         id_ = self.utility.convert_slug_to_id(scorekeeper_slug)
         if not id_:

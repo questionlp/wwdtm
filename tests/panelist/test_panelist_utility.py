@@ -19,7 +19,6 @@ def get_connect_dict() -> Dict[str, Any]:
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
-    :rtype: Dict[str, Any]
     """
     with open("config.json", "r") as config_file:
         config_dict = json.load(config_file)
@@ -33,7 +32,6 @@ def test_panelist_utility_convert_id_to_slug(panelist_id: int):
 
     :param panelist_id: Panelist ID to test converting into panelist
         slug string
-    :type panelist_id: int
     """
     utility = PanelistUtility(get_connect_dict())
     slug = utility.convert_id_to_slug(panelist_id)
@@ -48,7 +46,6 @@ def test_panelist_utility_convert_invalid_id_to_slug(panelist_id: int):
 
     :param panelist_id: Panelist ID to test failing to convert into
         panelist slug string
-    :type panelist_id: int
     """
     utility = PanelistUtility(get_connect_dict())
     slug = utility.convert_id_to_slug(panelist_id)
@@ -62,7 +59,6 @@ def test_panelist_utility_convert_slug_to_id(panelist_slug: str):
 
     :param panelist_slug: Panelist slug string to test converting into
         panelist ID
-    :type panelist_slug: str
     """
     utility = PanelistUtility(get_connect_dict())
     id_ = utility.convert_slug_to_id(panelist_slug)
@@ -77,7 +73,6 @@ def test_panelist_utility_convert_invalid_slug_to_id(panelist_slug: str):
 
     :param panelist_slug: Panelist slug string to test failing to
         convert into panelist ID
-    :type panelist_slug: str
     """
     utility = PanelistUtility(get_connect_dict())
     id_ = utility.convert_slug_to_id(panelist_slug)
@@ -90,7 +85,6 @@ def test_panelist_utility_id_exists(panelist_id: int):
     """Testing for :py:meth:`wwdtm.panelist.PanelistUtility.id_exists`
 
     :param panelist_id: Panelist ID to test if a panelist exists
-    :type panelist_id: int
     """
     utility = PanelistUtility(get_connect_dict())
     result = utility.id_exists(panelist_id)
@@ -103,7 +97,6 @@ def test_panelist_utility_id_not_exists(panelist_id: int):
     """Negative testing for :py:meth:`wwdtm.panelist.PanelistUtility.id_exists`
 
     :param panelist_id: Panelist ID to test if a panelist does not exist
-    :type panelist_id: int
     """
     utility = PanelistUtility(get_connect_dict())
     result = utility.id_exists(panelist_id)
@@ -117,7 +110,6 @@ def test_panelist_utility_slug_exists(panelist_slug: str):
 
     :param panelist_slug: Panelist slug string to test if a panelist
         exists
-    :type panelist_slug: str
     """
     utility = PanelistUtility(get_connect_dict())
     result = utility.slug_exists(panelist_slug)
@@ -131,7 +123,6 @@ def test_panelist_utility_slug_not_exists(panelist_slug: str):
 
     :param panelist_slug: Panelist slug string to test if a panelist
         does not exist
-    :type panelist_slug: str
     """
     utility = PanelistUtility(get_connect_dict())
     result = utility.slug_exists(panelist_slug)

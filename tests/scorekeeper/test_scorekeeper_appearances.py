@@ -29,7 +29,6 @@ def test_scorekeeper_appearance_retrieve_appearances_by_id(scorekeeper_id: int):
 
     :param scorekeeper_id: Scorekeeper ID to test retrieving scorekeeper
         appearances
-    :type scorekeeper_id: int
     """
     appearances = ScorekeeperAppearances(connect_dict=get_connect_dict())
     appearance = appearances.retrieve_appearances_by_id(scorekeeper_id)
@@ -44,7 +43,6 @@ def test_scorekeeper_appearance_retrieve_appearances_by_slug(scorekeeper_slug: s
 
     :param scorekeeper_slug: Scorekeeper slug string to test retrieving
         scorekeeper appearances
-    :type scorekeeper_slug: str
     """
     appearances = ScorekeeperAppearances(connect_dict=get_connect_dict())
     appearance = appearances.retrieve_appearances_by_slug(scorekeeper_slug)

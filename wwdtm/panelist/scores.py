@@ -19,10 +19,8 @@ class PanelistScores:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -47,10 +45,8 @@ class PanelistScores:
         requested panelist ID.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
         :return: List containing panelist scores. If panelist scores
             could not be retrieved, an empty list is returned.
-        :rtype: List[int]
         """
         if not valid_int_id(panelist_id):
             return []
@@ -83,10 +79,8 @@ class PanelistScores:
         requested panelist slug string.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
         :return: List containing panelist scores. If panelist scores
             could not be retrieved, an empty list is returned.
-        :rtype: List[int]
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:
@@ -101,12 +95,10 @@ class PanelistScores:
         panelist ID.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
         :return: Dictionary containing two lists, one containing scores
             and one containing counts of those scores. If panelist
             scores could not be retrieved, an empty dictionary is
             returned.
-        :rtype: Dict[str, List[int]]
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -160,12 +152,10 @@ class PanelistScores:
         panelist slug string.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
         :return: Dictionary containing two lists, one containing scores
             and one containing counts of those scores. If panelist
             scores could not be retrieved, an empty dictionary is
             returned.
-        :rtype: Dict[str, List[int]]
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:
@@ -181,11 +171,9 @@ class PanelistScores:
         for the requested panelist ID.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
         :return: List of tuples containing scores and score counts. If
             panelist scores could not be retrieved, an empty list is
             returned.
-        :rtype: List[Tuple[int, int]]
         """
         if not valid_int_id(panelist_id):
             return []
@@ -236,11 +224,9 @@ class PanelistScores:
         for the requested panelist slug string.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
         :return: List of tuples containing scores and score counts. If
             panelist scores could not be retrieved, an empty list is
             returned.
-        :rtype: List[Tuple[int, int]]
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:
@@ -256,11 +242,9 @@ class PanelistScores:
         panelist ID.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
         :return: Dictionary containing a list show dates and a list
             of scores. If panelist scores could not be retrieved, an
             empty dictionary is returned.
-        :rtype: Dict[str, List]
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -299,11 +283,9 @@ class PanelistScores:
         panelist slug string.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
         :return: Dictionary containing a list show dates and a list
             of scores. If panelist scores could not be retrieved, an
             empty dictionary is returned.
-        :rtype: Dict[str, List]
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:
@@ -318,11 +300,9 @@ class PanelistScores:
         corresponding score for the requested panelist ID.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
         :return: List of tuples containing show dates and scores. If
             panelist scores could not be retrieved, an empty list is
             returned.
-        :rtype: List[Tuple[str, int]]
         """
         if not valid_int_id(panelist_id):
             return []
@@ -357,11 +337,9 @@ class PanelistScores:
         corresponding score for the requested panelist slug string.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
         :return: List of tuples containing show dates and scores. If
             panelist scores could not be retrieved, an empty list is
             returned.
-        :rtype: List[Tuple[str, int]]
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:

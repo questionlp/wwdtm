@@ -19,7 +19,6 @@ def get_connect_dict() -> Dict[str, Any]:
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
-    :rtype: Dict[str, Any]
     """
     with open("config.json", "r") as config_file:
         config_dict = json.load(config_file)
@@ -72,7 +71,6 @@ def test_guest_retrieve_by_id(guest_id: int):
     """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_by_id`
 
     :param guest_id: Guest ID to test retrieving guest information
-    :type guest_id: int
     """
     guest = Guest(connect_dict=get_connect_dict())
     info = guest.retrieve_by_id(guest_id)
@@ -87,7 +85,6 @@ def test_guest_retrieve_by_slug(guest_slug: str):
 
     :param guest_slug: Guest slug string to test retrieving guest
         information
-    :type guest_slug: str
     """
     guest = Guest(connect_dict=get_connect_dict())
     info = guest.retrieve_by_slug(guest_slug)
@@ -101,7 +98,6 @@ def test_guest_retrieve_details_by_id(guest_id: int):
     """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_details_by_id`
 
     :param guest_id: Guest ID to test retrieving guest details
-    :type guest_id: int
     """
     guest = Guest(connect_dict=get_connect_dict())
     info = guest.retrieve_details_by_id(guest_id)
@@ -116,7 +112,6 @@ def test_guest_guest_retrieve_details_by_slug(guest_slug: str):
     """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_details_by_slug`
 
     :param guest_slug: Guest slug string to test retrieving guest details
-    :type guest_slug: str
     """
     guest = Guest(connect_dict=get_connect_dict())
     info = guest.retrieve_details_by_slug(guest_slug)

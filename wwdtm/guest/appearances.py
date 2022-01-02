@@ -19,10 +19,8 @@ class GuestAppearances:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -47,11 +45,9 @@ class GuestAppearances:
         information for the requested guest ID.
 
         :param guest_id: Guest ID
-        :type guest_id: int
         :return: Dictionary containing appearance counts and list of
             appearances for a guest. If guest appearances could not be
             retrieved, an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(guest_id):
             return {}
@@ -121,11 +117,9 @@ class GuestAppearances:
         information for the requested guest slug string.
 
         :param guest_slug: Guest slug string
-        :type guest_slug: str
         :return: Dictionary containing appearance counts and list of
             appearances for a guest. If guest appearances could not be
             retrieved, empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         id_ = self.utility.convert_slug_to_id(guest_slug)
         if not id_:

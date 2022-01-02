@@ -6,7 +6,6 @@
 """Testing for object: :py:class:`wdtm.validation`
 """
 import json
-from typing import Any, Dict
 
 import pytest
 from wwdtm.validation import valid_int_id
@@ -17,7 +16,6 @@ def test_validation_valid_int_id(test_id: int):
     """Testing for :py:meth:`wwdtm.validation.valid_int_id`
 
     :param test_id: ID to test ID validation
-    :type test_id: int
     """
     assert valid_int_id(test_id), f"Provided ID {test_id} was not valid"
 
@@ -27,6 +25,5 @@ def test_validation_invalid_int_id(test_id: int):
     """Negative testing for :py:meth:`wwdtm.validation.valid_int_id`
 
     :param test_id: ID to test failing ID validation
-    :type test_id: int
     """
     assert not valid_int_id(test_id), f"Provided ID {test_id} was valid"

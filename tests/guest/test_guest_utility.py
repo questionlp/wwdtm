@@ -19,7 +19,6 @@ def get_connect_dict() -> Dict[str, Any]:
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
-    :rtype: Dict[str, Any]
     """
     with open("config.json", "r") as config_file:
         config_dict = json.load(config_file)
@@ -32,7 +31,6 @@ def test_guest_utility_convert_id_to_slug(guest_id: int):
     """Testing for :py:meth:`wwdtm.guest.GuestUtility.convert_id_to_slug`
 
     :param guest_id: Guest ID to test converting into guest slug string
-    :type guest_id: int
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
     slug = utility.convert_id_to_slug(guest_id)
@@ -47,7 +45,6 @@ def test_guest_utility_convert_invalid_id_to_slug(guest_id: int):
 
     :param guest_id: Guest ID to test failing to convert into guest slug
         string
-    :type guest_id: int
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
     slug = utility.convert_id_to_slug(guest_id)
@@ -61,7 +58,6 @@ def test_guest_utility_convert_slug_to_id(guest_slug: str):
 
     :param guest_slug: Guest slug string to test converting into guest
         ID
-    :type guest_slug: str
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
     id_ = utility.convert_slug_to_id(guest_slug)
@@ -76,7 +72,6 @@ def test_guest_utility_convert_invalid_slug_to_id(guest_slug: str):
 
     :param guest_slug: Guest slug string to test failing to convert into
         guest ID
-    :type guest_slug: str
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
     id_ = utility.convert_slug_to_id(guest_slug)
@@ -89,7 +84,6 @@ def test_guest_utility_id_exists(guest_id: int):
     """Testing for :py:meth:`wwdtm.guest.GuestUtility.id_exists`
 
     :param guest_id: Guest ID to test if a guest exists
-    :type guest_id: int
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
     result = utility.id_exists(guest_id)
@@ -102,7 +96,6 @@ def test_guest_utility_id_not_exists(guest_id: int):
     """Negative testing for :py:meth:`wwdtm.guest.GuestUtility.id_exists`
 
     :param guest_id: Guest ID to test if a guest does not exist
-    :type guest_id: int
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
     result = utility.id_exists(guest_id)
@@ -115,7 +108,6 @@ def test_guest_utility_slug_exists(guest_slug: str):
     """Testing for :py:meth:`wwdtm.guest.GuestUtility.slug_exists`
 
     :param guest_slug: Guest slug string to test if a guest exists
-    :type guest_slug: str
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
     result = utility.slug_exists(guest_slug)
@@ -129,7 +121,6 @@ def test_guest_utility_slug_not_exists(guest_slug: str):
 
     :param guest_slug: Guest slug string to test if a guest does not
         exist
-    :type guest_slug: str
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
     result = utility.slug_exists(guest_slug)

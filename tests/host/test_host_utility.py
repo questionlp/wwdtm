@@ -19,7 +19,6 @@ def get_connect_dict() -> Dict[str, Any]:
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
-    :rtype: Dict[str, Any]
     """
     with open("config.json", "r") as config_file:
         config_dict = json.load(config_file)
@@ -32,7 +31,6 @@ def test_host_utility_convert_id_to_slug(host_id: int):
     """Testing for :py:meth:`wwdtm.host.HostUtility.convert_id_to_slug`
 
     :param host_id: Host ID to test converting into host slug string
-    :type host_id: int
     """
     utility = HostUtility(connect_dict=get_connect_dict())
     slug = utility.convert_id_to_slug(host_id)
@@ -47,7 +45,6 @@ def test_host_utility_convert_invalid_id_to_slug(host_id: int):
 
     :param host_id: Host ID to test failing to convert into host slug
         string
-    :type host_id: int
     """
     utility = HostUtility(connect_dict=get_connect_dict())
     slug = utility.convert_id_to_slug(host_id)
@@ -60,7 +57,6 @@ def test_host_utility_convert_slug_to_id(host_slug: str):
     """Testing for :py:meth:`wwdtm.host.HostUtility.convert_slug_to_id`
 
     :param host_slug: Host slug string to test converting into host ID
-    :type host_slug: str
     """
     utility = HostUtility(connect_dict=get_connect_dict())
     id_ = utility.convert_slug_to_id(host_slug)
@@ -75,7 +71,6 @@ def test_host_utility_convert_invalid_slug_to_id(host_slug: str):
 
     :param host_slug: Host slug string to test failing to convert into
         host ID
-    :type host_slug: str
     """
     utility = HostUtility(connect_dict=get_connect_dict())
     result = utility.convert_slug_to_id(host_slug)
@@ -88,7 +83,6 @@ def test_host_utility_id_exists(host_id: int):
     """Testing for :py:meth:`wwdtm.host.HostUtility.id_exists`
 
     :param host_id: Host ID to test if a host exists
-    :type host_id: int
     """
     utility = HostUtility(connect_dict=get_connect_dict())
     result = utility.id_exists(host_id)
@@ -101,7 +95,6 @@ def test_host_utility_id_not_exists(host_id: int):
     """Negative testing for :py:meth:`wwdtm.host.HostUtility.id_exists()`
 
     :param host_id: Host ID to test if a host does not exist
-    :type host_id: int
     """
     utility = HostUtility(connect_dict=get_connect_dict())
     result = utility.id_exists(host_id)
@@ -114,7 +107,6 @@ def test_host_utility_slug_exists(host_slug: str):
     """Testing for :py:meth:`wwdtm.host.HostUtility.slug_exists`
 
     :param host_slug: Host slug string to test if a host exists
-    :type host_slug: str
     """
     utility = HostUtility(connect_dict=get_connect_dict())
     result = utility.slug_exists(host_slug)
@@ -127,7 +119,6 @@ def test_host_utility_slug_not_exists(host_slug: str):
     """Negative testing for :py:meth:`wwdtm.host.HostUtility.slug_exists`
 
     :param host_slug: Host slug string to test if a host does not exist
-    :type host_slug: str
     """
     utility = HostUtility(connect_dict=get_connect_dict())
     result = utility.slug_exists(host_slug)

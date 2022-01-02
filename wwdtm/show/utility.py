@@ -20,10 +20,8 @@ class ShowUtility:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -48,13 +46,9 @@ class ShowUtility:
         """Converts a show date to the matching show ID value.
 
         :param year: Year portion of a show date
-        :type year: int
         :param month: Month portion of a show date
-        :type month: int
         :param day: Day portion of a show date
-        :type day: int
         :return: Show ID, if a match is found
-        :rtype: int
         """
         try:
             show_date = datetime.datetime(year, month, day)
@@ -79,9 +73,7 @@ class ShowUtility:
         """Converts a show's ID to the matching show date.
 
         :param show_id: Show ID
-        :type show_id: int
         :return: Show date, if a match is found
-        :rtype: str
         """
         if not valid_int_id(show_id):
             return None
@@ -107,13 +99,9 @@ class ShowUtility:
         """Checks to see if a show date exists.
 
         :param year: Year portion of a show date
-        :type year: int
         :param month: Month portion of a show date
-        :type month: int
         :param day: Day portion of a show date
-        :type day: int
         :return: True or False, based on whether the show date exists
-        :rtype: bool
         """
         try:
             show_date = datetime.datetime(year, month, day)
@@ -135,9 +123,7 @@ class ShowUtility:
         """Checks to see if a show ID exists.
 
         :param show_id: Show ID
-        :type show_id: int
         :return: True or False, based on whether the show ID exists
-        :rtype: bool
         """
         if not valid_int_id(show_id):
             return False

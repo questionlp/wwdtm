@@ -30,11 +30,8 @@ def test_show_utility_convert_date_to_id(year: int,
     """Testing for :py:meth:`wwdtm.show.ShowUtility.convert_date_to_id`
 
     :param year: Four digit year to test converting into show ID
-    :type year: int
     :param month: One or two digit month to test converting into show ID
-    :type month: int
     :param day: One or two digit day to test converting into show ID
-    :type day: int
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
     id_ = utility.convert_date_to_id(year, month, day)
@@ -51,13 +48,10 @@ def test_show_utility_convert_invalid_date_to_id(year: int,
     """Negative testing for :py:meth:`wwdtm.show.ShowUtility.convert_date_to_id`
 
     :param year: Four digit year to test failing to convert into show ID
-    :type year: int
     :param month: One or two digit month to test failing to convert
         into show ID
-    :type month: int
     :param day: One or two digit day to test failing to convert into
         show ID
-    :type day: int
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
     id_ = utility.convert_date_to_id(year, month, day)
@@ -70,7 +64,6 @@ def test_show_utility_convert_id_to_date(show_id: int):
     """Testing for :py:meth:`wwdtm.show.ShowUtility.convert_id_to_date`
 
     :param show_id: Show ID to test converting into show date
-    :type show_id: int
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
     date = utility.convert_id_to_date(show_id)
@@ -84,7 +77,6 @@ def test_show_utility_convert_invalid_id_to_date(show_id: int):
     """Negative testing for :py:meth:`wwdtm.show.ShowUtility.convert_id_to_date`
 
     :param show_id: Show ID to test failing to convert into show date
-    :type show_id: int
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
     date = utility.convert_id_to_date(show_id)
@@ -99,11 +91,8 @@ def test_show_utility_date_exists(year: int,
     """Testing for :py:meth:`wwdtm.show.ShowUtility.date_exists`
 
     :param year: Four digit year to test if a show exists
-    :type year: int
     :param month: One or two digit month to test if a show exists
-    :type month: int
     :param day: One or two digit day to test if a show exists
-    :type day: int
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
     result = utility.date_exists(year, month, day)
@@ -118,12 +107,9 @@ def test_show_utility_date_not_exists(year: int,
     """Negative testing for :py:meth:`wwdtm.show.ShowUtility.date_exists`
 
     :param year: Four digit year to test if a show does not exist
-    :type year: int
     :param month: One or two digit month to test if a show does not
         exist
-    :type month: int
     :param day: One or two digit day to test if a show does not exist
-    :type day: int
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
     result = utility.date_exists(year, month, day)
@@ -136,7 +122,6 @@ def test_show_utility_id_exists(show_id: int):
     """Testing for :py:meth:`wwdtm.show.ShowUtility.id_exists`
 
     :param show_id: Show ID to test if a show exists
-    :type show_id: int
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
     result = utility.id_exists(show_id)
@@ -149,7 +134,6 @@ def test_show_utility_id_not_exists(show_id: int):
     """Negative testing for :py:meth:`wwdtm.show.ShowUtility.id_exists`
 
     :param show_id: Show ID to test if a show does not exist
-    :type show_id: int
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
     result = utility.id_exists(show_id)
