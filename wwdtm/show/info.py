@@ -136,8 +136,8 @@ class ShowInfo:
                  "sk.scorekeeperid = skm.scorekeeperid "
                  "JOIN ww_showdescriptions sd ON sd.showid = s.showid "
                  "JOIN ww_shownotes sn ON sn.showid = s.showid "
-                 "WHERE s.showid IN "
-                 "({ids});".format(ids=", ".join(str(v) for v in show_ids)))
+                 "WHERE s.showid IN ({ids}) "
+                 "ORDER BY s.showdate ASC;".format(ids=", ".join(str(v) for v in show_ids)))
         cursor.execute(query)
         result = cursor.fetchall()
         cursor.close()
