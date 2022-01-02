@@ -54,8 +54,7 @@ class Location:
         cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT locationid AS id, city, state, venue, "
                  "locationslug AS slug "
-                 "FROM ww_locations "
-                 "WHERE locationslug != 'tbd' ")
+                 "FROM ww_locations ")
         if sort_by_venue:
             query = query + "ORDER BY venue ASC, city ASC, state ASC;"
         else:
@@ -98,8 +97,7 @@ class Location:
         cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT locationid AS id, city, state, venue, "
                  "locationslug AS slug "
-                 "FROM ww_locations "
-                 "WHERE locationslug != 'tbd' ")
+                 "FROM ww_locations ")
         if sort_by_venue:
             query = query + "ORDER BY venue ASC, city ASC, state ASC;"
         else:
@@ -136,8 +134,7 @@ class Location:
             retrieved, an empty list is returned.
         """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT locationid FROM ww_locations "
-                 "WHERE locationslug != 'tbd' ")
+        query = ("SELECT locationid FROM ww_locations ")
         if sort_by_venue:
             query = query + "ORDER BY venue ASC, city ASC, state ASC;"
         else:
@@ -161,8 +158,7 @@ class Location:
             strings could not be retrieved, an empty list is returned.
         """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT locationslug FROM ww_locations "
-                 "WHERE locationslug != 'tbd' ")
+        query = ("SELECT locationslug FROM ww_locations ")
         if sort_by_venue:
             query = query + "ORDER BY venue ASC, city ASC, state ASC;"
         else:

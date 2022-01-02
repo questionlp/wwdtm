@@ -54,7 +54,6 @@ class Scorekeeper:
         query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
                  "scorekeeperslug AS slug, scorekeepergender AS gender "
                  "FROM ww_scorekeepers "
-                 "WHERE scorekeeperslug != 'tbd' "
                  "ORDER BY scorekeeper ASC;")
         cursor.execute(query)
         results = cursor.fetchall()
@@ -87,7 +86,6 @@ class Scorekeeper:
         query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
                  "scorekeeperslug AS slug, scorekeepergender AS gender "
                  "FROM ww_scorekeepers "
-                 "WHERE scorekeeperslug != 'tbd' "
                  "ORDER BY scorekeeper ASC;")
         cursor.execute(query)
         results = cursor.fetchall()
@@ -117,7 +115,6 @@ class Scorekeeper:
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT scorekeeperid FROM ww_scorekeepers "
-                 "WHERE scorekeeperslug != 'tbd' "
                  "ORDER BY scorekeeper ASC;")
         cursor.execute(query)
         results = cursor.fetchall()
@@ -138,7 +135,6 @@ class Scorekeeper:
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT scorekeeperslug FROM ww_scorekeepers "
-                 "WHERE scorekeeperslug != 'tbd' "
                  "ORDER BY scorekeeper ASC;")
         cursor.execute(query)
         results = cursor.fetchall()

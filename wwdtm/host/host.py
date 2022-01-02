@@ -53,7 +53,6 @@ class Host:
         query = ("SELECT hostid AS id, host AS name, hostslug AS slug, "
                  "hostgender AS gender "
                  "FROM ww_hosts "
-                 "WHERE hostslug != 'tbd' "
                  "ORDER BY host ASC;")
         cursor.execute(query)
         results = cursor.fetchall()
@@ -85,7 +84,6 @@ class Host:
         query = ("SELECT hostid AS id, host AS name, hostslug AS slug, "
                  "hostgender AS gender "
                  "FROM ww_hosts "
-                 "WHERE hostslug != 'tbd' "
                  "ORDER BY host ASC;")
         cursor.execute(query)
         results = cursor.fetchall()
@@ -115,7 +113,6 @@ class Host:
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT hostid FROM ww_hosts "
-                 "WHERE hostslug != 'tbd' "
                  "ORDER BY host ASC;")
         cursor.execute(query)
         results = cursor.fetchall()
@@ -135,7 +132,6 @@ class Host:
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT hostslug FROM ww_hosts "
-                 "WHERE hostslug != 'tbd' "
                  "ORDER BY host ASC;")
         cursor.execute(query)
         results = cursor.fetchall()
