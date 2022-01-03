@@ -21,10 +21,8 @@ class Guest:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -51,11 +49,10 @@ class Guest:
         :return: List of all guests and their corresponding
             information. If guests could not be retrieved, an empty list
             is returned.
-        :rtype: List[Dict[str, Any]]
         """
 
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT guestid AS id, guest, guestslug AS slug "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT guestid AS id, guest AS name, guestslug AS slug "
                  "FROM ww_guests "
                  "WHERE guestslug != 'none' "
                  "ORDER BY guest ASC;")
@@ -68,13 +65,11 @@ class Guest:
 
         guests = []
         for row in results:
-            guest = {
-                "id": row["id"],
-                "name": row["guest"],
-                "slug": row["slug"] if row["slug"] else slugify(row["guest"]),
-            }
-
-            guests.append(guest)
+            guests.append({
+                "id": row.id,
+                "name": row.name,
+                "slug": row.slug if row.slug else slugify(row.name),
+            })
 
         return guests
 
@@ -85,10 +80,9 @@ class Guest:
         :return: List of all guests and their corresponding
             information and appearances. If guests could not be
             retrieved, an empty list is returned.
-        :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT guestid AS id, guest, guestslug AS slug "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT guestid AS id, guest AS name, guestslug AS slug "
                  "FROM ww_guests "
                  "WHERE guestslug != 'none' "
                  "ORDER BY guest ASC;")
@@ -101,15 +95,12 @@ class Guest:
 
         guests = []
         for row in results:
-            appearances = self.appearances.retrieve_appearances_by_id(row["id"])
-            guest = {
-                "id": row["id"],
-                "name": row["guest"],
-                "slug": row["slug"] if row["slug"] else slugify(row["guest"]),
-                "appearances": appearances,
-            }
-
-            guests.append(guest)
+            guests.append({
+                "id": row.id,
+                "name": row.name,
+                "slug": row.slug if row.slug else slugify(row.name),
+                "appearances": self.appearances.retrieve_appearances_by_id(row.id),
+            })
 
         return guests
 
@@ -119,24 +110,19 @@ class Guest:
 
         :return: List of all guest IDs. If guest IDs could not be
             retrieved, an emtpy list is returned.
-        :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT guestid FROM ww_guests "
                  "WHERE guestslug != 'none' "
                  "ORDER BY guest ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0])
-
-        return ids
+        return [v[0] for v in results]
 
     def retrieve_all_slugs(self) -> List[str]:
         """Returns a list of all guest slug strings from the database,
@@ -144,24 +130,19 @@ class Guest:
 
         :return: List of all guest slug strings. If guest slug strings
             could not be retrieved, an emtpy list is returned.
-        :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT guestslug FROM ww_guests "
                  "WHERE guestslug != 'none' "
                  "ORDER BY guest ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0])
-
-        return ids
+        return [v[0] for v in results]
 
     @lru_cache(typed=True)
     def retrieve_by_id(self, guest_id: int) -> Dict[str, Any]:
@@ -169,17 +150,15 @@ class Guest:
         slug string for the requested guest ID.
 
         :param guest_id: Guest ID
-        :type guest_id: int
         :return: Dictionary containing guest information. If guest
             information could not be retrieved, an empty dictionary is
             returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(guest_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT guestid AS id, guest, guestslug AS slug "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT guestid AS id, guest AS name, guestslug AS slug "
                  "FROM ww_guests "
                  "WHERE guestid = %s "
                  "LIMIT 1;")
@@ -190,13 +169,11 @@ class Guest:
         if not result:
             return {}
 
-        info = {
-            "id": result["id"],
-            "name": result["guest"],
-            "slug": result["slug"] if result["slug"] else slugify(result["guest"]),
+        return {
+            "id": result.id,
+            "name": result.name,
+            "slug": result.slug if result.slug else slugify(result.name),
         }
-
-        return info
 
     @lru_cache(typed=True)
     def retrieve_by_slug(self, guest_slug: str) -> Dict[str, Any]:
@@ -204,11 +181,9 @@ class Guest:
         slug string for the requested guest slug string.
 
         :param guest_slug: Guest slug string
-        :type guest_slug: str
         :return: Dictionary containing guest information. If guest
             information could not be retrieved, an empty dictionary is
             returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = guest_slug.strip()
@@ -229,11 +204,9 @@ class Guest:
         string and appearance information for the requested Guest ID.
 
         :param guest_id: Guest ID
-        :type guest_id: int
         :return: Dictionary containing guest information and their
             appearances. If guest information could not be retrieved,
             an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(guest_id):
             return {}
@@ -253,11 +226,9 @@ class Guest:
         string.
 
         :param guest_slug: Guest slug string
-        :type guest_slug: str
         :return: Dictionary containing guest information and their
             appearances. If guest information could not be retrieved,
             an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = guest_slug.strip()

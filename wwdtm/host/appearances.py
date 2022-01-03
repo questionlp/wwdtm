@@ -19,10 +19,8 @@ class HostAppearances:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -47,16 +45,14 @@ class HostAppearances:
         information for the requested host ID.
 
         :param host_id: Host ID
-        :type host_id: int
         :return:  Dictionary containing appearance counts and list of
             appearances for a host. If host appearances could not be
             retrieved, an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(host_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
+        cursor = self.database_connection.cursor(named_tuple=True)
         query = ("SELECT ( "
                  "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
                  "JOIN ww_shows s ON s.showid = hm.showid "
@@ -70,8 +66,8 @@ class HostAppearances:
 
         if result:
             appearance_counts = {
-                "regular_shows": result["regular_shows"],
-                "all_shows": result["all_shows"],
+                "regular_shows": result.regular_shows,
+                "all_shows": result.all_shows,
             }
         else:
             appearance_counts = {
@@ -79,9 +75,8 @@ class HostAppearances:
                 "all_shows": 0,
             }
 
-        cursor = self.database_connection.cursor(dictionary=True)
         query = ("SELECT hm.showid AS show_id, s.showdate AS date, "
-                 "s.bestof AS best_of, s.repeatshowid, "
+                 "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
                  "hm.guest FROM ww_showhostmap hm "
                  "JOIN ww_hosts h ON h.hostid = hm.hostid "
                  "JOIN ww_shows s ON s.showid = hm.showid "
@@ -95,25 +90,23 @@ class HostAppearances:
             appearances = []
             for appearance in results:
                 info = {
-                    "show_id": appearance["show_id"],
-                    "date": appearance["date"].isoformat(),
-                    "best_of": bool(appearance["best_of"]),
-                    "repeat_show": bool(appearance["repeatshowid"]),
-                    "guest": bool(appearance["guest"]),
+                    "show_id": appearance.show_id,
+                    "date": appearance.date.isoformat(),
+                    "best_of": bool(appearance.best_of),
+                    "repeat_show": bool(appearance.repeat_show_id),
+                    "guest": bool(appearance.guest),
                 }
                 appearances.append(info)
 
-            appearance_info = {
+            return {
                 "count": appearance_counts,
                 "shows": appearances,
             }
         else:
-            appearance_info = {
+            return {
                 "count": appearance_counts,
                 "shows": [],
             }
-
-        return appearance_info
 
     @lru_cache(typed=True)
     def retrieve_appearances_by_slug(self, host_slug: str) -> Dict[str, Any]:
@@ -121,11 +114,9 @@ class HostAppearances:
         information for the requested host ID.
 
         :param host_slug: Host slug string
-        :type host_slug: str
         :return:  Dictionary containing appearance counts and list of
             appearances for a host. If host appearances could not be
             retrieved, an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         id_ = self.utility.convert_slug_to_id(host_slug)
         if not id_:

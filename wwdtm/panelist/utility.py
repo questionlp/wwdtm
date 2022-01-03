@@ -19,10 +19,8 @@ class PanelistUtility:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -45,9 +43,7 @@ class PanelistUtility:
         string value.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
         :return: Panelist slug string, if a match is found
-        :rtype: str
         """
         if not valid_int_id(panelist_id):
             return None
@@ -71,9 +67,7 @@ class PanelistUtility:
         value.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
         :return: Panelists ID, if a match is found
-        :rtype: int
         """
         try:
             slug = panelist_slug.strip()
@@ -100,9 +94,7 @@ class PanelistUtility:
         """Checks to see if a panelist ID exists.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
         :return: True or False, based on whether the panelist ID exists
-        :rtype: bool
         """
         if not valid_int_id(panelist_id):
             return False
@@ -122,10 +114,8 @@ class PanelistUtility:
         """Checks to see if a panelist slug string exists.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
         :return: True or False, based on whether the panelist slug
             string exists
-        :rtype: bool
         """
         try:
             slug = panelist_slug.strip()

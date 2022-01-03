@@ -19,7 +19,6 @@ def get_connect_dict() -> Dict[str, Any]:
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
-    :rtype: Dict[str, Any]
     """
     with open("config.json", "r") as config_file:
         config_dict = json.load(config_file)
@@ -73,7 +72,6 @@ def test_location_retrieve_by_id(location_id: int):
 
     :param location_id: Location ID to test retrieving location
         information
-    :type location_id: int
     """
     location = Location(connect_dict=get_connect_dict())
     info = location.retrieve_by_id(location_id)
@@ -87,7 +85,6 @@ def test_location_retrieve_details_by_id(location_id: int):
     """Testing for :py:meth:`wwdtm.location.location.retrieve_details_by_id`
 
     :param location_id: Location ID to test retrieving location details
-    :type location_id: int
     """
     location = Location(connect_dict=get_connect_dict())
     info = location.retrieve_details_by_id(location_id)
@@ -103,7 +100,6 @@ def test_location_retrieve_by_slug(location_slug: str):
 
     :param location_slug: Location slug string to test retrieving
         location information
-    :type location_slug: str
     """
     location = Location(connect_dict=get_connect_dict())
     info = location.retrieve_by_slug(location_slug)
@@ -118,7 +114,6 @@ def test_location_retrieve_details_by_slug(location_slug: str):
 
     :param location_slug: Location slug string to test retrieving
         location details
-    :type location_slug: str
     """
     location = Location(connect_dict=get_connect_dict())
     info = location.retrieve_details_by_slug(location_slug)

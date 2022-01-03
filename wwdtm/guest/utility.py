@@ -19,10 +19,8 @@ class GuestUtility:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -44,9 +42,7 @@ class GuestUtility:
         """Converts a guest's ID to the matching guest slug string.
 
         :param guest_id: Guest ID
-        :type guest_id: int
         :return: Guest slug string, if a match is found
-        :rtype: str
         """
         if not valid_int_id(guest_id):
             return None
@@ -70,9 +66,7 @@ class GuestUtility:
         a match is found. If no match is found, None is returned.
 
         :param guest_slug: Guest slug string
-        :type guest_slug: str
         :return: Guest ID, if a match is found
-        :rtype: int
         """
         try:
             slug = guest_slug.strip()
@@ -99,9 +93,7 @@ class GuestUtility:
         """Checks to see if a guest ID exists.
 
         :param guest_id: Guest ID
-        :type guest_id: int
         :return: True or False, based on whether the guest ID exists
-        :rtype: bool
         """
         if not valid_int_id(guest_id):
             return False
@@ -121,10 +113,8 @@ class GuestUtility:
         """Checks to see if a guest slug string exists.
 
         :param guest_slug: Guest slug string
-        :type guest_slug: str
         :return: True or False, based on whether the guest slug string
             exists
-        :rtype: bool
         """
         try:
             slug = guest_slug.strip()

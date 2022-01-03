@@ -19,10 +19,8 @@ class HostUtility:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -44,9 +42,7 @@ class HostUtility:
         """Converts a host's ID to the matching host slug string value.
 
         :param host_id: Host ID
-        :type host_id: int
         :return: Host slug string, if a match is found
-        :rtype: str
         """
         if not valid_int_id(host_id):
             return None
@@ -69,9 +65,7 @@ class HostUtility:
         """Converts a host's slug string to the matching host ID value.
 
         :param host_slug: Host slug string
-        :type host_slug: str
         :return: Host ID, if a match is found
-        :rtype: int
         """
         try:
             slug = host_slug.strip()
@@ -98,9 +92,7 @@ class HostUtility:
         """Checks to see if a host ID exists.
 
         :param host_id: Host ID
-        :type host_id: int
         :return: True or False, based on whether the host ID exists
-        :rtype: bool
         """
         if not valid_int_id(host_id):
             return False
@@ -120,10 +112,8 @@ class HostUtility:
         """Checks to see if a host slug string exists.
 
         :param host_slug: Host slug string
-        :type host_slug: str
         :return: True or False, based on whether the host slug string
             exists
-        :rtype: bool
         """
         try:
             slug = host_slug.strip()

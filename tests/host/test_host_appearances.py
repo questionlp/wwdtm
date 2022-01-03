@@ -19,7 +19,6 @@ def get_connect_dict() -> Dict[str, Any]:
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
-    :rtype: Dict[str, Any]
     """
     with open("config.json", "r") as config_file:
         config_dict = json.load(config_file)
@@ -32,7 +31,6 @@ def test_host_appearances_retrieve_appearances_by_id(host_id: int):
     """Testing for :py:meth:`wwdtm.host.HostAppearances.retrieve_appearances_by_id`
 
     :param host_id: Host ID to test retrieving host appearances
-    :type host_id: int
     """
     appearances = HostAppearances(connect_dict=get_connect_dict())
     appearance = appearances.retrieve_appearances_by_id(host_id)
@@ -47,7 +45,6 @@ def test_host_appearances_retrieve_appearances_by_slug(host_slug: str):
 
     :param host_slug: Host slug string to test retrieving host
         appearances
-    :type host_slug: str
     """
     appearances = HostAppearances(connect_dict=get_connect_dict())
     appearance = appearances.retrieve_appearances_by_slug(host_slug)

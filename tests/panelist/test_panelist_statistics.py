@@ -19,7 +19,6 @@ def get_connect_dict() -> Dict[str, Any]:
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
-    :rtype: Dict[str, Any]
     """
     with open("config.json", "r") as config_file:
         config_dict = json.load(config_file)
@@ -33,7 +32,6 @@ def test_panelist_statistics_retrieve_bluffs_by_id(panelist_id: int):
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
-    :type panelist_id: int
     """
     statistics = PanelistStatistics(connect_dict=get_connect_dict())
     bluffs = statistics.retrieve_bluffs_by_id(panelist_id)
@@ -48,7 +46,6 @@ def test_panelist_statistics_retrieve_bluffs_by_slug(panelist_slug: str):
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
-    :type panelist_slug: str
     """
     statistics = PanelistStatistics(connect_dict=get_connect_dict())
     bluffs = statistics.retrieve_bluffs_by_slug(panelist_slug)
@@ -63,7 +60,6 @@ def test_panelist_statistics_retrieve_rank_info_by_id(panelist_id: int):
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
-    :type panelist_id: int
     """
     statistics = PanelistStatistics(connect_dict=get_connect_dict())
     ranks = statistics.retrieve_rank_info_by_id(panelist_id)
@@ -77,7 +73,6 @@ def test_panelist_statistics_retrieve_rank_info_by_slug(panelist_slug: str):
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
-    :type panelist_slug: str
     """
     statistics = PanelistStatistics(connect_dict=get_connect_dict())
     ranks = statistics.retrieve_rank_info_by_slug(panelist_slug)
@@ -91,7 +86,6 @@ def test_panelist_statistics_retrieve_statistics_by_id(panelist_id: int):
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
-    :type panelist_id: int
     """
     statistics = PanelistStatistics(connect_dict=get_connect_dict())
     stats = statistics.retrieve_statistics_by_id(panelist_id)
@@ -106,7 +100,6 @@ def test_panelist_statistics_retrieve_statistics_by_slug(panelist_slug: str):
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
-    :type panelist_slug: str
     """
     statistics = PanelistStatistics(connect_dict=get_connect_dict())
     stats = statistics.retrieve_statistics_by_slug(panelist_slug)

@@ -29,7 +29,6 @@ def test_scorekeeper_utility_convert_id_to_slug(scorekeeper_id: int):
 
     :param scorekeeper_id: Scorekeeper ID to test converting into
         scorekeeper slug string
-    :type scorekeeper_id: int
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
     slug = utility.convert_id_to_slug(scorekeeper_id)
@@ -44,7 +43,6 @@ def test_scorekeeper_utility_convert_invalid_id_to_slug(scorekeeper_id: int):
 
     :param scorekeeper_id: Scorekeeper ID to test failing to convert
         into scorekeeper slug string
-    :type scorekeeper_id: int
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
     slug = utility.convert_id_to_slug(scorekeeper_id)
@@ -58,7 +56,6 @@ def test_scorekeeper_utility_convert_slug_to_id(scorekeeper_slug: str):
 
     :param scorekeeper_slug: Scorekeeper slug string to test converting
         into scorekeeper ID
-    :type scorekeeper_slug: str
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
     id_ = utility.convert_slug_to_id(scorekeeper_slug)
@@ -73,7 +70,6 @@ def test_scorekeeper_utility_convert_invalid_slug_to_id(scorekeeper_slug: str):
 
     :param scorekeeper_slug: Scorekeeper slug string to test failing to
         convert into scorekeeper ID
-    :type scorekeeper_slug: str
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
     id_ = utility.convert_slug_to_id(scorekeeper_slug)
@@ -87,7 +83,6 @@ def test_scorekeeper_utility_id_exists(scorekeeper_id: int):
 
     :param scorekeeper_id: Scorekeeper ID to test if a scorekeeper
         exists
-    :type scorekeeper_id: int
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
     result = utility.id_exists(scorekeeper_id)
@@ -101,7 +96,6 @@ def test_scorekeeper_utility_id_not_exists(scorekeeper_id: int):
 
     :param scorekeeper_id: Scorekeeper ID to test if a scorekeeper does
         not exist
-    :type scorekeeper_id: int
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
     result = utility.id_exists(scorekeeper_id)
@@ -115,7 +109,6 @@ def test_scorekeeper_utility_slug_exists(scorekeeper_slug: str):
 
     :param scorekeeper_slug: Scorekeeper slug string to test if a
         scorekeeper exists
-    :type scorekeeper_slug: str
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
     result = utility.slug_exists(scorekeeper_slug)
@@ -128,9 +121,7 @@ def test_scorekeeper_utility_slug_not_exists(scorekeeper_slug: str):
     """Negative testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.slug_exists`
 
     :param scorekeeper_slug: Scorekeeper slug string to test if a
-        scorekeeper does
-        not exist
-    :type scorekeeper_slug: str
+        scorekeeper does not exist
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
     result = utility.slug_exists(scorekeeper_slug)

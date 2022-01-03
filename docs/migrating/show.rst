@@ -16,6 +16,10 @@ changed to become methods under :py:class:`wwdtm.show.ShowInfo`:
 
 * :py:func:`retrieve_bluff_info_by_id`
 * :py:func:`retrieve_core_info_by_id`
+
+  * Renamed to :py:meth:`retrieve_core_info_by_ids`
+  * Changed the ``show_id`` (:py:class:`int`) parameter to ``show_ids``
+    (:py:class:`list` [:py:class:`int`])
 * :py:func:`retrieve_guest_info_by_id`
 * :py:func:`retrieve_panelist_info_by_id`
 

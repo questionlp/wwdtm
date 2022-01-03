@@ -21,10 +21,8 @@ class Host:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -50,13 +48,11 @@ class Host:
 
         :return: List of all hosts and their corresponding information.
             If hosts could not be retrieved, an empty list is returned.
-        :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT hostid AS id, host, hostslug AS slug, "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT hostid AS id, host AS name, hostslug AS slug, "
                  "hostgender AS gender "
                  "FROM ww_hosts "
-                 "WHERE hostslug != 'tbd' "
                  "ORDER BY host ASC;")
         cursor.execute(query)
         results = cursor.fetchall()
@@ -67,14 +63,12 @@ class Host:
 
         hosts = []
         for row in results:
-            host = {
-                "id": row["id"],
-                "name": row["host"],
-                "slug": row["slug"] if row["slug"] else slugify(row["host"]),
-                "gender": row["gender"],
-            }
-
-            hosts.append(host)
+            hosts.append({
+                "id": row.id,
+                "name": row.name,
+                "gender": row.gender,
+                "slug": row.slug if row.slug else slugify(row.name),
+            })
 
         return hosts
 
@@ -85,13 +79,11 @@ class Host:
         :return: List of all hosts and their corresponding information
             and appearances. If hosts could not be retrieved, an empty
             list is returned.
-        :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT hostid AS id, host, hostslug AS slug, "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT hostid AS id, host AS name, hostslug AS slug, "
                  "hostgender AS gender "
                  "FROM ww_hosts "
-                 "WHERE hostslug != 'tbd' "
                  "ORDER BY host ASC;")
         cursor.execute(query)
         results = cursor.fetchall()
@@ -102,16 +94,13 @@ class Host:
 
         hosts = []
         for row in results:
-            appearances = self.appearances.retrieve_appearances_by_id(row["id"])
-            host = {
-                "id": row["id"],
-                "name": row["host"],
-                "slug": row["slug"] if row["slug"] else slugify(row["host"]),
-                "gender": row["gender"],
-                "appearances": appearances,
-            }
-
-            hosts.append(host)
+            hosts.append({
+                "id": row.id,
+                "name": row.name,
+                "gender": row.gender,
+                "slug": row.slug if row.slug else slugify(row.name),
+                "appearances": self.appearances.retrieve_appearances_by_id(row.id),
+            })
 
         return hosts
 
@@ -121,24 +110,18 @@ class Host:
 
         :return: List of all host IDs. If host IDs could not be
             retrieved, an empty list is returned.
-        :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT hostid FROM ww_hosts "
-                 "WHERE hostslug != 'tbd' "
                  "ORDER BY host ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0])
-
-        return ids
+        return [v[0] for v in results]
 
     def retrieve_all_slugs(self) -> List[str]:
         """Returns a list of all host slug strings from the database,
@@ -146,24 +129,18 @@ class Host:
 
         :return: List of all host slug strings. If host slug strings
             could not be retrieved, an empty list is returned.
-        :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT hostslug FROM ww_hosts "
-                 "WHERE hostslug != 'tbd' "
                  "ORDER BY host ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0])
-
-        return ids
+        return [v[0] for v in results]
 
     @lru_cache(typed=True)
     def retrieve_by_id(self, host_id: int) -> Dict[str, Any]:
@@ -171,17 +148,15 @@ class Host:
         slug string for the requested host ID.
 
         :param host_id: Host ID
-        :type host_id: int
         :return: Dictionary containing host information. If host
             information could not be retrieved, an empty dictionary is
             returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(host_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT hostid AS id, host, hostslug AS slug, "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT hostid AS id, host AS name, hostslug AS slug, "
                  "hostgender AS gender "
                  "FROM ww_hosts "
                  "WHERE hostid = %s "
@@ -193,14 +168,12 @@ class Host:
         if not result:
             return {}
 
-        info = {
-            "id": result["id"],
-            "name": result["host"],
-            "slug": result["slug"] if result["slug"] else slugify(result["host"]),
-            "gender": result["gender"],
+        return {
+            "id": result.id,
+            "name": result.name,
+            "gender": result.gender,
+            "slug": result.slug if result.slug else slugify(result.name),
         }
-
-        return info
 
     @lru_cache(typed=True)
     def retrieve_by_slug(self, host_slug: str) -> Dict[str, Any]:
@@ -208,11 +181,9 @@ class Host:
         slug string for the requested host slug string.
 
         :param host_slug: Host slug string
-        :type host_slug: str
         :return: Dictionary containing host information. If host
             information could be retrieved, an empty dictionary is
             returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = host_slug.strip()
@@ -233,11 +204,9 @@ class Host:
         string and appearance information for the requested host ID.
 
         :param host_id: Host ID
-        :type host_id: int
         :return: Dictionary containing host information and their
             appearances. If host information could be retrieved, an
             empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(host_id):
             return {}
@@ -257,11 +226,9 @@ class Host:
         string.
 
         :param host_slug: Host slug string
-        :type host_slug: str
         :return: Dictionary containing host information and their
             appearances. If host information could be retrieved, an
             empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = host_slug.strip()

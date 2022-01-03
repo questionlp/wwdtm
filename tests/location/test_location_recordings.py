@@ -19,7 +19,6 @@ def get_connect_dict() -> Dict[str, Any]:
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
-    :rtype: Dict[str, Any]
     """
     with open("config.json", "r") as config_file:
         config_dict = json.load(config_file)
@@ -33,7 +32,6 @@ def test_location_recordings_retrieve_recordings_by_id(location_id: int):
 
     :param location_id: Location ID to test retrieving location
         recordings
-    :type location_id: int
     """
     recordings = LocationRecordings(connect_dict=get_connect_dict())
     recording = recordings.retrieve_recordings_by_id(location_id)
@@ -48,7 +46,6 @@ def test_location_recordings_retrieve_recordings_by_slug(location_slug: str):
 
     :param location_slug: Location slug string to test retrieving
         location recordings
-    :type location_slug: str
     """
     recordings = LocationRecordings(connect_dict=get_connect_dict())
     recording = recordings.retrieve_recordings_by_slug(location_slug)

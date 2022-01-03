@@ -19,7 +19,6 @@ def get_connect_dict() -> Dict[str, Any]:
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
-    :rtype: Dict[str, Any]
     """
     with open("config.json", "r") as config_file:
         config_dict = json.load(config_file)
@@ -33,7 +32,6 @@ def test_location_utility_convert_id_to_slug(location_id: int):
 
     :param location_id: Location ID to test converting into location
         slug string
-    :type location_id: int
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
     slug = utility.convert_id_to_slug(location_id)
@@ -47,7 +45,6 @@ def test_location_utility_convert_invalid_id_to_slug(location_id: int):
 
     :param location_id: Location ID to test failing to convert into
         location slug string
-    :type location_id: int
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
     slug = utility.convert_id_to_slug(location_id)
@@ -61,7 +58,6 @@ def test_location_utility_convert_slug_to_id(location_slug: str):
 
     :param location_slug: Location slug string to test converting into
         location ID
-    :type location_slug: str
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
     id_ = utility.convert_slug_to_id(location_slug)
@@ -75,7 +71,6 @@ def test_location_utility_convert_invalid_slug_to_id(location_slug: str):
 
     :param location_slug: Location slug string to test failing to
         convert into location ID
-    :type location_slug: str
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
     id_ = utility.convert_slug_to_id(location_slug)
@@ -88,7 +83,6 @@ def test_location_utility_id_exists(location_id: int):
     """Testing for :py:meth:`wwdtm.location.LocationUtility.id_exists`
 
     :param location_id: Location ID to test if a location exists
-    :type location_id: int
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
     result = utility.id_exists(location_id)
@@ -101,7 +95,6 @@ def test_location_utility_id_not_exists(location_id: int):
     """Negative testing for :py:meth:`wwdtm.location.LocationUtility.id_exists`
 
     :param location_id: Location ID to test if a location does not exist
-    :type location_id: int
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
     result = utility.id_exists(location_id)
@@ -115,7 +108,6 @@ def test_location_utility_slug_exists(location_slug: str):
 
     :param location_slug: Location slug string to test if a location
         exists
-    :type location_slug: str
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
     result = utility.slug_exists(location_slug)
@@ -130,7 +122,6 @@ def test_location_utility_slug_not_exists(location_slug: str):
 
     :param location_slug: Location slug string to test if a location
         does not exists
-    :type location_slug: str
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
     result = utility.slug_exists(location_slug)
@@ -145,7 +136,6 @@ def test_location_utility_slugify_location_city(city: str):
     with city name
 
     :param city: City to include in the slug string
-    :type city: str
     """
     with pytest.raises(ValueError):
         utility = LocationUtility(connect_dict=get_connect_dict())
@@ -162,9 +152,7 @@ def test_location_utility_slugify_location_city_state(city: str, state: str):
     with city and state names
 
     :param city: City to include in the slug string
-    :type city: str
     :param state: State to include in the slug string
-    :type state: str
     """
     with pytest.raises(ValueError):
         utility = LocationUtility(connect_dict=get_connect_dict())
@@ -184,13 +172,9 @@ def test_location_utility_slugify_location_full(location_id: int,
     with location ID, venue, city and state names
 
     :param location_id: Location ID to include in the slug string
-    :type location_id: int
     :param venue: Venue name to include in the slug string
-    :type venue: str
     :param city: City to include in the slug string
-    :type city: str
     :param state: State to include in the slug string
-    :type state: str
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
     slug = utility.slugify_location(location_id=location_id, venue=venue,
@@ -207,9 +191,7 @@ def test_location_utility_slugify_location_venue(location_id: int,
     with venue name
 
     :param location_id: Location ID to include in the slug string
-    :type location_id: int
     :param venue: Venue name to include in the slug string
-    :type venue: str
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
     slug = utility.slugify_location(location_id=location_id, venue=venue)
@@ -226,11 +208,8 @@ def test_location_utility_slugify_location_venue_city_state(venue: str,
     """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`
 
     :param venue: Venue name to include in the slug string
-    :type venue: str
     :param city: City to include in the slug string
-    :type city: str
     :param state: State to include in the slug string
-    :type state: str
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
     slug = utility.slugify_location(venue=venue, city=city, state=state)
@@ -245,7 +224,6 @@ def test_location_utility_slugify_location_id(location_id: int):
     with venue, city and state names
 
     :param location_id: Location ID to include in the slug string
-    :type location_id: int
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
     slug = utility.slugify_location(location_id=location_id)

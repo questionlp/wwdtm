@@ -6,7 +6,7 @@
 import os
 import sys
 
-from pallets_sphinx_themes import ProjectLink # type: ignore
+from pallets_sphinx_themes import ProjectLink  # type: ignore
 
 sys.path.insert(0, os.path.abspath('../'))
 
@@ -19,7 +19,10 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx.ext.coverage",
+    "sphinx.ext.napoleon",
     "sphinx_copybutton",
+    "sphinx_toolbox.more_autodoc.typehints",
+    "sphinx_autodoc_typehints",
 ]
 
 templates_path = [
@@ -72,5 +75,7 @@ html_css_files = [
 html_show_sourcelink = False
 
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3", None)
+    "python": ("https://docs.python.org/3", None),
 }
+
+always_document_param_types = True

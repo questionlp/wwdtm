@@ -69,7 +69,6 @@ def test_scorekeeper_retrieve_by_id(scorekeeper_id: int):
 
     :param scorekeeper_id: Scorekeeper ID to test retrieving scorekeeper
         information
-    :type scorekeeper_id: int
     """
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
     info = scorekeeper.retrieve_by_id(scorekeeper_id)
@@ -84,7 +83,6 @@ def test_scorekeeper_retrieve_details_by_id(scorekeeper_id: int):
 
     :param scorekeeper_id: Scorekeeper ID to test retrieving scorekeeper
         details
-    :type scorekeeper_id: int
     """
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
     info = scorekeeper.retrieve_details_by_id(scorekeeper_id)
@@ -100,7 +98,6 @@ def test_scorekeeper_retrieve_by_slug(scorekeeper_slug: str):
 
     :param scorekeeper_slug: Scorekeeper slug string to test retrieving
         scorekeeper information
-    :type scorekeeper_slug: str
     """
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
     info = scorekeeper.retrieve_by_slug(scorekeeper_slug)
@@ -115,7 +112,6 @@ def test_scorekeeper_retrieve_details_by_slug(scorekeeper_slug: str):
 
     :param scorekeeper_slug: Scorekeeper slug string to test retrieving
         scorekeeper details
-    :type scorekeeper_slug: str
     """
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
     info = scorekeeper.retrieve_details_by_slug(scorekeeper_slug)

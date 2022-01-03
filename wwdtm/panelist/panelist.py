@@ -22,10 +22,8 @@ class Panelist:
 
     :param connect_dict: Dictionary containing database connection
         settings as required by mysql.connector.connect
-    :type connect_dict: Dict[str, Any], optional
     :param database_connection: mysql.connector.connect database
         connection
-    :type database_connection: mysql.connector.connect, optional
     """
 
     def __init__(self,
@@ -53,10 +51,9 @@ class Panelist:
         :return: List of all panelists and their corresponding
             information. If panelists could not be retrieved, an empty
             list is returned.
-        :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT panelistid AS id, panelist, panelistslug AS slug, "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
                  "panelistgender AS gender "
                  "FROM ww_panelists "
                  "WHERE panelistslug != 'multiple' "
@@ -70,14 +67,12 @@ class Panelist:
 
         panelists = []
         for row in results:
-            panelist = {
-                "id": row["id"],
-                "name": row["panelist"],
-                "slug": row["slug"] if row["slug"] else slugify(row["panelist"]),
-                "gender": row["gender"],
-            }
-
-            panelists.append(panelist)
+            panelists.append({
+                "id": row.id,
+                "name": row.name,
+                "slug": row.slug if row.slug else slugify(row.name),
+                "gender": row.gender,
+            })
 
         return panelists
 
@@ -88,10 +83,9 @@ class Panelist:
         :return: List of all panelists and their corresponding
             information and appearances. If panelists could not be
             retrieved, an empty list is returned.
-        :rtype: List[Dict[str, Any]]
         """
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT panelistid AS id, panelist, panelistslug AS slug, "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
                  "panelistgender AS gender "
                  "FROM ww_panelists "
                  "WHERE panelistslug != 'multiple' "
@@ -105,18 +99,15 @@ class Panelist:
 
         panelists = []
         for row in results:
-            id_ = row["id"]
-            panelist = {
-                "id": id_,
-                "name": row["panelist"],
-                "slug": row["slug"] if row["slug"] else slugify(row["panelist"]),
-                "gender": row["gender"],
-                "statistics": self.statistics.retrieve_statistics_by_id(id_),
-                "bluff": self.statistics.retrieve_bluffs_by_id(id_),
-                "appearances": self.appearances.retrieve_appearances_by_id(id_),
-            }
-
-            panelists.append(panelist)
+            panelists.append({
+                "id": row.id,
+                "name": row.name,
+                "slug": row.slug if row.slug else slugify(row.name),
+                "gender": row.gender,
+                "statistics": self.statistics.retrieve_statistics_by_id(row.id),
+                "bluffs": self.statistics.retrieve_bluffs_by_id(row.id),
+                "appearances": self.appearances.retrieve_appearances_by_id(row.id),
+            })
 
         return panelists
 
@@ -126,24 +117,19 @@ class Panelist:
 
         :return: List of all panelist IDs. If panelist IDs could not be
             retrieved, an empty list is returned.
-        :rtype: List[int]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT panelistid FROM ww_panelists "
                  "WHERE panelistslug != 'multiple' "
                  "ORDER BY panelist ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0])
-
-        return ids
+        return [v[0] for v in results]
 
     def retrieve_all_slugs(self) -> List[str]:
         """Returns a list of all panelist slug strings from the
@@ -151,24 +137,19 @@ class Panelist:
 
         :return: List of all panelist slug strings. If panelist slug
             strings could not be retrieved, an empty list is returned.
-        :rtype: List[str]
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT panelistslug FROM ww_panelists "
                  "WHERE panelistslug != 'multiple' "
                  "ORDER BY panelist ASC;")
         cursor.execute(query)
-        result = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not result:
+        if not results:
             return []
 
-        ids = []
-        for row in result:
-            ids.append(row[0])
-
-        return ids
+        return [v[0] for v in results]
 
     @lru_cache(typed=True)
     def retrieve_by_id(self, panelist_id: int) -> Dict[str, Any]:
@@ -176,17 +157,15 @@ class Panelist:
         slug string for the requested panelist ID.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
         :return: Dictionary containing panelist information. If panelist
             information could not be retrieved, an empty dictionary is
             returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(panelist_id):
             return {}
 
-        cursor = self.database_connection.cursor(dictionary=True)
-        query = ("SELECT panelistid AS id, panelist, panelistslug AS slug, "
+        cursor = self.database_connection.cursor(named_tuple=True)
+        query = ("SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
                  "panelistgender AS gender "
                  "FROM ww_panelists "
                  "WHERE panelistid = %s "
@@ -198,14 +177,12 @@ class Panelist:
         if not result:
             return {}
 
-        info = {
-            "id": result["id"],
-            "name": result["panelist"],
-            "slug": result["slug"] if result["slug"] else slugify(result["panelist"]),
-            "gender": result["gender"],
+        return {
+            "id": result.id,
+            "name": result.name,
+            "slug": result.slug if result.slug else slugify(result.name),
+            "gender": result.gender,
         }
-
-        return info
 
     @lru_cache(typed=True)
     def retrieve_by_slug(self, panelist_slug: str) -> Dict[str, Any]:
@@ -213,11 +190,9 @@ class Panelist:
         slug string for the requested panelist slug string.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
         :return: Dictionary containing panelist information. If panelist
             information could not be retrieved, an empty dictionary is
             returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = panelist_slug.strip()
@@ -238,11 +213,9 @@ class Panelist:
         string and appearance information for the requested panelist ID.
 
         :param panelist_id: Panelist ID
-        :type panelist_id: int
         :return: Dictionary containing panelist information and their
             appearances. If panelist information could not be retrieved,
             an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -264,11 +237,9 @@ class Panelist:
         string.
 
         :param panelist_slug: Panelist slug string
-        :type panelist_slug: str
         :return: Dictionary containing panelist information and their
             appearances. If panelist information could not be retrieved,
             an empty dictionary is returned.
-        :rtype: Dict[str, Any]
         """
         try:
             slug = panelist_slug.strip()
