@@ -21,6 +21,13 @@ ShowInfo
     :members:
     :inherited-members:
 
+ShowInfoMultiple
+================
+
+.. autoclass:: wwdtm.show.ShowInfoMultiple
+    :members:
+    :inherited-members:
+
 ShowUtility
 ===========
 

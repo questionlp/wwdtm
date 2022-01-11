@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from mysql.connector import connect
 from wwdtm.show.info import ShowInfo
+from wwdtm.show.info_multiple import ShowInfoMultiple
 from wwdtm.show.utility import ShowUtility
 from wwdtm.validation import valid_int_id
 
@@ -41,6 +42,7 @@ class Show:
             self.database_connection = database_connection
 
         self.info = ShowInfo(database_connection=self.database_connection)
+        self.info_multiple = ShowInfoMultiple(database_connection=self.database_connection)
         self.utility = ShowUtility(database_connection=self.database_connection)
 
     def retrieve_all(self) -> List[Dict[str, Any]]:
@@ -89,27 +91,33 @@ class Show:
             If show information could not be retrieved, an empty list
             will be returned.
         """
-        cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT showid AS id FROM ww_shows "
-                 "ORDER BY showdate ASC;")
-        cursor.execute(query)
-        results = cursor.fetchall()
-        cursor.close()
+        info = self.info_multiple.retrieve_core_info_all()
 
-        if not results:
+        if not info:
             return []
 
-        show_ids = [v[0] for v in results]
-        shows = self.info.retrieve_core_info_by_ids(show_ids)
+        panelists = self.info_multiple.retrieve_panelist_info_all()
+        bluffs = self.info_multiple.retrieve_bluff_info_all()
+        guests = self.info_multiple.retrieve_guest_info_all()
 
-        if not shows:
-            return []
+        shows = []
+        for show in info:
+            if info[show]["id"] in panelists:
+                info[show]["panelists"] = panelists[info[show]["id"]]
+            else:
+                info[show]["panelists"] = []
 
-        for show in shows:
-            if show:
-                show["panelists"] = self.info.retrieve_panelist_info_by_id(show["id"])
-                show["bluff"] = self.info.retrieve_bluff_info_by_id(show["id"])
-                show["guests"] = self.info.retrieve_guest_info_by_id(show["id"])
+            if info[show]["id"] in bluffs:
+                info[show]["bluff"] = bluffs[info[show]["id"]]
+            else:
+                info[show]["bluff"] = []
+
+            if info[show]["id"] in guests:
+                info[show]["guests"] = guests[info[show]["id"]]
+            else:
+                info[show]["guests"] = []
+
+            shows.append(info[show])
 
         return shows
 
@@ -417,15 +425,15 @@ class Show:
         if not valid_int_id(show_id):
             return {}
 
-        info = self.info.retrieve_core_info_by_ids([show_id])
+        info = self.info.retrieve_core_info_by_id(show_id)
         if not info:
             return {}
 
-        info[0]["panelists"] = self.info.retrieve_panelist_info_by_id(show_id)
-        info[0]["bluff"] = self.info.retrieve_bluff_info_by_id(show_id)
-        info[0]["guests"] = self.info.retrieve_guest_info_by_id(show_id)
+        info["panelists"] = self.info.retrieve_panelist_info_by_id(show_id)
+        info["bluff"] = self.info.retrieve_bluff_info_by_id(show_id)
+        info["guests"] = self.info.retrieve_guest_info_by_id(show_id)
 
-        return info[0]
+        return info
 
     @lru_cache(typed=True)
     def retrieve_details_by_year(self, year: int) -> List[Dict[str, Any]]:
@@ -455,16 +463,18 @@ class Show:
             return []
 
         show_ids = [v[0] for v in results]
-        shows = self.info.retrieve_core_info_by_ids(show_ids)
+        info = self.info_multiple.retrieve_core_info_by_ids(show_ids)
 
-        if not shows:
+        if not info:
             return []
 
-        for show in shows:
-            if show:
-                show["panelists"] = self.info.retrieve_panelist_info_by_id(show["id"])
-                show["bluff"] = self.info.retrieve_bluff_info_by_id(show["id"])
-                show["guests"] = self.info.retrieve_guest_info_by_id(show["id"])
+        shows = []
+        for show in info:
+            if info[show]:
+                info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(info[show]["id"])
+                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(info[show]["id"])
+                info[show]["guests"] = self.info.retrieve_guest_info_by_id(info[show]["id"])
+                shows.append(info[show])
 
         return shows
 
@@ -501,16 +511,18 @@ class Show:
             return []
 
         show_ids = [v[0] for v in results]
-        shows = self.info.retrieve_core_info_by_ids(show_ids)
+        info = self.info_multiple.retrieve_core_info_by_ids(show_ids)
 
-        if not shows:
+        if not info:
             return []
 
-        for show in shows:
-            if show:
-                show["panelists"] = self.info.retrieve_panelist_info_by_id(show["id"])
-                show["bluff"] = self.info.retrieve_bluff_info_by_id(show["id"])
-                show["guests"] = self.info.retrieve_guest_info_by_id(show["id"])
+        shows = []
+        for show in info:
+            if info[show]:
+                info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(info[show]["id"])
+                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(info[show]["id"])
+                info[show]["guests"] = self.info.retrieve_guest_info_by_id(info[show]["id"])
+                shows.append(info[show])
 
         return shows
 
@@ -627,16 +639,17 @@ class Show:
             return []
 
         show_ids = [v[0] for v in results]
-        shows = self.info.retrieve_core_info_by_ids(show_ids)
+        info = self.info_multiple.retrieve_core_info_by_ids(show_ids)
 
-        if not shows:
+        if not info:
             return []
 
-        for show in shows:
-            if show:
-                show["panelists"] = self.info.retrieve_panelist_info_by_id(show["id"])
-                show["bluff"] = self.info.retrieve_bluff_info_by_id(show["id"])
-                show["guests"] = self.info.retrieve_guest_info_by_id(show["id"])
+        shows = []
+        for show in info:
+            info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(show)
+            info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(show)
+            info[show]["guests"] = self.info.retrieve_guest_info_by_id(show)
+            shows.append(info[show])
 
         return shows
 
@@ -665,6 +678,7 @@ class Show:
                  "ORDER BY s.showdate ASC, pm.panelistscore ASC;")
         cursor.execute(query, (year, ))
         results = cursor.fetchall()
+        cursor.close()
 
         if not results:
             return []
