@@ -42,16 +42,15 @@ def test_show_info_retrieve_bluff_info_by_id(show_id: int):
 
 
 @pytest.mark.parametrize("show_id", [1162])
-def test_show_info_retrieve_core_info_by_ids(show_id: int):
-    """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_core_info_by_ids`
+def test_show_info_retrieve_core_info_by_id(show_id: int):
+    """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_core_info_by_id`
 
     :param show_id: Show ID to test retrieving show core information
     """
     info = ShowInfo(connect_dict=get_connect_dict())
-    core = info.retrieve_core_info_by_ids([show_id])
+    show = info.retrieve_core_info_by_id(show_id)
 
-    assert core, f"Core information for show ID {show_id} could not be retrieved"
-    show = core[0]
+    assert show, f"Core information for show ID {show_id} could not be retrieved"
 
     assert "id" in show, (f"'id' was not returned with core information for "
                           f"show ID {show_id}")
@@ -69,10 +68,10 @@ def test_show_info_retrieve_guest_info_by_id(show_id: int):
     guests = info.retrieve_guest_info_by_id(show_id)
 
     assert guests, f"Guest information for show ID {show_id} could not be retrieved"
-    assert "id" in guests[0], (f"'id' was not returned for the first list item "
-                               f"for show ID {show_id}")
-    assert "score" in guests[0], (f"'score' was not returned for the first list "
-                                  f"item for show ID {show_id}")
+    assert "id" in guests[0], (f"'id' was not returned for the first guest for "
+                               f"show ID {show_id}")
+    assert "score" in guests[0], (f"'score' was not returned for the first "
+                                  f"guest for show ID {show_id}")
 
 
 @pytest.mark.parametrize("show_id", [1162])
@@ -84,8 +83,9 @@ def test_show_info_retrieve_panelist_info_by_id(show_id: int):
     info = ShowInfo(connect_dict=get_connect_dict())
     panelists = info.retrieve_panelist_info_by_id(show_id)
 
-    assert panelists, f"Guest information for show ID {show_id} could not be retrieved"
-    assert "id" in panelists[0], (f"'id' was not returned for the first list "
-                                  f"item for show ID {show_id}")
+    assert panelists, (f"Panelist information for show ID {show_id} could not "
+                       "be retrieved")
+    assert "id" in panelists[0], (f"'id' was not returned for the first panelist "
+                                  f"for show ID {show_id}")
     assert "score" in panelists[0], (f"'score' was not returned for the first "
-                                     f"list item for show ID {show_id}")
+                                     f"panelist for show ID {show_id}")

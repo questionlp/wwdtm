@@ -24,5 +24,10 @@ from wwdtm.panelist import (Panelist,
 from wwdtm.scorekeeper import (Scorekeeper,
                                ScorekeeperAppearances,
                                ScorekeeperUtility)
+from wwdtm.show import (Show,
+                        ShowInfo,
+                        ShowInfoMultiple,
+                        ShowUtility)
 
-VERSION = "2.0.0-beta.1"
+
+VERSION = "2.0.0-beta.2"
