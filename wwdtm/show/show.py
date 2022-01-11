@@ -678,6 +678,7 @@ class Show:
                  "ORDER BY s.showdate ASC, pm.panelistscore ASC;")
         cursor.execute(query, (year, ))
         results = cursor.fetchall()
+        cursor.close()
 
         if not results:
             return []
