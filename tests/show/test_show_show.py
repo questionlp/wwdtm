@@ -137,6 +137,21 @@ def test_show_retrieve_by_id(show_id: int):
     assert "date" in info, f"'date' was not returned for ID {show_id}"
 
 
+@pytest.mark.parametrize("month, day", [(10, 28), (8, 19)])
+def test_show_retrieve_by_month_day(month: int, day: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_by_month_day`
+
+    :param year: Four digit year to test retrieving show information
+    """
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_by_month_day(month, day)
+
+    assert shows, (f"No shows could be retrieved for month {month:02d} "
+                   "and day {day:02d}")
+    assert "id" in shows[0], (f"'id' was not returned for the first list item "
+                              f"for month {month:02d} and day {day:02d}")
+
+
 @pytest.mark.parametrize("year", [2018])
 def test_show_retrieve_by_year(year: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_by_year`
@@ -213,6 +228,21 @@ def test_show_retrieve_details_by_id(show_id: int):
     assert info, f"Show ID {show_id} not found"
     assert "date" in info, f"'date' was not returned for ID {show_id}"
     assert "host" in info, f"'host' was not returned for ID {show_id}"
+
+
+@pytest.mark.parametrize("month, day", [(10, 28), (8, 19)])
+def test_show_retrieve_details_by_month_day(month: int, day: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_month_day`
+
+    :param year: Four digit year to test retrieving show information
+    """
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_details_by_month_day(month, day)
+
+    assert shows, (f"No shows could be retrieved for month {month:02d} "
+                   "and day {day:02d}")
+    assert "id" in shows[0], (f"'id' was not returned for the first list item "
+                              f"for month {month:02d} and day {day:02d}")
 
 
 @pytest.mark.parametrize("year", [2021])
