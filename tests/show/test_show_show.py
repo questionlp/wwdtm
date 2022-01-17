@@ -141,7 +141,8 @@ def test_show_retrieve_by_id(show_id: int):
 def test_show_retrieve_by_month_day(month: int, day: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_by_month_day`
 
-    :param year: Four digit year to test retrieving show information
+    :param month: One or two digit month to test retrieving show details
+    :param day: One or two digit day to test retrieving show details
     """
     show = Show(connect_dict=get_connect_dict())
     shows = show.retrieve_by_month_day(month, day)
@@ -234,7 +235,8 @@ def test_show_retrieve_details_by_id(show_id: int):
 def test_show_retrieve_details_by_month_day(month: int, day: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_month_day`
 
-    :param year: Four digit year to test retrieving show information
+    :param month: One or two digit month to test retrieving show details
+    :param day: One or two digit day to test retrieving show details
     """
     show = Show(connect_dict=get_connect_dict())
     shows = show.retrieve_details_by_month_day(month, day)
