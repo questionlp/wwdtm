@@ -502,8 +502,8 @@ class ShowInfoMultiple:
                 "id": panelist.panelist_id,
                 "name": panelist.name,
                 "slug": panelist.slug if panelist.slug else slugify(panelist.name),
-                "lightning_round_start": panelist.start if panelist.start else None,
-                "lightning_round_correct": panelist.correct if panelist.correct else None,
+                "lightning_round_start": panelist.start,
+                "lightning_round_correct": panelist.correct,
                 "score": panelist.score if panelist.score else None,
                 "rank": panelist.rank if panelist.rank else None,
             })

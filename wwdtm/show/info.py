@@ -285,8 +285,8 @@ class ShowInfo:
                 "id": row.id,
                 "name": row.name,
                 "slug": row.slug if row.slug else slugify(row.name),
-                "lightning_round_start": row.start if row.start else None,
-                "lightning_round_correct": row.correct if row.correct else None,
+                "lightning_round_start": row.start,
+                "lightning_round_correct": row.correct,
                 "score": row.score if row.score else None,
                 "rank": row.rank if row.rank else None,
             })
