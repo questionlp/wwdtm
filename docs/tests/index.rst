@@ -3,11 +3,8 @@
 Testing Modules
 ---------------
 
-The ``wwdtm`` library provides corresponding modules to retrieve data for
-guests, hosts, locations, panelists, scorekeepers, and shows from a copy
-of the Wait Wait Don't Tell Me! Stats database.
-
-The following is a list of modules provided in the library:
+This section of the documentation covers the ``pytest`` testing modules for
+each of the ``wwdtm`` library modules:
 
 .. toctree::
     :maxdepth: 2

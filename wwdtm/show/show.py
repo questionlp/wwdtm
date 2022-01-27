@@ -306,6 +306,34 @@ class Show:
         return info
 
     @lru_cache(typed=True)
+    def retrieve_by_month_day(self, month: int, day: int) -> List[Dict[str, Any]]:
+        """Returns a list of dictionary objects containing with show
+        information for the requested month and day, sorted by year.
+
+        :param month: One or two-digit month
+        :param day: One or two-digit day
+        :return: List of shows for the requested month, day, and
+            corresponding information. If show information could not be
+            retrieved, an empty list will be returned.
+        """
+        if not 1 <= month <= 12 or not 1 <= day <= 31:
+            return []
+
+        cursor = self.database_connection.cursor(dictionary=False)
+        query = ("SELECT showid FROM ww_shows "
+                 "WHERE MONTH(showdate) = %s "
+                 "AND DAY(showdate) = %s "
+                 "ORDER BY showdate ASC;")
+        cursor.execute(query, (month, day, ))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        return [self.retrieve_by_id(v[0]) for v in results]
+
+    @lru_cache(typed=True)
     def retrieve_by_year(self, year: int) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing with show
         information for the requested year, sorted by show date.
@@ -434,6 +462,50 @@ class Show:
         info["guests"] = self.info.retrieve_guest_info_by_id(show_id)
 
         return info
+
+    @lru_cache(typed=True)
+    def retrieve_details_by_month_day(self, month: int, day: int
+                                      ) -> List[Dict[str, Any]]:
+        """Returns a list of dictionary objects containing show ID,
+        show date, host, scorekeeper, panelist and guest information
+        for the requested month and day, sorted by year.
+
+        :param month: One or two-digit month
+        :param day: One or two-digit day
+        :return: Dictionary containing show information and details. If
+            show information could not be retrieved, an empty dictionary
+            will be returned.
+        """
+        if not 1 <= month <= 12 or not 1 <= day <= 31:
+            return []
+
+        cursor = self.database_connection.cursor(dictionary=False)
+        query = ("SELECT showid FROM ww_shows "
+                 "WHERE MONTH(showdate) = %s "
+                 "AND DAY(showdate) = %s "
+                 "ORDER BY showdate ASC;")
+        cursor.execute(query, (month, day, ))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        show_ids = [v[0] for v in results]
+        info = self.info_multiple.retrieve_core_info_by_ids(show_ids)
+
+        if not info:
+            return []
+
+        shows = []
+        for show in info:
+            if info[show]:
+                info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(info[show]["id"])
+                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(info[show]["id"])
+                info[show]["guests"] = self.info.retrieve_guest_info_by_id(info[show]["id"])
+                shows.append(info[show])
+
+        return shows
 
     @lru_cache(typed=True)
     def retrieve_details_by_year(self, year: int) -> List[Dict[str, Any]]:
