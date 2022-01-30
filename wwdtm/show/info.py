@@ -267,7 +267,7 @@ class ShowInfo:
                  "p.panelistslug AS slug, "
                  "pm.panelistlrndstart AS start, "
                  "pm.panelistlrndcorrect AS correct, "
-                 "pm.panelistscore AS score, pm.showpnlrank AS rank "
+                 "pm.panelistscore AS score, pm.showpnlrank AS pnl_rank "
                  "FROM ww_showpnlmap pm "
                  "JOIN ww_panelists p on p.panelistid = pm.panelistid "
                  "WHERE pm.showid = %s "
@@ -288,7 +288,7 @@ class ShowInfo:
                 "lightning_round_start": row.start,
                 "lightning_round_correct": row.correct,
                 "score": row.score if row.score else None,
-                "rank": row.rank if row.rank else None,
+                "rank": row.pnl_rank if row.pnl_rank else None,
             })
 
         return panelists

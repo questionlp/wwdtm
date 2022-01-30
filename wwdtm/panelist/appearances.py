@@ -122,7 +122,7 @@ class PanelistAppearances:
                  "pm.panelistlrndstart AS start, "
                  "pm.panelistlrndcorrect AS correct, "
                  "pm.panelistscore AS score, "
-                 "pm.showpnlrank AS rank FROM ww_showpnlmap pm "
+                 "pm.showpnlrank AS pnl_rank FROM ww_showpnlmap pm "
                  "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
                  "JOIN ww_shows s ON s.showid = pm.showid "
                  "WHERE pm.panelistid = %s "
@@ -142,7 +142,7 @@ class PanelistAppearances:
                     "lightning_round_start": appearance.start if appearance.start else None,
                     "lightning_round_correct": appearance.correct if appearance.correct else None,
                     "score": appearance.score if appearance.score else None,
-                    "rank": appearance.rank if appearance.rank else None,
+                    "rank": appearance.pnl_rank if appearance.pnl_rank else None,
                 }
                 appearances.append(info)
 
