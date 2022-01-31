@@ -480,7 +480,7 @@ class ShowInfoMultiple:
                  "p.panelist AS name, p.panelistslug AS slug, "
                  "pm.panelistlrndstart AS start, "
                  "pm.panelistlrndcorrect AS correct, "
-                 "pm.panelistscore AS score, pm.showpnlrank AS rank "
+                 "pm.panelistscore AS score, pm.showpnlrank AS pnl_rank "
                  "FROM ww_showpnlmap pm "
                  "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
                  "JOIN ww_shows s ON s.showid = pm.showid "
@@ -505,7 +505,7 @@ class ShowInfoMultiple:
                 "lightning_round_start": panelist.start,
                 "lightning_round_correct": panelist.correct,
                 "score": panelist.score if panelist.score else None,
-                "rank": panelist.rank if panelist.rank else None,
+                "rank": panelist.pnl_rank if panelist.pnl_rank else None,
             })
 
         return panelists
@@ -528,7 +528,7 @@ class ShowInfoMultiple:
                  "p.panelist AS name, p.panelistslug AS slug, "
                  "pm.panelistlrndstart AS start, "
                  "pm.panelistlrndcorrect AS correct, "
-                 "pm.panelistscore AS score, pm.showpnlrank AS rank "
+                 "pm.panelistscore AS score, pm.showpnlrank AS pnl_rank "
                  "FROM ww_showpnlmap pm "
                  "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
                  "JOIN ww_shows s ON s.showid = pm.showid "
@@ -554,7 +554,7 @@ class ShowInfoMultiple:
                 "lightning_round_start": panelist.start if panelist.start else None,
                 "lightning_round_correct": panelist.correct if panelist.correct else None,
                 "score": panelist.score if panelist.score else None,
-                "rank": panelist.rank if panelist.rank else None,
+                "rank": panelist.pnl_rank if panelist.pnl_rank else None,
             })
 
         return panelists

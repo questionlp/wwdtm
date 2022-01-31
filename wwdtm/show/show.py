@@ -170,7 +170,8 @@ class Show:
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT YEAR(showdate), MONTH(showdate), DAY(showdate) "
                  "FROM ww_shows "
-                 "ORDER BY showdate ASC;")
+                 "ORDER BY YEAR(showdate) ASC, MONTH(showdate) ASC, "
+                 "DAY(showdate) ASC;")
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -191,7 +192,7 @@ class Show:
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT DISTINCT YEAR(showdate), MONTH(showdate) "
                  "FROM ww_shows "
-                 "ORDER BY showdate ASC;")
+                 "ORDER BY YEAR(showdate) ASC, MONTH(showdate) ASC;")
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -212,7 +213,7 @@ class Show:
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT DISTINCT YEAR(showdate), MONTH(showdate) "
                  "FROM ww_shows "
-                 "ORDER BY showdate ASC;")
+                 "ORDER BY YEAR(showdate) ASC, MONTH(showdate) ASC;")
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
