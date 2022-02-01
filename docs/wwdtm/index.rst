@@ -1,7 +1,8 @@
 .. module:: wwdtm
 
+*************
 API Reference
--------------
+*************
 
 The ``wwdtm`` library provides corresponding modules to retrieve data for
 guests, hosts, locations, panelists, scorekeepers, and shows from a copy

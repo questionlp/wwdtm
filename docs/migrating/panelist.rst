@@ -1,8 +1,9 @@
 .. role:: bolditalic
    :class: bolditalic
 
+********
 panelist
---------
+********
 
 The following sections list out the changes that were made to the functions
 migrated from ``libwwdtm`` to class methods under the ``wwdtm`` module
@@ -20,6 +21,7 @@ been changed to become methods under
 
 core → PanelistScores
 =====================
+
 The following functions under the :py:mod:`wwdtm.panelist.core` module have
 been changed to become methods under :py:class:`wwdtm.panelist.PanelistScores`:
 
@@ -30,6 +32,7 @@ been changed to become methods under :py:class:`wwdtm.panelist.PanelistScores`:
 
 core → PanelistStatistics
 =========================
+
 The following functions under the :py:mod:`wwdtm.panelist.core` module have
 been changed to become methods under
 :py:class:`wwdtm.panelist.PanelistStatistics`:
@@ -84,7 +87,7 @@ been changed to become methods under
 * :py:func:`retrieve_yearly_appearances_by_slug`
 
 info → PanelistScores
-=====================
+---------------------
 
 The following functions under the :py:mod:`wwdtm.panelist.info` module have
 been changed to become methods under :py:class:`wwdtm.panelist.PanelistScores`:
@@ -99,7 +102,7 @@ been changed to become methods under :py:class:`wwdtm.panelist.PanelistScores`:
 * :py:func:`retrieve_scores_ordered_pair_by_slug`
 
 utility → PanelistUtility
-=========================
+-------------------------
 
 The following function under the :py:mod:`wwdtm.panelist.utility` module have
 been changed to become methods under :py:class:`wwdtm.panelist.PanelistUtility`:
@@ -110,7 +113,7 @@ been changed to become methods under :py:class:`wwdtm.panelist.PanelistUtility`:
 * :py:func:`slug_exists`
 
 Deprecated Functions
-====================
+--------------------
 
 The following functions have been deprecated and were not migrated over from
 the ``libwwdtm`` to ``wwdtm``:

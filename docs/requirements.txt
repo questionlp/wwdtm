@@ -2,15 +2,15 @@ flake8>=4.0.1
 pycodestyle>=2.8.0
 pytest>=6.2.5
 
-mysql-connector-python==8.0.27
-numpy==1.21.5
+mysql-connector-python==8.0.28
+numpy==1.22.1
 python-dateutil==2.8.2
 python-slugify==5.0.2
 pytz==2021.3
 
-Sphinx==4.3.2
+Sphinx==4.4.0
 sphinx-autobuild==2021.3.14
-sphinx-autodoc-typehints==1.13.0
+sphinx-autodoc-typehints==1.14.1
 sphinx-copybutton==0.4.0
-sphinx-toolbox==2.15.2
+sphinx-toolbox==2.16.1
 Pallets-Sphinx-Themes==2.0.2
