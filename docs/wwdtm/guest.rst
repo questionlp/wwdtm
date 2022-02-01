@@ -1,7 +1,8 @@
 .. module:: wwdtm.guest
 
+*****
 guest
------
+*****
 
 This module provides objects used to retrieve guests, guest information and
 guest details from a copy of the Wait Wait Don't Tell Me! Stats database.

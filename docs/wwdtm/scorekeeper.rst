@@ -1,7 +1,8 @@
 .. module:: wwdtm.scorekeeper
 
+***********
 scorekeeper
------------
+***********
 
 This module provides objects used to retrieve scorekeepers, scorekeeper
 information and scorekeeper details from a copy of the Wait Wait Don't Tell Me!

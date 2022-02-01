@@ -1,8 +1,9 @@
 .. role:: bolditalic
    :class: bolditalic
 
+****
 show
-----
+****
 
 The following sections list out the changes that were made to the functions
 migrated from ``libwwdtm`` to class methods under the ``wwdtm`` module
@@ -75,8 +76,8 @@ changed to become methods under :py:class:`wwdtm.show.Show`:
 * :py:func:`retrieve_recent`
 * :py:func:`retrieve_years`
 
-utility → locationUtility
-=========================
+utility → ShowUtility
+=====================
 
 The following function under the :py:mod:`wwdtm.show.utility` module have
 been changed to become methods under :py:class:`wwdtm.show.ShowUtility`:

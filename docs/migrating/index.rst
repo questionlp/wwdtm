@@ -1,5 +1,6 @@
+******************
 Migrating to wwdtm
-------------------
+******************
 
 This section of the documentation covers the changes were made for ``wwdtm``
 version 2. Those changes include a complete re-factor of the architecture
@@ -21,12 +22,11 @@ modules:
 Python Version
 ==============
 
-With the combination of Python 3.6 reaching the end of support at the end of
-2021 and current versions of NumPy requiring Python 3.7 or higher, ``wwdtm``
-version 2 requires Python 3.8 or higher.
+Python 3.8 or higher is now required for ``wwdtm``. This is due to the latest
+stable version of NumPy dropping support for Python 3.7.
 
-Development and testing of ``wwdtm`` version 2 has been done primarily using
-both Python 3.8 and 3.9, with preliminary testing done on 3.10.
+The development and testing of ``wwdtm`` version 2 has been done primarily
+using both Python 3.8 and 3.9, with preliminary testing done on 3.10.
 
 Handling Database Connections
 =============================

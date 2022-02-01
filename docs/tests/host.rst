@@ -1,7 +1,8 @@
 .. module:: tests.host
 
+****
 host
-----
+****
 
 This module provides functions used to by :py:class:`pytest` to run tests against
 the following objects:
