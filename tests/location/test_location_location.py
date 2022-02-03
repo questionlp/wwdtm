@@ -26,21 +26,29 @@ def get_connect_dict() -> Dict[str, Any]:
             return config_dict["database"]
 
 
-def test_location_retrieve_all():
+@pytest.mark.parametrize("exclude_nulls", [True, False])
+def test_location_retrieve_all(exclude_nulls: bool):
     """Testing for :py:meth:`wwdtm.location.Location.retrieve_all`
+
+    :param exclude_nulls: Toggle whether to exclude results that
+        have SQL NULL value for the venue, city and state
     """
     location = Location(connect_dict=get_connect_dict())
-    locations = location.retrieve_all()
+    locations = location.retrieve_all(exclude_nulls)
 
     assert locations, "No locations could be retrieved"
     assert "id" in locations[0], "'id' was not returned for the first list item"
 
 
-def test_location_retrieve_all_details():
+@pytest.mark.parametrize("exclude_nulls", [True, False])
+def test_location_retrieve_all_details(exclude_nulls: bool):
     """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_details`
+
+    :param exclude_nulls: Toggle whether to exclude results that
+        have SQL NULL value for the venue, city and state
     """
     location = Location(connect_dict=get_connect_dict())
-    locations = location.retrieve_all_details()
+    locations = location.retrieve_all_details(exclude_nulls)
 
     assert locations, "No locations could be retrieved"
     assert "id" in locations[0], "'id' was not returned for first list item"
@@ -66,57 +74,72 @@ def test_location_retrieve_all_slugs():
     assert slugs, "No location slug strings could be retrieved"
 
 
-@pytest.mark.parametrize("location_id", [95])
-def test_location_retrieve_by_id(location_id: int):
+@pytest.mark.parametrize("location_id, exclude_null",
+                         [(95, True), (95, False)])
+def test_location_retrieve_by_id(location_id: int, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.location.Location.retrieve_by_id`
 
     :param location_id: Location ID to test retrieving location
         information
+    :param exclude_null: Toggle whether to exclude results that
+        have SQL NULL value for the venue, city and state
     """
     location = Location(connect_dict=get_connect_dict())
-    info = location.retrieve_by_id(location_id)
+    info = location.retrieve_by_id(location_id, exclude_null)
 
     assert info, f"Location ID {location_id} not found"
     assert "venue" in info, f"'venue' was not returned for ID {location_id}"
 
 
-@pytest.mark.parametrize("location_id", [95])
-def test_location_retrieve_details_by_id(location_id: int):
+@pytest.mark.parametrize("location_id, exclude_null",
+                         [(95, True), (95, False)])
+def test_location_retrieve_details_by_id(location_id: int, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.location.location.retrieve_details_by_id`
 
     :param location_id: Location ID to test retrieving location details
+    :param exclude_null: Toggle whether to exclude results that
+        have SQL NULL value for the venue, city and state
     """
     location = Location(connect_dict=get_connect_dict())
-    info = location.retrieve_details_by_id(location_id)
+    info = location.retrieve_details_by_id(location_id, exclude_null)
 
     assert info, f"Location ID {location_id} not found"
     assert "venue" in info, f"'venue' was not returned for ID {location_id}"
     assert "recordings" in info, f"'recordings' was not returned for ID {location_id}"
 
 
-@pytest.mark.parametrize("location_slug", ["the-chicago-theatre-chicago-il"])
-def test_location_retrieve_by_slug(location_slug: str):
+@pytest.mark.parametrize("location_slug, exclude_null",
+                         [("the-chicago-theatre-chicago-il", True),
+                          ("the-chicago-theatre-chicago-il", False)])
+def test_location_retrieve_by_slug(location_slug: str, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.location.Location.retrieve_by_slug`
 
     :param location_slug: Location slug string to test retrieving
         location information
+    :param exclude_null: Toggle whether to exclude results that
+        have SQL NULL value for the venue, city and state
     """
     location = Location(connect_dict=get_connect_dict())
-    info = location.retrieve_by_slug(location_slug)
+    info = location.retrieve_by_slug(location_slug, exclude_null)
 
     assert info, f"Location slug {location_slug} not found"
     assert "venue" in info, f"'venue' was not returned for slug {location_slug}"
 
 
-@pytest.mark.parametrize("location_slug", ["the-chicago-theatre-chicago-il"])
-def test_location_retrieve_details_by_slug(location_slug: str):
+@pytest.mark.parametrize("location_slug, exclude_null",
+                         [("the-chicago-theatre-chicago-il", True),
+                          ("the-chicago-theatre-chicago-il", False)])
+def test_location_retrieve_details_by_slug(location_slug: str,
+                                           exclude_null: bool):
     """Testing for :py:meth:`wwdtm.location.Location.retrieve_details_by_slug`
 
     :param location_slug: Location slug string to test retrieving
         location details
+    :param exclude_null: Toggle whether to exclude results that
+        have SQL NULL value for the venue, city and state
     """
     location = Location(connect_dict=get_connect_dict())
-    info = location.retrieve_details_by_slug(location_slug)
+    info = location.retrieve_details_by_slug(location_slug, exclude_null)
 
     assert info, f"Location slug {location_slug} not found"
     assert "venue" in info, f"'venue' was not returned for slug {location_slug}"
