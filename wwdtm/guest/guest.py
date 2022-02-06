@@ -47,7 +47,7 @@ class Guest:
         name and slug string for all guests.
 
         :param exclude_nulls: Toggle whether to exclude results that have
-            SQL NULL value for the guest name
+            SQL ``NULL`` for guest names
         :return: List of all guests and their corresponding
             information. If guests could not be retrieved, an empty list
             is returned.
@@ -85,12 +85,13 @@ class Guest:
 
         return guests
 
-    def retrieve_all_details(self, exclude_nulls: bool = False) -> List[Dict[str, Any]]:
+    def retrieve_all_details(self, exclude_nulls: bool = False
+                             ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing guest ID,
         name, slug string and appearance information for all guests.
 
         :param exclude_nulls: Toggle whether to exclude results that have
-            SQL NULL value for the guest name
+            SQL ``NULL`` for guest names and show dates
         :return: List of all guests and their corresponding
             information and appearances. If guests could not be
             retrieved, an empty list is returned.
@@ -123,7 +124,8 @@ class Guest:
                 "id": row.id,
                 "name": row.name,
                 "slug": row.slug if row.slug else slugify(row.name),
-                "appearances": self.appearances.retrieve_appearances_by_id(row.id),
+                "appearances": self.appearances.retrieve_appearances_by_id(row.id,
+                                                                           exclude_nulls),
             })
 
         return guests
@@ -174,9 +176,9 @@ class Guest:
         """Returns a dictionary object containing guest ID, name and
         slug string for the requested guest ID.
 
-        :param exclude_null: Toggle whether to return guest information
-            if their name is equal to SQL NULL value
         :param guest_id: Guest ID
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the guest name
         :return: Dictionary containing guest information. If guest
             information could not be retrieved, an empty dictionary is
             returned.
@@ -189,8 +191,8 @@ class Guest:
             query = ("SELECT guestid AS id, guest AS name, "
                      "guestslug AS slug "
                      "FROM ww_guests "
-                     "WHERE guest IS NOT NULL "
-                     "AND guestid = %s "
+                     "WHERE guestid = %s "
+                     "AND guest IS NOT NULL "
                      "LIMIT 1;")
         else:
             query = ("SELECT guestid AS id, guest AS name, "
@@ -218,9 +220,9 @@ class Guest:
         """Returns a dictionary object containing guest ID, name and
         slug string for the requested guest slug string.
 
-        :param exclude_null: Toggle whether to return guest information
-            if their name is equal to SQL NULL value
         :param guest_slug: Guest slug string
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the guest name
         :return: Dictionary containing guest information. If guest
             information could not be retrieved, an empty dictionary is
             returned.
@@ -244,9 +246,9 @@ class Guest:
         """Returns a dictionary object containing guest ID, name, slug
         string and appearance information for the requested Guest ID.
 
-        :param exclude_null: Toggle whether to return guest information
-            if their name is equal to SQL NULL value
         :param guest_id: Guest ID
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the guest name and show dates
         :return: Dictionary containing guest information and their
             appearances. If guest information could not be retrieved,
             an empty dictionary is returned.
@@ -258,7 +260,8 @@ class Guest:
         if not info:
             return {}
 
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(guest_id)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(guest_id,
+                                                                          exclude_null)
 
         return info
 
@@ -269,9 +272,9 @@ class Guest:
         string and appearance information for the requested Guest slug
         string.
 
-        :param exclude_null: Toggle whether to return guest information
-            if their name is equal to SQL NULL value
         :param guest_slug: Guest slug string
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the guest name and show dates
         :return: Dictionary containing guest information and their
             appearances. If guest information could not be retrieved,
             an empty dictionary is returned.

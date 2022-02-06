@@ -41,11 +41,16 @@ class ScorekeeperAppearances:
         self.utility = ScorekeeperUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_id(self, scorekeeper_id: int) -> Dict[str, Any]:
+    def retrieve_appearances_by_id(self,
+                                   scorekeeper_id: int,
+                                   exclude_null_dates: bool = False
+                                   ) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested scorekeeper ID.
 
         :param scorekeeper_id: Scorekeeper ID
+        :param exclude_null_dates: Toggle whether to exclude results
+            that have SQL ``NULL`` for show dates
         :return: Dictionary containing appearance counts and list of
             appearances for a scorekeeper. If scorekeeper appearances
             could not be retrieved, an empty dictionary would be
@@ -55,14 +60,28 @@ class ScorekeeperAppearances:
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT ( "
-                 "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
-                 "JOIN ww_shows s ON s.showid = skm.showid "
-                 "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
-                 "skm.scorekeeperid = %s ) AS regular_shows, ( "
-                 "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
-                 "JOIN ww_shows s ON s.showid = skm.showid "
-                 "WHERE skm.scorekeeperid = %s ) AS all_shows;")
+        if exclude_null_dates:
+            query = ("SELECT ( "
+                     "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
+                     "JOIN ww_shows s ON s.showid = skm.showid "
+                     "WHERE skm.scorekeeperid = %s "
+                     "AND s.bestof = 0 "
+                     "AND s.repeatshowid IS NULL "
+                     "AND s.showdate IS NOT NULL) AS regular_shows, ( "
+                     "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
+                     "JOIN ww_shows s ON s.showid = skm.showid "
+                     "WHERE skm.scorekeeperid = %s "
+                     "AND s.showdate IS NOT NULL) AS all_shows;")
+        else:
+            query = ("SELECT ( "
+                     "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
+                     "JOIN ww_shows s ON s.showid = skm.showid "
+                     "WHERE skm.scorekeeperid = %s "
+                     "AND s.bestof = 0 "
+                     "AND s.repeatshowid IS NULL ) AS regular_shows, ( "
+                     "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
+                     "JOIN ww_shows s ON s.showid = skm.showid "
+                     "WHERE skm.scorekeeperid = %s ) AS all_shows;")
         cursor.execute(query, (scorekeeper_id, scorekeeper_id, ))
         result = cursor.fetchone()
 
@@ -77,14 +96,25 @@ class ScorekeeperAppearances:
                 "all_shows": 0,
             }
 
-        query = ("SELECT skm.showid AS show_id, s.showdate AS date, "
-                 "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-                 "skm.guest, skm.description "
-                 "FROM ww_showskmap skm "
-                 "JOIN ww_scorekeepers sk ON sk.scorekeeperid = skm.scorekeeperid "
-                 "JOIN ww_shows s ON s.showid = skm.showid "
-                 "WHERE sk.scorekeeperid = %s "
-                 "ORDER BY s.showdate ASC;")
+        if exclude_null_dates:
+            query = ("SELECT skm.showid AS show_id, s.showdate AS date, "
+                     "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
+                     "skm.guest, skm.description "
+                     "FROM ww_showskmap skm "
+                     "JOIN ww_scorekeepers sk ON sk.scorekeeperid = skm.scorekeeperid "
+                     "JOIN ww_shows s ON s.showid = skm.showid "
+                     "WHERE sk.scorekeeperid = %s "
+                     "AND s.showdate IS NOT NULL "
+                     "ORDER BY s.showdate ASC;")
+        else:
+            query = ("SELECT skm.showid AS show_id, s.showdate AS date, "
+                     "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
+                     "skm.guest, skm.description "
+                     "FROM ww_showskmap skm "
+                     "JOIN ww_scorekeepers sk ON sk.scorekeeperid = skm.scorekeeperid "
+                     "JOIN ww_shows s ON s.showid = skm.showid "
+                     "WHERE sk.scorekeeperid = %s "
+                     "ORDER BY s.showdate ASC;")
         cursor.execute(query, (scorekeeper_id, ))
         results = cursor.fetchall()
         cursor.close()
@@ -114,11 +144,16 @@ class ScorekeeperAppearances:
             }
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_slug(self, scorekeeper_slug: str) -> Dict[str, Any]:
+    def retrieve_appearances_by_slug(self,
+                                     scorekeeper_slug: str,
+                                     exclude_null_dates: bool = False
+                                     ) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested scorekeeper ID.
 
         :param scorekeeper_slug: Scorekeeper slug string
+        :param exclude_null_dates: Toggle whether to exclude results
+            that have SQL ``NULL`` for show dates
         :return: Dictionary containing appearance counts and list of
             appearances for a scorekeeper. If scorekeeper appearances
             could not be retrieved, an empty dictionary would be
@@ -128,4 +163,4 @@ class ScorekeeperAppearances:
         if not id_:
             return {}
 
-        return self.retrieve_appearances_by_id(id_)
+        return self.retrieve_appearances_by_id(id_, exclude_null_dates)

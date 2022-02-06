@@ -23,20 +23,22 @@ def get_connect_dict() -> Dict[str, Any]:
             return config_dict["database"]
 
 
-@pytest.mark.parametrize("show_id", [1083])
-def test_show_info_retrieve_bluff_info_all(show_id: int):
+@pytest.mark.parametrize("show_id, exclude_null_dates",
+                         [(1162, True), (1162, False)])
+def test_show_info_retrieve_bluff_info_all(show_id: int,
+                                           exclude_null_dates: bool):
     """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_bluff_info_all`
 
-    :param show_id: Show ID to test retrieving show Bluff the Listener
-        information from all shows retrieved
+    :param show_ids: Show ID to test retrieving show Bluff the Listener
+        information
+    :param exclude_null_dates: Toggle whether to exclude results
+        that have SQL ``NULL`` for the show date
     """
     info = ShowInfoMultiple(connect_dict=get_connect_dict())
-    bluffs = info.retrieve_bluff_info_all()
+    bluffs = info.retrieve_bluff_info_all(exclude_null_dates)
 
     assert bluffs, ("Bluff the Listener information for all shows could not "
                     "be retrieved")
-    assert show_id in bluffs, ("Bluff the Listener information was not "
-                               f"returned for show ID {show_id}")
 
     bluff = bluffs[show_id]
     assert "chosen_panelist" in bluff, ("'chosen_panelist' was not returned with "
@@ -49,8 +51,10 @@ def test_show_info_retrieve_bluff_info_all(show_id: int):
 def test_show_info_retrieve_bluff_info_by_ids(show_ids: List[int]):
     """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_bluff_info_by_ids`
 
-    :param show_ids: List of show IDs to test retrieving show Bluff the
-        Listener information
+    :param show_ids: Show ID to test retrieving show Bluff the Listener
+        information
+    :param exclude_null_dates: Toggle whether to exclude results
+        that have SQL ``NULL`` for the show date
     """
     info = ShowInfoMultiple(connect_dict=get_connect_dict())
     bluffs = info.retrieve_bluff_info_by_ids(show_ids)
@@ -71,15 +75,18 @@ def test_show_info_retrieve_bluff_info_by_ids(show_ids: List[int]):
                                                        f"{show_id}")
 
 
-@pytest.mark.parametrize("show_id", [1162])
-def test_show_info_retrieve_core_info_all(show_id: int):
+@pytest.mark.parametrize("show_id, exclude_null_dates",
+                         [(1162, True), (1162, False)])
+def test_show_info_retrieve_core_info_all(show_id: int,
+                                          exclude_null_dates: bool):
     """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_core_info_all`
 
-    :param show_id: Show ID to test retrieving show core information
-        from all shows retrieved
+    :param show_ids: Show ID to test retrieving show core information
+    :param exclude_null_dates: Toggle whether to exclude results
+        that have SQL ``NULL`` for the show date
     """
     info = ShowInfoMultiple(connect_dict=get_connect_dict())
-    shows = info.retrieve_core_info_all()
+    shows = info.retrieve_core_info_all(exclude_null_dates)
 
     assert shows, "Core information for all shows could not be retrieved"
     assert show_id in shows, (f"Core information for show ID {show_id} "
@@ -92,11 +99,11 @@ def test_show_info_retrieve_core_info_all(show_id: int):
                                    f"information for show ID {show_id}")
 
 
-@pytest.mark.parametrize("show_ids", [[1082, 1162]])
+@pytest.mark.parametrize("show_ids", [[1083, 1162]])
 def test_show_info_retrieve_core_info_by_ids(show_ids: List[int]):
     """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_core_info_by_ids`
 
-    :param show_id: Show ID to test retrieving show core information
+    :param show_ids: Show ID to test retrieving show core information
     """
     info = ShowInfoMultiple(connect_dict=get_connect_dict())
     shows = info.retrieve_core_info_by_ids(show_ids)
@@ -106,21 +113,26 @@ def test_show_info_retrieve_core_info_by_ids(show_ids: List[int]):
     for show_id in show_ids:
         assert show_id in shows, ("Core information could not be retrieved for "
                                   f"show ID {show_id}")
-        assert "id" in shows[show_id], ("'id' was not returned with core information "
-                                        f"for show ID {show_id}")
-        assert "description" in shows[show_id], ("'description' was not returned with "
-                                                 f"show information for show ID {show_id}")
+        assert "id" in shows[show_id], ("'id' was not returned with core "
+                                        f"information for show ID {show_id}")
+        assert "description" in shows[show_id], ("'description' was not returned "
+                                                 "with show information for show "
+                                                 f"ID {show_id}")
 
 
-@pytest.mark.parametrize("show_id", [1082])
-def test_show_info_retrieve_guest_info_all(show_id: int):
+@pytest.mark.parametrize("show_id, exclude_null_dates",
+                         [(1162, True), (1162, False)])
+def test_show_info_retrieve_guest_info_all(show_id: int,
+                                           exclude_null_dates: bool):
     """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_guest_info_all`
 
-    :param show_id: Show ID to test retrieving show guest information
-        for all shows retrieved
+    :param show_ids: List of show IDs to test retrieving show guest
+        information
+    :param exclude_null_dates: Toggle whether to exclude results
+        that have SQL ``NULL`` for show dates
     """
     info = ShowInfoMultiple(connect_dict=get_connect_dict())
-    shows_guests = info.retrieve_guest_info_all()
+    shows_guests = info.retrieve_guest_info_all(exclude_null_dates)
 
     assert shows_guests, "Guest information all shows could not be retrieved"
     assert show_id in shows_guests, ("Guest information could not be retrieved for "
@@ -134,7 +146,7 @@ def test_show_info_retrieve_guest_info_all(show_id: int):
                                       f"guest for show ID {show_id}")
 
 
-@pytest.mark.parametrize("show_ids", [[1082, 1162]])
+@pytest.mark.parametrize("show_ids", [[1083, 1162]])
 def test_show_info_retrieve_guest_info_by_ids(show_ids: List[int]):
     """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_guest_info_by_ids`
 
@@ -159,15 +171,19 @@ def test_show_info_retrieve_guest_info_by_ids(show_ids: List[int]):
                                           f"guest for show ID {show_id}")
 
 
-@pytest.mark.parametrize("show_id", [1082])
-def test_show_info_retrieve_panelist_info_all(show_id: int):
+@pytest.mark.parametrize("show_id, exclude_null_dates",
+                         [(1162, True), (1162, False)])
+def test_show_info_retrieve_panelist_info_all(show_id: int,
+                                              exclude_null_dates: bool):
     """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_panelist_info_all`
 
-    :param show_id: Show ID to test retrieving show panelist information
-        for all shows retrieved
+    :param show_ids: List of show IDs to test retrieving show panelist
+        information
+    :param exclude_null_dates: Toggle whether to exclude results
+        that have SQL ``NULL`` for show dates
     """
     info = ShowInfoMultiple(connect_dict=get_connect_dict())
-    shows_panelists = info.retrieve_panelist_info_all()
+    shows_panelists = info.retrieve_panelist_info_all(exclude_null_dates)
 
     assert shows_panelists, f"Panelist information for all shows could not be retrieved"
     assert show_id in shows_panelists, ("Panelist information could not be retrieved "
@@ -180,7 +196,7 @@ def test_show_info_retrieve_panelist_info_all(show_id: int):
                                      f"panelist for show ID {show_id}")
 
 
-@pytest.mark.parametrize("show_ids", [[1082, 1162]])
+@pytest.mark.parametrize("show_ids", [[1083, 1162]])
 def test_show_info_retrieve_panelist_info_by_ids(show_ids: List[int]):
     """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_panelist_info_by_ids`
 
@@ -190,15 +206,15 @@ def test_show_info_retrieve_panelist_info_by_ids(show_ids: List[int]):
     info = ShowInfoMultiple(connect_dict=get_connect_dict())
     shows_panelists = info.retrieve_panelist_info_by_ids(show_ids)
 
-    assert shows_panelists, (f"Panelist information for show IDs {show_ids} could not "
-                             "be retrieved")
+    assert shows_panelists, (f"Panelist information for show IDs {show_ids} "
+                             "could not be retrieved")
 
     for show_id in shows_panelists:
         assert show_id in shows_panelists, ("Panelist information could not be "
                                             f"retrieved for show ID {show_id}")
         panelists = shows_panelists[show_id]
         if panelists:
-            assert "id" in panelists[0], (f"'id' was not returned for the first panelist "
-                                          f"for show ID {show_id}")
-            assert "score" in panelists[0], (f"'score' was not returned for the first "
-                                             f"panelist for show ID {show_id}")
+            assert "id" in panelists[0], ("'id' was not returned for the first "
+                                          f"panelist for show ID {show_id}")
+            assert "score" in panelists[0], ("'score' was not returned for the "
+                                             f"first panelist for show ID {show_id}")

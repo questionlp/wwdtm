@@ -26,28 +26,37 @@ def get_connect_dict() -> Dict[str, Any]:
             return config_dict["database"]
 
 
-@pytest.mark.parametrize("host_id", [2])
-def test_host_appearances_retrieve_appearances_by_id(host_id: int):
+@pytest.mark.parametrize("host_id, exclude_null_dates",
+                         [(2, True), (2, False)])
+def test_host_appearances_retrieve_appearances_by_id(host_id: int,
+                                                     exclude_null_dates: bool):
     """Testing for :py:meth:`wwdtm.host.HostAppearances.retrieve_appearances_by_id`
 
     :param host_id: Host ID to test retrieving host appearances
+    :param exclude_null_dates: Toggle whether to exclude results
+        that have SQL ``NULL`` for the show date
     """
     appearances = HostAppearances(connect_dict=get_connect_dict())
-    appearance = appearances.retrieve_appearances_by_id(host_id)
+    appearance = appearances.retrieve_appearances_by_id(host_id, exclude_null_dates)
 
     assert "count" in appearance, f"'count' was not returned for ID {host_id}"
     assert "shows" in appearance, f"'shows' was not returned for ID {host_id}"
 
 
-@pytest.mark.parametrize("host_slug", ["luke-burbank"])
-def test_host_appearances_retrieve_appearances_by_slug(host_slug: str):
+@pytest.mark.parametrize("host_slug, exclude_null_dates",
+                         [("luke-burbank", True), ("luke-burbank", False)])
+def test_host_appearances_retrieve_appearances_by_slug(host_slug: str,
+                                                       exclude_null_dates: bool):
     """Testing for :py:meth:`wwdtm.host.HostAppearances.retrieve_appearances_by_slug`
 
     :param host_slug: Host slug string to test retrieving host
         appearances
+    :param exclude_null_dates: Toggle whether to exclude results
+        that have SQL ``NULL`` for the show date
     """
     appearances = HostAppearances(connect_dict=get_connect_dict())
-    appearance = appearances.retrieve_appearances_by_slug(host_slug)
+    appearance = appearances.retrieve_appearances_by_slug(host_slug,
+                                                          exclude_null_dates)
 
     assert "count" in appearance, f"'count' was not returned for slug {host_slug}"
     assert "shows" in appearance, f"'shows' was not returned for slug {host_slug}"

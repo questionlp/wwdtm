@@ -31,7 +31,7 @@ def test_location_retrieve_all(exclude_nulls: bool):
     """Testing for :py:meth:`wwdtm.location.Location.retrieve_all`
 
     :param exclude_nulls: Toggle whether to exclude results that
-        have SQL NULL value for the venue, city and state
+        have SQL ``NULL`` for the venue, city and state
     """
     location = Location(connect_dict=get_connect_dict())
     locations = location.retrieve_all(exclude_nulls)
@@ -45,7 +45,7 @@ def test_location_retrieve_all_details(exclude_nulls: bool):
     """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_details`
 
     :param exclude_nulls: Toggle whether to exclude results that
-        have SQL NULL value for the venue, city and state
+        have SQL ``NULL`` for the venue, city and state values
     """
     location = Location(connect_dict=get_connect_dict())
     locations = location.retrieve_all_details(exclude_nulls)
@@ -82,7 +82,7 @@ def test_location_retrieve_by_id(location_id: int, exclude_null: bool):
     :param location_id: Location ID to test retrieving location
         information
     :param exclude_null: Toggle whether to exclude results that
-        have SQL NULL value for the venue, city and state
+        have SQL ``NULL`` for the venue, city and state
     """
     location = Location(connect_dict=get_connect_dict())
     info = location.retrieve_by_id(location_id, exclude_null)
@@ -98,7 +98,7 @@ def test_location_retrieve_details_by_id(location_id: int, exclude_null: bool):
 
     :param location_id: Location ID to test retrieving location details
     :param exclude_null: Toggle whether to exclude results that
-        have SQL NULL value for the venue, city and state
+        have SQL ``NULL`` for the venue, city, state, and show dates
     """
     location = Location(connect_dict=get_connect_dict())
     info = location.retrieve_details_by_id(location_id, exclude_null)
@@ -117,7 +117,7 @@ def test_location_retrieve_by_slug(location_slug: str, exclude_null: bool):
     :param location_slug: Location slug string to test retrieving
         location information
     :param exclude_null: Toggle whether to exclude results that
-        have SQL NULL value for the venue, city and state
+        have SQL ``NULL`` for the venue, city and state
     """
     location = Location(connect_dict=get_connect_dict())
     info = location.retrieve_by_slug(location_slug, exclude_null)
@@ -136,7 +136,7 @@ def test_location_retrieve_details_by_slug(location_slug: str,
     :param location_slug: Location slug string to test retrieving
         location details
     :param exclude_null: Toggle whether to exclude results that
-        have SQL NULL value for the venue, city and state
+        have SQL ``NULL`` for the venue, city, state, and show dates
     """
     location = Location(connect_dict=get_connect_dict())
     info = location.retrieve_details_by_slug(location_slug, exclude_null)

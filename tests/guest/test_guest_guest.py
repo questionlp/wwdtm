@@ -31,7 +31,7 @@ def test_guest_retrieve_all(exclude_nulls: bool):
     """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_all`
 
     :param exclude_nulls: Toggle whether to exclude results that have
-        SQL NULL value for the guest name
+        SQL ``NULL`` for the guest name
     """
     guest = Guest(connect_dict=get_connect_dict())
     guests = guest.retrieve_all(exclude_nulls)
@@ -45,7 +45,7 @@ def test_guest_retrieve_all_details(exclude_nulls: bool):
     """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_all_details`
 
     :param exclude_nulls: Toggle whether to exclude results that have
-        SQL NULL value for the guest name
+        SQL ``NULL`` for the guest name and show dates
     """
     guest = Guest(connect_dict=get_connect_dict())
     guests = guest.retrieve_all_details(exclude_nulls)
@@ -81,7 +81,7 @@ def test_guest_retrieve_by_id(guest_id: int, exclude_null: bool):
 
     :param guest_id: Guest ID to test retrieving guest information
     :param exclude_null: Toggle whether to exclude results that have
-        SQL NULL value for the guest name
+        SQL ``NULL`` for the guest name
     """
     guest = Guest(connect_dict=get_connect_dict())
     info = guest.retrieve_by_id(guest_id, exclude_null)
@@ -98,7 +98,7 @@ def test_guest_retrieve_by_slug(guest_slug: str, exclude_null: bool):
     :param guest_slug: Guest slug string to test retrieving guest
         information
     :param exclude_null: Toggle whether to exclude results that have
-        SQL NULL value for the guest name
+        SQL ``NULL`` for the guest name
     """
     guest = Guest(connect_dict=get_connect_dict())
     info = guest.retrieve_by_slug(guest_slug, exclude_null)
@@ -113,7 +113,7 @@ def test_guest_retrieve_details_by_id(guest_id: int, exclude_null: bool):
 
     :param guest_id: Guest ID to test retrieving guest details
     :param exclude_null: Toggle whether to exclude results that have
-        SQL NULL value for the guest name
+        SQL ``NULL`` for the guest name and show dates
     """
     guest = Guest(connect_dict=get_connect_dict())
     info = guest.retrieve_details_by_id(guest_id, exclude_null)
@@ -131,7 +131,7 @@ def test_guest_guest_retrieve_details_by_slug(guest_slug: str, exclude_null: boo
     :param guest_slug: Guest slug string to test retrieving guest
         details
     :param exclude_null: Toggle whether to exclude results that have
-        SQL NULL value for the guest name
+        SQL ``NULL`` for the guest name and show dates
     """
     guest = Guest(connect_dict=get_connect_dict())
     info = guest.retrieve_details_by_slug(guest_slug, exclude_null)

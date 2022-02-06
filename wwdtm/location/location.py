@@ -49,7 +49,7 @@ class Location:
         :param sort_by_venue: Sets whether to sort by venue first, or
             by state and city first
         :param exclude_nulls: Toggle whether to exclude results that
-            have SQL NULL value for the venue, city and state
+            have SQL ``NULL`` for venue, city and state values
         :return: List of all locations and their corresponding
             information. If locations could not be retrieved, an empty
             list is returned.
@@ -99,7 +99,8 @@ class Location:
         :param sort_by_venue: Sets whether to sort by venue first, or
             by state and city first
         :param exclude_nulls: Toggle whether to exclude results that
-            have SQL NULL value for the venue, city and state
+            have SQL ``NULL`` for venue, city and state values and
+            show dates
         :return: List of all locations and their corresponding
             information and recordings. If locations could not be
             retrieved, an empty list is returned.
@@ -135,7 +136,8 @@ class Location:
                                                                                 venue=row.venue,
                                                                                 city=row.city,
                                                                                 state=row.state),
-                "recordings": self.recordings.retrieve_recordings_by_id(row.id),
+                "recordings": self.recordings.retrieve_recordings_by_id(row.id,
+                                                                        exclude_nulls),
             })
 
         return locations
@@ -195,7 +197,7 @@ class Location:
 
         :param location_id: Location ID
         :param exclude_null: Toggle whether to exclude results that
-            have SQL NULL value for the venue, city and state
+            have SQL ``NULL`` for the venue, city and state
         :return: Dictionary containing location information. If
             location information could not be retrieved, an empty
             dictionary is returned.
@@ -208,8 +210,9 @@ class Location:
             query = ("SELECT locationid AS id, city, state, venue, "
                      "locationslug AS slug "
                      "FROM ww_locations "
-                     "WHERE (city IS NOT NULL and state IS NOT NULL "
-                     "AND venue IS NOT NULL) and locationid = %s "
+                     "WHERE locationid = %s "
+                     "AND (city IS NOT NULL and state IS NOT NULL "
+                     "AND venue IS NOT NULL) "
                      "LIMIT 1;")
         else:
             query = ("SELECT locationid AS id, city, state, venue, "
@@ -243,7 +246,7 @@ class Location:
 
         :param location_slug: Location slug string
         :param exclude_null: Toggle whether to exclude results that
-            have SQL NULL value for the venue, city and state
+            have SQL ``NULL`` for the venue, city and state
         :return: Dictionary containing location information. If
             location information could not be retrieved, an empty
             dictionary is returned.
@@ -270,7 +273,8 @@ class Location:
 
         :param location_id: Location ID
         :param exclude_null: Toggle whether to exclude results that
-            have SQL NULL value for the venue, city and state
+            have SQL ``NULL`` for the venue, city and state and show
+            dates
         :return: Dictionary containing location information and their
             recordings. If location information could not be retrieved,
             an empty dictionary is returned.
@@ -282,7 +286,8 @@ class Location:
         if not info:
             return {}
 
-        info["recordings"] = self.recordings.retrieve_recordings_by_id(location_id)
+        info["recordings"] = self.recordings.retrieve_recordings_by_id(location_id,
+                                                                       exclude_null)
 
         return info
 
@@ -295,7 +300,8 @@ class Location:
 
         :param location_slug: Location slug string
         :param exclude_null: Toggle whether to exclude results that
-            have SQL NULL value for the venue, city and state
+            have SQL ``NULL`` for the venue, city and state and show
+            dates
         :return: Dictionary containing location information and their
             recordings. If location information could not be retrieved,
             an empty dictionary is returned.

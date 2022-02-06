@@ -31,7 +31,7 @@ def test_host_retrieve_all(exclude_nulls: bool):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_all`
 
     :param exclude_nulls: Toggle whether to exclude results that have
-        SQL NULL value for the host name
+        SQL ``NULL`` for the host name
     """
     host = Host(connect_dict=get_connect_dict())
     hosts = host.retrieve_all(exclude_nulls)
@@ -45,7 +45,7 @@ def test_host_retrieve_all_details(exclude_nulls: bool):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_all_details`
 
     :param exclude_nulls: Toggle whether to exclude results that have
-        SQL NULL value for the host name
+        SQL ``NULL`` for the host name and show dates
     """
     host = Host(connect_dict=get_connect_dict())
     hosts = host.retrieve_all_details(exclude_nulls)
@@ -80,7 +80,7 @@ def test_host_retrieve_by_id(host_id: int, exclude_null: bool):
 
     :param host_id: Host ID to test retrieving host information
     :param exclude_null: Toggle whether to exclude results that have
-        SQL NULL value for the host name
+        SQL ``NULL`` for the host name
     """
     host = Host(connect_dict=get_connect_dict())
     info = host.retrieve_by_id(host_id, exclude_null)
@@ -94,8 +94,8 @@ def test_host_retrieve_details_by_id(host_id: int, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_details_by_id`
 
     :param host_id: Host ID to test retrieving host details
-    :param exclude_nulls: Toggle whether to exclude results that have
-        SQL NULL value for the host name
+    :param exclude_null: Toggle whether to exclude results that have
+        SQL ``NULL`` for the host name and show dates
     """
     host = Host(connect_dict=get_connect_dict())
     info = host.retrieve_details_by_id(host_id, exclude_null)
@@ -112,8 +112,8 @@ def test_host_retrieve_by_slug(host_slug: str, exclude_null: bool):
 
     :param host_slug: Host slug string to test retrieving host
         information
-    :param exclude_nulls: Toggle whether to exclude results that have
-        SQL NULL value for the host name
+    :param exclude_null: Toggle whether to exclude results that have
+        SQL ``NULL`` for the host name
     """
     host = Host(connect_dict=get_connect_dict())
     info = host.retrieve_by_slug(host_slug, exclude_null)
@@ -128,8 +128,8 @@ def test_host_retrieve_details_by_slug(host_slug: str, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_details_by_slug`
 
     :param host_slug: Host slug string to test retrieving host details
-    :param exclude_nulls: Toggle whether to exclude results that have
-        SQL NULL value for the host name
+    :param exclude_null: Toggle whether to exclude results that have
+        SQL ``NULL`` for the host name and show dates
     """
     host = Host(connect_dict=get_connect_dict())
     info = host.retrieve_details_by_slug(host_slug, exclude_null)

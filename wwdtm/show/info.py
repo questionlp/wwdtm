@@ -45,7 +45,8 @@ class ShowInfo:
         self.loc_util = LocationUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
-    def retrieve_bluff_info_by_id(self, show_id: int) -> Dict[str, Any]:
+    def retrieve_bluff_info_by_id(self,
+                                  show_id: int) -> Dict[str, Any]:
         """Returns a dictionary containing Bluff the Listener information
         for the requested show ID.
 
@@ -64,6 +65,7 @@ class ShowInfo:
                  "JOIN ww_panelists p ON "
                  "p.panelistid = blm.chosenbluffpnlid "
                  "WHERE s.showid = %s;")
+
         cursor.execute(query, (show_id, ))
         chosen_result = cursor.fetchone()
 
@@ -83,6 +85,7 @@ class ShowInfo:
                  "JOIN ww_panelists p ON "
                  "p.panelistid = blm.correctbluffpnlid "
                  "WHERE s.showid = %s;")
+
         cursor.execute(query, (show_id, ))
         correct_result = cursor.fetchone()
         cursor.close()
@@ -101,7 +104,9 @@ class ShowInfo:
             "correct_panelist": correct_bluff_info,
         }
 
-    def retrieve_core_info_by_id(self, show_id: int) -> Dict[str, Any]:
+    def retrieve_core_info_by_id(self,
+                                 show_id: int,
+                                 ) -> Dict[str, Any]:
         """Returns a dictionary with core information for the requested
         show ID.
 
@@ -137,6 +142,7 @@ class ShowInfo:
                  "JOIN ww_shownotes sn ON sn.showid = s.showid "
                  "WHERE s.showid = %s "
                  "ORDER BY s.showdate ASC;")
+
         cursor.execute(query, (show_id, ))
         result = cursor.fetchone()
         cursor.close()
@@ -209,7 +215,9 @@ class ShowInfo:
         return show_info
 
     @lru_cache(typed=True)
-    def retrieve_guest_info_by_id(self, show_id: int) -> List[Dict[str, Any]]:
+    def retrieve_guest_info_by_id(self,
+                                  show_id: int,
+                                  ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing Not My Job
         guest information for the requested show ID.
 
@@ -250,7 +258,9 @@ class ShowInfo:
         return guests
 
     @lru_cache(typed=True)
-    def retrieve_panelist_info_by_id(self, show_id: int) -> List[Dict[str, Any]]:
+    def retrieve_panelist_info_by_id(self,
+                                     show_id: int,
+                                     ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing panelist
         information for the requested show ID.
 
@@ -272,6 +282,7 @@ class ShowInfo:
                  "JOIN ww_panelists p on p.panelistid = pm.panelistid "
                  "WHERE pm.showid = %s "
                  "ORDER by pm.panelistscore DESC, pm.showpnlmapid ASC;")
+
         cursor.execute(query, (show_id, ))
         results = cursor.fetchall()
         cursor.close()

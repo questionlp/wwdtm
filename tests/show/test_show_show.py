@@ -23,32 +23,44 @@ def get_connect_dict() -> Dict[str, Any]:
             return config_dict["database"]
 
 
-def test_show_retrieve_all():
+@pytest.mark.parametrize("exclude_nulls", [True, False])
+def test_show_retrieve_all(exclude_nulls: bool):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_all`
+
+    :param exclude_nulls: Toggle whether to exclude results that
+        have SQL ``NULL`` for the show date
     """
     show = Show(connect_dict=get_connect_dict())
-    shows = show.retrieve_all()
+    shows = show.retrieve_all(exclude_nulls)
 
     assert shows, "No shows could be retrieved"
     assert "id" in shows[0], "No Show ID returned for the first list item"
 
 
-def test_show_retrieve_all_details():
+@pytest.mark.parametrize("exclude_nulls", [True, False])
+def test_show_retrieve_all_details(exclude_nulls: bool):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_details`
+
+    :param exclude_nulls: Toggle whether to exclude results that
+        have SQL ``NULL`` for the show date
     """
     show = Show(connect_dict=get_connect_dict())
-    shows = show.retrieve_all_details()
+    shows = show.retrieve_all_details(exclude_nulls)
 
     assert shows, "No shows could be retrieved"
     assert "date" in shows[0], "'date' was not returned for the first list item"
     assert "host" in shows[0], "'host' was not returned for first list item"
 
 
-def test_show_retrieve_all_ids():
+@pytest.mark.parametrize("exclude_nulls", [True, False])
+def test_show_retrieve_all_ids(exclude_nulls: bool):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_ids`
+
+    :param exclude_nulls: Toggle whether to exclude results that
+        have SQL ``NULL`` for the show date
     """
     show = Show(connect_dict=get_connect_dict())
-    ids = show.retrieve_all_ids()
+    ids = show.retrieve_all_ids(exclude_nulls)
 
     assert ids, "No show IDs could be retrieved"
 
@@ -124,14 +136,17 @@ def test_show_retrieve_by_date_string(date: str):
     assert "date" in info, f"'date' was not returned for show {date}"
 
 
-@pytest.mark.parametrize("show_id", [1162])
-def test_show_retrieve_by_id(show_id: int):
+@pytest.mark.parametrize("show_id, exclude_null",
+                         [(1162, True), (1162, False)])
+def test_show_retrieve_by_id(show_id: int, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_by_id`
 
     :param show_id: Show ID to test retrieving show information
+    :param exclude_null: Toggle whether to exclude results that
+        have SQL ``NULL`` for the show date
     """
     show = Show(connect_dict=get_connect_dict())
-    info = show.retrieve_by_id(show_id)
+    info = show.retrieve_by_id(show_id, exclude_null)
 
     assert info, f"Show ID {show_id} not found"
     assert "date" in info, f"'date' was not returned for ID {show_id}"
@@ -217,14 +232,17 @@ def test_show_retrieve_details_by_date_string(date: str):
     assert "host" in info, f"'host' was not returned for show {date}"
 
 
-@pytest.mark.parametrize("show_id", [1162, 1246])
-def test_show_retrieve_details_by_id(show_id: int):
+@pytest.mark.parametrize("show_id, exclude_null",
+                         [(1162, True), (1246, False)])
+def test_show_retrieve_details_by_id(show_id: int, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_id`
 
     :param show_id: Show ID to test retrieving show details
+    :param exclude_null: Toggle whether to exclude results that
+        have SQL ``NULL`` for the show date
     """
     show = Show(connect_dict=get_connect_dict())
-    info = show.retrieve_details_by_id(show_id)
+    info = show.retrieve_details_by_id(show_id, exclude_null)
 
     assert info, f"Show ID {show_id} not found"
     assert "date" in info, f"'date' was not returned for ID {show_id}"

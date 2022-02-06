@@ -32,6 +32,8 @@ def test_panelist_appearances_retrieve_appearances_by_id(panelist_id: int):
 
     :param panelist_id: Panelist ID to test retrieving panelist
         appearances
+    :param exclude_null_dates: Toggle whether to exclude results
+        that have SQL ``NULL`` for show dates
     """
     appearances = PanelistAppearances(connect_dict=get_connect_dict())
     appearance = appearances.retrieve_appearances_by_id(panelist_id)
@@ -46,6 +48,8 @@ def test_panelist_appearances_retrieve_appearances_by_slug(panelist_slug: str):
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist appearances
+    :param exclude_null_dates: Toggle whether to exclude results
+        that have SQL ``NULL`` for show dates
     """
     appearances = PanelistAppearances(connect_dict=get_connect_dict())
     appearance = appearances.retrieve_appearances_by_slug(panelist_slug)

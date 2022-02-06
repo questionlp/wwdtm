@@ -47,7 +47,7 @@ class Host:
         name and slug string for all hosts.
 
         :param exclude_nulls: Toggle whether to exclude results that have
-            SQL NULL value for the host name
+            SQL ``NULL`` for host names
         :return: List of all hosts and their corresponding information.
             If hosts could not be retrieved, an empty list is returned.
         """
@@ -88,7 +88,7 @@ class Host:
         name, slug string and appearance information for all hosts.
 
         :param exclude_nulls: Toggle whether to exclude results that have
-            SQL NULL value for the host name
+            SQL ``NULL`` for host names and show dates
         :return: List of all hosts and their corresponding information
             and appearances. If hosts could not be retrieved, an empty
             list is returned.
@@ -119,7 +119,8 @@ class Host:
                 "name": row.name,
                 "gender": row.gender,
                 "slug": row.slug if row.slug else slugify(row.name),
-                "appearances": self.appearances.retrieve_appearances_by_id(row.id),
+                "appearances": self.appearances.retrieve_appearances_by_id(row.id,
+                                                                           exclude_nulls),
             })
 
         return hosts
@@ -170,7 +171,7 @@ class Host:
 
         :param host_id: Host ID
         :param exclude_null: Toggle whether to exclude results that have
-            SQL NULL value for the host name
+            SQL ``NULL`` for the host name
         :return: Dictionary containing host information. If host
             information could not be retrieved, an empty dictionary is
             returned.
@@ -183,7 +184,7 @@ class Host:
             query = ("SELECT hostid AS id, host AS name, "
                      "hostslug AS slug, hostgender AS gender "
                      "FROM ww_hosts "
-                     "WHERE host IS NOT NULL AND hostid = %s "
+                     "WHERE hostid = %s AND host IS NOT NULL "
                      "LIMIT 1;")
         else:
             query = ("SELECT hostid AS id, host AS name, "
@@ -213,7 +214,7 @@ class Host:
 
         :param host_slug: Host slug string
         :param exclude_null: Toggle whether to exclude results that have
-            SQL NULL value for the host name
+            SQL ``NULL`` for the host name
         :return: Dictionary containing host information. If host
             information could be retrieved, an empty dictionary is
             returned.
@@ -239,7 +240,7 @@ class Host:
 
         :param host_id: Host ID
         :param exclude_null: Toggle whether to exclude results that have
-            SQL NULL value for the host name
+            SQL ``NULL`` for the host name and show dates
         :return: Dictionary containing host information and their
             appearances. If host information could be retrieved, an
             empty dictionary is returned.
@@ -251,7 +252,8 @@ class Host:
         if not info:
             return {}
 
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(host_id)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(host_id,
+                                                                          exclude_null)
 
         return info
 
@@ -264,7 +266,7 @@ class Host:
 
         :param host_slug: Host slug string
         :param exclude_null: Toggle whether to exclude results that have
-            SQL NULL value for the host name
+            SQL ``NULL`` for the host name and show dates
         :return: Dictionary containing host information and their
             appearances. If host information could be retrieved, an
             empty dictionary is returned.

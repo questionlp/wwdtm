@@ -42,19 +42,29 @@ class Scorekeeper:
         self.appearances = ScorekeeperAppearances(database_connection=self.database_connection)
         self.utility = ScorekeeperUtility(database_connection=self.database_connection)
 
-    def retrieve_all(self) -> List[Dict[str, Any]]:
+    def retrieve_all(self, exclude_nulls: bool = False) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing scorekeeper
         ID, name and slug string for all scorekeepers.
 
+        :param exclude_nulls: Toggle whether to exclude results that
+            have SQL ``NULL`` for scorekeeper names
         :return: List of all scorekeepers and their corresponding
             information. If scorekeeper information could not be
             retrieved, an empty list will be returned.
         """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
-                 "scorekeeperslug AS slug, scorekeepergender AS gender "
-                 "FROM ww_scorekeepers "
-                 "ORDER BY scorekeeper ASC;")
+        if exclude_nulls:
+            query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
+                     "scorekeeperslug AS slug, scorekeepergender AS gender "
+                     "FROM ww_scorekeepers "
+                     "WHERE scorekeeper IS NOT NULL "
+                     "ORDER BY scorekeeper ASC;")
+        else:
+            query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
+                     "scorekeeperslug AS slug, scorekeepergender AS gender "
+                     "FROM ww_scorekeepers "
+                     "ORDER BY scorekeeper ASC;")
+
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -73,20 +83,31 @@ class Scorekeeper:
 
         return scorekeepers
 
-    def retrieve_all_details(self) -> List[Dict[str, Any]]:
+    def retrieve_all_details(self,
+                             exclude_nulls: bool = False) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing scorekeeper
         ID, name, slug string and appearance information for all
         scorekeepers.
 
+        :param exclude_nulls: Toggle whether to exclude results that
+            have SQL ``NULL`` for scorekeeper names and show dates
         :return: List of all scorekeepers and their corresponding
             information and appearances. If scorekeeper information
             could not be retrieved, an empty list will be returned.
         """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
-                 "scorekeeperslug AS slug, scorekeepergender AS gender "
-                 "FROM ww_scorekeepers "
-                 "ORDER BY scorekeeper ASC;")
+        if exclude_nulls:
+            query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
+                     "scorekeeperslug AS slug, scorekeepergender AS gender "
+                     "FROM ww_scorekeepers "
+                     "WHERE scorekeeper IS NOT NULL "
+                     "ORDER BY scorekeeper ASC;")
+        else:
+            query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
+                     "scorekeeperslug AS slug, scorekeepergender AS gender "
+                     "FROM ww_scorekeepers "
+                     "ORDER BY scorekeeper ASC;")
+
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -101,7 +122,8 @@ class Scorekeeper:
                 "name": row.name,
                 "slug": row.slug if row.slug else slugify(row.name),
                 "gender": row.gender,
-                "appearances": self.appearances.retrieve_appearances_by_id(row.id)
+                "appearances": self.appearances.retrieve_appearances_by_id(row.id,
+                                                                           exclude_nulls)
             })
 
         return scorekeepers
@@ -146,11 +168,15 @@ class Scorekeeper:
         return [v[0] for v in results]
 
     @lru_cache(typed=True)
-    def retrieve_by_id(self, scorekeeper_id: int) -> Dict[str, Any]:
+    def retrieve_by_id(self,
+                       scorekeeper_id: int,
+                       exclude_null: bool = False) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name
         and slug string for the requested scorekeeper ID.
 
         :param scorekeeper_id: Scorekeeper ID
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the scorekeeper name
         :return: Dictionary containing scorekeeper information. If
             scorekeeper information could not be retrieved, an empty
             dictionary will be returned.
@@ -159,11 +185,19 @@ class Scorekeeper:
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
-                 "scorekeeperslug AS slug, scorekeepergender AS gender "
-                 "FROM ww_scorekeepers "
-                 "WHERE scorekeeperid = %s "
-                 "LIMIT 1;")
+        if exclude_null:
+            query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
+                     "scorekeeperslug AS slug, scorekeepergender AS gender "
+                     "FROM ww_scorekeepers "
+                     "WHERE scorekeeper IS NOT NULL AND scorekeeperid = %s "
+                     "LIMIT 1;")
+        else:
+            query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
+                     "scorekeeperslug AS slug, scorekeepergender AS gender "
+                     "FROM ww_scorekeepers "
+                     "WHERE scorekeeperid = %s "
+                     "LIMIT 1;")
+
         cursor.execute(query, (scorekeeper_id, ))
         result = cursor.fetchone()
         cursor.close()
@@ -179,11 +213,15 @@ class Scorekeeper:
         }
 
     @lru_cache(typed=True)
-    def retrieve_by_slug(self, scorekeeper_slug: str) -> Dict[str, Any]:
+    def retrieve_by_slug(self,
+                         scorekeeper_slug: str,
+                         exclude_null: bool = False) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name
         and slug string for the requested scorekeeper slug string.
 
         :param scorekeeper_slug: Scorekeeper slug string
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the scorekeeper name
         :return: Dictionary containing scorekeeper information. If
             scorekeeper information could not be retrieved, an empty
             dictionary will be returned.
@@ -199,15 +237,18 @@ class Scorekeeper:
         if not id_:
             return {}
 
-        return self.retrieve_by_id(id_)
+        return self.retrieve_by_id(id_, exclude_null)
 
     @lru_cache(typed=True)
-    def retrieve_details_by_id(self, scorekeeper_id: int) -> Dict[str, Any]:
+    def retrieve_details_by_id(self, scorekeeper_id: int,
+                               exclude_null: bool = False) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name,
         slug string and appearance information for the requested
         scorekeeper ID.
 
         :param scorekeeper_id: Scorekeeper ID
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the scorekeeper name and show dates
         :return: Dictionary containing scorekeeper information and
             their appearances. If scorekeeper information could not be
             retrieved, an empty dictionary will be returned.
@@ -215,21 +256,25 @@ class Scorekeeper:
         if not valid_int_id(scorekeeper_id):
             return {}
 
-        info = self.retrieve_by_id(scorekeeper_id)
+        info = self.retrieve_by_id(scorekeeper_id, exclude_null)
         if not info:
             return {}
 
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(scorekeeper_id)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(scorekeeper_id,
+                                                                          exclude_null)
 
         return info
 
     @lru_cache(typed=True)
-    def retrieve_details_by_slug(self, scorekeeper_slug: str) -> Dict[str, Any]:
+    def retrieve_details_by_slug(self, scorekeeper_slug: str,
+                                 exclude_null: bool = False) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name,
         slug string and appearance information for the requested
         scorekeeper slug string.
 
         :param scorekeeper_slug: Scorekeeper slug string
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the scorekeeper name and show dates
         :return: Dictionary containing scorekeeper information and
             their appearances. If scorekeeper information could not be
             retrieved, an empty dictionary will be returned.
@@ -245,4 +290,4 @@ class Scorekeeper:
         if not id_:
             return {}
 
-        return self.retrieve_details_by_id(id_)
+        return self.retrieve_details_by_id(id_, exclude_null)

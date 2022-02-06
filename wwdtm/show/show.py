@@ -45,19 +45,29 @@ class Show:
         self.info_multiple = ShowInfoMultiple(database_connection=self.database_connection)
         self.utility = ShowUtility(database_connection=self.database_connection)
 
-    def retrieve_all(self) -> List[Dict[str, Any]]:
+    def retrieve_all(self, exclude_nulls: bool = False) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show ID,
         show date, Best Of and Repeat Show information for all shows.
 
+        :param exclude_nulls: Toggle whether to exclude results that
+            have SQL ``NULL`` for show dates
         :return: List of all shows and their corresponding information.
             If show information could not be retrieved, an empty list
             will be returned.
         """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT showid AS id, showdate AS date, "
-                 "bestof AS best_of, repeatshowid AS repeat_show_id "
-                 "FROM ww_shows "
-                 "ORDER BY showdate ASC;")
+        if exclude_nulls:
+            query = ("SELECT showid AS id, showdate AS date, "
+                     "bestof AS best_of, repeatshowid AS repeat_show_id "
+                     "FROM ww_shows "
+                     "WHERE showdate IS NOT NULL "
+                     "ORDER BY showdate ASC;")
+        else:
+            query = ("SELECT showid AS id, showdate AS date, "
+                     "bestof AS best_of, repeatshowid AS repeat_show_id "
+                     "FROM ww_shows "
+                     "ORDER BY showdate ASC;")
+
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -82,23 +92,26 @@ class Show:
 
         return shows
 
-    def retrieve_all_details(self) -> List[Dict[str, Any]]:
+    def retrieve_all_details(self,
+                             exclude_nulls: bool = False) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
         for all shows.
 
+        :param exclude_nulls: Toggle whether to exclude results that
+            have SQL ``NULL`` for show dates
         :return: List of all shows and their corresponding details.
             If show information could not be retrieved, an empty list
             will be returned.
         """
-        info = self.info_multiple.retrieve_core_info_all()
+        info = self.info_multiple.retrieve_core_info_all(exclude_nulls)
 
         if not info:
             return []
 
-        panelists = self.info_multiple.retrieve_panelist_info_all()
-        bluffs = self.info_multiple.retrieve_bluff_info_all()
-        guests = self.info_multiple.retrieve_guest_info_all()
+        panelists = self.info_multiple.retrieve_panelist_info_all(exclude_nulls)
+        bluffs = self.info_multiple.retrieve_bluff_info_all(exclude_nulls)
+        guests = self.info_multiple.retrieve_guest_info_all(exclude_nulls)
 
         shows = []
         for show in info:
@@ -121,16 +134,24 @@ class Show:
 
         return shows
 
-    def retrieve_all_ids(self) -> List[int]:
+    def retrieve_all_ids(self, exclude_nulls: bool = False) -> List[int]:
         """Returns a list of all show IDs from the database, sorted by
         show date.
 
+        :param exclude_nulls: Toggle whether to exclude results that
+            have SQL ``NULL`` for show dates
         :return: List of all show IDs. If show IDs could not be
             retrieved, an empty list will be returned.
         """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT showid FROM ww_shows "
-                 "ORDER BY showdate ASC;")
+        if exclude_nulls:
+            query = ("SELECT showid FROM ww_shows "
+                     "WHERE showdate IS NOT NULL "
+                     "ORDER BY showdate ASC;")
+        else:
+            query = ("SELECT showid FROM ww_shows "
+                     "ORDER BY showdate ASC;")
+
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -149,7 +170,9 @@ class Show:
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT showdate FROM ww_shows "
+                 "WHERE showdate IS NOT NULL "
                  "ORDER BY showdate ASC;")
+
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -172,6 +195,7 @@ class Show:
                  "FROM ww_shows "
                  "ORDER BY YEAR(showdate) ASC, MONTH(showdate) ASC, "
                  "DAY(showdate) ASC;")
+
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -193,6 +217,7 @@ class Show:
         query = ("SELECT DISTINCT YEAR(showdate), MONTH(showdate) "
                  "FROM ww_shows "
                  "ORDER BY YEAR(showdate) ASC, MONTH(showdate) ASC;")
+
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -214,6 +239,7 @@ class Show:
         query = ("SELECT DISTINCT YEAR(showdate), MONTH(showdate) "
                  "FROM ww_shows "
                  "ORDER BY YEAR(showdate) ASC, MONTH(showdate) ASC;")
+
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -227,7 +253,8 @@ class Show:
     def retrieve_by_date(self,
                          year: int,
                          month: int,
-                         day: int) -> Dict[str, Any]:
+                         day: int,
+                         ) -> Dict[str, Any]:
         """Returns a dictionary object containing show ID, show date,
         Best Of and Repeat Show information for the requested show date.
 
@@ -268,11 +295,15 @@ class Show:
         return self.retrieve_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_by_id(self, show_id: int) -> Dict[str, Any]:
+    def retrieve_by_id(self,
+                       show_id: int,
+                       exclude_null: bool = False) -> Dict[str, Any]:
         """Returns a dictionary object containing show ID, show date,
         Best Of and Repeat Show information for the requested show ID.
 
         :param show_id: Show ID
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the show date
         :return: Dictionary containing show information. If show
             information could not be retrieved, an empty dictionary will
             be returned.
@@ -281,11 +312,19 @@ class Show:
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT showid AS id, showdate AS date, "
-                 "bestof AS best_of, repeatshowid AS repeat_show_id "
-                 "FROM ww_shows "
-                 "WHERE showid = %s "
-                 "LIMIT 1;")
+        if exclude_null:
+            query = ("SELECT showid AS id, showdate AS date, "
+                     "bestof AS best_of, repeatshowid AS repeat_show_id "
+                     "FROM ww_shows "
+                     "WHERE showdate IS NOT NULL AND showid = %s "
+                     "LIMIT 1;")
+        else:
+            query = ("SELECT showid AS id, showdate AS date, "
+                     "bestof AS best_of, repeatshowid AS repeat_show_id "
+                     "FROM ww_shows "
+                     "WHERE showid = %s "
+                     "LIMIT 1;")
+
         cursor.execute(query, (show_id, ))
         result = cursor.fetchone()
         cursor.close()
@@ -307,7 +346,10 @@ class Show:
         return info
 
     @lru_cache(typed=True)
-    def retrieve_by_month_day(self, month: int, day: int) -> List[Dict[str, Any]]:
+    def retrieve_by_month_day(self,
+                              month: int,
+                              day: int,
+                              ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing with show
         information for the requested month and day, sorted by year.
 
@@ -322,9 +364,9 @@ class Show:
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT showid FROM ww_shows "
-                 "WHERE MONTH(showdate) = %s "
-                 "AND DAY(showdate) = %s "
+                 "WHERE MONTH(showdate) = %s AND DAY(showdate) = %s "
                  "ORDER BY showdate ASC;")
+
         cursor.execute(query, (month, day, ))
         results = cursor.fetchall()
         cursor.close()
@@ -353,6 +395,7 @@ class Show:
         query = ("SELECT showid FROM ww_shows "
                  "WHERE YEAR(showdate) = %s "
                  "ORDER BY showdate ASC;")
+
         cursor.execute(query, (parsed_year.year, ))
         results = cursor.fetchall()
         cursor.close()
@@ -365,7 +408,8 @@ class Show:
     @lru_cache(typed=True)
     def retrieve_by_year_month(self,
                                year: int,
-                               month: int) -> List[Dict[str, Any]]:
+                               month: int,
+                               ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show
         information for the requested year and month, sorted by show
         date.
@@ -383,8 +427,9 @@ class Show:
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT showid FROM ww_shows "
-                 "WHERE YEAR(showdate) = %s "
-                 "AND MONTH(showdate) = %s ORDER BY showdate ASC;")
+                 "WHERE YEAR(showdate) = %s AND MONTH(showdate) = %s "
+                 "ORDER BY showdate ASC;")
+
         cursor.execute(query, (parsed_year_month.year,
                                parsed_year_month.month, ))
         results = cursor.fetchall()
@@ -441,12 +486,16 @@ class Show:
         return self.retrieve_details_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_details_by_id(self, show_id: int) -> Dict[str, Any]:
+    def retrieve_details_by_id(self,
+                               show_id: int,
+                               exclude_null: bool = False) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
         for the requested show ID.
 
         :param show_id: Show ID
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the show date
         :return: Dictionary containing show information and details. If
             show information could not be retrieved, an empty dictionary
             will be returned.
@@ -465,7 +514,9 @@ class Show:
         return info
 
     @lru_cache(typed=True)
-    def retrieve_details_by_month_day(self, month: int, day: int
+    def retrieve_details_by_month_day(self,
+                                      month: int,
+                                      day: int
                                       ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
@@ -481,10 +532,11 @@ class Show:
             return []
 
         cursor = self.database_connection.cursor(dictionary=False)
+
         query = ("SELECT showid FROM ww_shows "
-                 "WHERE MONTH(showdate) = %s "
-                 "AND DAY(showdate) = %s "
+                 "WHERE MONTH(showdate) = %s AND DAY(showdate) = %s "
                  "ORDER BY showdate ASC;")
+
         cursor.execute(query, (month, day, ))
         results = cursor.fetchall()
         cursor.close()
@@ -554,7 +606,8 @@ class Show:
     @lru_cache(typed=True)
     def retrieve_details_by_year_month(self,
                                        year: int,
-                                       month: int) -> List[Dict[str, Any]]:
+                                       month: int,
+                                       ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information for
         the requested year and month, sorted by show date.
@@ -572,8 +625,7 @@ class Show:
 
         cursor = self.database_connection.cursor(dictionary=False)
         query = ("SELECT showid FROM ww_shows "
-                 "WHERE YEAR(showdate) = %s "
-                 "AND MONTH(showdate) = %s "
+                 "WHERE YEAR(showdate) = %s AND MONTH(showdate) = %s "
                  "ORDER BY showdate ASC;")
         cursor.execute(query, (parsed_year_month.year,
                                parsed_year_month.month, ))

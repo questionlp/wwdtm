@@ -44,20 +44,31 @@ class Panelist:
         self.statistics = PanelistStatistics(database_connection=self.database_connection)
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
-    def retrieve_all(self) -> List[Dict[str, Any]]:
+    def retrieve_all(self, exclude_nulls: bool = False) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing panelist ID,
         name and slug string for all panelists.
 
+        :param exclude_nulls: Toggle whether to exclude results that
+            have SQL ``NULL`` for panelist names
         :return: List of all panelists and their corresponding
             information. If panelists could not be retrieved, an empty
             list is returned.
         """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
-                 "panelistgender AS gender "
-                 "FROM ww_panelists "
-                 "WHERE panelistslug != 'multiple' "
-                 "ORDER BY panelist ASC;")
+        if exclude_nulls:
+            query = ("SELECT panelistid AS id, panelist AS name, "
+                     "panelistslug AS slug, panelistgender AS gender "
+                     "FROM ww_panelists "
+                     "WHERE panelist IS NOT NULL "
+                     "AND panelistslug != 'multiple' "
+                     "ORDER BY panelist ASC;")
+        else:
+            query = ("SELECT panelistid AS id, panelist AS name, "
+                     "panelistslug AS slug, panelistgender AS gender "
+                     "FROM ww_panelists "
+                     "WHERE panelistslug != 'multiple' "
+                     "ORDER BY panelist ASC;")
+
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -76,20 +87,32 @@ class Panelist:
 
         return panelists
 
-    def retrieve_all_details(self) -> List[Dict[str, Any]]:
+    def retrieve_all_details(self,
+                             exclude_nulls: bool = False) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing panelist ID,
         name, slug string and appearance information for all panelists.
 
+        :param exclude_nulls: Toggle whether to exclude results that
+            have SQL ``NULL`` for panelist names and show dates
         :return: List of all panelists and their corresponding
             information and appearances. If panelists could not be
             retrieved, an empty list is returned.
         """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
-                 "panelistgender AS gender "
-                 "FROM ww_panelists "
-                 "WHERE panelistslug != 'multiple' "
-                 "ORDER BY panelist ASC;")
+        if exclude_nulls:
+            query = ("SELECT panelistid AS id, panelist AS name, "
+                     "panelistslug AS slug, panelistgender AS gender "
+                     "FROM ww_panelists "
+                     "WHERE panelist IS NOT NULL "
+                     "AND panelistslug != 'multiple' "
+                     "ORDER BY panelist ASC;")
+        else:
+            query = ("SELECT panelistid AS id, panelist AS name, "
+                     "panelistslug AS slug, panelistgender AS gender "
+                     "FROM ww_panelists "
+                     "WHERE panelistslug != 'multiple' "
+                     "ORDER BY panelist ASC;")
+
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -152,11 +175,15 @@ class Panelist:
         return [v[0] for v in results]
 
     @lru_cache(typed=True)
-    def retrieve_by_id(self, panelist_id: int) -> Dict[str, Any]:
+    def retrieve_by_id(self,
+                       panelist_id: int,
+                       exclude_null: bool = False) -> Dict[str, Any]:
         """Returns a dictionary object containing panelist ID, name and
         slug string for the requested panelist ID.
 
         :param panelist_id: Panelist ID
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the panelist name
         :return: Dictionary containing panelist information. If panelist
             information could not be retrieved, an empty dictionary is
             returned.
@@ -165,11 +192,19 @@ class Panelist:
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
-                 "panelistgender AS gender "
-                 "FROM ww_panelists "
-                 "WHERE panelistid = %s "
-                 "LIMIT 1;")
+        if exclude_null:
+            query = ("SELECT panelistid AS id, panelist AS name, "
+                     "panelistslug AS slug, panelistgender AS gender "
+                     "FROM ww_panelists "
+                     "WHERE panelistid = %s AND panelist IS NOT NULL "
+                     "LIMIT 1;")
+        else:
+            query = ("SELECT panelistid AS id, panelist AS name, "
+                     "panelistslug AS slug, panelistgender AS gender "
+                     "FROM ww_panelists "
+                     "WHERE panelistid = %s "
+                     "LIMIT 1;")
+
         cursor.execute(query, (panelist_id, ))
         result = cursor.fetchone()
         cursor.close()
@@ -185,11 +220,15 @@ class Panelist:
         }
 
     @lru_cache(typed=True)
-    def retrieve_by_slug(self, panelist_slug: str) -> Dict[str, Any]:
+    def retrieve_by_slug(self,
+                         panelist_slug: str,
+                         exclude_null: bool = False) -> Dict[str, Any]:
         """Returns a dictionary object containing panelist ID, name and
         slug string for the requested panelist slug string.
 
         :param panelist_slug: Panelist slug string
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the panelist name
         :return: Dictionary containing panelist information. If panelist
             information could not be retrieved, an empty dictionary is
             returned.
@@ -205,14 +244,18 @@ class Panelist:
         if not id_:
             return {}
 
-        return self.retrieve_by_id(id_)
+        return self.retrieve_by_id(id_, exclude_null)
 
     @lru_cache(typed=True)
-    def retrieve_details_by_id(self, panelist_id: int) -> Dict[str, Any]:
+    def retrieve_details_by_id(self,
+                               panelist_id: int,
+                               exclude_null: bool = False) -> Dict[str, Any]:
         """Returns a dictionary object containing panelist ID, name, slug
         string and appearance information for the requested panelist ID.
 
         :param panelist_id: Panelist ID
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the panelist name
         :return: Dictionary containing panelist information and their
             appearances. If panelist information could not be retrieved,
             an empty dictionary is returned.
@@ -220,7 +263,7 @@ class Panelist:
         if not valid_int_id(panelist_id):
             return {}
 
-        info = self.retrieve_by_id(panelist_id)
+        info = self.retrieve_by_id(panelist_id, exclude_null)
         if not info:
             return {}
 
@@ -231,12 +274,16 @@ class Panelist:
         return info
 
     @lru_cache(typed=True)
-    def retrieve_details_by_slug(self, panelist_slug: str) -> Dict[str, Any]:
+    def retrieve_details_by_slug(self,
+                                 panelist_slug: str,
+                                 exclude_null: bool = False) -> Dict[str, Any]:
         """Returns a dictionary object containing panelist ID, name, slug
         string and appearance information for the requested Panelist slug
         string.
 
         :param panelist_slug: Panelist slug string
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the panelist name
         :return: Dictionary containing panelist information and their
             appearances. If panelist information could not be retrieved,
             an empty dictionary is returned.
@@ -252,4 +299,4 @@ class Panelist:
         if not id_:
             return {}
 
-        return self.retrieve_details_by_id(id_)
+        return self.retrieve_details_by_id(id_, exclude_null)
