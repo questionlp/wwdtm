@@ -1,5 +1,6 @@
+***********************
 Wait Wait Stats Library
------------------------
+***********************
 
 The Wait Wait Stats Library, ``wwdtm`` is a Python library that is used to
 query data regarding guests, hosts, locations, panelists, scorekeepers and
@@ -20,12 +21,18 @@ large number of API changes from ``wwdtm`` version 1.x to the current version.
 This section of the documentation will provide a summary of changes and
 changes to function/method locations.
 
+Known Issues
+============
+
+A list of known issues is documented in the ":doc:`/known_issues`" page.
+
 Table of Contents
 =================
 
 .. toctree::
     :maxdepth: 2
 
+    known_issues
     wwdtm/index
     tests/index
     migrating/index

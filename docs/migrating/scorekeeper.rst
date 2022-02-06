@@ -1,8 +1,9 @@
 .. role:: bolditalic
    :class: bolditalic
 
+***********
 scorekeeper
------------
+***********
 
 The following sections list out the changes that were made to the functions
 migrated from ``libwwdtm`` to class methods under the ``wwdtm`` module

@@ -1,7 +1,8 @@
 .. module:: wwdtm.location
 
+********
 location
---------
+********
 
 This module provides objects that are used to retrieve locations, location
 information and location recordings from a copy of the Wait Wait Don't Tell Me!
