@@ -47,9 +47,16 @@ run the following command to unset the flag globally:
 
     set global sql_mode='<flags>';
 
-Although a restart of the MySQL database service is not required, the existing
-connection does need to be closed and re-opened for the change to take effect
-from the MySQL tool of choice.
+That will set the ``sql_mode`` to the correct value until the service is 
+restarted. To make it persist, you will need to update the ``mysqld.conf``
+file on the server with the following configuration line:
+
+.. code-block::
+
+    sql-mode = <flags>
+
+This will set the ``sql_mode`` variable to the list of flags each time the
+service starts.
 
 A way to validate that the variable change is working as expected, if you
 have a working copy of the Git repository, is to run ``pytest`` to check for
