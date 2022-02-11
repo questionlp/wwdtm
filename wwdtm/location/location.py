@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Location Data Retrieval Functions
 """
@@ -24,11 +24,12 @@ class Location:
         connection
     """
 
-    def __init__(self,
-                 connect_dict: Optional[Dict[str, Any]] = None,
-                 database_connection: Optional[connect] = None):
-        """Class initialization method.
-        """
+    def __init__(
+        self,
+        connect_dict: Optional[Dict[str, Any]] = None,
+        database_connection: Optional[connect] = None,
+    ):
+        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -38,7 +39,9 @@ class Location:
 
             self.database_connection = database_connection
 
-        self.recordings = LocationRecordings(database_connection=self.database_connection)
+        self.recordings = LocationRecordings(
+            database_connection=self.database_connection
+        )
         self.utility = LocationUtility(database_connection=self.database_connection)
 
     def retrieve_all(self, sort_by_venue: bool = False) -> List[Dict[str, Any]]:
@@ -52,9 +55,11 @@ class Location:
             list is returned.
         """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT locationid AS id, city, state, venue, "
-                 "locationslug AS slug "
-                 "FROM ww_locations ")
+        query = (
+            "SELECT locationid AS id, city, state, venue, "
+            "locationslug AS slug "
+            "FROM ww_locations "
+        )
         if sort_by_venue:
             query = query + "ORDER BY venue ASC, city ASC, state ASC;"
         else:
@@ -69,21 +74,26 @@ class Location:
 
         locations = []
         for row in results:
-            locations.append({
-                "id": row.id,
-                "city": row.city,
-                "state": row.state,
-                "venue": row.venue,
-                "slug": row.slug if row.slug else self.utility.slugify_location(location_id=row.id,
-                                                                                venue=row.venue,
-                                                                                city=row.city,
-                                                                                state=row.state),
-            })
+            locations.append(
+                {
+                    "id": row.id,
+                    "city": row.city,
+                    "state": row.state,
+                    "venue": row.venue,
+                    "slug": row.slug
+                    if row.slug
+                    else self.utility.slugify_location(
+                        location_id=row.id,
+                        venue=row.venue,
+                        city=row.city,
+                        state=row.state,
+                    ),
+                }
+            )
 
         return locations
 
-    def retrieve_all_details(self, sort_by_venue: bool = False
-                             ) -> List[Dict[str, Any]]:
+    def retrieve_all_details(self, sort_by_venue: bool = False) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing location ID,
         city, state, venue, slug string and recording information for
         all locations.
@@ -95,9 +105,11 @@ class Location:
             retrieved, an empty list is returned.
         """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT locationid AS id, city, state, venue, "
-                 "locationslug AS slug "
-                 "FROM ww_locations ")
+        query = (
+            "SELECT locationid AS id, city, state, venue, "
+            "locationslug AS slug "
+            "FROM ww_locations "
+        )
         if sort_by_venue:
             query = query + "ORDER BY venue ASC, city ASC, state ASC;"
         else:
@@ -111,17 +123,23 @@ class Location:
 
         locations = []
         for row in results:
-            locations.append({
-                "id": row.id,
-                "city": row.city,
-                "state": row.state,
-                "venue": row.venue,
-                "slug": row.slug if row.slug else self.utility.slugify_location(location_id=row.id,
-                                                                                venue=row.venue,
-                                                                                city=row.city,
-                                                                                state=row.state),
-                "recordings": self.recordings.retrieve_recordings_by_id(row.id),
-            })
+            locations.append(
+                {
+                    "id": row.id,
+                    "city": row.city,
+                    "state": row.state,
+                    "venue": row.venue,
+                    "slug": row.slug
+                    if row.slug
+                    else self.utility.slugify_location(
+                        location_id=row.id,
+                        venue=row.venue,
+                        city=row.city,
+                        state=row.state,
+                    ),
+                    "recordings": self.recordings.retrieve_recordings_by_id(row.id),
+                }
+            )
 
         return locations
 
@@ -134,7 +152,7 @@ class Location:
             retrieved, an empty list is returned.
         """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT locationid FROM ww_locations ")
+        query = "SELECT locationid FROM ww_locations "
         if sort_by_venue:
             query = query + "ORDER BY venue ASC, city ASC, state ASC;"
         else:
@@ -158,7 +176,7 @@ class Location:
             strings could not be retrieved, an empty list is returned.
         """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT locationslug FROM ww_locations ")
+        query = "SELECT locationslug FROM ww_locations "
         if sort_by_venue:
             query = query + "ORDER BY venue ASC, city ASC, state ASC;"
         else:
@@ -186,12 +204,14 @@ class Location:
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT locationid AS id, city, state, venue, "
-                 "locationslug AS slug "
-                 "FROM ww_locations "
-                 "WHERE locationid = %s "
-                 "LIMIT 1;")
-        cursor.execute(query, (location_id, ))
+        query = (
+            "SELECT locationid AS id, city, state, venue, "
+            "locationslug AS slug "
+            "FROM ww_locations "
+            "WHERE locationid = %s "
+            "LIMIT 1;"
+        )
+        cursor.execute(query, (location_id,))
         result = cursor.fetchone()
         cursor.close()
 
@@ -203,10 +223,14 @@ class Location:
             "city": result.city,
             "state": result.state,
             "venue": result.venue,
-            "slug": result.slug if result.slug else self.utility.slugify_location(location_id=result.id,
-                                                                                  venue=result.venue,
-                                                                                  city=result.city,
-                                                                                  state=result.state),
+            "slug": result.slug
+            if result.slug
+            else self.utility.slugify_location(
+                location_id=result.id,
+                venue=result.venue,
+                city=result.city,
+                state=result.state,
+            ),
         }
 
     @lru_cache(typed=True)

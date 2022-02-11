@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Scorekeeper Appearance Retrieval
 Functions
@@ -24,11 +24,12 @@ class ScorekeeperAppearances:
         connection
     """
 
-    def __init__(self,
-                 connect_dict: Optional[Dict[str, Any]] = None,
-                 database_connection: Optional[connect] = None):
-        """Class initialization method.
-        """
+    def __init__(
+        self,
+        connect_dict: Optional[Dict[str, Any]] = None,
+        database_connection: Optional[connect] = None,
+    ):
+        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -55,15 +56,23 @@ class ScorekeeperAppearances:
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT ( "
-                 "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
-                 "JOIN ww_shows s ON s.showid = skm.showid "
-                 "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
-                 "skm.scorekeeperid = %s ) AS regular_shows, ( "
-                 "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
-                 "JOIN ww_shows s ON s.showid = skm.showid "
-                 "WHERE skm.scorekeeperid = %s ) AS all_shows;")
-        cursor.execute(query, (scorekeeper_id, scorekeeper_id, ))
+        query = (
+            "SELECT ( "
+            "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
+            "JOIN ww_shows s ON s.showid = skm.showid "
+            "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
+            "skm.scorekeeperid = %s ) AS regular_shows, ( "
+            "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
+            "JOIN ww_shows s ON s.showid = skm.showid "
+            "WHERE skm.scorekeeperid = %s ) AS all_shows;"
+        )
+        cursor.execute(
+            query,
+            (
+                scorekeeper_id,
+                scorekeeper_id,
+            ),
+        )
         result = cursor.fetchone()
 
         if result:
@@ -77,15 +86,17 @@ class ScorekeeperAppearances:
                 "all_shows": 0,
             }
 
-        query = ("SELECT skm.showid AS show_id, s.showdate AS date, "
-                 "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-                 "skm.guest, skm.description "
-                 "FROM ww_showskmap skm "
-                 "JOIN ww_scorekeepers sk ON sk.scorekeeperid = skm.scorekeeperid "
-                 "JOIN ww_shows s ON s.showid = skm.showid "
-                 "WHERE sk.scorekeeperid = %s "
-                 "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (scorekeeper_id, ))
+        query = (
+            "SELECT skm.showid AS show_id, s.showdate AS date, "
+            "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
+            "skm.guest, skm.description "
+            "FROM ww_showskmap skm "
+            "JOIN ww_scorekeepers sk ON sk.scorekeeperid = skm.scorekeeperid "
+            "JOIN ww_shows s ON s.showid = skm.showid "
+            "WHERE sk.scorekeeperid = %s "
+            "ORDER BY s.showdate ASC;"
+        )
+        cursor.execute(query, (scorekeeper_id,))
         results = cursor.fetchall()
         cursor.close()
 

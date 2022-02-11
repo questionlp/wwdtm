@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.scorekeeper.ScorekeeperAppearances`
 """
@@ -47,5 +47,9 @@ def test_scorekeeper_appearance_retrieve_appearances_by_slug(scorekeeper_slug: s
     appearances = ScorekeeperAppearances(connect_dict=get_connect_dict())
     appearance = appearances.retrieve_appearances_by_slug(scorekeeper_slug)
 
-    assert "count" in appearance, f"'count' was not returned for slug {scorekeeper_slug}"
-    assert "shows" in appearance, f"'shows' was not returned for slug {scorekeeper_slug}"
+    assert (
+        "count" in appearance
+    ), f"'count' was not returned for slug {scorekeeper_slug}"
+    assert (
+        "shows" in appearance
+    ), f"'shows' was not returned for slug {scorekeeper_slug}"

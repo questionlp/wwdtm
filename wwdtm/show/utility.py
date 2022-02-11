@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Show Data Utility Functions
 """
@@ -24,11 +24,12 @@ class ShowUtility:
         connection
     """
 
-    def __init__(self,
-                 connect_dict: Optional[Dict[str, Any]] = None,
-                 database_connection: Optional[connect] = None):
-        """Class initialization method.
-        """
+    def __init__(
+        self,
+        connect_dict: Optional[Dict[str, Any]] = None,
+        database_connection: Optional[connect] = None,
+    ):
+        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -39,10 +40,7 @@ class ShowUtility:
             self.database_connection = database_connection
 
     @lru_cache(typed=True)
-    def convert_date_to_id(self,
-                           year: int,
-                           month: int,
-                           day: int) -> Optional[int]:
+    def convert_date_to_id(self, year: int, month: int, day: int) -> Optional[int]:
         """Converts a show date to the matching show ID value.
 
         :param year: Year portion of a show date
@@ -56,10 +54,8 @@ class ShowUtility:
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT showid FROM ww_shows "
-                 "WHERE showdate = %s "
-                 "LIMIT 1;")
-        cursor.execute(query, (show_date.isoformat(), ))
+        query = "SELECT showid FROM ww_shows " "WHERE showdate = %s " "LIMIT 1;"
+        cursor.execute(query, (show_date.isoformat(),))
         result = cursor.fetchone()
         cursor.close()
 
@@ -79,10 +75,8 @@ class ShowUtility:
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT showdate FROM ww_shows "
-                 "WHERE showid = %s "
-                 "LIMIT 1;")
-        cursor.execute(query, (show_id, ))
+        query = "SELECT showdate FROM ww_shows " "WHERE showid = %s " "LIMIT 1;"
+        cursor.execute(query, (show_id,))
         result = cursor.fetchone()
         cursor.close()
 
@@ -92,10 +86,7 @@ class ShowUtility:
         return None
 
     @lru_cache(typed=True)
-    def date_exists(self,
-                    year: int,
-                    month: int,
-                    day: int) -> bool:
+    def date_exists(self, year: int, month: int, day: int) -> bool:
         """Checks to see if a show date exists.
 
         :param year: Year portion of a show date
@@ -109,10 +100,8 @@ class ShowUtility:
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT showid FROM ww_shows "
-                 "WHERE showdate = %s "
-                 "LIMIT 1;")
-        cursor.execute(query, (show_date.isoformat(), ))
+        query = "SELECT showid FROM ww_shows " "WHERE showdate = %s " "LIMIT 1;"
+        cursor.execute(query, (show_date.isoformat(),))
         result = cursor.fetchone()
         cursor.close()
 
@@ -129,10 +118,8 @@ class ShowUtility:
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT showid FROM ww_shows "
-                 "WHERE showid = %s "
-                 "LIMIT 1;")
-        cursor.execute(query, (show_id, ))
+        query = "SELECT showid FROM ww_shows " "WHERE showid = %s " "LIMIT 1;"
+        cursor.execute(query, (show_id,))
         result = cursor.fetchone()
         cursor.close()
 
