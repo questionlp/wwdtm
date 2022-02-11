@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.panelist.PanelistAppearances`
 """
@@ -32,6 +32,8 @@ def test_panelist_appearances_retrieve_appearances_by_id(panelist_id: int):
 
     :param panelist_id: Panelist ID to test retrieving panelist
         appearances
+    :param exclude_null_dates: Toggle whether to exclude results
+        that have SQL ``NULL`` for show dates
     """
     appearances = PanelistAppearances(connect_dict=get_connect_dict())
     appearance = appearances.retrieve_appearances_by_id(panelist_id)
@@ -46,6 +48,8 @@ def test_panelist_appearances_retrieve_appearances_by_slug(panelist_slug: str):
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist appearances
+    :param exclude_null_dates: Toggle whether to exclude results
+        that have SQL ``NULL`` for show dates
     """
     appearances = PanelistAppearances(connect_dict=get_connect_dict())
     appearance = appearances.retrieve_appearances_by_slug(panelist_slug)

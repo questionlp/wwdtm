@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Guest Data Retrieval Functions
 """
@@ -25,11 +25,12 @@ class Guest:
         connection
     """
 
-    def __init__(self,
-                 connect_dict: Optional[Dict[str, Any]] = None,
-                 database_connection: Optional[connect] = None):
-        """Class initialization method.
-        """
+    def __init__(
+        self,
+        connect_dict: Optional[Dict[str, Any]] = None,
+        database_connection: Optional[connect] = None,
+    ):
+        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -39,23 +40,41 @@ class Guest:
 
             self.database_connection = database_connection
 
-        self.appearances = GuestAppearances(database_connection=self.database_connection)
+        self.appearances = GuestAppearances(
+            database_connection=self.database_connection
+        )
         self.utility = GuestUtility(database_connection=self.database_connection)
 
-    def retrieve_all(self) -> List[Dict[str, Any]]:
+    def retrieve_all(self, exclude_nulls: bool = False) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing guest ID,
         name and slug string for all guests.
 
+        :param exclude_nulls: Toggle whether to exclude results that have
+            SQL ``NULL`` for guest names
         :return: List of all guests and their corresponding
             information. If guests could not be retrieved, an empty list
             is returned.
         """
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT guestid AS id, guest AS name, guestslug AS slug "
-                 "FROM ww_guests "
-                 "WHERE guestslug != 'none' "
-                 "ORDER BY guest ASC;")
+        if exclude_nulls:
+            query = (
+                "SELECT guestid AS id, guest AS name, "
+                "guestslug AS slug "
+                "FROM ww_guests "
+                "WHERE guest IS NOT NULL "
+                "AND guestslug != 'none' "
+                "ORDER BY guest ASC;"
+            )
+        else:
+            query = (
+                "SELECT guestid AS id, guest AS name, "
+                "guestslug AS slug "
+                "FROM ww_guests "
+                "WHERE guestslug != 'none' "
+                "ORDER BY guest ASC;"
+            )
+
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -65,27 +84,45 @@ class Guest:
 
         guests = []
         for row in results:
-            guests.append({
-                "id": row.id,
-                "name": row.name,
-                "slug": row.slug if row.slug else slugify(row.name),
-            })
+            guests.append(
+                {
+                    "id": row.id,
+                    "name": row.name,
+                    "slug": row.slug if row.slug else slugify(row.name),
+                }
+            )
 
         return guests
 
-    def retrieve_all_details(self) -> List[Dict[str, Any]]:
+    def retrieve_all_details(self, exclude_nulls: bool = False) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing guest ID,
         name, slug string and appearance information for all guests.
 
+        :param exclude_nulls: Toggle whether to exclude results that have
+            SQL ``NULL`` for guest names and show dates
         :return: List of all guests and their corresponding
             information and appearances. If guests could not be
             retrieved, an empty list is returned.
         """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT guestid AS id, guest AS name, guestslug AS slug "
-                 "FROM ww_guests "
-                 "WHERE guestslug != 'none' "
-                 "ORDER BY guest ASC;")
+        if exclude_nulls:
+            query = (
+                "SELECT guestid AS id, guest AS name, "
+                "guestslug AS slug "
+                "FROM ww_guests "
+                "WHERE guest IS NOT NULL "
+                "AND guestslug != 'none' "
+                "ORDER BY guest ASC;"
+            )
+        else:
+            query = (
+                "SELECT guestid AS id, guest AS name, "
+                "guestslug AS slug "
+                "FROM ww_guests "
+                "WHERE guestslug != 'none' "
+                "ORDER BY guest ASC;"
+            )
+
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -95,12 +132,16 @@ class Guest:
 
         guests = []
         for row in results:
-            guests.append({
-                "id": row.id,
-                "name": row.name,
-                "slug": row.slug if row.slug else slugify(row.name),
-                "appearances": self.appearances.retrieve_appearances_by_id(row.id),
-            })
+            guests.append(
+                {
+                    "id": row.id,
+                    "name": row.name,
+                    "slug": row.slug if row.slug else slugify(row.name),
+                    "appearances": self.appearances.retrieve_appearances_by_id(
+                        row.id, exclude_nulls
+                    ),
+                }
+            )
 
         return guests
 
@@ -112,9 +153,11 @@ class Guest:
             retrieved, an emtpy list is returned.
         """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT guestid FROM ww_guests "
-                 "WHERE guestslug != 'none' "
-                 "ORDER BY guest ASC;")
+        query = (
+            "SELECT guestid FROM ww_guests "
+            "WHERE guestslug != 'none' "
+            "ORDER BY guest ASC;"
+        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -132,9 +175,11 @@ class Guest:
             could not be retrieved, an emtpy list is returned.
         """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT guestslug FROM ww_guests "
-                 "WHERE guestslug != 'none' "
-                 "ORDER BY guest ASC;")
+        query = (
+            "SELECT guestslug FROM ww_guests "
+            "WHERE guestslug != 'none' "
+            "ORDER BY guest ASC;"
+        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -145,11 +190,15 @@ class Guest:
         return [v[0] for v in results]
 
     @lru_cache(typed=True)
-    def retrieve_by_id(self, guest_id: int) -> Dict[str, Any]:
+    def retrieve_by_id(
+        self, guest_id: int, exclude_null: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary object containing guest ID, name and
         slug string for the requested guest ID.
 
         :param guest_id: Guest ID
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the guest name
         :return: Dictionary containing guest information. If guest
             information could not be retrieved, an empty dictionary is
             returned.
@@ -158,11 +207,25 @@ class Guest:
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT guestid AS id, guest AS name, guestslug AS slug "
-                 "FROM ww_guests "
-                 "WHERE guestid = %s "
-                 "LIMIT 1;")
-        cursor.execute(query, (guest_id, ))
+        if exclude_null:
+            query = (
+                "SELECT guestid AS id, guest AS name, "
+                "guestslug AS slug "
+                "FROM ww_guests "
+                "WHERE guestid = %s "
+                "AND guest IS NOT NULL "
+                "LIMIT 1;"
+            )
+        else:
+            query = (
+                "SELECT guestid AS id, guest AS name, "
+                "guestslug AS slug "
+                "FROM ww_guests "
+                "WHERE guestid = %s "
+                "LIMIT 1;"
+            )
+
+        cursor.execute(query, (guest_id,))
         result = cursor.fetchone()
         cursor.close()
 
@@ -176,11 +239,15 @@ class Guest:
         }
 
     @lru_cache(typed=True)
-    def retrieve_by_slug(self, guest_slug: str) -> Dict[str, Any]:
+    def retrieve_by_slug(
+        self, guest_slug: str, exclude_null: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary object containing guest ID, name and
         slug string for the requested guest slug string.
 
         :param guest_slug: Guest slug string
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the guest name
         :return: Dictionary containing guest information. If guest
             information could not be retrieved, an empty dictionary is
             returned.
@@ -196,14 +263,18 @@ class Guest:
         if not id_:
             return {}
 
-        return self.retrieve_by_id(id_)
+        return self.retrieve_by_id(id_, exclude_null)
 
     @lru_cache(typed=True)
-    def retrieve_details_by_id(self, guest_id: int) -> Dict[str, Any]:
+    def retrieve_details_by_id(
+        self, guest_id: int, exclude_null: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary object containing guest ID, name, slug
         string and appearance information for the requested Guest ID.
 
         :param guest_id: Guest ID
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the guest name and show dates
         :return: Dictionary containing guest information and their
             appearances. If guest information could not be retrieved,
             an empty dictionary is returned.
@@ -211,21 +282,27 @@ class Guest:
         if not valid_int_id(guest_id):
             return {}
 
-        info = self.retrieve_by_id(guest_id)
+        info = self.retrieve_by_id(guest_id, exclude_null)
         if not info:
             return {}
 
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(guest_id)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(
+            guest_id, exclude_null
+        )
 
         return info
 
     @lru_cache(typed=True)
-    def retrieve_details_by_slug(self, guest_slug: str) -> Dict[str, Any]:
+    def retrieve_details_by_slug(
+        self, guest_slug: str, exclude_null: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary object containing guest ID, name, slug
         string and appearance information for the requested Guest slug
         string.
 
         :param guest_slug: Guest slug string
+        :param exclude_null: Toggle whether to exclude results that have
+            SQL ``NULL`` for the guest name and show dates
         :return: Dictionary containing guest information and their
             appearances. If guest information could not be retrieved,
             an empty dictionary is returned.
@@ -241,4 +318,4 @@ class Guest:
         if not id_:
             return {}
 
-        return self.retrieve_details_by_id(id_)
+        return self.retrieve_details_by_id(id_, exclude_null)

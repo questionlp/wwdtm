@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.guest.GuestAppearances`
 """
@@ -26,11 +26,15 @@ def get_connect_dict() -> Dict[str, Any]:
             return config_dict["database"]
 
 
-@pytest.mark.parametrize("guest_id", [976])
-def test_guest_appearances_retrieve_appearances_by_id(guest_id: int):
+@pytest.mark.parametrize("guest_id, exclude_null_dates", [(976, True), (976, False)])
+def test_guest_appearances_retrieve_appearances_by_id(
+    guest_id: int, exclude_null_dates: bool
+):
     """Testing for :py:meth:`wwdtm.guest.Appearances.retrieve_appearances_by_id`
 
     :param guest_id: Guest ID to test retrieving guest appearances
+    :param exclude_null_dates: Toggle whether to exclude results that
+        have SQL ``NULL`` for the show date
     """
     appearances = GuestAppearances(connect_dict=get_connect_dict())
     appearance = appearances.retrieve_appearances_by_id(guest_id)
@@ -39,14 +43,22 @@ def test_guest_appearances_retrieve_appearances_by_id(guest_id: int):
     assert "shows" in appearance, f"'shows' was not returned for ID {guest_id}"
 
 
-@pytest.mark.parametrize("guest_slug", ["tom-hanks"])
-def test_guest_appearances_retrieve_appearances_by_slug(guest_slug: str):
+@pytest.mark.parametrize(
+    "guest_slug, exclude_null_dates", [("tom-hanks", True), ("tom-hanks", False)]
+)
+def test_guest_appearances_retrieve_appearances_by_slug(
+    guest_slug: str, exclude_null_dates: bool
+):
     """Testing for :py:meth:`wwdtm.guest.Appearances.retrieve_appearances_by_slug`
 
     :param guest_slug: Guest slug string to test retrieving guest appearances
+    :param exclude_null_dates: Toggle whether to exclude results that
+        have SQL ``NULL`` for the show date
     """
     appearances = GuestAppearances(connect_dict=get_connect_dict())
-    appearance = appearances.retrieve_appearances_by_slug(guest_slug)
+    appearance = appearances.retrieve_appearances_by_slug(
+        guest_slug, exclude_null_dates
+    )
 
     assert "count" in appearance, f"'count' was not returned for slug {guest_slug}"
     assert "shows" in appearance, f"'shows' was not returned for slug {guest_slug}"

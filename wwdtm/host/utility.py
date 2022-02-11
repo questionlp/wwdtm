@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Host Data Utility Functions
 """
@@ -23,11 +23,12 @@ class HostUtility:
         connection
     """
 
-    def __init__(self,
-                 connect_dict: Optional[Dict[str, Any]] = None,
-                 database_connection: Optional[connect] = None):
-        """Class initialization method.
-        """
+    def __init__(
+        self,
+        connect_dict: Optional[Dict[str, Any]] = None,
+        database_connection: Optional[connect] = None,
+    ):
+        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -48,10 +49,8 @@ class HostUtility:
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT hostslug FROM ww_hosts "
-                 "WHERE hostid = %s "
-                 "LIMIT 1;")
-        cursor.execute(query, (host_id, ))
+        query = "SELECT hostslug FROM ww_hosts " "WHERE hostid = %s " "LIMIT 1;"
+        cursor.execute(query, (host_id,))
         result = cursor.fetchone()
         cursor.close()
 
@@ -75,10 +74,8 @@ class HostUtility:
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT hostid FROM ww_hosts "
-                 "WHERE hostslug = %s "
-                 "LIMIT 1;")
-        cursor.execute(query, (slug, ))
+        query = "SELECT hostid FROM ww_hosts " "WHERE hostslug = %s " "LIMIT 1;"
+        cursor.execute(query, (slug,))
         result = cursor.fetchone()
         cursor.close()
 
@@ -98,10 +95,8 @@ class HostUtility:
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT hostid FROM ww_hosts "
-                 "WHERE hostid = %s "
-                 "LIMIT 1;")
-        cursor.execute(query, (host_id, ))
+        query = "SELECT hostid FROM ww_hosts " "WHERE hostid = %s " "LIMIT 1;"
+        cursor.execute(query, (host_id,))
         result = cursor.fetchone()
         cursor.close()
 
@@ -123,10 +118,8 @@ class HostUtility:
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT hostslug FROM ww_hosts "
-                 "WHERE hostslug = %s "
-                 "LIMIT 1;")
-        cursor.execute(query, (slug, ))
+        query = "SELECT hostslug FROM ww_hosts " "WHERE hostslug = %s " "LIMIT 1;"
+        cursor.execute(query, (slug,))
         result = cursor.fetchone()
         cursor.close()
 

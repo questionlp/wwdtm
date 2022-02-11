@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Scores Retrieval Functions
 """
@@ -23,11 +23,12 @@ class PanelistScores:
         connection
     """
 
-    def __init__(self,
-                 connect_dict: Optional[Dict[str, Any]] = None,
-                 database_connection: Optional[connect] = None):
-        """Class initialization method.
-        """
+    def __init__(
+        self,
+        connect_dict: Optional[Dict[str, Any]] = None,
+        database_connection: Optional[connect] = None,
+    ):
+        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -53,13 +54,15 @@ class PanelistScores:
 
         scores = []
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT pm.panelistscore AS score "
-                 "FROM ww_showpnlmap pm "
-                 "JOIN ww_shows s ON s.showid = pm.showid "
-                 "WHERE panelistid = %s "
-                 "AND s.bestof = 0 and s.repeatshowid IS NULL "
-                 "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (panelist_id, ))
+        query = (
+            "SELECT pm.panelistscore AS score "
+            "FROM ww_showpnlmap pm "
+            "JOIN ww_shows s ON s.showid = pm.showid "
+            "WHERE panelistid = %s "
+            "AND s.bestof = 0 and s.repeatshowid IS NULL "
+            "ORDER BY s.showdate ASC;"
+        )
+        cursor.execute(query, (panelist_id,))
         result = cursor.fetchall()
         cursor.close()
 
@@ -73,8 +76,7 @@ class PanelistScores:
         return scores
 
     @lru_cache(typed=True)
-    def retrieve_scores_by_slug(self, panelist_slug: str
-                                ) -> List[int]:
+    def retrieve_scores_by_slug(self, panelist_slug: str) -> List[int]:
         """Returns a list of panelist scores for appearances for the
         requested panelist slug string.
 
@@ -89,8 +91,9 @@ class PanelistScores:
         return self.retrieve_scores_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_scores_grouped_list_by_id(self, panelist_id: int
-                                           ) -> Dict[str, List[int]]:
+    def retrieve_scores_grouped_list_by_id(
+        self, panelist_id: int
+    ) -> Dict[str, List[int]]:
         """Returns a panelist's score grouping for the requested
         panelist ID.
 
@@ -104,10 +107,12 @@ class PanelistScores:
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT MIN(pm.panelistscore) AS min, "
-                 "MAX(pm.panelistscore) AS max "
-                 "FROM ww_showpnlmap pm "
-                 "LIMIT 1;")
+        query = (
+            "SELECT MIN(pm.panelistscore) AS min, "
+            "MAX(pm.panelistscore) AS max "
+            "FROM ww_showpnlmap pm "
+            "LIMIT 1;"
+        )
         cursor.execute(query)
         result = cursor.fetchone()
 
@@ -121,16 +126,18 @@ class PanelistScores:
         for score in range(min_score, max_score + 1):
             scores[score] = 0
 
-        query = ("SELECT pm.panelistscore AS score, "
-                 "COUNT(pm.panelistscore) AS score_count "
-                 "FROM ww_showpnlmap pm "
-                 "JOIN ww_shows s ON s.showid = pm.showid "
-                 "WHERE pm.panelistid = %s "
-                 "AND s.bestof = 0 AND s.repeatshowid IS NULL "
-                 "AND pm.panelistscore IS NOT NULL "
-                 "GROUP BY pm.panelistscore "
-                 "ORDER BY pm.panelistscore ASC;")
-        cursor.execute(query, (panelist_id, ))
+        query = (
+            "SELECT pm.panelistscore AS score, "
+            "COUNT(pm.panelistscore) AS score_count "
+            "FROM ww_showpnlmap pm "
+            "JOIN ww_shows s ON s.showid = pm.showid "
+            "WHERE pm.panelistid = %s "
+            "AND s.bestof = 0 AND s.repeatshowid IS NULL "
+            "AND pm.panelistscore IS NOT NULL "
+            "GROUP BY pm.panelistscore "
+            "ORDER BY pm.panelistscore ASC;"
+        )
+        cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
 
@@ -146,8 +153,9 @@ class PanelistScores:
         }
 
     @lru_cache(typed=True)
-    def retrieve_scores_grouped_list_by_slug(self, panelist_slug: str
-                                             ) -> Dict[str, List[int]]:
+    def retrieve_scores_grouped_list_by_slug(
+        self, panelist_slug: str
+    ) -> Dict[str, List[int]]:
         """Returns a panelist's score grouping for the requested
         panelist slug string.
 
@@ -164,8 +172,9 @@ class PanelistScores:
         return self.retrieve_scores_grouped_list_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_scores_grouped_ordered_pair_by_id(self, panelist_id: int
-                                                   ) -> List[Tuple[int, int]]:
+    def retrieve_scores_grouped_ordered_pair_by_id(
+        self, panelist_id: int
+    ) -> List[Tuple[int, int]]:
         """Returns a list of tuples containing a score and the
         corresponding number of instances a panelist has scored that amount
         for the requested panelist ID.
@@ -179,9 +188,11 @@ class PanelistScores:
             return []
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT MIN(pm.panelistscore) AS min, "
-                 "MAX(pm.panelistscore) AS max "
-                 "FROM ww_showpnlmap pm;")
+        query = (
+            "SELECT MIN(pm.panelistscore) AS min, "
+            "MAX(pm.panelistscore) AS max "
+            "FROM ww_showpnlmap pm;"
+        )
         cursor.execute(query)
         result = cursor.fetchone()
 
@@ -195,16 +206,18 @@ class PanelistScores:
         for score in range(min_score, max_score + 1):
             scores[score] = 0
 
-        query = ("SELECT pm.panelistscore AS score, "
-                 "COUNT(pm.panelistscore) AS score_count "
-                 "FROM ww_showpnlmap pm "
-                 "JOIN ww_shows s ON s.showid = pm.showid "
-                 "WHERE pm.panelistid = %s "
-                 "AND s.bestof = 0 AND s.repeatshowid IS NULL "
-                 "AND pm.panelistscore IS NOT NULL "
-                 "GROUP BY pm.panelistscore "
-                 "ORDER BY pm.panelistscore ASC;")
-        cursor.execute(query, (panelist_id, ))
+        query = (
+            "SELECT pm.panelistscore AS score, "
+            "COUNT(pm.panelistscore) AS score_count "
+            "FROM ww_showpnlmap pm "
+            "JOIN ww_shows s ON s.showid = pm.showid "
+            "WHERE pm.panelistid = %s "
+            "AND s.bestof = 0 AND s.repeatshowid IS NULL "
+            "AND pm.panelistscore IS NOT NULL "
+            "GROUP BY pm.panelistscore "
+            "ORDER BY pm.panelistscore ASC;"
+        )
+        cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
 
@@ -217,8 +230,10 @@ class PanelistScores:
         return list(scores.items())
 
     @lru_cache(typed=True)
-    def retrieve_scores_grouped_ordered_pair_by_slug(self, panelist_slug: str,
-                                                     ) -> List[Tuple[int, int]]:
+    def retrieve_scores_grouped_ordered_pair_by_slug(
+        self,
+        panelist_slug: str,
+    ) -> List[Tuple[int, int]]:
         """Returns a list of tuples containing a score and the
         corresponding number of instances a panelist has scored that amount
         for the requested panelist slug string.
@@ -235,8 +250,10 @@ class PanelistScores:
         return self.retrieve_scores_grouped_ordered_pair_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_scores_list_by_id(self, panelist_id: int,
-                                   ) -> Dict[str, List]:
+    def retrieve_scores_list_by_id(
+        self,
+        panelist_id: int,
+    ) -> Dict[str, List]:
         """Returns a dictionary containing two lists, one with show
         dates and one with corresponding scores for the requested
         panelist ID.
@@ -250,14 +267,16 @@ class PanelistScores:
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT s.showdate AS date, pm.panelistscore AS score "
-                 "FROM ww_showpnlmap pm "
-                 "JOIN ww_shows s ON s.showid = pm.showid "
-                 "WHERE pm.panelistid = %s "
-                 "AND s.bestof = 0 AND s.repeatshowid IS NULL "
-                 "AND pm.panelistscore IS NOT NULL "
-                 "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (panelist_id, ))
+        query = (
+            "SELECT s.showdate AS date, pm.panelistscore AS score "
+            "FROM ww_showpnlmap pm "
+            "JOIN ww_shows s ON s.showid = pm.showid "
+            "WHERE pm.panelistid = %s "
+            "AND s.bestof = 0 AND s.repeatshowid IS NULL "
+            "AND pm.panelistscore IS NOT NULL "
+            "ORDER BY s.showdate ASC;"
+        )
+        cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
 
@@ -276,8 +295,10 @@ class PanelistScores:
         }
 
     @lru_cache(typed=True)
-    def retrieve_scores_list_by_slug(self, panelist_slug: str,
-                                     ) -> Dict[str, List]:
+    def retrieve_scores_list_by_slug(
+        self,
+        panelist_slug: str,
+    ) -> Dict[str, List]:
         """Returns a dictionary containing two lists, one with show
         dates and one with corresponding scores for the requested
         panelist slug string.
@@ -294,8 +315,9 @@ class PanelistScores:
         return self.retrieve_scores_list_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_scores_ordered_pair_by_id(self, panelist_id: int
-                                           ) -> List[Tuple[str, int]]:
+    def retrieve_scores_ordered_pair_by_id(
+        self, panelist_id: int
+    ) -> List[Tuple[str, int]]:
         """Returns a list of tuples containing a show date and the
         corresponding score for the requested panelist ID.
 
@@ -308,14 +330,16 @@ class PanelistScores:
             return []
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT s.showdate AS date, pm.panelistscore AS score "
-                 "FROM ww_showpnlmap pm "
-                 "JOIN ww_shows s ON s.showid = pm.showid "
-                 "WHERE pm.panelistid = %s "
-                 "AND s.bestof = 0 AND s.repeatshowid IS NULL "
-                 "AND pm.panelistscore IS NOT NULL "
-                 "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (panelist_id, ))
+        query = (
+            "SELECT s.showdate AS date, pm.panelistscore AS score "
+            "FROM ww_showpnlmap pm "
+            "JOIN ww_shows s ON s.showid = pm.showid "
+            "WHERE pm.panelistid = %s "
+            "AND s.bestof = 0 AND s.repeatshowid IS NULL "
+            "AND pm.panelistscore IS NOT NULL "
+            "ORDER BY s.showdate ASC;"
+        )
+        cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
 
@@ -331,8 +355,10 @@ class PanelistScores:
         return scores
 
     @lru_cache(typed=True)
-    def retrieve_scores_ordered_pair_by_slug(self, panelist_slug: str,
-                                             ) -> List[Tuple[str, int]]:
+    def retrieve_scores_ordered_pair_by_slug(
+        self,
+        panelist_slug: str,
+    ) -> List[Tuple[str, int]]:
         """Returns a list of tuples containing a show date and the
         corresponding score for the requested panelist slug string.
 
