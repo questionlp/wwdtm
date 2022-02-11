@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object :py:class:`wwdtm.show.ShowInfo`
 """
@@ -196,7 +196,7 @@ def test_show_info_retrieve_panelist_info_all(show_id: int):
     info = ShowInfoMultiple(connect_dict=get_connect_dict())
     shows_panelists = info.retrieve_panelist_info_all()
 
-    assert shows_panelists, f"Panelist information for all shows could not be retrieved"
+    assert shows_panelists, "Panelist information for all shows could not be retrieved"
     assert show_id in shows_panelists, (
         "Panelist information could not be retrieved " f"for show ID {show_id}"
     )

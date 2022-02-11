@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object :py:class:`wwdtm.show.Show`
 """
@@ -344,5 +344,5 @@ def test_show_retrieve_years():
     show = Show(connect_dict=get_connect_dict())
     years = show.retrieve_years()
 
-    assert years, f"No years could be retrieved"
+    assert years, "No years could be retrieved"
     assert isinstance(years[0], int), "First list item is not a number"
