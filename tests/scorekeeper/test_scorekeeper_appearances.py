@@ -47,5 +47,9 @@ def test_scorekeeper_appearance_retrieve_appearances_by_slug(scorekeeper_slug: s
     appearances = ScorekeeperAppearances(connect_dict=get_connect_dict())
     appearance = appearances.retrieve_appearances_by_slug(scorekeeper_slug)
 
-    assert "count" in appearance, f"'count' was not returned for slug {scorekeeper_slug}"
-    assert "shows" in appearance, f"'shows' was not returned for slug {scorekeeper_slug}"
+    assert (
+        "count" in appearance
+    ), f"'count' was not returned for slug {scorekeeper_slug}"
+    assert (
+        "shows" in appearance
+    ), f"'shows' was not returned for slug {scorekeeper_slug}"

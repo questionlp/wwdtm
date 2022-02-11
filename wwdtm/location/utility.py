@@ -24,11 +24,12 @@ class LocationUtility:
         connection
     """
 
-    def __init__(self,
-                 connect_dict: Optional[Dict[str, Any]] = None,
-                 database_connection: Optional[connect] = None):
-        """Class initialization method.
-        """
+    def __init__(
+        self,
+        connect_dict: Optional[Dict[str, Any]] = None,
+        database_connection: Optional[connect] = None,
+    ):
+        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -50,10 +51,10 @@ class LocationUtility:
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT locationslug FROM ww_locations "
-                 "WHERE locationid = %s "
-                 "LIMIT 1;")
-        cursor.execute(query, (location_id, ))
+        query = (
+            "SELECT locationslug FROM ww_locations " "WHERE locationid = %s " "LIMIT 1;"
+        )
+        cursor.execute(query, (location_id,))
         result = cursor.fetchone()
         cursor.close()
 
@@ -78,10 +79,10 @@ class LocationUtility:
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT locationid FROM ww_locations "
-                 "WHERE locationslug = %s "
-                 "LIMIT 1;")
-        cursor.execute(query, (slug, ))
+        query = (
+            "SELECT locationid FROM ww_locations " "WHERE locationslug = %s " "LIMIT 1;"
+        )
+        cursor.execute(query, (slug,))
         result = cursor.fetchone()
         cursor.close()
 
@@ -101,10 +102,10 @@ class LocationUtility:
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT locationid FROM ww_locations "
-                 "WHERE locationid = %s "
-                 "LIMIT 1;")
-        cursor.execute(query, (location_id, ))
+        query = (
+            "SELECT locationid FROM ww_locations " "WHERE locationid = %s " "LIMIT 1;"
+        )
+        cursor.execute(query, (location_id,))
         result = cursor.fetchone()
         cursor.close()
 
@@ -126,21 +127,24 @@ class LocationUtility:
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT locationslug FROM ww_locations "
-                 "WHERE locationslug = %s "
-                 "LIMIT 1;")
-        cursor.execute(query, (slug, ))
+        query = (
+            "SELECT locationslug FROM ww_locations "
+            "WHERE locationslug = %s "
+            "LIMIT 1;"
+        )
+        cursor.execute(query, (slug,))
         result = cursor.fetchone()
         cursor.close()
 
         return bool(result)
 
     @staticmethod
-    def slugify_location(location_id: Optional[int] = None,
-                         venue: Optional[str] = None,
-                         city: Optional[str] = None,
-                         state: Optional[str] = None
-                         ) -> str:
+    def slugify_location(
+        location_id: Optional[int] = None,
+        venue: Optional[str] = None,
+        city: Optional[str] = None,
+        state: Optional[str] = None,
+    ) -> str:
         """Generates a slug string based on the location's venue name,
         city, state and/or location ID.
 

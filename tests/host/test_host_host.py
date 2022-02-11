@@ -27,8 +27,7 @@ def get_connect_dict() -> Dict[str, Any]:
 
 
 def test_host_retrieve_all():
-    """Testing for :py:meth:`wwdtm.host.Host.retrieve_all`
-    """
+    """Testing for :py:meth:`wwdtm.host.Host.retrieve_all`"""
     host = Host(connect_dict=get_connect_dict())
     hosts = host.retrieve_all()
 
@@ -37,20 +36,19 @@ def test_host_retrieve_all():
 
 
 def test_host_retrieve_all_details():
-    """Testing for :py:meth:`wwdtm.host.Host.retrieve_all_details`
-    """
+    """Testing for :py:meth:`wwdtm.host.Host.retrieve_all_details`"""
     host = Host(connect_dict=get_connect_dict())
     hosts = host.retrieve_all_details()
 
     assert hosts, "No hosts could be retrieved"
     assert "id" in hosts[0], "'id' was not returned for first list item"
-    assert "appearances" in hosts[0], ("'appearances' was not returned for the"
-                                       "first list item")
+    assert "appearances" in hosts[0], (
+        "'appearances' was not returned for the" "first list item"
+    )
 
 
 def test_host_retrieve_all_ids():
-    """Testing for :py:meth:`wwdtm.host.Host.retrieve_all_ids`
-    """
+    """Testing for :py:meth:`wwdtm.host.Host.retrieve_all_ids`"""
     host = Host(connect_dict=get_connect_dict())
     ids = host.retrieve_all_ids()
 
@@ -58,8 +56,7 @@ def test_host_retrieve_all_ids():
 
 
 def test_host_retrieve_all_slugs():
-    """Testing for :py:meth:`wwdtm.host.Host.retrieve_all_slugs`
-    """
+    """Testing for :py:meth:`wwdtm.host.Host.retrieve_all_slugs`"""
     host = Host(connect_dict=get_connect_dict())
     slugs = host.retrieve_all_slugs()
 

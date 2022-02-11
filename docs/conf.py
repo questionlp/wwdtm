@@ -8,7 +8,7 @@ import sys
 
 from pallets_sphinx_themes import ProjectLink  # type: ignore
 
-sys.path.insert(0, os.path.abspath('../'))
+sys.path.insert(0, os.path.abspath("../"))
 
 project = "wwdtm"
 copyright = "2021-2022 Linh Pham"
@@ -60,7 +60,7 @@ html_sidebars = {
         "localtoc.html",
         "relations.html",
         "project.html",
-        "searchbox.html"
+        "searchbox.html",
     ],
 }
 

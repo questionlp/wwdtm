@@ -27,8 +27,7 @@ def get_connect_dict() -> Dict[str, Any]:
 
 
 def test_panelist_retrieve_all():
-    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all`
-    """
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all`"""
     panelist = Panelist(connect_dict=get_connect_dict())
     panelists = panelist.retrieve_all()
 
@@ -37,20 +36,19 @@ def test_panelist_retrieve_all():
 
 
 def test_panelist_retrieve_all_details():
-    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_details`
-    """
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_details`"""
     panelist = Panelist(connect_dict=get_connect_dict())
     panelists = panelist.retrieve_all_details()
 
     assert panelists, "No panelists could be retrieved"
     assert "id" in panelists[0], "'id' was not returned for first list item"
-    assert "appearances" in panelists[0], ("'appearances' was not returned for "
-                                           "the first list item")
+    assert "appearances" in panelists[0], (
+        "'appearances' was not returned for " "the first list item"
+    )
 
 
 def test_panelist_retrieve_all_ids():
-    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_ids`
-    """
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_ids`"""
     panelist = Panelist(connect_dict=get_connect_dict())
     ids = panelist.retrieve_all_ids()
 
@@ -58,8 +56,7 @@ def test_panelist_retrieve_all_ids():
 
 
 def test_panelist_retrieve_all_slugs():
-    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_slugs`
-    """
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_slugs`"""
     panelist = Panelist(connect_dict=get_connect_dict())
     slugs = panelist.retrieve_all_slugs()
 
@@ -120,4 +117,6 @@ def test_panelist_retrieve_details_by_slug(panelist_slug: str):
 
     assert info, f"Panelist slug {panelist_slug} not found"
     assert "name" in info, f"'name' was not returned for slug {panelist_slug}"
-    assert "appearances" in info, f"'appearances' was not returned for slug {panelist_slug}"
+    assert (
+        "appearances" in info
+    ), f"'appearances' was not returned for slug {panelist_slug}"

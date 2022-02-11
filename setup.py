@@ -7,12 +7,13 @@
 
 from setuptools import setup
 
-setup(name="wwdtm",
-      install_requires=[
-          "mysql-connector-python==8.0.28",
-          "numpy==1.22.1",
-          "python-dateutil==2.8.2",
-          "python-slugify==5.0.2",
-          "pytz==2021.3",
-      ]
-      )
+setup(
+    name="wwdtm",
+    install_requires=[
+        "mysql-connector-python==8.0.28",
+        "numpy==1.22.1",
+        "python-dateutil==2.8.2",
+        "python-slugify==5.0.2",
+        "pytz==2021.3",
+    ],
+)
