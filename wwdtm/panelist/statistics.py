@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2021 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Statistics Retrieval Functions
 """
@@ -26,12 +26,11 @@ class PanelistStatistics:
         connection
     """
 
-    def __init__(
-        self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
-    ):
-        """Class initialization method."""
+    def __init__(self,
+                 connect_dict: Optional[Dict[str, Any]] = None,
+                 database_connection: Optional[connect] = None):
+        """Class initialization method.
+        """
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -55,24 +54,16 @@ class PanelistStatistics:
             dictionary will be returned.
         """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT ( "
-            "SELECT COUNT(blm.chosenbluffpnlid) FROM ww_showbluffmap blm "
-            "JOIN ww_shows s ON s.showid = blm.showid "
-            "WHERE s.repeatshowid IS NULL AND blm.chosenbluffpnlid = %s "
-            ") AS chosen, ( "
-            "SELECT COUNT(blm.correctbluffpnlid) FROM ww_showbluffmap blm "
-            "JOIN ww_shows s ON s.showid = blm.showid "
-            "WHERE s.repeatshowid IS NULL AND blm.correctbluffpnlid = %s "
-            ") AS correct;"
-        )
-        cursor.execute(
-            query,
-            (
-                panelist_id,
-                panelist_id,
-            ),
-        )
+        query = ("SELECT ( "
+                 "SELECT COUNT(blm.chosenbluffpnlid) FROM ww_showbluffmap blm "
+                 "JOIN ww_shows s ON s.showid = blm.showid "
+                 "WHERE s.repeatshowid IS NULL AND blm.chosenbluffpnlid = %s "
+                 ") AS chosen, ( "
+                 "SELECT COUNT(blm.correctbluffpnlid) FROM ww_showbluffmap blm "
+                 "JOIN ww_shows s ON s.showid = blm.showid "
+                 "WHERE s.repeatshowid IS NULL AND blm.correctbluffpnlid = %s "
+                 ") AS correct;")
+        cursor.execute(query, (panelist_id, panelist_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -114,40 +105,30 @@ class PanelistStatistics:
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT ( "
-            "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s AND pm.showpnlrank = '1' AND "
-            "s.bestof = 0 and s.repeatshowid IS NULL) as 'first', ( "
-            "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s AND pm.showpnlrank = '1t' AND "
-            "s.bestof = 0 and s.repeatshowid IS NULL) as 'first_tied', ( "
-            "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s AND pm.showpnlrank = '2' AND "
-            "s.bestof = 0 and s.repeatshowid IS NULL) as 'second', ( "
-            "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s AND pm.showpnlrank = '2t' AND "
-            "s.bestof = 0 and s.repeatshowid IS NULL) as 'second_tied', ( "
-            "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s AND pm.showpnlrank = '3' AND "
-            "s.bestof = 0 and s.repeatshowid IS NULL "
-            ") as 'third';"
-        )
-        cursor.execute(
-            query,
-            (
-                panelist_id,
-                panelist_id,
-                panelist_id,
-                panelist_id,
-                panelist_id,
-            ),
-        )
+        query = ("SELECT ( "
+                 "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
+                 "JOIN ww_shows s ON s.showid = pm.showid "
+                 "WHERE pm.panelistid = %s AND pm.showpnlrank = '1' AND "
+                 "s.bestof = 0 and s.repeatshowid IS NULL) as 'first', ( "
+                 "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
+                 "JOIN ww_shows s ON s.showid = pm.showid "
+                 "WHERE pm.panelistid = %s AND pm.showpnlrank = '1t' AND "
+                 "s.bestof = 0 and s.repeatshowid IS NULL) as 'first_tied', ( "
+                 "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
+                 "JOIN ww_shows s ON s.showid = pm.showid "
+                 "WHERE pm.panelistid = %s AND pm.showpnlrank = '2' AND "
+                 "s.bestof = 0 and s.repeatshowid IS NULL) as 'second', ( "
+                 "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
+                 "JOIN ww_shows s ON s.showid = pm.showid "
+                 "WHERE pm.panelistid = %s AND pm.showpnlrank = '2t' AND "
+                 "s.bestof = 0 and s.repeatshowid IS NULL) as 'second_tied', ( "
+                 "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
+                 "JOIN ww_shows s ON s.showid = pm.showid "
+                 "WHERE pm.panelistid = %s AND pm.showpnlrank = '3' AND "
+                 "s.bestof = 0 and s.repeatshowid IS NULL "
+                 ") as 'third';")
+        cursor.execute(query, (panelist_id, panelist_id, panelist_id,
+                               panelist_id, panelist_id, ))
         result = cursor.fetchone()
         cursor.close()
 

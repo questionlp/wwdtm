@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2021 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Data Utility Functions
 """
@@ -23,12 +23,11 @@ class PanelistUtility:
         connection
     """
 
-    def __init__(
-        self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
-    ):
-        """Class initialization method."""
+    def __init__(self,
+                 connect_dict: Optional[Dict[str, Any]] = None,
+                 database_connection: Optional[connect] = None):
+        """Class initialization method.
+        """
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -50,10 +49,10 @@ class PanelistUtility:
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT panelistslug FROM ww_panelists " "WHERE panelistid = %s " "LIMIT 1;"
-        )
-        cursor.execute(query, (panelist_id,))
+        query = ("SELECT panelistslug FROM ww_panelists "
+                 "WHERE panelistid = %s "
+                 "LIMIT 1;")
+        cursor.execute(query, (panelist_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -78,10 +77,10 @@ class PanelistUtility:
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT panelistid FROM ww_panelists " "WHERE panelistslug = %s " "LIMIT 1;"
-        )
-        cursor.execute(query, (slug,))
+        query = ("SELECT panelistid FROM ww_panelists "
+                 "WHERE panelistslug = %s "
+                 "LIMIT 1;")
+        cursor.execute(query, (slug, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -101,10 +100,10 @@ class PanelistUtility:
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT panelistid FROM ww_panelists " "WHERE panelistid = %s " "LIMIT 1;"
-        )
-        cursor.execute(query, (panelist_id,))
+        query = ("SELECT panelistid FROM ww_panelists "
+                 "WHERE panelistid = %s "
+                 "LIMIT 1;")
+        cursor.execute(query, (panelist_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -126,12 +125,10 @@ class PanelistUtility:
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT panelistslug FROM ww_panelists "
-            "WHERE panelistslug = %s "
-            "LIMIT 1;"
-        )
-        cursor.execute(query, (slug,))
+        query = ("SELECT panelistslug FROM ww_panelists "
+                 "WHERE panelistslug = %s "
+                 "LIMIT 1;")
+        cursor.execute(query, (slug, ))
         result = cursor.fetchone()
         cursor.close()
 

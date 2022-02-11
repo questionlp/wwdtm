@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2021 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Scorekeeper Data Utility Functions
 """
@@ -23,12 +23,11 @@ class ScorekeeperUtility:
         connection
     """
 
-    def __init__(
-        self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
-    ):
-        """Class initialization method."""
+    def __init__(self,
+                 connect_dict: Optional[Dict[str, Any]] = None,
+                 database_connection: Optional[connect] = None):
+        """Class initialization method.
+        """
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -50,12 +49,10 @@ class ScorekeeperUtility:
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT scorekeeperslug FROM ww_scorekeepers "
-            "WHERE scorekeeperid = %s "
-            "LIMIT 1;"
-        )
-        cursor.execute(query, (scorekeeper_id,))
+        query = ("SELECT scorekeeperslug FROM ww_scorekeepers "
+                 "WHERE scorekeeperid = %s "
+                 "LIMIT 1;")
+        cursor.execute(query, (scorekeeper_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -80,12 +77,10 @@ class ScorekeeperUtility:
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT scorekeeperid FROM ww_scorekeepers "
-            "WHERE scorekeeperslug = %s "
-            "LIMIT 1;"
-        )
-        cursor.execute(query, (slug,))
+        query = ("SELECT scorekeeperid FROM ww_scorekeepers "
+                 "WHERE scorekeeperslug = %s "
+                 "LIMIT 1;")
+        cursor.execute(query, (slug, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -106,12 +101,10 @@ class ScorekeeperUtility:
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT scorekeeperid FROM ww_scorekeepers "
-            "WHERE scorekeeperid = %s "
-            "LIMIT 1;"
-        )
-        cursor.execute(query, (scorekeeper_id,))
+        query = ("SELECT scorekeeperid FROM ww_scorekeepers "
+                 "WHERE scorekeeperid = %s "
+                 "LIMIT 1;")
+        cursor.execute(query, (scorekeeper_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -133,12 +126,10 @@ class ScorekeeperUtility:
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT scorekeeperslug FROM ww_scorekeepers "
-            "WHERE scorekeeperslug = %s "
-            "LIMIT 1;"
-        )
-        cursor.execute(query, (slug,))
+        query = ("SELECT scorekeeperslug FROM ww_scorekeepers "
+                 "WHERE scorekeeperslug = %s "
+                 "LIMIT 1;")
+        cursor.execute(query, (slug, ))
         result = cursor.fetchone()
         cursor.close()
 

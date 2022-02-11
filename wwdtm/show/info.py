@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2021 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Supplemental Show Information
 Retrieval Functions
@@ -27,12 +27,11 @@ class ShowInfo:
         connection
     """
 
-    def __init__(
-        self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
-    ):
-        """Class initialization method."""
+    def __init__(self,
+                 connect_dict: Optional[Dict[str, Any]] = None,
+                 database_connection: Optional[connect] = None):
+        """Class initialization method.
+        """
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -58,41 +57,33 @@ class ShowInfo:
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT blm.chosenbluffpnlid AS id, "
-            "p.panelist AS name, p.panelistslug As slug "
-            "FROM ww_showbluffmap blm "
-            "JOIN ww_shows s ON s.showid = blm.showid "
-            "JOIN ww_panelists p ON "
-            "p.panelistid = blm.chosenbluffpnlid "
-            "WHERE s.showid = %s;"
-        )
-
-        cursor.execute(query, (show_id,))
+        query = ("SELECT blm.chosenbluffpnlid AS id, "
+                 "p.panelist AS name, p.panelistslug As slug "
+                 "FROM ww_showbluffmap blm "
+                 "JOIN ww_shows s ON s.showid = blm.showid "
+                 "JOIN ww_panelists p ON "
+                 "p.panelistid = blm.chosenbluffpnlid "
+                 "WHERE s.showid = %s;")
+        cursor.execute(query, (show_id, ))
         chosen_result = cursor.fetchone()
 
         if chosen_result:
             chosen_bluff_info = {
                 "id": chosen_result.id,
                 "name": chosen_result.name,
-                "slug": chosen_result.slug
-                if chosen_result.slug
-                else slugify(chosen_result.name),
+                "slug": chosen_result.slug if chosen_result.slug else slugify(chosen_result.name),
             }
         else:
             chosen_bluff_info = None
 
-        query = (
-            "SELECT blm.correctbluffpnlid AS id, "
-            "p.panelist AS name, p.panelistslug AS slug "
-            "FROM ww_showbluffmap blm "
-            "JOIN ww_shows s ON s.showid = blm.showid "
-            "JOIN ww_panelists p ON "
-            "p.panelistid = blm.correctbluffpnlid "
-            "WHERE s.showid = %s;"
-        )
-
-        cursor.execute(query, (show_id,))
+        query = ("SELECT blm.correctbluffpnlid AS id, "
+                 "p.panelist AS name, p.panelistslug AS slug "
+                 "FROM ww_showbluffmap blm "
+                 "JOIN ww_shows s ON s.showid = blm.showid "
+                 "JOIN ww_panelists p ON "
+                 "p.panelistid = blm.correctbluffpnlid "
+                 "WHERE s.showid = %s;")
+        cursor.execute(query, (show_id, ))
         correct_result = cursor.fetchone()
         cursor.close()
 
@@ -100,9 +91,7 @@ class ShowInfo:
             correct_bluff_info = {
                 "id": correct_result.id,
                 "name": correct_result.name,
-                "slug": correct_result.slug
-                if correct_result.slug
-                else slugify(correct_result.name),
+                "slug": correct_result.slug if correct_result.slug else slugify(correct_result.name),
             }
         else:
             correct_bluff_info = None
@@ -112,10 +101,7 @@ class ShowInfo:
             "correct_panelist": correct_bluff_info,
         }
 
-    def retrieve_core_info_by_id(
-        self,
-        show_id: int,
-    ) -> Dict[str, Any]:
+    def retrieve_core_info_by_id(self, show_id: int) -> Dict[str, Any]:
         """Returns a dictionary with core information for the requested
         show ID.
 
@@ -128,33 +114,30 @@ class ShowInfo:
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT s.showid AS show_id, s.showdate AS date, "
-            "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-            "l.locationid AS location_id, l.city, l.state, "
-            "l.venue, l.locationslug AS location_slug, h.hostid AS host_id, "
-            "h.host, h.hostslug AS host_slug, hm.guest as host_guest, "
-            "sk.scorekeeperid AS scorekeeper_id, sk.scorekeeper, "
-            "sk.scorekeeperslug AS scorekeeper_slug, "
-            "skm.guest AS scorekeeper_guest, "
-            "skm.description AS scorekeeper_description, "
-            "sd.showdescription AS show_description, "
-            "sn.shownotes AS show_notes "
-            "FROM ww_shows s "
-            "JOIN ww_showlocationmap lm ON lm.showid = s.showid "
-            "JOIN ww_locations l ON l.locationid = lm.locationid "
-            "JOIN ww_showhostmap hm ON hm.showid = s.showid "
-            "JOIN ww_hosts h ON h.hostid = hm.hostid "
-            "JOIN ww_showskmap skm ON skm.showid = s.showid "
-            "JOIN ww_scorekeepers sk ON "
-            "sk.scorekeeperid = skm.scorekeeperid "
-            "JOIN ww_showdescriptions sd ON sd.showid = s.showid "
-            "JOIN ww_shownotes sn ON sn.showid = s.showid "
-            "WHERE s.showid = %s "
-            "ORDER BY s.showdate ASC;"
-        )
-
-        cursor.execute(query, (show_id,))
+        query = ("SELECT s.showid AS show_id, s.showdate AS date, "
+                 "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
+                 "l.locationid AS location_id, l.city, l.state, "
+                 "l.venue, l.locationslug AS location_slug, h.hostid AS host_id, "
+                 "h.host, h.hostslug AS host_slug, hm.guest as host_guest, "
+                 "sk.scorekeeperid AS scorekeeper_id, sk.scorekeeper, "
+                 "sk.scorekeeperslug AS scorekeeper_slug, "
+                 "skm.guest AS scorekeeper_guest, "
+                 "skm.description AS scorekeeper_description, "
+                 "sd.showdescription AS show_description, "
+                 "sn.shownotes AS show_notes "
+                 "FROM ww_shows s "
+                 "JOIN ww_showlocationmap lm ON lm.showid = s.showid "
+                 "JOIN ww_locations l ON l.locationid = lm.locationid "
+                 "JOIN ww_showhostmap hm ON hm.showid = s.showid "
+                 "JOIN ww_hosts h ON h.hostid = hm.hostid "
+                 "JOIN ww_showskmap skm ON skm.showid = s.showid "
+                 "JOIN ww_scorekeepers sk ON "
+                 "sk.scorekeeperid = skm.scorekeeperid "
+                 "JOIN ww_showdescriptions sd ON sd.showid = s.showid "
+                 "JOIN ww_shownotes sn ON sn.showid = s.showid "
+                 "WHERE s.showid = %s "
+                 "ORDER BY s.showdate ASC;")
+        cursor.execute(query, (show_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -170,12 +153,10 @@ class ShowInfo:
         }
 
         if not result.location_slug:
-            location_info["slug"] = self.loc_util.slugify_location(
-                location_id=result.location_id,
-                venue=result.venue,
-                city=result.city,
-                state=result.state,
-            )
+            location_info["slug"] = self.loc_util.slugify_location(location_id=result.location_id,
+                                                                   venue=result.venue,
+                                                                   city=result.city,
+                                                                   state=result.state)
 
         host_info = {
             "id": result.host_id,
@@ -187,13 +168,9 @@ class ShowInfo:
         scorekeeper_info = {
             "id": result.scorekeeper_id,
             "name": result.scorekeeper,
-            "slug": result.scorekeeper_slug
-            if result.scorekeeper_slug
-            else slugify(result.scorekeeper),
+            "slug": result.scorekeeper_slug if result.scorekeeper_slug else slugify(result.scorekeeper),
             "guest": bool(result.scorekeeper_guest),
-            "description": result.scorekeeper_description
-            if result.scorekeeper_description
-            else None,
+            "description": result.scorekeeper_description if result.scorekeeper_description else None,
         }
 
         if result.show_description:
@@ -232,10 +209,7 @@ class ShowInfo:
         return show_info
 
     @lru_cache(typed=True)
-    def retrieve_guest_info_by_id(
-        self,
-        show_id: int,
-    ) -> List[Dict[str, Any]]:
+    def retrieve_guest_info_by_id(self, show_id: int) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing Not My Job
         guest information for the requested show ID.
 
@@ -248,17 +222,15 @@ class ShowInfo:
             return []
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT gm.guestid AS id, g.guest AS name, "
-            "g.guestslug AS slug, gm.guestscore AS score, "
-            "gm.exception AS score_exception "
-            "FROM ww_showguestmap gm "
-            "JOIN ww_guests g on g.guestid = gm.guestid "
-            "JOIN ww_shows s on s.showid = gm.showid "
-            "WHERE gm.showid = %s "
-            "ORDER by gm.showguestmapid ASC;"
-        )
-        cursor.execute(query, (show_id,))
+        query = ("SELECT gm.guestid AS id, g.guest AS name, "
+                 "g.guestslug AS slug, gm.guestscore AS score, "
+                 "gm.exception AS score_exception "
+                 "FROM ww_showguestmap gm "
+                 "JOIN ww_guests g on g.guestid = gm.guestid "
+                 "JOIN ww_shows s on s.showid = gm.showid "
+                 "WHERE gm.showid = %s "
+                 "ORDER by gm.showguestmapid ASC;")
+        cursor.execute(query, (show_id, ))
         results = cursor.fetchall()
         cursor.close()
 
@@ -267,23 +239,18 @@ class ShowInfo:
 
         guests = []
         for guest in results:
-            guests.append(
-                {
-                    "id": guest.id,
-                    "name": guest.name,
-                    "slug": guest.slug if guest.slug else slugify(guest.name),
-                    "score": guest.score if guest.score else None,
-                    "score_exception": bool(guest.score_exception),
-                }
-            )
+            guests.append({
+                "id": guest.id,
+                "name": guest.name,
+                "slug": guest.slug if guest.slug else slugify(guest.name),
+                "score": guest.score if guest.score else None,
+                "score_exception": bool(guest.score_exception),
+            })
 
         return guests
 
     @lru_cache(typed=True)
-    def retrieve_panelist_info_by_id(
-        self,
-        show_id: int,
-    ) -> List[Dict[str, Any]]:
+    def retrieve_panelist_info_by_id(self, show_id: int) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing panelist
         information for the requested show ID.
 
@@ -296,19 +263,16 @@ class ShowInfo:
             return []
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT pm.panelistid AS id, p.panelist AS name, "
-            "p.panelistslug AS slug, "
-            "pm.panelistlrndstart AS start, "
-            "pm.panelistlrndcorrect AS correct, "
-            "pm.panelistscore AS score, pm.showpnlrank AS pnl_rank "
-            "FROM ww_showpnlmap pm "
-            "JOIN ww_panelists p on p.panelistid = pm.panelistid "
-            "WHERE pm.showid = %s "
-            "ORDER by pm.panelistscore DESC, pm.showpnlmapid ASC;"
-        )
-
-        cursor.execute(query, (show_id,))
+        query = ("SELECT pm.panelistid AS id, p.panelist AS name, "
+                 "p.panelistslug AS slug, "
+                 "pm.panelistlrndstart AS start, "
+                 "pm.panelistlrndcorrect AS correct, "
+                 "pm.panelistscore AS score, pm.showpnlrank AS pnl_rank "
+                 "FROM ww_showpnlmap pm "
+                 "JOIN ww_panelists p on p.panelistid = pm.panelistid "
+                 "WHERE pm.showid = %s "
+                 "ORDER by pm.panelistscore DESC, pm.showpnlmapid ASC;")
+        cursor.execute(query, (show_id, ))
         results = cursor.fetchall()
         cursor.close()
 
@@ -317,16 +281,14 @@ class ShowInfo:
 
         panelists = []
         for row in results:
-            panelists.append(
-                {
-                    "id": row.id,
-                    "name": row.name,
-                    "slug": row.slug if row.slug else slugify(row.name),
-                    "lightning_round_start": row.start,
-                    "lightning_round_correct": row.correct,
-                    "score": row.score if row.score else None,
-                    "rank": row.pnl_rank if row.pnl_rank else None,
-                }
-            )
+            panelists.append({
+                "id": row.id,
+                "name": row.name,
+                "slug": row.slug if row.slug else slugify(row.name),
+                "lightning_round_start": row.start,
+                "lightning_round_correct": row.correct,
+                "score": row.score if row.score else None,
+                "rank": row.pnl_rank if row.pnl_rank else None,
+            })
 
         return panelists

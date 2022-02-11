@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2021 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.panelist.PanelistScores`
 """
@@ -95,9 +95,7 @@ def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_id(panelist_id:
 
 
 @pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
-def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_slug(
-    panelist_slug: str,
-):
+def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_slug(panelist_slug: str):
     """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_grouped_ordered_pair_by_slug`
 
     :param panelist_slug: Panelist slug string to test retrieving

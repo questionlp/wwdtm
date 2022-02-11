@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2021 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.location.LocationUtility`
 """
@@ -129,7 +129,8 @@ def test_location_utility_slug_not_exists(location_slug: str):
     assert not result, f"Location slug {location_slug} exists"
 
 
-@pytest.mark.parametrize("city", ["Chicago"])
+@pytest.mark.parametrize("city",
+                         ["Chicago"])
 def test_location_utility_slugify_location_city(city: str):
     """Negative testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`
     with city name
@@ -144,7 +145,8 @@ def test_location_utility_slugify_location_city(city: str):
         assert isinstance(slug, str), "Value returned is not a string"
 
 
-@pytest.mark.parametrize("city, state", [("Chicago", "IL")])
+@pytest.mark.parametrize("city, state",
+                         [("Chicago", "IL")])
 def test_location_utility_slugify_location_city_state(city: str, state: str):
     """Negative testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`
     with city and state names
@@ -160,12 +162,12 @@ def test_location_utility_slugify_location_city_state(city: str, state: str):
         assert isinstance(slug, str), "Value returned is not a string"
 
 
-@pytest.mark.parametrize(
-    "location_id, venue, city, state", [(2, "Chase Auditorium", "Chicago", "IL")]
-)
-def test_location_utility_slugify_location_full(
-    location_id: int, venue: str, city: str, state: str
-):
+@pytest.mark.parametrize("location_id, venue, city, state",
+                         [(2, "Chase Auditorium", "Chicago", "IL")])
+def test_location_utility_slugify_location_full(location_id: int,
+                                                venue: str,
+                                                city: str,
+                                                state: str):
     """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`
     with location ID, venue, city and state names
 
@@ -175,16 +177,16 @@ def test_location_utility_slugify_location_full(
     :param state: State to include in the slug string
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
-    slug = utility.slugify_location(
-        location_id=location_id, venue=venue, city=city, state=state
-    )
+    slug = utility.slugify_location(location_id=location_id, venue=venue,
+                                    city=city, state=state)
 
     assert slug, "Unable to convert into a slug string"
     assert isinstance(slug, str), "Value returned is not a string"
 
 
 @pytest.mark.parametrize("location_id, venue", [(2, "Chase Auditorium")])
-def test_location_utility_slugify_location_venue(location_id: int, venue: str):
+def test_location_utility_slugify_location_venue(location_id: int,
+                                                 venue: str):
     """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`
     with venue name
 
@@ -198,10 +200,11 @@ def test_location_utility_slugify_location_venue(location_id: int, venue: str):
     assert isinstance(slug, str), "Value returned is not a string"
 
 
-@pytest.mark.parametrize("venue, city, state", [("Chase Auditorium", "Chicago", "IL")])
-def test_location_utility_slugify_location_venue_city_state(
-    venue: str, city: str, state: str
-):
+@pytest.mark.parametrize("venue, city, state",
+                         [("Chase Auditorium", "Chicago", "IL")])
+def test_location_utility_slugify_location_venue_city_state(venue: str,
+                                                            city: str,
+                                                            state: str):
     """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`
 
     :param venue: Venue name to include in the slug string

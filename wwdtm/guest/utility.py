@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2021 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Guest Data Utility Functions
 """
@@ -23,12 +23,11 @@ class GuestUtility:
         connection
     """
 
-    def __init__(
-        self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
-    ):
-        """Class initialization method."""
+    def __init__(self,
+                 connect_dict: Optional[Dict[str, Any]] = None,
+                 database_connection: Optional[connect] = None):
+        """Class initialization method.
+        """
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -49,8 +48,10 @@ class GuestUtility:
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT guestslug FROM ww_guests " "WHERE guestid = %s " "LIMIT 1;"
-        cursor.execute(query, (guest_id,))
+        query = ("SELECT guestslug FROM ww_guests "
+                 "WHERE guestid = %s "
+                 "LIMIT 1;")
+        cursor.execute(query, (guest_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -75,8 +76,10 @@ class GuestUtility:
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT guestid FROM ww_guests " "WHERE guestslug = %s " "LIMIT 1;"
-        cursor.execute(query, (slug,))
+        query = ("SELECT guestid FROM ww_guests "
+                 "WHERE guestslug = %s "
+                 "LIMIT 1;")
+        cursor.execute(query, (slug, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -96,8 +99,10 @@ class GuestUtility:
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT guestid FROM ww_guests " "WHERE guestid = %s " "LIMIT 1;"
-        cursor.execute(query, (guest_id,))
+        query = ("SELECT guestid FROM ww_guests "
+                 "WHERE guestid = %s "
+                 "LIMIT 1;")
+        cursor.execute(query, (guest_id, ))
         result = cursor.fetchone()
         cursor.close()
 
@@ -119,8 +124,10 @@ class GuestUtility:
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT guestslug FROM ww_guests " "WHERE guestslug = %s " "LIMIT 1;"
-        cursor.execute(query, (slug,))
+        query = ("SELECT guestslug FROM ww_guests "
+                 "WHERE guestslug = %s "
+                 "LIMIT 1;")
+        cursor.execute(query, (slug, ))
         result = cursor.fetchone()
         cursor.close()
 
