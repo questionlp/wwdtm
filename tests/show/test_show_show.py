@@ -24,8 +24,7 @@ def get_connect_dict() -> Dict[str, Any]:
 
 
 def test_show_retrieve_all():
-    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all`
-    """
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all`"""
     show = Show(connect_dict=get_connect_dict())
     shows = show.retrieve_all()
 
@@ -34,8 +33,7 @@ def test_show_retrieve_all():
 
 
 def test_show_retrieve_all_details():
-    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_details`
-    """
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_details`"""
     show = Show(connect_dict=get_connect_dict())
     shows = show.retrieve_all_details()
 
@@ -45,8 +43,7 @@ def test_show_retrieve_all_details():
 
 
 def test_show_retrieve_all_ids():
-    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_ids`
-    """
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_ids`"""
     show = Show(connect_dict=get_connect_dict())
     ids = show.retrieve_all_ids()
 
@@ -54,8 +51,7 @@ def test_show_retrieve_all_ids():
 
 
 def test_show_retrieve_all_dates():
-    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_dates`
-    """
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_dates`"""
     show = Show(connect_dict=get_connect_dict())
     dates = show.retrieve_all_dates()
 
@@ -63,8 +59,7 @@ def test_show_retrieve_all_dates():
 
 
 def test_show_retrieve_all_dates_tuple():
-    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_dates_tuple`
-    """
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_dates_tuple`"""
     show = Show(connect_dict=get_connect_dict())
     dates = show.retrieve_all_dates_tuple()
 
@@ -73,8 +68,7 @@ def test_show_retrieve_all_dates_tuple():
 
 
 def test_show_retrieve_all_show_years_months():
-    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_show_years_months`
-    """
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_show_years_months`"""
     show = Show(connect_dict=get_connect_dict())
     dates = show.retrieve_all_show_years_months()
 
@@ -83,8 +77,7 @@ def test_show_retrieve_all_show_years_months():
 
 
 def test_show_retrieve_all_show_years_months_tuple():
-    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_shows_years_months_tuple`
-    """
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_shows_years_months_tuple`"""
     show = Show(connect_dict=get_connect_dict())
     dates = show.retrieve_all_shows_years_months_tuple()
 
@@ -106,8 +99,9 @@ def test_show_retrieve_by_date(year: int, month: int, day: int):
     info = show.retrieve_by_date(year, month, day)
 
     assert info, f"Show for date {year:04d}-{month:02d}-{day:02d} not found"
-    assert "date" in info, (f"'date' was not returned for show "
-                            f"{year:04d}-{month:02d}-{day:02d}")
+    assert "date" in info, (
+        f"'date' was not returned for show " f"{year:04d}-{month:02d}-{day:02d}"
+    )
 
 
 @pytest.mark.parametrize("date", ["2018-10-27"])
@@ -147,10 +141,13 @@ def test_show_retrieve_by_month_day(month: int, day: int):
     show = Show(connect_dict=get_connect_dict())
     shows = show.retrieve_by_month_day(month, day)
 
-    assert shows, (f"No shows could be retrieved for month {month:02d} "
-                   "and day {day:02d}")
-    assert "id" in shows[0], (f"'id' was not returned for the first list item "
-                              f"for month {month:02d} and day {day:02d}")
+    assert shows, (
+        f"No shows could be retrieved for month {month:02d} " "and day {day:02d}"
+    )
+    assert "id" in shows[0], (
+        f"'id' was not returned for the first list item "
+        f"for month {month:02d} and day {day:02d}"
+    )
 
 
 @pytest.mark.parametrize("year", [2018])
@@ -163,8 +160,9 @@ def test_show_retrieve_by_year(year: int):
     shows = show.retrieve_by_year(year)
 
     assert shows, f"No shows could be retrieved for year {year:04d}"
-    assert "id" in shows[0], (f"'id' was not returned for the first list item "
-                              f"for year {year:04d}")
+    assert "id" in shows[0], (
+        f"'id' was not returned for the first list item " f"for year {year:04d}"
+    )
 
 
 @pytest.mark.parametrize("year, month", [(1998, 1), (2018, 10)])
@@ -178,10 +176,13 @@ def test_show_retrieve_by_year_month(year: int, month: int):
     show = Show(connect_dict=get_connect_dict())
     shows = show.retrieve_by_year_month(year, month)
 
-    assert shows, (f"No shows could be retrieved for year/month "
-                   f"{year:04d}-{month:02d}")
-    assert "id" in shows[0], (f"'id' was not returned for the first list "
-                              f"item for year/month {year:02d}-{month:04d}")
+    assert shows, (
+        f"No shows could be retrieved for year/month " f"{year:04d}-{month:02d}"
+    )
+    assert "id" in shows[0], (
+        f"'id' was not returned for the first list "
+        f"item for year/month {year:02d}-{month:04d}"
+    )
 
 
 @pytest.mark.parametrize("year, month, day", [(2020, 4, 25)])
@@ -196,10 +197,12 @@ def test_show_retrieve_details_by_date(year: int, month: int, day: int):
     info = show.retrieve_details_by_date(year, month, day)
 
     assert info, f"Show for date {year:04d}-{month:02d}-{day:02d} not found"
-    assert "date" in info, (f"'date' was not returned for show "
-                            f"{year:04d}-{month:02d}-{day:02d}")
-    assert "host" in info, (f"'host' was not returned for show "
-                            f"{year:04d}-{month:02d}-{day:02d}")
+    assert "date" in info, (
+        f"'date' was not returned for show " f"{year:04d}-{month:02d}-{day:02d}"
+    )
+    assert "host" in info, (
+        f"'host' was not returned for show " f"{year:04d}-{month:02d}-{day:02d}"
+    )
 
 
 @pytest.mark.parametrize("date", ["2018-10-27"])
@@ -241,10 +244,13 @@ def test_show_retrieve_details_by_month_day(month: int, day: int):
     show = Show(connect_dict=get_connect_dict())
     shows = show.retrieve_details_by_month_day(month, day)
 
-    assert shows, (f"No shows could be retrieved for month {month:02d} "
-                   "and day {day:02d}")
-    assert "id" in shows[0], (f"'id' was not returned for the first list item "
-                              f"for month {month:02d} and day {day:02d}")
+    assert shows, (
+        f"No shows could be retrieved for month {month:02d} " "and day {day:02d}"
+    )
+    assert "id" in shows[0], (
+        f"'id' was not returned for the first list item "
+        f"for month {month:02d} and day {day:02d}"
+    )
 
 
 @pytest.mark.parametrize("year", [2021])
@@ -257,10 +263,12 @@ def test_show_retrieve_details_by_year(year: int):
     info = show.retrieve_details_by_year(year)
 
     assert info, f"No shows could be retrieved for year {year:04d}"
-    assert "date" in info[0], (f"'date' was not returned for first list "
-                               f"item for year {year:04d}")
-    assert "host" in info[0], (f"'host' was not returned for first list "
-                               f"item for year {year:04d}")
+    assert "date" in info[0], (
+        f"'date' was not returned for first list " f"item for year {year:04d}"
+    )
+    assert "host" in info[0], (
+        f"'host' was not returned for first list " f"item for year {year:04d}"
+    )
 
 
 @pytest.mark.parametrize("year, month", [(2020, 4)])
@@ -273,12 +281,17 @@ def test_show_retrieve_details_by_year_month(year: int, month: int):
     show = Show(connect_dict=get_connect_dict())
     info = show.retrieve_details_by_year_month(year, month)
 
-    assert info, (f"No shows could be retrieved for year/month "
-                  f"{year:04d}-{month:02d}")
-    assert "date" in info[0], (f"'date' was not returned for first list item "
-                               f"for year/month {year:04d}-{month:02d}")
-    assert "host" in info[0], (f"'host' was not returned for first list item "
-                               f"for year/month {year:04d}-{month:02d}")
+    assert info, (
+        f"No shows could be retrieved for year/month " f"{year:04d}-{month:02d}"
+    )
+    assert "date" in info[0], (
+        f"'date' was not returned for first list item "
+        f"for year/month {year:04d}-{month:02d}"
+    )
+    assert "host" in info[0], (
+        f"'host' was not returned for first list item "
+        f"for year/month {year:04d}-{month:02d}"
+    )
 
 
 @pytest.mark.parametrize("year", [2018])
@@ -294,8 +307,7 @@ def test_show_retrieve_months_by_year(year: int):
 
 
 def test_show_retrieve_recent():
-    """Testing for :py:meth:`wwdtm.show.Show.retrieve_recent`
-    """
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_recent`"""
     show = Show(connect_dict=get_connect_dict())
     shows = show.retrieve_recent()
 
@@ -304,8 +316,7 @@ def test_show_retrieve_recent():
 
 
 def test_show_retrieve_recent_details():
-    """Testing for :py:meth:`wwdtm.show.Show.retrieve_recent_details`
-    """
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_recent_details`"""
     show = Show(connect_dict=get_connect_dict())
     shows = show.retrieve_recent_details()
 
@@ -329,8 +340,7 @@ def test_show_retrieve_scores_by_year(year: int):
 
 
 def test_show_retrieve_years():
-    """Testing for :py:meth:`wwdtm.show.Show.retrieve_years`
-    """
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_years`"""
     show = Show(connect_dict=get_connect_dict())
     years = show.retrieve_years()
 

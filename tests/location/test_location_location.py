@@ -27,8 +27,7 @@ def get_connect_dict() -> Dict[str, Any]:
 
 
 def test_location_retrieve_all():
-    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all`
-    """
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all`"""
     location = Location(connect_dict=get_connect_dict())
     locations = location.retrieve_all()
 
@@ -37,20 +36,19 @@ def test_location_retrieve_all():
 
 
 def test_location_retrieve_all_details():
-    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_details`
-    """
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_details`"""
     location = Location(connect_dict=get_connect_dict())
     locations = location.retrieve_all_details()
 
     assert locations, "No locations could be retrieved"
     assert "id" in locations[0], "'id' was not returned for first list item"
-    assert "recordings" in locations[0], ("'recordings' was not returned for "
-                                          "the first list item")
+    assert "recordings" in locations[0], (
+        "'recordings' was not returned for " "the first list item"
+    )
 
 
 def test_location_retrieve_all_ids():
-    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_ids`
-    """
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_ids`"""
     location = Location(connect_dict=get_connect_dict())
     ids = location.retrieve_all_ids()
 
@@ -58,8 +56,7 @@ def test_location_retrieve_all_ids():
 
 
 def test_location_retrieve_all_slugs():
-    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_slugs`
-    """
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_slugs`"""
     location = Location(connect_dict=get_connect_dict())
     slugs = location.retrieve_all_slugs()
 
@@ -120,4 +117,6 @@ def test_location_retrieve_details_by_slug(location_slug: str):
 
     assert info, f"Location slug {location_slug} not found"
     assert "venue" in info, f"'venue' was not returned for slug {location_slug}"
-    assert "recordings" in info, f"'recordings' was not returned for slug {location_slug}"
+    assert (
+        "recordings" in info
+    ), f"'recordings' was not returned for slug {location_slug}"

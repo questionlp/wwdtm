@@ -23,11 +23,12 @@ class GuestAppearances:
         connection
     """
 
-    def __init__(self,
-                 connect_dict: Optional[Dict[str, Any]] = None,
-                 database_connection: Optional[connect] = None):
-        """Class initialization method.
-        """
+    def __init__(
+        self,
+        connect_dict: Optional[Dict[str, Any]] = None,
+        database_connection: Optional[connect] = None,
+    ):
+        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -53,15 +54,23 @@ class GuestAppearances:
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT ( "
-                 "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
-                 "JOIN ww_shows s ON s.showid = gm.showid "
-                 "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
-                 "gm.guestid = %s ) AS regular_shows, ( "
-                 "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
-                 "JOIN ww_shows s ON s.showid = gm.showid "
-                 "WHERE gm.guestid = %s ) AS all_shows;")
-        cursor.execute(query, (guest_id, guest_id, ))
+        query = (
+            "SELECT ( "
+            "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
+            "JOIN ww_shows s ON s.showid = gm.showid "
+            "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
+            "gm.guestid = %s ) AS regular_shows, ( "
+            "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
+            "JOIN ww_shows s ON s.showid = gm.showid "
+            "WHERE gm.guestid = %s ) AS all_shows;"
+        )
+        cursor.execute(
+            query,
+            (
+                guest_id,
+                guest_id,
+            ),
+        )
         result = cursor.fetchone()
 
         if result:
@@ -76,15 +85,17 @@ class GuestAppearances:
             }
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT gm.showid AS show_id, s.showdate AS date, "
-                 "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-                 "gm.guestscore AS score, gm.exception AS score_exception "
-                 "FROM ww_showguestmap gm "
-                 "JOIN ww_guests g ON g.guestid = gm.guestid "
-                 "JOIN ww_shows s ON s.showid = gm.showid "
-                 "WHERE gm.guestid = %s "
-                 "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (guest_id, ))
+        query = (
+            "SELECT gm.showid AS show_id, s.showdate AS date, "
+            "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
+            "gm.guestscore AS score, gm.exception AS score_exception "
+            "FROM ww_showguestmap gm "
+            "JOIN ww_guests g ON g.guestid = gm.guestid "
+            "JOIN ww_shows s ON s.showid = gm.showid "
+            "WHERE gm.guestid = %s "
+            "ORDER BY s.showdate ASC;"
+        )
+        cursor.execute(query, (guest_id,))
         results = cursor.fetchall()
         cursor.close()
 

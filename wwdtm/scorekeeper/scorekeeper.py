@@ -25,11 +25,12 @@ class Scorekeeper:
         connection
     """
 
-    def __init__(self,
-                 connect_dict: Optional[Dict[str, Any]] = None,
-                 database_connection: Optional[connect] = None):
-        """Class initialization method.
-        """
+    def __init__(
+        self,
+        connect_dict: Optional[Dict[str, Any]] = None,
+        database_connection: Optional[connect] = None,
+    ):
+        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -39,7 +40,9 @@ class Scorekeeper:
 
             self.database_connection = database_connection
 
-        self.appearances = ScorekeeperAppearances(database_connection=self.database_connection)
+        self.appearances = ScorekeeperAppearances(
+            database_connection=self.database_connection
+        )
         self.utility = ScorekeeperUtility(database_connection=self.database_connection)
 
     def retrieve_all(self) -> List[Dict[str, Any]]:
@@ -51,10 +54,12 @@ class Scorekeeper:
             retrieved, an empty list will be returned.
         """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
-                 "scorekeeperslug AS slug, scorekeepergender AS gender "
-                 "FROM ww_scorekeepers "
-                 "ORDER BY scorekeeper ASC;")
+        query = (
+            "SELECT scorekeeperid AS id, scorekeeper AS name, "
+            "scorekeeperslug AS slug, scorekeepergender AS gender "
+            "FROM ww_scorekeepers "
+            "ORDER BY scorekeeper ASC;"
+        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -64,12 +69,14 @@ class Scorekeeper:
 
         scorekeepers = []
         for row in results:
-            scorekeepers.append({
-                "id": row.id,
-                "name": row.name,
-                "gender": row.gender,
-                "slug": row.slug if row.slug else slugify(row.name),
-            })
+            scorekeepers.append(
+                {
+                    "id": row.id,
+                    "name": row.name,
+                    "gender": row.gender,
+                    "slug": row.slug if row.slug else slugify(row.name),
+                }
+            )
 
         return scorekeepers
 
@@ -83,10 +90,12 @@ class Scorekeeper:
             could not be retrieved, an empty list will be returned.
         """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
-                 "scorekeeperslug AS slug, scorekeepergender AS gender "
-                 "FROM ww_scorekeepers "
-                 "ORDER BY scorekeeper ASC;")
+        query = (
+            "SELECT scorekeeperid AS id, scorekeeper AS name, "
+            "scorekeeperslug AS slug, scorekeepergender AS gender "
+            "FROM ww_scorekeepers "
+            "ORDER BY scorekeeper ASC;"
+        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -96,13 +105,15 @@ class Scorekeeper:
 
         scorekeepers = []
         for row in results:
-            scorekeepers.append({
-                "id": row.id,
-                "name": row.name,
-                "slug": row.slug if row.slug else slugify(row.name),
-                "gender": row.gender,
-                "appearances": self.appearances.retrieve_appearances_by_id(row.id)
-            })
+            scorekeepers.append(
+                {
+                    "id": row.id,
+                    "name": row.name,
+                    "slug": row.slug if row.slug else slugify(row.name),
+                    "gender": row.gender,
+                    "appearances": self.appearances.retrieve_appearances_by_id(row.id),
+                }
+            )
 
         return scorekeepers
 
@@ -114,8 +125,7 @@ class Scorekeeper:
             not be retrieved, an empty list would be returned.
         """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT scorekeeperid FROM ww_scorekeepers "
-                 "ORDER BY scorekeeper ASC;")
+        query = "SELECT scorekeeperid FROM ww_scorekeepers " "ORDER BY scorekeeper ASC;"
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -134,8 +144,9 @@ class Scorekeeper:
             returned.
         """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT scorekeeperslug FROM ww_scorekeepers "
-                 "ORDER BY scorekeeper ASC;")
+        query = (
+            "SELECT scorekeeperslug FROM ww_scorekeepers " "ORDER BY scorekeeper ASC;"
+        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -159,12 +170,14 @@ class Scorekeeper:
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
-                 "scorekeeperslug AS slug, scorekeepergender AS gender "
-                 "FROM ww_scorekeepers "
-                 "WHERE scorekeeperid = %s "
-                 "LIMIT 1;")
-        cursor.execute(query, (scorekeeper_id, ))
+        query = (
+            "SELECT scorekeeperid AS id, scorekeeper AS name, "
+            "scorekeeperslug AS slug, scorekeepergender AS gender "
+            "FROM ww_scorekeepers "
+            "WHERE scorekeeperid = %s "
+            "LIMIT 1;"
+        )
+        cursor.execute(query, (scorekeeper_id,))
         result = cursor.fetchone()
         cursor.close()
 
@@ -219,7 +232,9 @@ class Scorekeeper:
         if not info:
             return {}
 
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(scorekeeper_id)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(
+            scorekeeper_id
+        )
 
         return info
 

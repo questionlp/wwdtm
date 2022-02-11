@@ -7,27 +7,18 @@
 
 from wwdtm import validation
 
-from wwdtm.guest import (Guest,
-                         GuestAppearances,
-                         GuestUtility)
-from wwdtm.host import (Host,
-                        HostAppearances,
-                        HostUtility)
-from wwdtm.location import (Location,
-                            LocationRecordings,
-                            LocationUtility)
-from wwdtm.panelist import (Panelist,
-                            PanelistAppearances,
-                            PanelistScores,
-                            PanelistStatistics,
-                            PanelistUtility)
-from wwdtm.scorekeeper import (Scorekeeper,
-                               ScorekeeperAppearances,
-                               ScorekeeperUtility)
-from wwdtm.show import (Show,
-                        ShowInfo,
-                        ShowInfoMultiple,
-                        ShowUtility)
+from wwdtm.guest import Guest, GuestAppearances, GuestUtility
+from wwdtm.host import Host, HostAppearances, HostUtility
+from wwdtm.location import Location, LocationRecordings, LocationUtility
+from wwdtm.panelist import (
+    Panelist,
+    PanelistAppearances,
+    PanelistScores,
+    PanelistStatistics,
+    PanelistUtility,
+)
+from wwdtm.scorekeeper import Scorekeeper, ScorekeeperAppearances, ScorekeeperUtility
+from wwdtm.show import Show, ShowInfo, ShowInfoMultiple, ShowUtility
 
 
 VERSION = "2.0.0"

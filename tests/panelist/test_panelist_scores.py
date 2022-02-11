@@ -95,7 +95,9 @@ def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_id(panelist_id:
 
 
 @pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
-def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_slug(panelist_slug: str):
+def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_slug(
+    panelist_slug: str,
+):
     """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_grouped_ordered_pair_by_slug`
 
     :param panelist_slug: Panelist slug string to test retrieving

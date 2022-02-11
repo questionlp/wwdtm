@@ -152,9 +152,13 @@ def perf_test_location(connect_dict: Dict[str, Any]) -> float:
     _ = location.retrieve_details_by_id(location_id=64)
 
     for i in range(3):
-        _ = location.retrieve_details_by_slug(location_slug="chase-auditorium-chicago-il")
+        _ = location.retrieve_details_by_slug(
+            location_slug="chase-auditorium-chicago-il"
+        )
 
-    _ = location.retrieve_details_by_slug(location_slug="nourse-theater-san-francisco-ca")
+    _ = location.retrieve_details_by_slug(
+        location_slug="nourse-theater-san-francisco-ca"
+    )
 
     # Performance run end time
     end_time = time.perf_counter()
