@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.panelist.Panelist`
 """
@@ -52,13 +52,13 @@ def test_panelist_retrieve_all_details(exclude_nulls: bool):
 
     assert panelists, "No panelists could be retrieved"
     assert "id" in panelists[0], "'id' was not returned for first list item"
-    assert "appearances" in panelists[0], ("'appearances' was not returned for "
-                                           "the first list item")
+    assert "appearances" in panelists[0], (
+        "'appearances' was not returned for " "the first list item"
+    )
 
 
 def test_panelist_retrieve_all_ids():
-    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_ids`
-    """
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_ids`"""
     panelist = Panelist(connect_dict=get_connect_dict())
     ids = panelist.retrieve_all_ids()
 
@@ -66,16 +66,14 @@ def test_panelist_retrieve_all_ids():
 
 
 def test_panelist_retrieve_all_slugs():
-    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_slugs`
-    """
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_slugs`"""
     panelist = Panelist(connect_dict=get_connect_dict())
     slugs = panelist.retrieve_all_slugs()
 
     assert slugs, "No panelist slug strings could be retrieved"
 
 
-@pytest.mark.parametrize("panelist_id, exclude_null",
-                         [(14, True), (14, False)])
+@pytest.mark.parametrize("panelist_id, exclude_null", [(14, True), (14, False)])
 def test_panelist_retrieve_by_id(panelist_id: int, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_by_id`
 
@@ -91,10 +89,8 @@ def test_panelist_retrieve_by_id(panelist_id: int, exclude_null: bool):
     assert "name" in info, f"'name' was not returned for ID {panelist_id}"
 
 
-@pytest.mark.parametrize("panelist_id, exclude_null",
-                         [(14, True), (14, False)])
-def test_panelist_retrieve_details_by_id(panelist_id: int,
-                                         exclude_null: bool):
+@pytest.mark.parametrize("panelist_id, exclude_null", [(14, True), (14, False)])
+def test_panelist_retrieve_details_by_id(panelist_id: int, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_details_by_id`
 
     :param panelist_id: Panelist ID to test retrieving panelist details
@@ -109,8 +105,9 @@ def test_panelist_retrieve_details_by_id(panelist_id: int,
     assert "appearances" in info, f"'appearances' was not returned for ID {panelist_id}"
 
 
-@pytest.mark.parametrize("panelist_slug, exclude_null",
-                         [("luke-burbank", True), ("drew-carey", False)])
+@pytest.mark.parametrize(
+    "panelist_slug, exclude_null", [("luke-burbank", True), ("drew-carey", False)]
+)
 def test_panelist_retrieve_by_slug(panelist_slug: str, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_by_slug`
 
@@ -126,8 +123,9 @@ def test_panelist_retrieve_by_slug(panelist_slug: str, exclude_null: bool):
     assert "name" in info, f"'name' was not returned for slug {panelist_slug}"
 
 
-@pytest.mark.parametrize("panelist_slug, exclude_null",
-                         [("luke-burbank", True), ("drew-carey", False)])
+@pytest.mark.parametrize(
+    "panelist_slug, exclude_null", [("luke-burbank", True), ("drew-carey", False)]
+)
 def test_panelist_retrieve_details_by_slug(panelist_slug: str, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_details_by_slug`
 
@@ -141,4 +139,6 @@ def test_panelist_retrieve_details_by_slug(panelist_slug: str, exclude_null: boo
 
     assert info, f"Panelist slug {panelist_slug} not found"
     assert "name" in info, f"'name' was not returned for slug {panelist_slug}"
-    assert "appearances" in info, f"'appearances' was not returned for slug {panelist_slug}"
+    assert (
+        "appearances" in info
+    ), f"'appearances' was not returned for slug {panelist_slug}"

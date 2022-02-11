@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Scorekeeper Data Retrieval Functions
 """
@@ -25,11 +25,12 @@ class Scorekeeper:
         connection
     """
 
-    def __init__(self,
-                 connect_dict: Optional[Dict[str, Any]] = None,
-                 database_connection: Optional[connect] = None):
-        """Class initialization method.
-        """
+    def __init__(
+        self,
+        connect_dict: Optional[Dict[str, Any]] = None,
+        database_connection: Optional[connect] = None,
+    ):
+        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -39,7 +40,9 @@ class Scorekeeper:
 
             self.database_connection = database_connection
 
-        self.appearances = ScorekeeperAppearances(database_connection=self.database_connection)
+        self.appearances = ScorekeeperAppearances(
+            database_connection=self.database_connection
+        )
         self.utility = ScorekeeperUtility(database_connection=self.database_connection)
 
     def retrieve_all(self, exclude_nulls: bool = False) -> List[Dict[str, Any]]:
@@ -54,16 +57,20 @@ class Scorekeeper:
         """
         cursor = self.database_connection.cursor(named_tuple=True)
         if exclude_nulls:
-            query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
-                     "scorekeeperslug AS slug, scorekeepergender AS gender "
-                     "FROM ww_scorekeepers "
-                     "WHERE scorekeeper IS NOT NULL "
-                     "ORDER BY scorekeeper ASC;")
+            query = (
+                "SELECT scorekeeperid AS id, scorekeeper AS name, "
+                "scorekeeperslug AS slug, scorekeepergender AS gender "
+                "FROM ww_scorekeepers "
+                "WHERE scorekeeper IS NOT NULL "
+                "ORDER BY scorekeeper ASC;"
+            )
         else:
-            query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
-                     "scorekeeperslug AS slug, scorekeepergender AS gender "
-                     "FROM ww_scorekeepers "
-                     "ORDER BY scorekeeper ASC;")
+            query = (
+                "SELECT scorekeeperid AS id, scorekeeper AS name, "
+                "scorekeeperslug AS slug, scorekeepergender AS gender "
+                "FROM ww_scorekeepers "
+                "ORDER BY scorekeeper ASC;"
+            )
 
         cursor.execute(query)
         results = cursor.fetchall()
@@ -74,17 +81,18 @@ class Scorekeeper:
 
         scorekeepers = []
         for row in results:
-            scorekeepers.append({
-                "id": row.id,
-                "name": row.name,
-                "gender": row.gender,
-                "slug": row.slug if row.slug else slugify(row.name),
-            })
+            scorekeepers.append(
+                {
+                    "id": row.id,
+                    "name": row.name,
+                    "gender": row.gender,
+                    "slug": row.slug if row.slug else slugify(row.name),
+                }
+            )
 
         return scorekeepers
 
-    def retrieve_all_details(self,
-                             exclude_nulls: bool = False) -> List[Dict[str, Any]]:
+    def retrieve_all_details(self, exclude_nulls: bool = False) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing scorekeeper
         ID, name, slug string and appearance information for all
         scorekeepers.
@@ -97,16 +105,20 @@ class Scorekeeper:
         """
         cursor = self.database_connection.cursor(named_tuple=True)
         if exclude_nulls:
-            query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
-                     "scorekeeperslug AS slug, scorekeepergender AS gender "
-                     "FROM ww_scorekeepers "
-                     "WHERE scorekeeper IS NOT NULL "
-                     "ORDER BY scorekeeper ASC;")
+            query = (
+                "SELECT scorekeeperid AS id, scorekeeper AS name, "
+                "scorekeeperslug AS slug, scorekeepergender AS gender "
+                "FROM ww_scorekeepers "
+                "WHERE scorekeeper IS NOT NULL "
+                "ORDER BY scorekeeper ASC;"
+            )
         else:
-            query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
-                     "scorekeeperslug AS slug, scorekeepergender AS gender "
-                     "FROM ww_scorekeepers "
-                     "ORDER BY scorekeeper ASC;")
+            query = (
+                "SELECT scorekeeperid AS id, scorekeeper AS name, "
+                "scorekeeperslug AS slug, scorekeepergender AS gender "
+                "FROM ww_scorekeepers "
+                "ORDER BY scorekeeper ASC;"
+            )
 
         cursor.execute(query)
         results = cursor.fetchall()
@@ -117,14 +129,17 @@ class Scorekeeper:
 
         scorekeepers = []
         for row in results:
-            scorekeepers.append({
-                "id": row.id,
-                "name": row.name,
-                "slug": row.slug if row.slug else slugify(row.name),
-                "gender": row.gender,
-                "appearances": self.appearances.retrieve_appearances_by_id(row.id,
-                                                                           exclude_nulls)
-            })
+            scorekeepers.append(
+                {
+                    "id": row.id,
+                    "name": row.name,
+                    "slug": row.slug if row.slug else slugify(row.name),
+                    "gender": row.gender,
+                    "appearances": self.appearances.retrieve_appearances_by_id(
+                        row.id, exclude_nulls
+                    ),
+                }
+            )
 
         return scorekeepers
 
@@ -136,8 +151,7 @@ class Scorekeeper:
             not be retrieved, an empty list would be returned.
         """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT scorekeeperid FROM ww_scorekeepers "
-                 "ORDER BY scorekeeper ASC;")
+        query = "SELECT scorekeeperid FROM ww_scorekeepers " "ORDER BY scorekeeper ASC;"
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -156,8 +170,9 @@ class Scorekeeper:
             returned.
         """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT scorekeeperslug FROM ww_scorekeepers "
-                 "ORDER BY scorekeeper ASC;")
+        query = (
+            "SELECT scorekeeperslug FROM ww_scorekeepers " "ORDER BY scorekeeper ASC;"
+        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -168,9 +183,9 @@ class Scorekeeper:
         return [v[0] for v in results]
 
     @lru_cache(typed=True)
-    def retrieve_by_id(self,
-                       scorekeeper_id: int,
-                       exclude_null: bool = False) -> Dict[str, Any]:
+    def retrieve_by_id(
+        self, scorekeeper_id: int, exclude_null: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name
         and slug string for the requested scorekeeper ID.
 
@@ -186,19 +201,23 @@ class Scorekeeper:
 
         cursor = self.database_connection.cursor(named_tuple=True)
         if exclude_null:
-            query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
-                     "scorekeeperslug AS slug, scorekeepergender AS gender "
-                     "FROM ww_scorekeepers "
-                     "WHERE scorekeeper IS NOT NULL AND scorekeeperid = %s "
-                     "LIMIT 1;")
+            query = (
+                "SELECT scorekeeperid AS id, scorekeeper AS name, "
+                "scorekeeperslug AS slug, scorekeepergender AS gender "
+                "FROM ww_scorekeepers "
+                "WHERE scorekeeper IS NOT NULL AND scorekeeperid = %s "
+                "LIMIT 1;"
+            )
         else:
-            query = ("SELECT scorekeeperid AS id, scorekeeper AS name, "
-                     "scorekeeperslug AS slug, scorekeepergender AS gender "
-                     "FROM ww_scorekeepers "
-                     "WHERE scorekeeperid = %s "
-                     "LIMIT 1;")
+            query = (
+                "SELECT scorekeeperid AS id, scorekeeper AS name, "
+                "scorekeeperslug AS slug, scorekeepergender AS gender "
+                "FROM ww_scorekeepers "
+                "WHERE scorekeeperid = %s "
+                "LIMIT 1;"
+            )
 
-        cursor.execute(query, (scorekeeper_id, ))
+        cursor.execute(query, (scorekeeper_id,))
         result = cursor.fetchone()
         cursor.close()
 
@@ -213,9 +232,9 @@ class Scorekeeper:
         }
 
     @lru_cache(typed=True)
-    def retrieve_by_slug(self,
-                         scorekeeper_slug: str,
-                         exclude_null: bool = False) -> Dict[str, Any]:
+    def retrieve_by_slug(
+        self, scorekeeper_slug: str, exclude_null: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name
         and slug string for the requested scorekeeper slug string.
 
@@ -240,8 +259,9 @@ class Scorekeeper:
         return self.retrieve_by_id(id_, exclude_null)
 
     @lru_cache(typed=True)
-    def retrieve_details_by_id(self, scorekeeper_id: int,
-                               exclude_null: bool = False) -> Dict[str, Any]:
+    def retrieve_details_by_id(
+        self, scorekeeper_id: int, exclude_null: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name,
         slug string and appearance information for the requested
         scorekeeper ID.
@@ -260,14 +280,16 @@ class Scorekeeper:
         if not info:
             return {}
 
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(scorekeeper_id,
-                                                                          exclude_null)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(
+            scorekeeper_id, exclude_null
+        )
 
         return info
 
     @lru_cache(typed=True)
-    def retrieve_details_by_slug(self, scorekeeper_slug: str,
-                                 exclude_null: bool = False) -> Dict[str, Any]:
+    def retrieve_details_by_slug(
+        self, scorekeeper_slug: str, exclude_null: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary object containing scorekeeper ID, name,
         slug string and appearance information for the requested
         scorekeeper slug string.

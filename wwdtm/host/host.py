@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Host Data Retrieval Functions
 """
@@ -25,11 +25,12 @@ class Host:
         connection
     """
 
-    def __init__(self,
-                 connect_dict: Optional[Dict[str, Any]] = None,
-                 database_connection: Optional[connect] = None):
-        """Class initialization method.
-        """
+    def __init__(
+        self,
+        connect_dict: Optional[Dict[str, Any]] = None,
+        database_connection: Optional[connect] = None,
+    ):
+        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -53,16 +54,20 @@ class Host:
         """
         cursor = self.database_connection.cursor(named_tuple=True)
         if exclude_nulls:
-            query = ("SELECT hostid AS id, host AS name, "
-                     "hostslug AS slug, hostgender AS gender "
-                     "FROM ww_hosts "
-                     "WHERE host IS NOT NULL "
-                     "ORDER BY host ASC;")
+            query = (
+                "SELECT hostid AS id, host AS name, "
+                "hostslug AS slug, hostgender AS gender "
+                "FROM ww_hosts "
+                "WHERE host IS NOT NULL "
+                "ORDER BY host ASC;"
+            )
         else:
-            query = ("SELECT hostid AS id, host AS name, "
-                     "hostslug AS slug, hostgender AS gender "
-                     "FROM ww_hosts "
-                     "ORDER BY host ASC;")
+            query = (
+                "SELECT hostid AS id, host AS name, "
+                "hostslug AS slug, hostgender AS gender "
+                "FROM ww_hosts "
+                "ORDER BY host ASC;"
+            )
 
         cursor.execute(query)
         results = cursor.fetchall()
@@ -73,17 +78,18 @@ class Host:
 
         hosts = []
         for row in results:
-            hosts.append({
-                "id": row.id,
-                "name": row.name,
-                "gender": row.gender,
-                "slug": row.slug if row.slug else slugify(row.name),
-            })
+            hosts.append(
+                {
+                    "id": row.id,
+                    "name": row.name,
+                    "gender": row.gender,
+                    "slug": row.slug if row.slug else slugify(row.name),
+                }
+            )
 
         return hosts
 
-    def retrieve_all_details(self,
-                             exclude_nulls: bool = False) -> List[Dict[str, Any]]:
+    def retrieve_all_details(self, exclude_nulls: bool = False) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing host ID,
         name, slug string and appearance information for all hosts.
 
@@ -95,16 +101,20 @@ class Host:
         """
         cursor = self.database_connection.cursor(named_tuple=True)
         if exclude_nulls:
-            query = ("SELECT hostid AS id, host AS name, "
-                     "hostslug AS slug, hostgender AS gender "
-                     "FROM ww_hosts "
-                     "WHERE host IS NOT NULL "
-                     "ORDER BY host ASC;")
+            query = (
+                "SELECT hostid AS id, host AS name, "
+                "hostslug AS slug, hostgender AS gender "
+                "FROM ww_hosts "
+                "WHERE host IS NOT NULL "
+                "ORDER BY host ASC;"
+            )
         else:
-            query = ("SELECT hostid AS id, host AS name, "
-                     "hostslug AS slug, hostgender AS gender "
-                     "FROM ww_hosts "
-                     "ORDER BY host ASC;")
+            query = (
+                "SELECT hostid AS id, host AS name, "
+                "hostslug AS slug, hostgender AS gender "
+                "FROM ww_hosts "
+                "ORDER BY host ASC;"
+            )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -114,14 +124,17 @@ class Host:
 
         hosts = []
         for row in results:
-            hosts.append({
-                "id": row.id,
-                "name": row.name,
-                "gender": row.gender,
-                "slug": row.slug if row.slug else slugify(row.name),
-                "appearances": self.appearances.retrieve_appearances_by_id(row.id,
-                                                                           exclude_nulls),
-            })
+            hosts.append(
+                {
+                    "id": row.id,
+                    "name": row.name,
+                    "gender": row.gender,
+                    "slug": row.slug if row.slug else slugify(row.name),
+                    "appearances": self.appearances.retrieve_appearances_by_id(
+                        row.id, exclude_nulls
+                    ),
+                }
+            )
 
         return hosts
 
@@ -133,8 +146,7 @@ class Host:
             retrieved, an empty list is returned.
         """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT hostid FROM ww_hosts "
-                 "ORDER BY host ASC;")
+        query = "SELECT hostid FROM ww_hosts " "ORDER BY host ASC;"
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -152,8 +164,7 @@ class Host:
             could not be retrieved, an empty list is returned.
         """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = ("SELECT hostslug FROM ww_hosts "
-                 "ORDER BY host ASC;")
+        query = "SELECT hostslug FROM ww_hosts " "ORDER BY host ASC;"
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -164,8 +175,9 @@ class Host:
         return [v[0] for v in results]
 
     @lru_cache(typed=True)
-    def retrieve_by_id(self, host_id: int,
-                       exclude_null: bool = False) -> Dict[str, Any]:
+    def retrieve_by_id(
+        self, host_id: int, exclude_null: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary object containing host ID, name and
         slug string for the requested host ID.
 
@@ -181,18 +193,22 @@ class Host:
 
         cursor = self.database_connection.cursor(named_tuple=True)
         if exclude_null:
-            query = ("SELECT hostid AS id, host AS name, "
-                     "hostslug AS slug, hostgender AS gender "
-                     "FROM ww_hosts "
-                     "WHERE hostid = %s AND host IS NOT NULL "
-                     "LIMIT 1;")
+            query = (
+                "SELECT hostid AS id, host AS name, "
+                "hostslug AS slug, hostgender AS gender "
+                "FROM ww_hosts "
+                "WHERE hostid = %s AND host IS NOT NULL "
+                "LIMIT 1;"
+            )
         else:
-            query = ("SELECT hostid AS id, host AS name, "
-                     "hostslug AS slug, hostgender AS gender "
-                     "FROM ww_hosts "
-                     "WHERE hostid = %s "
-                     "LIMIT 1;")
-        cursor.execute(query, (host_id, ))
+            query = (
+                "SELECT hostid AS id, host AS name, "
+                "hostslug AS slug, hostgender AS gender "
+                "FROM ww_hosts "
+                "WHERE hostid = %s "
+                "LIMIT 1;"
+            )
+        cursor.execute(query, (host_id,))
         result = cursor.fetchone()
         cursor.close()
 
@@ -207,8 +223,9 @@ class Host:
         }
 
     @lru_cache(typed=True)
-    def retrieve_by_slug(self, host_slug: str,
-                         exclude_null: bool = False) -> Dict[str, Any]:
+    def retrieve_by_slug(
+        self, host_slug: str, exclude_null: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary object containing host ID, name and
         slug string for the requested host slug string.
 
@@ -233,8 +250,9 @@ class Host:
         return self.retrieve_by_id(id_, exclude_null)
 
     @lru_cache(typed=True)
-    def retrieve_details_by_id(self, host_id: int,
-                               exclude_null: bool = False) -> Dict[str, Any]:
+    def retrieve_details_by_id(
+        self, host_id: int, exclude_null: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary object containing host ID, name, slug
         string and appearance information for the requested host ID.
 
@@ -252,14 +270,16 @@ class Host:
         if not info:
             return {}
 
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(host_id,
-                                                                          exclude_null)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(
+            host_id, exclude_null
+        )
 
         return info
 
     @lru_cache(typed=True)
-    def retrieve_details_by_slug(self, host_slug: str,
-                                 exclude_null: bool = False) -> Dict[str, Any]:
+    def retrieve_details_by_slug(
+        self, host_slug: str, exclude_null: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary object containing host ID, name, slug
         string and appearance information for the requested host slug
         string.

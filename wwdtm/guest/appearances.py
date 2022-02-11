@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Guest Appearance Retrieval Functions
 """
@@ -23,11 +23,12 @@ class GuestAppearances:
         connection
     """
 
-    def __init__(self,
-                 connect_dict: Optional[Dict[str, Any]] = None,
-                 database_connection: Optional[connect] = None):
-        """Class initialization method.
-        """
+    def __init__(
+        self,
+        connect_dict: Optional[Dict[str, Any]] = None,
+        database_connection: Optional[connect] = None,
+    ):
+        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -40,10 +41,9 @@ class GuestAppearances:
         self.utility = GuestUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_id(self,
-                                   guest_id: int,
-                                   exclude_null_dates: bool = False
-                                   ) -> Dict[str, Any]:
+    def retrieve_appearances_by_id(
+        self, guest_id: int, exclude_null_dates: bool = False
+    ) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested guest ID.
 
@@ -59,29 +59,39 @@ class GuestAppearances:
 
         cursor = self.database_connection.cursor(named_tuple=True)
         if exclude_null_dates:
-            query = ("SELECT ( "
-                     "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
-                     "JOIN ww_shows s ON s.showid = gm.showid "
-                     "WHERE gm.guestid = %s AND s.bestof = 0 "
-                     "AND s.repeatshowid IS NULL "
-                     "AND s.showdate IS NOT NULL) AS regular_shows, ( "
-                     "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
-                     "JOIN ww_shows s ON s.showid = gm.showid "
-                     "WHERE gm.guestid = %s "
-                     "AND s.showdate IS NOT NULL) AS all_shows;")
+            query = (
+                "SELECT ( "
+                "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
+                "JOIN ww_shows s ON s.showid = gm.showid "
+                "WHERE gm.guestid = %s AND s.bestof = 0 "
+                "AND s.repeatshowid IS NULL "
+                "AND s.showdate IS NOT NULL) AS regular_shows, ( "
+                "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
+                "JOIN ww_shows s ON s.showid = gm.showid "
+                "WHERE gm.guestid = %s "
+                "AND s.showdate IS NOT NULL) AS all_shows;"
+            )
         else:
-            query = ("SELECT ( "
-                     "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
-                     "JOIN ww_shows s ON s.showid = gm.showid "
-                     "WHERE gm.guestid = %s AND s.bestof = 0 "
-                     "AND s.repeatshowid IS NULL "
-                     ") AS regular_shows, ( "
-                     "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
-                     "JOIN ww_shows s ON s.showid = gm.showid "
-                     "WHERE gm.guestid = %s "
-                     ") AS all_shows;")
+            query = (
+                "SELECT ( "
+                "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
+                "JOIN ww_shows s ON s.showid = gm.showid "
+                "WHERE gm.guestid = %s AND s.bestof = 0 "
+                "AND s.repeatshowid IS NULL "
+                ") AS regular_shows, ( "
+                "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
+                "JOIN ww_shows s ON s.showid = gm.showid "
+                "WHERE gm.guestid = %s "
+                ") AS all_shows;"
+            )
 
-        cursor.execute(query, (guest_id, guest_id, ))
+        cursor.execute(
+            query,
+            (
+                guest_id,
+                guest_id,
+            ),
+        )
         result = cursor.fetchone()
 
         if result:
@@ -97,26 +107,30 @@ class GuestAppearances:
 
         cursor = self.database_connection.cursor(named_tuple=True)
         if exclude_null_dates:
-            query = ("SELECT gm.showid AS show_id, s.showdate AS date, "
-                     "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-                     "gm.guestscore AS score, gm.exception AS score_exception "
-                     "FROM ww_showguestmap gm "
-                     "JOIN ww_guests g ON g.guestid = gm.guestid "
-                     "JOIN ww_shows s ON s.showid = gm.showid "
-                     "WHERE gm.guestid = %s "
-                     "AND s.showdate IS NOT NULL "
-                     "ORDER BY s.showdate ASC;")
+            query = (
+                "SELECT gm.showid AS show_id, s.showdate AS date, "
+                "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
+                "gm.guestscore AS score, gm.exception AS score_exception "
+                "FROM ww_showguestmap gm "
+                "JOIN ww_guests g ON g.guestid = gm.guestid "
+                "JOIN ww_shows s ON s.showid = gm.showid "
+                "WHERE gm.guestid = %s "
+                "AND s.showdate IS NOT NULL "
+                "ORDER BY s.showdate ASC;"
+            )
         else:
-            query = ("SELECT gm.showid AS show_id, s.showdate AS date, "
-                     "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-                     "gm.guestscore AS score, gm.exception AS score_exception "
-                     "FROM ww_showguestmap gm "
-                     "JOIN ww_guests g ON g.guestid = gm.guestid "
-                     "JOIN ww_shows s ON s.showid = gm.showid "
-                     "WHERE gm.guestid = %s "
-                     "ORDER BY s.showdate ASC;")
+            query = (
+                "SELECT gm.showid AS show_id, s.showdate AS date, "
+                "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
+                "gm.guestscore AS score, gm.exception AS score_exception "
+                "FROM ww_showguestmap gm "
+                "JOIN ww_guests g ON g.guestid = gm.guestid "
+                "JOIN ww_shows s ON s.showid = gm.showid "
+                "WHERE gm.guestid = %s "
+                "ORDER BY s.showdate ASC;"
+            )
 
-        cursor.execute(query, (guest_id, ))
+        cursor.execute(query, (guest_id,))
         results = cursor.fetchall()
         cursor.close()
 
@@ -144,10 +158,9 @@ class GuestAppearances:
             }
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_slug(self,
-                                     guest_slug: str,
-                                     exclude_null_dates: bool = False
-                                     ) -> Dict[str, Any]:
+    def retrieve_appearances_by_slug(
+        self, guest_slug: str, exclude_null_dates: bool = False
+    ) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested guest slug string.
 

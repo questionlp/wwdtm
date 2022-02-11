@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Appearance Retrieval Functions
 """
@@ -23,11 +23,12 @@ class PanelistAppearances:
         connection
     """
 
-    def __init__(self,
-                 connect_dict: Optional[Dict[str, Any]] = None,
-                 database_connection: Optional[connect] = None):
-        """Class initialization method.
-        """
+    def __init__(
+        self,
+        connect_dict: Optional[Dict[str, Any]] = None,
+        database_connection: Optional[connect] = None,
+    ):
+        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -40,10 +41,9 @@ class PanelistAppearances:
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_id(self,
-                                   panelist_id: int,
-                                   exclude_null_dates: bool = False
-                                   ) -> Dict[str, Any]:
+    def retrieve_appearances_by_id(
+        self, panelist_id: int, exclude_null_dates: bool = False
+    ) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested panelist ID.
 
@@ -59,41 +59,52 @@ class PanelistAppearances:
 
         cursor = self.database_connection.cursor(named_tuple=True)
         if exclude_null_dates:
-            query = ("SELECT ( "
-                     "SELECT COUNT(pm.showid) FROM ww_showpnlmap pm "
-                     "JOIN ww_shows s ON s.showid = pm.showid "
-                     "WHERE s.bestof = 0 "
-                     "AND s.repeatshowid IS NULL "
-                     "AND s.shoedate IS NOT NULL"
-                     "AND pm.panelistid = %s ) AS regular_shows, ( "
-                     "SELECT COUNT(pm.showid) FROM ww_showpnlmap pm "
-                     "JOIN ww_shows s ON s.showid = pm.showid "
-                     "WHERE pm.panelistid = %s "
-                     "AND s.shoedate IS NOT NULL) AS all_shows, ( "
-                     "SELECT COUNT(pm.panelistid) FROM ww_showpnlmap pm "
-                     "JOIN ww_shows s ON pm.showid = s.showid "
-                     "WHERE pm.panelistid = %s "
-                     "AND s.bestof = 0 "
-                     "AND s.repeatshowid IS NULL "
-                     "AND s.showdate IS NOT NULL "
-                     "AND pm.panelistscore IS NOT NULL ) "
-                     "AS shows_with_scores;")
+            query = (
+                "SELECT ( "
+                "SELECT COUNT(pm.showid) FROM ww_showpnlmap pm "
+                "JOIN ww_shows s ON s.showid = pm.showid "
+                "WHERE s.bestof = 0 "
+                "AND s.repeatshowid IS NULL "
+                "AND s.shoedate IS NOT NULL"
+                "AND pm.panelistid = %s ) AS regular_shows, ( "
+                "SELECT COUNT(pm.showid) FROM ww_showpnlmap pm "
+                "JOIN ww_shows s ON s.showid = pm.showid "
+                "WHERE pm.panelistid = %s "
+                "AND s.shoedate IS NOT NULL) AS all_shows, ( "
+                "SELECT COUNT(pm.panelistid) FROM ww_showpnlmap pm "
+                "JOIN ww_shows s ON pm.showid = s.showid "
+                "WHERE pm.panelistid = %s "
+                "AND s.bestof = 0 "
+                "AND s.repeatshowid IS NULL "
+                "AND s.showdate IS NOT NULL "
+                "AND pm.panelistscore IS NOT NULL ) "
+                "AS shows_with_scores;"
+            )
         else:
-            query = ("SELECT ( "
-                     "SELECT COUNT(pm.showid) FROM ww_showpnlmap pm "
-                     "JOIN ww_shows s ON s.showid = pm.showid "
-                     "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
-                     "pm.panelistid = %s ) AS regular_shows, ( "
-                     "SELECT COUNT(pm.showid) FROM ww_showpnlmap pm "
-                     "JOIN ww_shows s ON s.showid = pm.showid "
-                     "WHERE pm.panelistid = %s ) AS all_shows, ( "
-                     "SELECT COUNT(pm.panelistid) FROM ww_showpnlmap pm "
-                     "JOIN ww_shows s ON pm.showid = s.showid "
-                     "WHERE pm.panelistid = %s AND s.bestof = 0 AND "
-                     "s.repeatshowid IS NULL "
-                     "AND pm.panelistscore IS NOT NULL ) "
-                     "AS shows_with_scores;")
-        cursor.execute(query, (panelist_id, panelist_id, panelist_id, ))
+            query = (
+                "SELECT ( "
+                "SELECT COUNT(pm.showid) FROM ww_showpnlmap pm "
+                "JOIN ww_shows s ON s.showid = pm.showid "
+                "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
+                "pm.panelistid = %s ) AS regular_shows, ( "
+                "SELECT COUNT(pm.showid) FROM ww_showpnlmap pm "
+                "JOIN ww_shows s ON s.showid = pm.showid "
+                "WHERE pm.panelistid = %s ) AS all_shows, ( "
+                "SELECT COUNT(pm.panelistid) FROM ww_showpnlmap pm "
+                "JOIN ww_shows s ON pm.showid = s.showid "
+                "WHERE pm.panelistid = %s AND s.bestof = 0 AND "
+                "s.repeatshowid IS NULL "
+                "AND pm.panelistscore IS NOT NULL ) "
+                "AS shows_with_scores;"
+            )
+        cursor.execute(
+            query,
+            (
+                panelist_id,
+                panelist_id,
+                panelist_id,
+            ),
+        )
         result = cursor.fetchone()
 
         if result:
@@ -110,30 +121,34 @@ class PanelistAppearances:
             }
 
         if exclude_null_dates:
-            query = ("SELECT MIN(s.showid) AS first_id, "
-                     "MIN(s.showdate) AS first, "
-                     "MAX(s.showid) AS most_recent_id, "
-                     "MAX(s.showdate) AS most_recent "
-                     "FROM ww_showpnlmap pm "
-                     "JOIN ww_shows s ON s.showid = pm.showid "
-                     "WHERE pm.panelistid = %s "
-                     "AND s.bestof = 0 "
-                     "AND s.repeatshowid IS NULL "
-                     "AND s.showdate IS NOT NULL "
-                     "ORDER BY s.showdate ASC;")
+            query = (
+                "SELECT MIN(s.showid) AS first_id, "
+                "MIN(s.showdate) AS first, "
+                "MAX(s.showid) AS most_recent_id, "
+                "MAX(s.showdate) AS most_recent "
+                "FROM ww_showpnlmap pm "
+                "JOIN ww_shows s ON s.showid = pm.showid "
+                "WHERE pm.panelistid = %s "
+                "AND s.bestof = 0 "
+                "AND s.repeatshowid IS NULL "
+                "AND s.showdate IS NOT NULL "
+                "ORDER BY s.showdate ASC;"
+            )
         else:
-            query = ("SELECT MIN(s.showid) AS first_id, "
-                     "MIN(s.showdate) AS first, "
-                     "MAX(s.showid) AS most_recent_id, "
-                     "MAX(s.showdate) AS most_recent "
-                     "FROM ww_showpnlmap pm "
-                     "JOIN ww_shows s ON s.showid = pm.showid "
-                     "WHERE pm.panelistid = %s "
-                     "AND s.bestof = 0 "
-                     "AND s.repeatshowid IS NULL "
-                     "ORDER BY s.showdate ASC;")
+            query = (
+                "SELECT MIN(s.showid) AS first_id, "
+                "MIN(s.showdate) AS first, "
+                "MAX(s.showid) AS most_recent_id, "
+                "MAX(s.showdate) AS most_recent "
+                "FROM ww_showpnlmap pm "
+                "JOIN ww_shows s ON s.showid = pm.showid "
+                "WHERE pm.panelistid = %s "
+                "AND s.bestof = 0 "
+                "AND s.repeatshowid IS NULL "
+                "ORDER BY s.showdate ASC;"
+            )
 
-        cursor.execute(query, (panelist_id, ))
+        cursor.execute(query, (panelist_id,))
         result = cursor.fetchone()
 
         if result and result.first_id:
@@ -161,29 +176,33 @@ class PanelistAppearances:
             }
 
         if exclude_null_dates:
-            query = ("SELECT pm.showid AS show_id, s.showdate AS date, "
-                     "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-                     "pm.panelistlrndstart AS start, "
-                     "pm.panelistlrndcorrect AS correct, "
-                     "pm.panelistscore AS score, "
-                     "pm.showpnlrank AS pnl_rank FROM ww_showpnlmap pm "
-                     "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
-                     "JOIN ww_shows s ON s.showid = pm.showid "
-                     "WHERE pm.panelistid = %s "
-                     "AND s.showdate IS NOT NULL "
-                     "ORDER BY s.showdate ASC;")
+            query = (
+                "SELECT pm.showid AS show_id, s.showdate AS date, "
+                "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
+                "pm.panelistlrndstart AS start, "
+                "pm.panelistlrndcorrect AS correct, "
+                "pm.panelistscore AS score, "
+                "pm.showpnlrank AS pnl_rank FROM ww_showpnlmap pm "
+                "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
+                "JOIN ww_shows s ON s.showid = pm.showid "
+                "WHERE pm.panelistid = %s "
+                "AND s.showdate IS NOT NULL "
+                "ORDER BY s.showdate ASC;"
+            )
         else:
-            query = ("SELECT pm.showid AS show_id, s.showdate AS date, "
-                     "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-                     "pm.panelistlrndstart AS start, "
-                     "pm.panelistlrndcorrect AS correct, "
-                     "pm.panelistscore AS score, "
-                     "pm.showpnlrank AS pnl_rank FROM ww_showpnlmap pm "
-                     "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
-                     "JOIN ww_shows s ON s.showid = pm.showid "
-                     "WHERE pm.panelistid = %s "
-                     "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (panelist_id, ))
+            query = (
+                "SELECT pm.showid AS show_id, s.showdate AS date, "
+                "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
+                "pm.panelistlrndstart AS start, "
+                "pm.panelistlrndcorrect AS correct, "
+                "pm.panelistscore AS score, "
+                "pm.showpnlrank AS pnl_rank FROM ww_showpnlmap pm "
+                "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
+                "JOIN ww_shows s ON s.showid = pm.showid "
+                "WHERE pm.panelistid = %s "
+                "ORDER BY s.showdate ASC;"
+            )
+        cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
 
@@ -195,8 +214,12 @@ class PanelistAppearances:
                     "date": appearance.date.isoformat(),
                     "best_of": bool(appearance.best_of),
                     "repeat_show": bool(appearance.repeat_show_id),
-                    "lightning_round_start": appearance.start if appearance.start else None,
-                    "lightning_round_correct": appearance.correct if appearance.correct else None,
+                    "lightning_round_start": appearance.start
+                    if appearance.start
+                    else None,
+                    "lightning_round_correct": appearance.correct
+                    if appearance.correct
+                    else None,
                     "score": appearance.score if appearance.score else None,
                     "rank": appearance.pnl_rank if appearance.pnl_rank else None,
                 }
@@ -211,10 +234,9 @@ class PanelistAppearances:
         return appearance_info
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_slug(self,
-                                     panelist_slug: str,
-                                     exclude_null_dates: bool = False
-                                     ) -> Dict[str, Any]:
+    def retrieve_appearances_by_slug(
+        self, panelist_slug: str, exclude_null_dates: bool = False
+    ) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested panelist slug string.
 
@@ -232,8 +254,7 @@ class PanelistAppearances:
         return self.retrieve_appearances_by_id(id_, exclude_null_dates)
 
     @lru_cache(typed=True)
-    def retrieve_yearly_appearances_by_id(self, panelist_id: int
-                                          ) -> Dict[int, int]:
+    def retrieve_yearly_appearances_by_id(self, panelist_id: int) -> Dict[int, int]:
         """Returns a dictionary containing panelist appearances broken
         down by year, for the requested panelist ID.
 
@@ -247,9 +268,11 @@ class PanelistAppearances:
 
         years = {}
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = ("SELECT DISTINCT YEAR(s.showdate) AS year "
-                 "FROM ww_shows s "
-                 "ORDER BY YEAR(s.showdate) ASC;")
+        query = (
+            "SELECT DISTINCT YEAR(s.showdate) AS year "
+            "FROM ww_shows s "
+            "ORDER BY YEAR(s.showdate) ASC;"
+        )
         cursor.execute(query)
         results = cursor.fetchall()
 
@@ -259,16 +282,18 @@ class PanelistAppearances:
         for row in results:
             years[row.year] = 0
 
-        query = ("SELECT YEAR(s.showdate) AS year, "
-                 "COUNT(p.panelist) AS count "
-                 "FROM ww_showpnlmap pm "
-                 "JOIN ww_shows s ON s.showid = pm.showid "
-                 "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
-                 "WHERE pm.panelistid = %s AND s.bestof = 0 "
-                 "AND s.repeatshowid IS NULL "
-                 "GROUP BY p.panelist, YEAR(s.showdate) "
-                 "ORDER BY p.panelist ASC, YEAR(s.showdate) ASC;")
-        cursor.execute(query, (panelist_id, ))
+        query = (
+            "SELECT YEAR(s.showdate) AS year, "
+            "COUNT(p.panelist) AS count "
+            "FROM ww_showpnlmap pm "
+            "JOIN ww_shows s ON s.showid = pm.showid "
+            "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
+            "WHERE pm.panelistid = %s AND s.bestof = 0 "
+            "AND s.repeatshowid IS NULL "
+            "GROUP BY p.panelist, YEAR(s.showdate) "
+            "ORDER BY p.panelist ASC, YEAR(s.showdate) ASC;"
+        )
+        cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
 
@@ -281,8 +306,7 @@ class PanelistAppearances:
         return years
 
     @lru_cache(typed=True)
-    def retrieve_yearly_appearances_by_slug(self, panelist_slug: str
-                                            ) -> Dict[int, int]:
+    def retrieve_yearly_appearances_by_slug(self, panelist_slug: str) -> Dict[int, int]:
         """Returns a dictionary containing panelist appearances broken
         down by year, for the requested panelist slug string.
 

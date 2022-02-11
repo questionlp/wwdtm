@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.scorekeeper.Scorekeeper`
 """
@@ -49,13 +49,13 @@ def test_scorekeeper_retrieve_all_details(exclude_nulls: bool):
 
     assert scorekeepers, "No scorekeepers could be retrieved"
     assert "id" in scorekeepers[0], "'id' was not returned for first list item"
-    assert "appearances" in scorekeepers[0], ("'appearances' was not returned "
-                                              "for the first list item")
+    assert "appearances" in scorekeepers[0], (
+        "'appearances' was not returned " "for the first list item"
+    )
 
 
 def test_scorekeeper_retrieve_all_ids():
-    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all_ids`
-    """
+    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all_ids`"""
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
     ids = scorekeeper.retrieve_all_ids()
 
@@ -63,16 +63,14 @@ def test_scorekeeper_retrieve_all_ids():
 
 
 def test_scorekeeper_retrieve_all_slugs():
-    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all_slugs`
-    """
+    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all_slugs`"""
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
     slugs = scorekeeper.retrieve_all_slugs()
 
     assert slugs, "No scorekeeper slug strings could be retrieved"
 
 
-@pytest.mark.parametrize("scorekeeper_id, exclude_null",
-                         [(13, True), (13, False)])
+@pytest.mark.parametrize("scorekeeper_id, exclude_null", [(13, True), (13, False)])
 def test_scorekeeper_retrieve_by_id(scorekeeper_id: int, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_by_id`
 
@@ -88,10 +86,8 @@ def test_scorekeeper_retrieve_by_id(scorekeeper_id: int, exclude_null: bool):
     assert "name" in info, f"'name' was not returned for ID {scorekeeper_id}"
 
 
-@pytest.mark.parametrize("scorekeeper_id, exclude_null",
-                         [(13, True), (13, False)])
-def test_scorekeeper_retrieve_details_by_id(scorekeeper_id: int,
-                                            exclude_null: bool):
+@pytest.mark.parametrize("scorekeeper_id, exclude_null", [(13, True), (13, False)])
+def test_scorekeeper_retrieve_details_by_id(scorekeeper_id: int, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_details_by_id`
 
     :param scorekeeper_id: Scorekeeper ID to test retrieving scorekeeper
@@ -104,13 +100,16 @@ def test_scorekeeper_retrieve_details_by_id(scorekeeper_id: int,
 
     assert info, f"Scorekeeper ID {scorekeeper_id} not found"
     assert "name" in info, f"'name' was not returned for ID {scorekeeper_id}"
-    assert "appearances" in info, f"'appearances' was not returned for ID {scorekeeper_id}"
+    assert (
+        "appearances" in info
+    ), f"'appearances' was not returned for ID {scorekeeper_id}"
 
 
-@pytest.mark.parametrize("scorekeeper_slug, exclude_null",
-                         [("chioke-i-anson", True), ("chioke-i-anson", False)])
-def test_scorekeeper_retrieve_by_slug(scorekeeper_slug: str,
-                                      exclude_null: bool):
+@pytest.mark.parametrize(
+    "scorekeeper_slug, exclude_null",
+    [("chioke-i-anson", True), ("chioke-i-anson", False)],
+)
+def test_scorekeeper_retrieve_by_slug(scorekeeper_slug: str, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_by_slug`
 
     :param scorekeeper_slug: Scorekeeper slug string to test retrieving
@@ -125,10 +124,13 @@ def test_scorekeeper_retrieve_by_slug(scorekeeper_slug: str,
     assert "name" in info, f"'name' was not returned for slug {scorekeeper_slug}"
 
 
-@pytest.mark.parametrize("scorekeeper_slug, exclude_null",
-                         [("chioke-i-anson", True), ("chioke-i-anson", False)])
-def test_scorekeeper_retrieve_details_by_slug(scorekeeper_slug: str,
-                                              exclude_null: bool):
+@pytest.mark.parametrize(
+    "scorekeeper_slug, exclude_null",
+    [("chioke-i-anson", True), ("chioke-i-anson", False)],
+)
+def test_scorekeeper_retrieve_details_by_slug(
+    scorekeeper_slug: str, exclude_null: bool
+):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_details_by_slug`
 
     :param scorekeeper_slug: Scorekeeper slug string to test retrieving
@@ -141,4 +143,6 @@ def test_scorekeeper_retrieve_details_by_slug(scorekeeper_slug: str,
 
     assert info, f"Scorekeeper slug {scorekeeper_slug} not found"
     assert "name" in info, f"'name' was not returned for slug {scorekeeper_slug}"
-    assert "appearances" in info, f"'appearances' was not returned for slug {scorekeeper_slug}"
+    assert (
+        "appearances" in info
+    ), f"'appearances' was not returned for slug {scorekeeper_slug}"

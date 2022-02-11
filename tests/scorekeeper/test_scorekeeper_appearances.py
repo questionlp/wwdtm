@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.scorekeeper.ScorekeeperAppearances`
 """
@@ -23,10 +23,12 @@ def get_connect_dict() -> Dict[str, Any]:
             return config_dict["database"]
 
 
-@pytest.mark.parametrize("scorekeeper_id, exclude_null_dates",
-                         [(13, True), (13, False)])
-def test_scorekeeper_appearance_retrieve_appearances_by_id(scorekeeper_id: int,
-                                                           exclude_null_dates: bool):
+@pytest.mark.parametrize(
+    "scorekeeper_id, exclude_null_dates", [(13, True), (13, False)]
+)
+def test_scorekeeper_appearance_retrieve_appearances_by_id(
+    scorekeeper_id: int, exclude_null_dates: bool
+):
     """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperAppearances.retrieve_appearances_by_id`
 
     :param scorekeeper_id: Scorekeeper ID to test retrieving scorekeeper
@@ -35,17 +37,21 @@ def test_scorekeeper_appearance_retrieve_appearances_by_id(scorekeeper_id: int,
         that have SQL ``NULL`` for show dates
     """
     appearances = ScorekeeperAppearances(connect_dict=get_connect_dict())
-    appearance = appearances.retrieve_appearances_by_id(scorekeeper_id,
-                                                        exclude_null_dates)
+    appearance = appearances.retrieve_appearances_by_id(
+        scorekeeper_id, exclude_null_dates
+    )
 
     assert "count" in appearance, f"'count' was not returned for ID {scorekeeper_id}"
     assert "shows" in appearance, f"'shows' was not returned for ID {scorekeeper_id}"
 
 
-@pytest.mark.parametrize("scorekeeper_slug, exclude_null_dates",
-                         [("chioke-i-anson", True), ("chioke-i-anson", False)])
-def test_scorekeeper_appearance_retrieve_appearances_by_slug(scorekeeper_slug: str,
-                                                             exclude_null_dates: bool):
+@pytest.mark.parametrize(
+    "scorekeeper_slug, exclude_null_dates",
+    [("chioke-i-anson", True), ("chioke-i-anson", False)],
+)
+def test_scorekeeper_appearance_retrieve_appearances_by_slug(
+    scorekeeper_slug: str, exclude_null_dates: bool
+):
     """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperAppearances.retrieve_appearances_by_slug`
 
     :param scorekeeper_slug: Scorekeeper slug string to test retrieving
@@ -54,8 +60,13 @@ def test_scorekeeper_appearance_retrieve_appearances_by_slug(scorekeeper_slug: s
         that have SQL ``NULL`` for show dates
     """
     appearances = ScorekeeperAppearances(connect_dict=get_connect_dict())
-    appearance = appearances.retrieve_appearances_by_slug(scorekeeper_slug,
-                                                          exclude_null_dates)
+    appearance = appearances.retrieve_appearances_by_slug(
+        scorekeeper_slug, exclude_null_dates
+    )
 
-    assert "count" in appearance, f"'count' was not returned for slug {scorekeeper_slug}"
-    assert "shows" in appearance, f"'shows' was not returned for slug {scorekeeper_slug}"
+    assert (
+        "count" in appearance
+    ), f"'count' was not returned for slug {scorekeeper_slug}"
+    assert (
+        "shows" in appearance
+    ), f"'shows' was not returned for slug {scorekeeper_slug}"

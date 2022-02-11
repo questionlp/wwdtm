@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Host Appearance Retrieval Functions
 """
@@ -23,11 +23,12 @@ class HostAppearances:
         connection
     """
 
-    def __init__(self,
-                 connect_dict: Optional[Dict[str, Any]] = None,
-                 database_connection: Optional[connect] = None):
-        """Class initialization method.
-        """
+    def __init__(
+        self,
+        connect_dict: Optional[Dict[str, Any]] = None,
+        database_connection: Optional[connect] = None,
+    ):
+        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -40,10 +41,9 @@ class HostAppearances:
         self.utility = HostUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_id(self,
-                                   host_id: int,
-                                   exclude_null_dates: bool = False
-                                   ) -> Dict[str, Any]:
+    def retrieve_appearances_by_id(
+        self, host_id: int, exclude_null_dates: bool = False
+    ) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested host ID.
 
@@ -59,27 +59,37 @@ class HostAppearances:
 
         cursor = self.database_connection.cursor(named_tuple=True)
         if exclude_null_dates:
-            query = ("SELECT ( "
-                     "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
-                     "JOIN ww_shows s ON s.showid = hm.showid "
-                     "WHERE hm.hostid = %s AND s.bestof = 0 "
-                     "AND s.repeatshowid IS NULL "
-                     "AND s.showdate IS NOT NULL ) AS regular_shows, ( "
-                     "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
-                     "JOIN ww_shows s ON s.showid = hm.showid "
-                     "WHERE hm.hostid = %s "
-                     "AND s.showdate IS NOT NULL) AS all_shows;")
+            query = (
+                "SELECT ( "
+                "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
+                "JOIN ww_shows s ON s.showid = hm.showid "
+                "WHERE hm.hostid = %s AND s.bestof = 0 "
+                "AND s.repeatshowid IS NULL "
+                "AND s.showdate IS NOT NULL ) AS regular_shows, ( "
+                "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
+                "JOIN ww_shows s ON s.showid = hm.showid "
+                "WHERE hm.hostid = %s "
+                "AND s.showdate IS NOT NULL) AS all_shows;"
+            )
         else:
-            query = ("SELECT ( "
-                     "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
-                     "JOIN ww_shows s ON s.showid = hm.showid "
-                     "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
-                     "hm.hostid = %s ) AS regular_shows, ( "
-                     "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
-                     "JOIN ww_shows s ON s.showid = hm.showid "
-                     "WHERE hm.hostid = %s ) AS all_shows;")
+            query = (
+                "SELECT ( "
+                "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
+                "JOIN ww_shows s ON s.showid = hm.showid "
+                "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
+                "hm.hostid = %s ) AS regular_shows, ( "
+                "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
+                "JOIN ww_shows s ON s.showid = hm.showid "
+                "WHERE hm.hostid = %s ) AS all_shows;"
+            )
 
-        cursor.execute(query, (host_id, host_id, ))
+        cursor.execute(
+            query,
+            (
+                host_id,
+                host_id,
+            ),
+        )
         result = cursor.fetchone()
 
         if result:
@@ -94,24 +104,28 @@ class HostAppearances:
             }
 
         if exclude_null_dates:
-            query = ("SELECT hm.showid AS show_id, s.showdate AS date, "
-                     "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-                     "hm.guest FROM ww_showhostmap hm "
-                     "JOIN ww_hosts h ON h.hostid = hm.hostid "
-                     "JOIN ww_shows s ON s.showid = hm.showid "
-                     "WHERE hm.hostid = %s "
-                     "AND s.showdate IS NOT NULL "
-                     "ORDER BY s.showdate ASC;")
+            query = (
+                "SELECT hm.showid AS show_id, s.showdate AS date, "
+                "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
+                "hm.guest FROM ww_showhostmap hm "
+                "JOIN ww_hosts h ON h.hostid = hm.hostid "
+                "JOIN ww_shows s ON s.showid = hm.showid "
+                "WHERE hm.hostid = %s "
+                "AND s.showdate IS NOT NULL "
+                "ORDER BY s.showdate ASC;"
+            )
         else:
-            query = ("SELECT hm.showid AS show_id, s.showdate AS date, "
-                     "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-                     "hm.guest FROM ww_showhostmap hm "
-                     "JOIN ww_hosts h ON h.hostid = hm.hostid "
-                     "JOIN ww_shows s ON s.showid = hm.showid "
-                     "WHERE hm.hostid = %s "
-                     "ORDER BY s.showdate ASC;")
+            query = (
+                "SELECT hm.showid AS show_id, s.showdate AS date, "
+                "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
+                "hm.guest FROM ww_showhostmap hm "
+                "JOIN ww_hosts h ON h.hostid = hm.hostid "
+                "JOIN ww_shows s ON s.showid = hm.showid "
+                "WHERE hm.hostid = %s "
+                "ORDER BY s.showdate ASC;"
+            )
 
-        cursor.execute(query, (host_id, ))
+        cursor.execute(query, (host_id,))
         results = cursor.fetchall()
         cursor.close()
 
@@ -138,10 +152,9 @@ class HostAppearances:
             }
 
     @lru_cache(typed=True)
-    def retrieve_appearances_by_slug(self,
-                                     host_slug: str,
-                                     exclude_null_dates: bool = False
-                                     ) -> Dict[str, Any]:
+    def retrieve_appearances_by_slug(
+        self, host_slug: str, exclude_null_dates: bool = False
+    ) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing appearance
         information for the requested host ID.
 

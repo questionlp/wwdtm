@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Location Recordings Retrieval Functions
 """
@@ -23,11 +23,12 @@ class LocationRecordings:
         connection
     """
 
-    def __init__(self,
-                 connect_dict: Optional[Dict[str, Any]] = None,
-                 database_connection: Optional[connect] = None):
-        """Class initialization method.
-        """
+    def __init__(
+        self,
+        connect_dict: Optional[Dict[str, Any]] = None,
+        database_connection: Optional[connect] = None,
+    ):
+        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -40,10 +41,9 @@ class LocationRecordings:
         self.utility = LocationUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
-    def retrieve_recordings_by_id(self,
-                                  location_id: int,
-                                  exclude_null_dates: bool = False
-                                  ) -> Dict[str, Any]:
+    def retrieve_recordings_by_id(
+        self, location_id: int, exclude_null_dates: bool = False
+    ) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing recording
         information for the requested location ID.
 
@@ -59,26 +59,36 @@ class LocationRecordings:
 
         cursor = self.database_connection.cursor(named_tuple=True)
         if exclude_null_dates:
-            query = ("SELECT ( "
-                     "SELECT COUNT(lm.showid) FROM ww_showlocationmap lm "
-                     "JOIN ww_shows s ON s.showid = lm.showid "
-                     "WHERE lm.locationid = %s AND s.bestof = 0 "
-                     "AND s.repeatshowid IS NULL "
-                     "AND s.showdate IS NOT NULL) AS regular_shows, ( "
-                     "SELECT COUNT(lm.showid) FROM ww_showlocationmap lm "
-                     "JOIN ww_shows s ON s.showid = lm.showid "
-                     "WHERE lm.locationid = %s "
-                     "AND s.showdate IS NOT NULL) AS all_shows;")
+            query = (
+                "SELECT ( "
+                "SELECT COUNT(lm.showid) FROM ww_showlocationmap lm "
+                "JOIN ww_shows s ON s.showid = lm.showid "
+                "WHERE lm.locationid = %s AND s.bestof = 0 "
+                "AND s.repeatshowid IS NULL "
+                "AND s.showdate IS NOT NULL) AS regular_shows, ( "
+                "SELECT COUNT(lm.showid) FROM ww_showlocationmap lm "
+                "JOIN ww_shows s ON s.showid = lm.showid "
+                "WHERE lm.locationid = %s "
+                "AND s.showdate IS NOT NULL) AS all_shows;"
+            )
         else:
-            query = ("SELECT ( "
-                     "SELECT COUNT(lm.showid) FROM ww_showlocationmap lm "
-                     "JOIN ww_shows s ON s.showid = lm.showid "
-                     "WHERE lm.locationid = %s AND s.bestof = 0 "
-                     "AND s.repeatshowid IS NULL) AS regular_shows, ( "
-                     "SELECT COUNT(lm.showid) FROM ww_showlocationmap lm "
-                     "JOIN ww_shows s ON s.showid = lm.showid "
-                     "WHERE lm.locationid = %s ) AS all_shows;")
-        cursor.execute(query, (location_id, location_id, ))
+            query = (
+                "SELECT ( "
+                "SELECT COUNT(lm.showid) FROM ww_showlocationmap lm "
+                "JOIN ww_shows s ON s.showid = lm.showid "
+                "WHERE lm.locationid = %s AND s.bestof = 0 "
+                "AND s.repeatshowid IS NULL) AS regular_shows, ( "
+                "SELECT COUNT(lm.showid) FROM ww_showlocationmap lm "
+                "JOIN ww_shows s ON s.showid = lm.showid "
+                "WHERE lm.locationid = %s ) AS all_shows;"
+            )
+        cursor.execute(
+            query,
+            (
+                location_id,
+                location_id,
+            ),
+        )
         result = cursor.fetchone()
 
         recording_counts = {
@@ -87,21 +97,25 @@ class LocationRecordings:
         }
 
         if exclude_null_dates:
-            query = ("SELECT lm.showid AS show_id, s.showdate AS date, "
-                     "s.bestof AS best_of, s.repeatshowid AS repeat_show_id "
-                     "FROM ww_showlocationmap lm "
-                     "JOIN ww_shows s ON s.showid = lm.showid "
-                     "WHERE lm.locationid = %s "
-                     "AND s.showdate IS NOT NULL "
-                     "ORDER BY s.showdate ASC;")
+            query = (
+                "SELECT lm.showid AS show_id, s.showdate AS date, "
+                "s.bestof AS best_of, s.repeatshowid AS repeat_show_id "
+                "FROM ww_showlocationmap lm "
+                "JOIN ww_shows s ON s.showid = lm.showid "
+                "WHERE lm.locationid = %s "
+                "AND s.showdate IS NOT NULL "
+                "ORDER BY s.showdate ASC;"
+            )
         else:
-            query = ("SELECT lm.showid AS show_id, s.showdate AS date, "
-                     "s.bestof AS best_of, s.repeatshowid AS repeat_show_id "
-                     "FROM ww_showlocationmap lm "
-                     "JOIN ww_shows s ON s.showid = lm.showid "
-                     "WHERE lm.locationid = %s "
-                     "ORDER BY s.showdate ASC;")
-        cursor.execute(query, (location_id, ))
+            query = (
+                "SELECT lm.showid AS show_id, s.showdate AS date, "
+                "s.bestof AS best_of, s.repeatshowid AS repeat_show_id "
+                "FROM ww_showlocationmap lm "
+                "JOIN ww_shows s ON s.showid = lm.showid "
+                "WHERE lm.locationid = %s "
+                "ORDER BY s.showdate ASC;"
+            )
+        cursor.execute(query, (location_id,))
         results = cursor.fetchall()
         cursor.close()
 
@@ -127,10 +141,9 @@ class LocationRecordings:
             }
 
     @lru_cache(typed=True)
-    def retrieve_recordings_by_slug(self,
-                                    location_slug: str,
-                                    exclude_null_dates: bool = False
-                                    ) -> Dict[str, Any]:
+    def retrieve_recordings_by_slug(
+        self, location_slug: str, exclude_null_dates: bool = False
+    ) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing recording
         information for the requested location slug string.
 

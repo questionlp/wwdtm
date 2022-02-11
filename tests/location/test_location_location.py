@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.location.Location`
 """
@@ -52,13 +52,13 @@ def test_location_retrieve_all_details(exclude_nulls: bool):
 
     assert locations, "No locations could be retrieved"
     assert "id" in locations[0], "'id' was not returned for first list item"
-    assert "recordings" in locations[0], ("'recordings' was not returned for "
-                                          "the first list item")
+    assert "recordings" in locations[0], (
+        "'recordings' was not returned for " "the first list item"
+    )
 
 
 def test_location_retrieve_all_ids():
-    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_ids`
-    """
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_ids`"""
     location = Location(connect_dict=get_connect_dict())
     ids = location.retrieve_all_ids()
 
@@ -66,16 +66,14 @@ def test_location_retrieve_all_ids():
 
 
 def test_location_retrieve_all_slugs():
-    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_slugs`
-    """
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_slugs`"""
     location = Location(connect_dict=get_connect_dict())
     slugs = location.retrieve_all_slugs()
 
     assert slugs, "No location slug strings could be retrieved"
 
 
-@pytest.mark.parametrize("location_id, exclude_null",
-                         [(95, True), (95, False)])
+@pytest.mark.parametrize("location_id, exclude_null", [(95, True), (95, False)])
 def test_location_retrieve_by_id(location_id: int, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.location.Location.retrieve_by_id`
 
@@ -91,8 +89,7 @@ def test_location_retrieve_by_id(location_id: int, exclude_null: bool):
     assert "venue" in info, f"'venue' was not returned for ID {location_id}"
 
 
-@pytest.mark.parametrize("location_id, exclude_null",
-                         [(95, True), (95, False)])
+@pytest.mark.parametrize("location_id, exclude_null", [(95, True), (95, False)])
 def test_location_retrieve_details_by_id(location_id: int, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.location.location.retrieve_details_by_id`
 
@@ -108,9 +105,13 @@ def test_location_retrieve_details_by_id(location_id: int, exclude_null: bool):
     assert "recordings" in info, f"'recordings' was not returned for ID {location_id}"
 
 
-@pytest.mark.parametrize("location_slug, exclude_null",
-                         [("the-chicago-theatre-chicago-il", True),
-                          ("the-chicago-theatre-chicago-il", False)])
+@pytest.mark.parametrize(
+    "location_slug, exclude_null",
+    [
+        ("the-chicago-theatre-chicago-il", True),
+        ("the-chicago-theatre-chicago-il", False),
+    ],
+)
 def test_location_retrieve_by_slug(location_slug: str, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.location.Location.retrieve_by_slug`
 
@@ -126,11 +127,14 @@ def test_location_retrieve_by_slug(location_slug: str, exclude_null: bool):
     assert "venue" in info, f"'venue' was not returned for slug {location_slug}"
 
 
-@pytest.mark.parametrize("location_slug, exclude_null",
-                         [("the-chicago-theatre-chicago-il", True),
-                          ("the-chicago-theatre-chicago-il", False)])
-def test_location_retrieve_details_by_slug(location_slug: str,
-                                           exclude_null: bool):
+@pytest.mark.parametrize(
+    "location_slug, exclude_null",
+    [
+        ("the-chicago-theatre-chicago-il", True),
+        ("the-chicago-theatre-chicago-il", False),
+    ],
+)
+def test_location_retrieve_details_by_slug(location_slug: str, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.location.Location.retrieve_details_by_slug`
 
     :param location_slug: Location slug string to test retrieving
@@ -143,4 +147,6 @@ def test_location_retrieve_details_by_slug(location_slug: str,
 
     assert info, f"Location slug {location_slug} not found"
     assert "venue" in info, f"'venue' was not returned for slug {location_slug}"
-    assert "recordings" in info, f"'recordings' was not returned for slug {location_slug}"
+    assert (
+        "recordings" in info
+    ), f"'recordings' was not returned for slug {location_slug}"

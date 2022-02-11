@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2021 Linh Pham
+# Copyright (c) 2018-2022 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.guest.Guest`
 """
@@ -52,13 +52,13 @@ def test_guest_retrieve_all_details(exclude_nulls: bool):
 
     assert guests, "No guests could be retrieved"
     assert "id" in guests[0], "'id' was not returned for first list item"
-    assert "appearances" in guests[0], ("'appearances' was not returned for "
-                                        "the first list item")
+    assert "appearances" in guests[0], (
+        "'appearances' was not returned for " "the first list item"
+    )
 
 
 def test_guest_retrieve_all_ids():
-    """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_all_ids`
-    """
+    """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_all_ids`"""
     guest = Guest(connect_dict=get_connect_dict())
     ids = guest.retrieve_all_ids()
 
@@ -66,16 +66,14 @@ def test_guest_retrieve_all_ids():
 
 
 def test_guest_retrieve_all_slugs():
-    """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_all_slugs`
-    """
+    """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_all_slugs`"""
     guest = Guest(connect_dict=get_connect_dict())
     slugs = guest.retrieve_all_slugs()
 
     assert slugs, "No guest slug strings could be retrieved"
 
 
-@pytest.mark.parametrize("guest_id, exclude_null",
-                         [(976, True), (976, False)])
+@pytest.mark.parametrize("guest_id, exclude_null", [(976, True), (976, False)])
 def test_guest_retrieve_by_id(guest_id: int, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_by_id`
 
@@ -90,8 +88,9 @@ def test_guest_retrieve_by_id(guest_id: int, exclude_null: bool):
     assert "name" in info, f"'name' was not returned for ID {guest_id}"
 
 
-@pytest.mark.parametrize("guest_slug, exclude_null",
-                         [("tom-hanks", True), ("tom-hanks", False)])
+@pytest.mark.parametrize(
+    "guest_slug, exclude_null", [("tom-hanks", True), ("tom-hanks", False)]
+)
 def test_guest_retrieve_by_slug(guest_slug: str, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_by_slug`
 
@@ -123,8 +122,9 @@ def test_guest_retrieve_details_by_id(guest_id: int, exclude_null: bool):
     assert "appearances" in info, f"'appearances' was not returned for ID {guest_id}"
 
 
-@pytest.mark.parametrize("guest_slug, exclude_null",
-                         [("tom-hanks", True), ("tom-hanks", False)])
+@pytest.mark.parametrize(
+    "guest_slug, exclude_null", [("tom-hanks", True), ("tom-hanks", False)]
+)
 def test_guest_guest_retrieve_details_by_slug(guest_slug: str, exclude_null: bool):
     """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_details_by_slug`
 
@@ -138,4 +138,6 @@ def test_guest_guest_retrieve_details_by_slug(guest_slug: str, exclude_null: boo
 
     assert info, f"Guest slug {guest_slug} not found"
     assert "name" in info, f"'name' was not returned for slug {guest_slug}"
-    assert "appearances" in info, f"'appearances' was not returned for slug {guest_slug}"
+    assert (
+        "appearances" in info
+    ), f"'appearances' was not returned for slug {guest_slug}"
