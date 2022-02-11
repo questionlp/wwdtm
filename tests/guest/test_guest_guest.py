@@ -42,9 +42,9 @@ def test_guest_retrieve_all_details():
 
     assert guests, "No guests could be retrieved"
     assert "id" in guests[0], "'id' was not returned for first list item"
-    assert "appearances" in guests[0], (
-        "'appearances' was not returned for " "the first list item"
-    )
+    assert (
+        "appearances" in guests[0]
+    ), "'appearances' was not returned for the first list item"
 
 
 def test_guest_retrieve_all_ids():

@@ -39,9 +39,9 @@ def test_scorekeeper_retrieve_all_details():
 
     assert scorekeepers, "No scorekeepers could be retrieved"
     assert "id" in scorekeepers[0], "'id' was not returned for first list item"
-    assert "appearances" in scorekeepers[0], (
-        "'appearances' was not returned " "for the first list item"
-    )
+    assert (
+        "appearances" in scorekeepers[0]
+    ), "'appearances' was not returned for the first list item"
 
 
 def test_scorekeeper_retrieve_all_ids():
