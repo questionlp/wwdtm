@@ -26,7 +26,7 @@ def get_connect_dict() -> Dict[str, Any]:
             return config_dict["database"]
 
 
-@pytest.mark.parametrize("panelist_id", [14])
+@pytest.mark.parametrize("panelist_id", [14, 73])
 def test_panelist_appearances_retrieve_appearances_by_id(panelist_id: int):
     """Testing for :py:meth:`wwdtm.panelist.PanelistAppearances.retrieve_appearances_by_id`
 
@@ -40,7 +40,7 @@ def test_panelist_appearances_retrieve_appearances_by_id(panelist_id: int):
     assert "shows" in appearance, f"'shows' was not returned for ID {panelist_id}"
 
 
-@pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
+@pytest.mark.parametrize("panelist_slug", ["luke-burbank", "maeve-higgins"])
 def test_panelist_appearances_retrieve_appearances_by_slug(panelist_slug: str):
     """Testing for :py:meth:`wwdtm.panelist.PanelistAppearances.retrieve_appearances_by_slug`
 
@@ -54,7 +54,7 @@ def test_panelist_appearances_retrieve_appearances_by_slug(panelist_slug: str):
     assert "shows" in appearance, f"'shows' was not returned for slug {panelist_slug}"
 
 
-@pytest.mark.parametrize("panelist_id", [14])
+@pytest.mark.parametrize("panelist_id", [14, 73])
 def test_panelist_appearances_retrieve_yearly_appearances_by_id(panelist_id: int):
     """Testing for :py:meth:`wwdtm.panelist.PanelistAppearances.retrieve_yearly_appearances_by_id`
 
@@ -67,7 +67,7 @@ def test_panelist_appearances_retrieve_yearly_appearances_by_id(panelist_id: int
     assert breakdown, f"No appearance information returned for ID {panelist_id}"
 
 
-@pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
+@pytest.mark.parametrize("panelist_slug", ["luke-burbank", "maeve-higgins"])
 def test_panelist_appearances_retrieve_yearly_appearances_by_slug(panelist_slug: str):
     """Testing for :py:meth:`wwdtm.panelist.PanelistAppearances.retrieve_yearly_appearances_by_slug`
 
