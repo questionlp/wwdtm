@@ -153,14 +153,12 @@ class PanelistAppearances:
                     "date": appearance.date.isoformat(),
                     "best_of": bool(appearance.best_of),
                     "repeat_show": bool(appearance.repeat_show_id),
-                    "lightning_round_start": appearance.start
-                    if appearance.start
+                    "lightning_round_start": appearance.start,
+                    "lightning_round_correct": appearance.correct,
+                    "score": appearance.score if appearance.score is not None else None,
+                    "rank": appearance.pnl_rank
+                    if appearance.pnl_rank is not None
                     else None,
-                    "lightning_round_correct": appearance.correct
-                    if appearance.correct
-                    else None,
-                    "score": appearance.score if appearance.score else None,
-                    "rank": appearance.pnl_rank if appearance.pnl_rank else None,
                 }
                 appearances.append(info)
 
