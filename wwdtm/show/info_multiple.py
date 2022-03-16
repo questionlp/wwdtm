@@ -447,7 +447,7 @@ class ShowInfoMultiple:
                     "id": guest.guest_id,
                     "name": guest.name,
                     "slug": guest.slug if guest.slug else slugify(guest.name),
-                    "score": guest.score if guest.score else None,
+                    "score": guest.score,
                     "score_exception": bool(guest.score_exception),
                 }
             )
@@ -498,7 +498,7 @@ class ShowInfoMultiple:
                     "id": guest.guest_id,
                     "name": guest.name,
                     "slug": guest.slug if guest.slug else slugify(guest.name),
-                    "score": guest.score if guest.score else None,
+                    "score": guest.score,
                     "score_exception": bool(guest.score_exception),
                 }
             )
@@ -546,7 +546,7 @@ class ShowInfoMultiple:
                     "slug": panelist.slug if panelist.slug else slugify(panelist.name),
                     "lightning_round_start": panelist.start,
                     "lightning_round_correct": panelist.correct,
-                    "score": panelist.score if panelist.score else None,
+                    "score": panelist.score,
                     "rank": panelist.pnl_rank if panelist.pnl_rank else None,
                 }
             )
@@ -603,7 +603,7 @@ class ShowInfoMultiple:
                     "lightning_round_correct": panelist.correct
                     if panelist.correct
                     else None,
-                    "score": panelist.score if panelist.score else None,
+                    "score": panelist.score,
                     "rank": panelist.pnl_rank if panelist.pnl_rank else None,
                 }
             )

@@ -263,7 +263,7 @@ class ShowInfo:
                     "id": guest.id,
                     "name": guest.name,
                     "slug": guest.slug if guest.slug else slugify(guest.name),
-                    "score": guest.score if guest.score else None,
+                    "score": guest.score,
                     "score_exception": bool(guest.score_exception),
                 }
             )
@@ -311,7 +311,7 @@ class ShowInfo:
                     "slug": row.slug if row.slug else slugify(row.name),
                     "lightning_round_start": row.start,
                     "lightning_round_correct": row.correct,
-                    "score": row.score if row.score else None,
+                    "score": row.score,
                     "rank": row.pnl_rank if row.pnl_rank else None,
                 }
             )

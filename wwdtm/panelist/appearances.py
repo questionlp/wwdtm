@@ -155,7 +155,7 @@ class PanelistAppearances:
                     "repeat_show": bool(appearance.repeat_show_id),
                     "lightning_round_start": appearance.start,
                     "lightning_round_correct": appearance.correct,
-                    "score": appearance.score if appearance.score is not None else None,
+                    "score": appearance.score,
                     "rank": appearance.pnl_rank
                     if appearance.pnl_rank is not None
                     else None,
