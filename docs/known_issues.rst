@@ -48,7 +48,7 @@ run the following command to unset the flag globally:
     set global sql_mode='<flags>';
 
 That will set the ``sql_mode`` to the correct value until the service is 
-restarted. To make it persist, you will need to update the ``mysqld.conf``
+restarted. To make it persist, you will need to update the ``mysqld.cnf``
 file on the server with the following configuration line:
 
 .. code-block::
