@@ -13,6 +13,8 @@ The Wait Wait Stats Library includes a set of modules and a corresponding set
 of ``pytest`` testing modules. The documentation for each module is available
 via the links below.
 
+Packaged versions of the ``wwdtm`` library are available at `PyPI`_.
+
 Migrating to v2
 ===============
 
@@ -43,3 +45,5 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. _PyPI: https://pypi.org/project/wwdtm/

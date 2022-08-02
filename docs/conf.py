@@ -42,6 +42,7 @@ html_theme = "flask"
 html_context = {
     "project_links": [
         ProjectLink("Source Code", "https://github.com/questionlp/wwdtm"),
+        ProjectLink("PyPI", "https://pypi.org/project/wwdtm/"),
         ProjectLink("Stats API", "https://api.wwdt.me/"),
         ProjectLink("Stats Page", "https://stats.wwdt.me/"),
         ProjectLink("Graphs Site", "https://graphs.wwdt.me/"),
