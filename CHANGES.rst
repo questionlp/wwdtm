@@ -2,7 +2,7 @@
 Changes
 *******
 
-2.0.6
+2.0.7
 =====
 
 Component Changes
@@ -25,6 +25,11 @@ Development Changes
 * Upgrade pytest from 6.2.5 to 7.1.2
 * Change Black ``target-version`` to remove ``py36`` and ``py37``, and add
   ``py310``
+
+2.0.6
+=====
+
+This release was abandoned and therefore not available for download.
 
 2.0.5
 =====
