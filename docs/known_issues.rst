@@ -27,10 +27,10 @@ MySQL sql_mode Flags
 ====================
 
 Earlier pre-release versions of wwdtm 2.0 had some incompatibilities if the
-database it is pulling from runs MySQL 5.7 or newer due to a violation of
-``sql_mode`` flag ``ONLY_FULL_GROUP_BY``. The scripts have caused the
-violations have been updated and the issue should be resolved starting with
-the pre-release version 2.0.0-rc.3.
+database it is pulling from runs on a MySQL Server 5.7 or newer due to a
+violation of ``sql_mode`` flag ``ONLY_FULL_GROUP_BY``. The scripts have caused
+the violations have been updated and the issue should be resolved starting
+with the pre-release version 2.0.0-rc.3.
 
 To remove the ``ONLY_FULL_GROUP_BY`` flag from the global ``sql_mode``
 variable, you will first need to query the current value of ``sql_mode`` by
