@@ -23,7 +23,8 @@ This version of the library is developed to use features that are included
 in Python 3.8; and, thus, is the minimum version of Python supported.
 
 In addition to the Python version requirement, the library depends on a copy
-of the `Wait Wait Stats Database`_ that runs on MariaDB or MySQL.
+of the `Wait Wait Stats Database`_ running on a MySQL Server (or a distribution
+of MySQL Server like Percona) running version 8.0 or higher.
 
 Running Tests
 =============
