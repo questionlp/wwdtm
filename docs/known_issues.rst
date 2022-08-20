@@ -7,6 +7,24 @@ the ``wwdtm`` library. Although many of the issues have been resolved or
 mitigated by version 2.0.0 of the library, there are some that might pop up
 in some circumstances.
 
+MySQL Connector/Python "Out of Memory" or Host Resolution Errors
+================================================================
+
+There is a known issue in which using the C Extension module included with
+certain builds of the MySQL Connector/Python driver that can cause ``out of
+memory`` or hostname resolution errors.
+
+While the C Extension module can help improve performance over using the pure
+Python implementation of the driver, the C Extension module is only available
+for certain combination of Python version, operating systems and versions, and
+system architectures.
+
+To use the pure Python implementation instead of the C Extension module, for
+installations that include and enable the C Extension module, add or set the
+``use_pure`` configuration value in the ``database`` section of the
+``config.json`` file to ``true``.
+
+
 MySQL Connection Pooling
 ========================
 
