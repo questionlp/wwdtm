@@ -2,6 +2,18 @@
 Changes
 *******
 
+2.0.8
+=====
+
+Component Changes
+-----------------
+
+* Roll required version of MySQL Connector/Python back to either 8.0.28 or 8.0.29
+  * There seems to be a change with version 8.0.30 that can cause either
+    ``MySQL client ran out of memory`` or failed hostname resolution errors to be
+    thrown when using the ``cext`` version of the library. A workaround is to set
+    ``use_pure`` to ``true`` in ``config.json``.
+
 2.0.7
 =====
 
