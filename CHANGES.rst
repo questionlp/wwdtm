@@ -30,8 +30,8 @@ Documentation Changes
 In addition to the aforementioned component updates listed in the above sections,
 the following lists the components updated related to documentation building.
 
-* Upgrade Sphinx from 5.1.1 to 5.2.3
-* Upgrade sphinx-autodoc-typehints from 1.19.1 to 1.19.4
+* Upgrade Sphinx from 5.1.1 to 5.3.0
+* Upgrade sphinx-autodoc-typehints from 1.19.1 to 1.19.5
 * Upgrade sphinx-toolbox from 3.1.2 to 3.2.0
 
 2.0.7
