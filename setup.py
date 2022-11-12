@@ -11,9 +11,9 @@ setup(
     name="wwdtm",
     install_requires=[
         "mysql-connector-python==8.0.31",
-        "numpy==1.23.3",
+        "numpy==1.23.4",
         "python-dateutil==2.8.2",
         "python-slugify==6.1.2",
-        "pytz==2022.4",
+        "pytz==2022.6",
     ],
 )
