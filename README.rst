@@ -14,8 +14,8 @@ library is available at `PyPI`_.
 Requirements
 ============
 
-This version of the library is developed to use features that are included
-in Python 3.8; and, thus, is the minimum version of Python supported.
+This version of the library requires a minimum Python version of 3.8 and
+has been tested thoroughly with Python 3.8 and 3.10.
 
 In addition to the Python version requirement, the library depends on a copy
 of the `Wait Wait Stats Database`_ running on a MySQL Server (or a distribution

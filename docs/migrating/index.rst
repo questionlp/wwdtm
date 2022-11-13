@@ -22,11 +22,11 @@ modules:
 Python Version
 ==============
 
-Python 3.8 or higher is now required for ``wwdtm``. This is due to the latest
-stable version of NumPy dropping support for Python 3.7.
+Python 3.8 or higher is now required for ``wwdtm`` due to dependent packages
+requiring Python 3.8 as the minimum version.
 
-The development and testing of ``wwdtm`` version 2 has been done primarily
-using both Python 3.8 and 3.9, with preliminary testing done on 3.10.
+Development and testing of ``wwdtm`` version 2 is done using Python 3.8 and
+3.10, with preliminary testing done on 3.11.
 
 Handling Database Connections
 =============================
