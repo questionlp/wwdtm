@@ -2,6 +2,21 @@
 Changes
 *******
 
+2.0.9
+=====
+
+Documentation Changes
+---------------------
+
+Fixed an issue with Read the Docs build issue related to the build pipeline
+using a newer version of the ``packaging`` package and the previous version of
+the ``Pallets-Sphinx-Themes`` package.
+
+* Upgrade Pallets-Sphinx-Themes from 2.0.2 to 2.0.3
+
+Also, update the Read the Docs build environment from ``ubuntu-20.04`` and
+Python 3.8 to ``ubuntu-22.04`` and Python 3.10.
+
 2.0.8
 =====
 
