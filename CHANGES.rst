@@ -14,6 +14,9 @@ the ``Pallets-Sphinx-Themes`` package.
 
 * Upgrade Pallets-Sphinx-Themes from 2.0.2 to 2.0.3
 
+Also, update the build environment from ``ubuntu-20.04`` and Python 3.8 to
+``ubuntu-22.04`` and Python 3.10.
+
 2.0.8
 =====
 
