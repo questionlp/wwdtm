@@ -3,17 +3,17 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
 
 @media all {
-    body, input {
-        font-family: "IBM Plex Sans", "Fira Sans", Calibri, sans-serif;
+    body, input, div.sphinxsidebar input {
+        font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
         font-size: 1.05rem;
     }
 
     h1, h2, h3, h4, h5, h6 {
-        font-family: "IBM Plex Serif", Georgia, Cambria, serif;
+        font-family: "IBM Plex Serif", Georgia, Cambria, "Times New Roman", serif;
     }
 
     code, kbd, pre, textarea {
-        font-family: "IBM Plex Mono", "Fira Code", Consolas, monospace;
+        font-family: "IBM Plex Mono", Menlo, Consolas, Monaco, "Liberation Mono", "Lucida Console", monospace;
         font-size: 1rem;
     }
 
