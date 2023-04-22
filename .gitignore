@@ -9,6 +9,10 @@ config.json
 # Ignore macOS DS_Store files
 .DS_Store
 
+# Deprecated files
+pytest.ini.old
+setup.cfg.old
+
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
 
