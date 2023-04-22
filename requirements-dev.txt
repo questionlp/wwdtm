@@ -1,10 +1,11 @@
-flake8==5.0.4
-pycodestyle==2.9.1
-pytest==7.2.0
-black==22.10.0
+flake8==6.0.0
+pycodestyle==2.10.0
+pytest==7.3.1
+black==23.3.0
+wheel==0.40.0
 
-mysql-connector-python==8.0.31
-numpy==1.23.4
+mysql-connector-python==8.0.33
+numpy==1.24.2
 python-dateutil==2.8.2
-python-slugify==6.1.2
-pytz==2022.6
+python-slugify==8.0.1
+pytz==2023.3

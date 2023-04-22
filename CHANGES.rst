@@ -5,17 +5,32 @@ Changes
 2.0.9
 =====
 
+Component Changes
+-----------------
+
+* Upgrade MySQL Connector/Python from 8.0.31 to 8.0.33
+* Upgrade NumPy from 1.23.4 to 1.24.2
+* Upgrade python-slugify from 6.1.2 to 8.0.1
+* Upgrade pytz from 2022.6 to 2023.3
+
+Development Changes
+-------------------
+
+* Upgrade flake8 from 5.0.4 to 6.0.0
+* Upgrade pycodestyle from 2.9.1 to 2.10.0
+* Upgrade pytest from 7.2.0 to 7.3.1
+* Upgrade Black from 22.10.0 to 23.3.0
+
 Documentation Changes
 ---------------------
 
-Fixed an issue with Read the Docs build issue related to the build pipeline
-using a newer version of the ``packaging`` package and the previous version of
-the ``Pallets-Sphinx-Themes`` package.
-
+* Upgrade Sphinx from 5.3.0 to 6.1.3
+* Upgrade sphinx-autodoc-typehints from 1.19.5 to 1.23.0
+* Upgrade sphinx-copybutton from 0.5.0 to 0.5.2
+* Upgrade sphinx-toolbox from 3.2.0 to 3.4.0
 * Upgrade Pallets-Sphinx-Themes from 2.0.2 to 2.0.3
-
-Also, update the Read the Docs build environment from ``ubuntu-20.04`` and
-Python 3.8 to ``ubuntu-22.04`` and Python 3.10.
+* Update the Read the Docs build environment from ``ubuntu-20.04`` and Python
+  3.8 to ``ubuntu-22.04`` and Python 3.10.
 
 2.0.8
 =====
