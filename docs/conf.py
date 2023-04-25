@@ -11,7 +11,7 @@ from pallets_sphinx_themes import ProjectLink  # type: ignore
 sys.path.insert(0, os.path.abspath("../"))
 
 project = "wwdtm"
-copyright = "2021-2022 Linh Pham"
+copyright = "2021-2023 Linh Pham"
 author = "Linh Pham"
 
 extensions = [
