@@ -2,6 +2,15 @@
 Changes
 *******
 
+2.1.0
+=====
+
+Development Changes
+-------------------
+
+* Build out ``pyproject.toml`` so that it can be used for package building and pytest
+* Deprecate ``pytest.ini``, ``setup.cfg`` and ``setup.py``
+
 2.0.9
 =====
 

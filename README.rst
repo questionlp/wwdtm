@@ -64,7 +64,7 @@ wheel, run the following command with the virtualenv activated.
 
 .. code-block:: bash
 
-    python3 setup.py sdist bdist_wheel
+    python -m build
 
 Known Issues
 ============
@@ -84,11 +84,11 @@ For documentation on known issues with this project, check out the
 Code of Conduct
 ===============
 
-This projects follows version 2.1 of the `Contributor Convenant's`_ Code of
+This projects follows version 2.1 of the `Contributor Covenant's`_ Code of
 Conduct. A copy of the `Code of Conduct`_ document is included in this
 repository.
 
-.. _Contributor Convenant's: https://www.contributor-covenant.org/
+.. _Contributor Covenant's: https://www.contributor-covenant.org/
 .. _Code of Conduct: https://github.com/questionlp/wwdtm/blob/main/CODE_OF_CONDUCT.md
 
 License
