@@ -17,7 +17,7 @@ def get_connect_dict() -> Dict[str, Any]:
     """Read in database connection settings and return values as a
     dictionary.
     """
-    with open("config.json", "r") as config_file:
+    with open("config.json", "r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
