@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.panelist.Panelist`
 """
@@ -39,6 +39,19 @@ def test_panelist_retrieve_all_details():
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_details`"""
     panelist = Panelist(connect_dict=get_connect_dict())
     panelists = panelist.retrieve_all_details()
+
+    assert panelists, "No panelists could be retrieved"
+    assert "id" in panelists[0], "'id' was not returned for first list item"
+    assert (
+        "appearances" in panelists[0]
+    ), "'appearances' was not returned for the first list item"
+
+
+def test_panelist_retrieve_all_details_decimal():
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_details`
+    with decimal scores"""
+    panelist = Panelist(connect_dict=get_connect_dict())
+    panelists = panelist.retrieve_all_details(use_decimal_scores=True)
 
     assert panelists, "No panelists could be retrieved"
     assert "id" in panelists[0], "'id' was not returned for first list item"
@@ -91,6 +104,21 @@ def test_panelist_retrieve_details_by_id(panelist_id: int):
     assert "appearances" in info, f"'appearances' was not returned for ID {panelist_id}"
 
 
+@pytest.mark.parametrize("panelist_id", [14])
+def test_panelist_retrieve_details_by_id_decimal(panelist_id: int):
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_details_by_id`
+    with decimal scores
+
+    :param panelist_id: Panelist ID to test retrieving panelist details
+    """
+    panelist = Panelist(connect_dict=get_connect_dict())
+    info = panelist.retrieve_details_by_id(panelist_id, use_decimal_scores=True)
+
+    assert info, f"Panelist ID {panelist_id} not found"
+    assert "name" in info, f"'name' was not returned for ID {panelist_id}"
+    assert "appearances" in info, f"'appearances' was not returned for ID {panelist_id}"
+
+
 @pytest.mark.parametrize("panelist_slug", ["luke-burbank", "drew-carey"])
 def test_panelist_retrieve_by_slug(panelist_slug: str):
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_by_slug`
@@ -114,6 +142,24 @@ def test_panelist_retrieve_details_by_slug(panelist_slug: str):
     """
     panelist = Panelist(connect_dict=get_connect_dict())
     info = panelist.retrieve_details_by_slug(panelist_slug)
+
+    assert info, f"Panelist slug {panelist_slug} not found"
+    assert "name" in info, f"'name' was not returned for slug {panelist_slug}"
+    assert (
+        "appearances" in info
+    ), f"'appearances' was not returned for slug {panelist_slug}"
+
+
+@pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
+def test_panelist_retrieve_details_by_slug_decimal(panelist_slug: str):
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_details_by_slug`
+    with decimal scores
+
+    :param panelist_slug: Panelist slug string to test retrieving
+        panelist details
+    """
+    panelist = Panelist(connect_dict=get_connect_dict())
+    info = panelist.retrieve_details_by_slug(panelist_slug, use_decimal_scores=True)
 
     assert info, f"Panelist slug {panelist_slug} not found"
     assert "name" in info, f"'name' was not returned for slug {panelist_slug}"

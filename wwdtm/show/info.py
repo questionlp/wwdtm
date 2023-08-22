@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Supplemental Show Information
 Retrieval Functions
@@ -9,7 +9,7 @@ Retrieval Functions
 from functools import lru_cache
 from typing import Any, Dict, List, Optional
 
-from mysql.connector import connect
+from mysql.connector import connect, DatabaseError
 from slugify import slugify
 from wwdtm.show.utility import ShowUtility
 from wwdtm.location.location import LocationUtility
@@ -41,6 +41,19 @@ class ShowInfo:
                 database_connection.reconnect()
 
             self.database_connection = database_connection
+
+        try:
+            cursor = self.database_connection.cursor()
+            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore'"
+            cursor.execute(query)
+            result = cursor.fetchone()
+            cursor.close()
+            if result:
+                self.panelist_decimal_column: bool = True
+            else:
+                self.panelist_decimal_column: bool = False
+        except DatabaseError:
+            self.panelist_decimal_column: bool = False
 
         self.utility = ShowUtility(database_connection=self.database_connection)
         self.loc_util = LocationUtility(database_connection=self.database_connection)
@@ -271,11 +284,15 @@ class ShowInfo:
         return guests
 
     @lru_cache(typed=True)
-    def retrieve_panelist_info_by_id(self, show_id: int) -> List[Dict[str, Any]]:
+    def retrieve_panelist_info_by_id(
+        self, show_id: int, include_decimal_scores: bool = False
+    ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing panelist
         information for the requested show ID.
 
         :param show_id: Show ID
+        :param include_decimal_scores: Flag set to include panelist
+            decimal scores, if available
         :return: List of panelists with corresponding scores and
             ranking information. If panelist information could not be
             retrieved, an empty list will be returned.
@@ -283,18 +300,34 @@ class ShowInfo:
         if not valid_int_id(show_id):
             return []
 
+        if include_decimal_scores and self.panelist_decimal_column:
+            query = (
+                "SELECT pm.panelistid AS id, p.panelist AS name, "
+                "p.panelistslug AS slug, "
+                "pm.panelistlrndstart AS start, "
+                "pm.panelistlrndcorrect AS correct, "
+                "pm.panelistscore AS score, "
+                "pm.panelistscore_decimal AS score_decimal, "
+                "pm.showpnlrank AS pnl_rank "
+                "FROM ww_showpnlmap pm "
+                "JOIN ww_panelists p on p.panelistid = pm.panelistid "
+                "WHERE pm.showid = %s "
+                "ORDER by pm.panelistscore DESC, pm.showpnlmapid ASC;"
+            )
+        else:
+            query = (
+                "SELECT pm.panelistid AS id, p.panelist AS name, "
+                "p.panelistslug AS slug, "
+                "pm.panelistlrndstart AS start, "
+                "pm.panelistlrndcorrect AS correct, "
+                "pm.panelistscore AS score, pm.showpnlrank AS pnl_rank "
+                "FROM ww_showpnlmap pm "
+                "JOIN ww_panelists p on p.panelistid = pm.panelistid "
+                "WHERE pm.showid = %s "
+                "ORDER by pm.panelistscore DESC, pm.showpnlmapid ASC;"
+            )
+
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT pm.panelistid AS id, p.panelist AS name, "
-            "p.panelistslug AS slug, "
-            "pm.panelistlrndstart AS start, "
-            "pm.panelistlrndcorrect AS correct, "
-            "pm.panelistscore AS score, pm.showpnlrank AS pnl_rank "
-            "FROM ww_showpnlmap pm "
-            "JOIN ww_panelists p on p.panelistid = pm.panelistid "
-            "WHERE pm.showid = %s "
-            "ORDER by pm.panelistscore DESC, pm.showpnlmapid ASC;"
-        )
         cursor.execute(query, (show_id,))
         results = cursor.fetchall()
         cursor.close()
@@ -304,6 +337,11 @@ class ShowInfo:
 
         panelists = []
         for row in results:
+            if "score_decimal" not in row._fields:
+                score_decimal = None
+            else:
+                score_decimal = row.score_decimal
+
             panelists.append(
                 {
                     "id": row.id,
@@ -312,6 +350,7 @@ class ShowInfo:
                     "lightning_round_start": row.start,
                     "lightning_round_correct": row.correct,
                     "score": row.score,
+                    "score_decimal": score_decimal,
                     "rank": row.pnl_rank if row.pnl_rank else None,
                 }
             )

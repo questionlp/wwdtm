@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Show Data Retrieval Functions
 """
 import datetime
 import dateutil.parser as date_parser
+from decimal import Decimal
 from functools import lru_cache
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-from mysql.connector import connect
+from mysql.connector import connect, DatabaseError
 from wwdtm.show.info import ShowInfo
 from wwdtm.show.info_multiple import ShowInfoMultiple
 from wwdtm.show.utility import ShowUtility
@@ -41,6 +42,19 @@ class Show:
                 database_connection.reconnect()
 
             self.database_connection = database_connection
+
+        try:
+            cursor = self.database_connection.cursor()
+            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore'"
+            cursor.execute(query)
+            result = cursor.fetchone()
+            cursor.close()
+            if result:
+                self.panelist_decimal_column: bool = True
+            else:
+                self.panelist_decimal_column: bool = False
+        except DatabaseError:
+            self.panelist_decimal_column: bool = False
 
         self.info = ShowInfo(database_connection=self.database_connection)
         self.info_multiple = ShowInfoMultiple(
@@ -89,21 +103,30 @@ class Show:
 
         return shows
 
-    def retrieve_all_details(self) -> List[Dict[str, Any]]:
+    def retrieve_all_details(
+        self, include_decimal_scores: bool = False
+    ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
         for all shows.
 
+        :param include_decimal_scores: Flag set to include panelist decimal
+            scores, if available
         :return: List of all shows and their corresponding details.
             If show information could not be retrieved, an empty list
             will be returned.
         """
+        if include_decimal_scores and not self.panelist_decimal_column:
+            return []
+
         info = self.info_multiple.retrieve_core_info_all()
 
         if not info:
             return []
 
-        panelists = self.info_multiple.retrieve_panelist_info_all()
+        panelists = self.info_multiple.retrieve_panelist_info_all(
+            include_decimal_scores=include_decimal_scores
+        )
         bluffs = self.info_multiple.retrieve_bluff_info_all()
         guests = self.info_multiple.retrieve_guest_info_all()
 
@@ -423,7 +446,7 @@ class Show:
 
     @lru_cache(typed=True)
     def retrieve_details_by_date(
-        self, year: int, month: int, day: int
+        self, year: int, month: int, day: int, include_decimal_scores: bool = False
     ) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
@@ -436,23 +459,35 @@ class Show:
             show information could not be retrieved, an empty dictionary
             will be returned.
         """
+        if include_decimal_scores and not self.panelist_decimal_column:
+            return {}
+
         id_ = self.utility.convert_date_to_id(year, month, day)
         if not id_:
             return {}
 
-        return self.retrieve_details_by_id(id_)
+        return self.retrieve_details_by_id(
+            id_, include_decimal_scores=include_decimal_scores
+        )
 
     @lru_cache(typed=True)
-    def retrieve_details_by_date_string(self, date_string: str) -> Dict[str, Any]:
+    def retrieve_details_by_date_string(
+        self, date_string: str, include_decimal_scores: bool = False
+    ) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
         for the requested show date string.
 
         :param date_string: Show date in ``YYYY-MM-DD`` format
+        :param include_decimal_scores: Flag set to include panelist decimal
+            scores, if available
         :return: Dictionary containing show information and details. If
             show information could not be retrieved, an empty dictionary
             will be returned.
         """
+        if include_decimal_scores and not self.panelist_decimal_column:
+            return {}
+
         try:
             parsed_date_string = date_parser.parse(date_string)
         except ValueError:
@@ -462,19 +497,28 @@ class Show:
             parsed_date_string.year, parsed_date_string.month, parsed_date_string.day
         )
 
-        return self.retrieve_details_by_id(id_)
+        return self.retrieve_details_by_id(
+            id_, include_decimal_scores=include_decimal_scores
+        )
 
     @lru_cache(typed=True)
-    def retrieve_details_by_id(self, show_id: int) -> Dict[str, Any]:
+    def retrieve_details_by_id(
+        self, show_id: int, include_decimal_scores: bool = False
+    ) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
         for the requested show ID.
 
         :param show_id: Show ID
+        :param include_decimal_scores: Flag set to include panelist decimal
+            scores, if available
         :return: Dictionary containing show information and details. If
             show information could not be retrieved, an empty dictionary
             will be returned.
         """
+        if include_decimal_scores and not self.panelist_decimal_column:
+            return {}
+
         if not valid_int_id(show_id):
             return {}
 
@@ -482,7 +526,9 @@ class Show:
         if not info:
             return {}
 
-        info["panelists"] = self.info.retrieve_panelist_info_by_id(show_id)
+        info["panelists"] = self.info.retrieve_panelist_info_by_id(
+            show_id, include_decimal_scores=include_decimal_scores
+        )
         info["bluff"] = self.info.retrieve_bluff_info_by_id(show_id)
         info["guests"] = self.info.retrieve_guest_info_by_id(show_id)
 
@@ -490,7 +536,7 @@ class Show:
 
     @lru_cache(typed=True)
     def retrieve_details_by_month_day(
-        self, month: int, day: int
+        self, month: int, day: int, include_decimal_scores: bool = False
     ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
@@ -498,10 +544,15 @@ class Show:
 
         :param month: One or two-digit month
         :param day: One or two-digit day
+        :param include_decimal_scores: Flag set to include panelist decimal
+            scores, if available
         :return: Dictionary containing show information and details. If
             show information could not be retrieved, an empty dictionary
             will be returned.
         """
+        if include_decimal_scores and not self.panelist_decimal_column:
+            return []
+
         if not 1 <= month <= 12 or not 1 <= day <= 31:
             return []
 
@@ -535,7 +586,7 @@ class Show:
         for show in info:
             if info[show]:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
-                    info[show]["id"]
+                    info[show]["id"], include_decimal_scores=include_decimal_scores
                 )
                 info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(
                     info[show]["id"]
@@ -548,16 +599,23 @@ class Show:
         return shows
 
     @lru_cache(typed=True)
-    def retrieve_details_by_year(self, year: int) -> List[Dict[str, Any]]:
+    def retrieve_details_by_year(
+        self, year: int, include_decimal_scores: bool = False
+    ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information for
         the requested year, sorted by show date.
 
         :param year: Four-digit year
+        :param include_decimal_scores: Flag set to include panelist decimal
+            scores, if available
         :return: List of shows for the requested year and corresponding
             details. If show information could not be retrieved, an
             empty list will be returned.
         """
+        if include_decimal_scores and not self.panelist_decimal_column:
+            return []
+
         try:
             parsed_year = date_parser.parse(f"{year:04d}")
         except ValueError:
@@ -586,7 +644,7 @@ class Show:
         for show in info:
             if info[show]:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
-                    info[show]["id"]
+                    info[show]["id"], include_decimal_scores=include_decimal_scores
                 )
                 info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(
                     info[show]["id"]
@@ -600,7 +658,7 @@ class Show:
 
     @lru_cache(typed=True)
     def retrieve_details_by_year_month(
-        self, year: int, month: int
+        self, year: int, month: int, include_decimal_scores: bool = False
     ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information for
@@ -608,10 +666,15 @@ class Show:
 
         :param year: Four-digit year
         :param month: One or two-digit month
+        :param include_decimal_scores: Flag set to include panelist decimal
+            scores, if available
         :return: List of shows for the requested year and month, and
             corresponding details. If show information could not be
             retrieved, an empty list will be returned.
         """
+        if include_decimal_scores and not self.panelist_decimal_column:
+            return []
+
         try:
             parsed_year_month = date_parser.parse(f"{year:04d}-{month:02d}-01")
         except ValueError:
@@ -647,7 +710,7 @@ class Show:
         for show in info:
             if info[show]:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
-                    info[show]["id"]
+                    info[show]["id"], include_decimal_scores=include_decimal_scores
                 )
                 info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(
                     info[show]["id"]
@@ -744,6 +807,7 @@ class Show:
         self,
         include_days_ahead: Optional[int] = 7,
         include_days_back: Optional[int] = 32,
+        include_decimal_scores: bool = False,
     ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
@@ -753,10 +817,15 @@ class Show:
             include, defaults to 7
         :param include_days_back: Number of days in the past to
             include, defaults to 32
+        :param include_decimal_scores: Flag set to include panelist decimal
+            scores, if available
         :return: List of recent shows and corresponding details. If show
             information could not be retrieved, an empty list will be
             returned.
         """
+        if include_decimal_scores and not self.panelist_decimal_column:
+            return []
+
         try:
             past_days = int(include_days_back)
             future_days = int(include_days_ahead)
@@ -796,7 +865,9 @@ class Show:
 
         shows = []
         for show in info:
-            info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(show)
+            info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
+                show, include_decimal_scores=include_decimal_scores
+            )
             info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(show)
             info[show]["guests"] = self.info.retrieve_guest_info_by_id(show)
             shows.append(info[show])
@@ -804,30 +875,48 @@ class Show:
         return shows
 
     @lru_cache(typed=True)
-    def retrieve_scores_by_year(self, year: int) -> List[Tuple]:
+    def retrieve_scores_by_year(
+        self, year: int, use_decimal_scores: bool = False
+    ) -> List[Tuple[str, Union[int, Decimal]]]:
         """Returns a list of tuples containing panelist scores for all
         shows in the requested year, sorted by show date.
 
         :param year: Four-digit year
+        :param use_decimal_scores: Flag set to use panelist decimal scores,
+            if available
         :return: List of tuples each containing show date and panelist
             scores. If show scores could not be retrieved, an empty list
             will be returned.
         """
+        if use_decimal_scores and not self.panelist_decimal_column:
+            return []
+
         try:
             _ = date_parser.parse(f"{year:04d}")
         except ValueError:
             return []
 
+        if use_decimal_scores:
+            query = (
+                "SELECT s.showdate AS date, pm.panelistscore_decimal AS score "
+                "FROM ww_showpnlmap pm "
+                "JOIN ww_shows s ON s.showid = pm.showid "
+                "WHERE s.bestof = 0 AND s.repeatshowid IS NULL "
+                "AND pm.panelistscore_decimal IS NOT NULL "
+                "AND YEAR(s.showdate) = %s "
+                "ORDER BY s.showdate ASC, pm.panelistscore_decimal ASC;"
+            )
+        else:
+            query = (
+                "SELECT s.showdate AS date, pm.panelistscore AS score "
+                "FROM ww_showpnlmap pm "
+                "JOIN ww_shows s ON s.showid = pm.showid "
+                "WHERE s.bestof = 0 AND s.repeatshowid IS NULL "
+                "AND pm.panelistscore IS NOT NULL "
+                "AND YEAR(s.showdate) = %s "
+                "ORDER BY s.showdate ASC, pm.panelistscore ASC;"
+            )
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT s.showdate AS date, pm.panelistscore AS score "
-            "FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE s.bestof = 0 AND s.repeatshowid IS NULL "
-            "AND pm.panelistscore IS NOT NULL "
-            "AND YEAR(s.showdate) = %s "
-            "ORDER BY s.showdate ASC, pm.panelistscore ASC;"
-        )
         cursor.execute(query, (year,))
         results = cursor.fetchall()
         cursor.close()

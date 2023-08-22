@@ -2,6 +2,25 @@
 Changes
 *******
 
+2.1.0-alpha
+===========
+
+Application Changes
+-------------------
+
+* Adding support for panelist decimal scores in ``panelist`` and ``show`` modules and defaulting existing methods to not use decimal scores for backwards compatibility. View docs for more information.
+* Add ``encoding="utf-8"`` to every instance of ``with open()``
+
+Component Changes
+-----------------
+
+* Upgrade NumPy from 1.24.2 to 1.24.3
+
+Development Changes
+-------------------
+
+* Upgrade Black from 23.3.0 to 23.7.0
+
 2.1.0
 =====
 

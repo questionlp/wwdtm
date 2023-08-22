@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Statistics Retrieval Functions
 """
+from decimal import Decimal
 from functools import lru_cache
 from typing import Any, Dict, Optional
 
-from mysql.connector import connect
+from mysql.connector import connect, DatabaseError
 import numpy
 from wwdtm.panelist.scores import PanelistScores
+from wwdtm.panelist.decimal_scores import PanelistDecimalScores
 from wwdtm.panelist.utility import PanelistUtility
 from wwdtm.validation import valid_int_id
 
@@ -41,7 +43,23 @@ class PanelistStatistics:
 
             self.database_connection = database_connection
 
+        try:
+            cursor = self.database_connection.cursor()
+            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore'"
+            cursor.execute(query)
+            result = cursor.fetchone()
+            cursor.close()
+            if result:
+                self.has_decimal_column: bool = True
+            else:
+                self.has_decimal_column: bool = False
+        except DatabaseError:
+            self.has_decimal_column: bool = False
+
         self.scores = PanelistScores(database_connection=self.database_connection)
+        self.scores_decimal = PanelistDecimalScores(
+            database_connection=self.database_connection
+        )
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
@@ -179,11 +197,15 @@ class PanelistStatistics:
         return self.retrieve_rank_info_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_statistics_by_id(self, panelist_id: int) -> Dict[str, Any]:
+    def retrieve_statistics_by_id(
+        self, panelist_id: int, use_decimal_scores: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary containing panelist statistics, ranking
         data, and scoring data for the requested panelist ID.
 
         :param panelist_id: Panelist ID
+        :param use_decimal_scores: Flag set to use decimal scores
+            instead of integer scores
         :return: Dictionary containing panelist statistics. If panelist
             statistics could not be returned, an empty dictionary will
             be returned.
@@ -191,7 +213,11 @@ class PanelistStatistics:
         if not valid_int_id(panelist_id):
             return {}
 
-        score_data = self.scores.retrieve_scores_by_id(panelist_id)
+        if self.has_decimal_column and use_decimal_scores:
+            score_data = self.scores_decimal.retrieve_scores_by_id(panelist_id)
+        else:
+            score_data = self.scores.retrieve_scores_by_id(panelist_id)
+
         ranks = self.retrieve_rank_info_by_id(panelist_id)
 
         if not score_data or not ranks:
@@ -201,9 +227,9 @@ class PanelistStatistics:
         scoring = {
             "minimum": int(numpy.amin(score_data)),
             "maximum": int(numpy.amax(score_data)),
-            "mean": round(numpy.mean(score_data), 4),
+            "mean": float(round(numpy.mean(score_data), 4)),
             "median": int(numpy.median(score_data)),
-            "standard_deviation": round(numpy.std(score_data), 4),
+            "standard_deviation": float(round(numpy.std(score_data), 4)),
             "total": int(numpy.sum(score_data)),
         }
 
@@ -232,11 +258,15 @@ class PanelistStatistics:
         }
 
     @lru_cache(typed=True)
-    def retrieve_statistics_by_slug(self, panelist_slug: str) -> Dict[str, Any]:
+    def retrieve_statistics_by_slug(
+        self, panelist_slug: str, use_decimal_scores: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary containing panelist statistics, ranking
         data, and scoring data for the requested panelist slug string.
 
         :param panelist_slug: Panelist slug string
+        :param use_decimal_scores: Flag set to use decimal scores
+            instead of integer scores
         :return: Dictionary containing panelist statistics. If panelist
             statistics could not be returned, an empty dictionary will
             be returned.
@@ -245,4 +275,6 @@ class PanelistStatistics:
         if not id_:
             return {}
 
-        return self.retrieve_statistics_by_id(id_)
+        return self.retrieve_statistics_by_id(
+            id_, use_decimal_scores=use_decimal_scores
+        )
