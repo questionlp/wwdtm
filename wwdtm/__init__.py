@@ -13,6 +13,7 @@ from wwdtm.location import Location, LocationRecordings, LocationUtility
 from wwdtm.panelist import (
     Panelist,
     PanelistAppearances,
+    PanelistDecimalScores,
     PanelistScores,
     PanelistStatistics,
     PanelistUtility,
@@ -21,4 +22,4 @@ from wwdtm.scorekeeper import Scorekeeper, ScorekeeperAppearances, ScorekeeperUt
 from wwdtm.show import Show, ShowInfo, ShowInfoMultiple, ShowUtility
 
 
-VERSION = "2.2.0-alpha.1"
+VERSION = "2.2.0"
