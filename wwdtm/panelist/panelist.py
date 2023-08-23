@@ -137,7 +137,7 @@ class Panelist:
                     "slug": row.slug if row.slug else slugify(row.name),
                     "gender": row.gender,
                     "statistics": self.statistics.retrieve_statistics_by_id(
-                        row.id, use_decimal_scores=use_decimal_scores
+                        row.id, include_decimal_scores=use_decimal_scores
                     ),
                     "bluffs": self.statistics.retrieve_bluffs_by_id(row.id),
                     "appearances": self.appearances.retrieve_appearances_by_id(
@@ -275,7 +275,7 @@ class Panelist:
             return {}
 
         info["statistics"] = self.statistics.retrieve_statistics_by_id(
-            panelist_id, use_decimal_scores=use_decimal_scores
+            panelist_id, include_decimal_scores=use_decimal_scores
         )
         info["bluffs"] = self.statistics.retrieve_bluffs_by_id(panelist_id)
         info["appearances"] = self.appearances.retrieve_appearances_by_id(
