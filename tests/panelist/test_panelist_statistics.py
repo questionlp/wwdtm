@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.panelist.PanelistStatistics`
 """
@@ -94,6 +94,22 @@ def test_panelist_statistics_retrieve_statistics_by_id(panelist_id: int):
     assert "ranking" in stats, f"'ranking' was not returned for ID {panelist_id}"
 
 
+@pytest.mark.parametrize("panelist_id", [14])
+def test_panelist_statistics_retrieve_statistics_by_id_decimal(panelist_id: int):
+    """Testing for :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_id`
+    with decimal scores
+
+    :param panelist_id: Panelist ID to test retrieving panelist
+        information
+    """
+    statistics = PanelistStatistics(connect_dict=get_connect_dict())
+    stats = statistics.retrieve_statistics_by_id(panelist_id, include_decimal_scores=True)
+
+    assert "scoring" in stats, f"'scoring' was not returned for ID {panelist_id}"
+    assert "scoring_decimal" in stats, f"'scoring_decimal' was not returned for ID {panelist_id}"
+    assert "ranking" in stats, f"'ranking' was not returned for ID {panelist_id}"
+
+
 @pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
 def test_panelist_statistics_retrieve_statistics_by_slug(panelist_slug: str):
     """Testing for :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_slug`
@@ -105,4 +121,20 @@ def test_panelist_statistics_retrieve_statistics_by_slug(panelist_slug: str):
     stats = statistics.retrieve_statistics_by_slug(panelist_slug)
 
     assert "scoring" in stats, f"'scoring' was not returned for slug {panelist_slug}"
+    assert "ranking" in stats, f"'ranking' was not returned for slug {panelist_slug}"
+
+
+@pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
+def test_panelist_statistics_retrieve_statistics_by_slug_decimal(panelist_slug: str):
+    """Testing for :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_slug`
+    with decimal scores
+
+    :param panelist_slug: Panelist slug string to test retrieving
+        panelist information
+    """
+    statistics = PanelistStatistics(connect_dict=get_connect_dict())
+    stats = statistics.retrieve_statistics_by_slug(panelist_slug, include_decimal_scores=True)
+
+    assert "scoring" in stats, f"'scoring' was not returned for slug {panelist_slug}"
+    assert "scoring_decimal" in stats, f"'scoring_decimal' was not returned for slug {panelist_slug}"
     assert "ranking" in stats, f"'ranking' was not returned for slug {panelist_slug}"

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.panelist.PanelistAppearances`
 """
@@ -40,7 +40,24 @@ def test_panelist_appearances_retrieve_appearances_by_id(panelist_id: int):
     assert "shows" in appearance, f"'shows' was not returned for ID {panelist_id}"
 
 
-@pytest.mark.parametrize("panelist_slug", ["luke-burbank", "maeve-higgins"])
+@pytest.mark.parametrize("panelist_id", [14, 73])
+def test_panelist_appearances_retrieve_appearances_by_id_decimal(panelist_id: int):
+    """Testing for :py:meth:`wwdtm.panelist.PanelistAppearances.retrieve_appearances_by_id`
+    with decimal scores
+
+    :param panelist_id: Panelist ID to test retrieving panelist
+        appearances
+    """
+    appearances = PanelistAppearances(connect_dict=get_connect_dict())
+    appearance = appearances.retrieve_appearances_by_id(
+        panelist_id, use_decimal_scores=True
+    )
+
+    assert "count" in appearance, f"'count' was not returned for ID {panelist_id}"
+    assert "shows" in appearance, f"'shows' was not returned for ID {panelist_id}"
+
+
+@pytest.mark.parametrize("panelist_slug", ["luke-burbank", "maeve-higgins", "peter-sagal"])
 def test_panelist_appearances_retrieve_appearances_by_slug(panelist_slug: str):
     """Testing for :py:meth:`wwdtm.panelist.PanelistAppearances.retrieve_appearances_by_slug`
 
@@ -49,6 +66,23 @@ def test_panelist_appearances_retrieve_appearances_by_slug(panelist_slug: str):
     """
     appearances = PanelistAppearances(connect_dict=get_connect_dict())
     appearance = appearances.retrieve_appearances_by_slug(panelist_slug)
+
+    assert "count" in appearance, f"'count' was not returned for slug {panelist_slug}"
+    assert "shows" in appearance, f"'shows' was not returned for slug {panelist_slug}"
+
+
+@pytest.mark.parametrize("panelist_slug", ["luke-burbank", "maeve-higgins", "peter-sagal"])
+def test_panelist_appearances_retrieve_appearances_by_slug_decimal(panelist_slug: str):
+    """Testing for :py:meth:`wwdtm.panelist.PanelistAppearances.retrieve_appearances_by_slug`
+    with decimal scores
+
+    :param panelist_slug: Panelist slug string to test retrieving
+        panelist appearances
+    """
+    appearances = PanelistAppearances(connect_dict=get_connect_dict())
+    appearance = appearances.retrieve_appearances_by_slug(
+        panelist_slug, use_decimal_scores=True
+    )
 
     assert "count" in appearance, f"'count' was not returned for slug {panelist_slug}"
     assert "shows" in appearance, f"'shows' was not returned for slug {panelist_slug}"

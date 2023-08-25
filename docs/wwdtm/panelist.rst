@@ -22,6 +22,13 @@ PanelistAppearances
     :members:
     :inherited-members:
 
+PanelistDecimalScores
+======================
+
+.. autoclass:: wwdtm.panelist.PanelistDecimalScores
+    :members:
+    :inherited-members:
+
 PanelistScores
 ==============
 

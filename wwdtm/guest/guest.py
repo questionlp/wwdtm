@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Guest Data Retrieval Functions
 """
@@ -53,14 +53,13 @@ class Guest:
             information. If guests could not be retrieved, an empty list
             is returned.
         """
-
+        query = """
+            SELECT guestid AS id, guest AS name, guestslug AS slug
+            FROM ww_guests
+            WHERE guestslug != 'none'
+            ORDER BY guest ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT guestid AS id, guest AS name, guestslug AS slug "
-            "FROM ww_guests "
-            "WHERE guestslug != 'none' "
-            "ORDER BY guest ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -88,13 +87,13 @@ class Guest:
             information and appearances. If guests could not be
             retrieved, an empty list is returned.
         """
+        query = """
+            SELECT guestid AS id, guest AS name, guestslug AS slug
+            FROM ww_guests
+            WHERE guestslug != 'none'
+            ORDER BY guest ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT guestid AS id, guest AS name, guestslug AS slug "
-            "FROM ww_guests "
-            "WHERE guestslug != 'none' "
-            "ORDER BY guest ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -120,14 +119,14 @@ class Guest:
         guest name.
 
         :return: List of all guest IDs. If guest IDs could not be
-            retrieved, an emtpy list is returned.
+            retrieved, an empty list is returned.
         """
+        query = """
+            SELECT guestid FROM ww_guests
+            WHERE guestslug != 'none'
+            ORDER BY guest ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT guestid FROM ww_guests "
-            "WHERE guestslug != 'none' "
-            "ORDER BY guest ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -144,12 +143,12 @@ class Guest:
         :return: List of all guest slug strings. If guest slug strings
             could not be retrieved, an emtpy list is returned.
         """
+        query = """
+            SELECT guestslug FROM ww_guests
+            WHERE guestslug != 'none'
+            ORDER BY guest ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT guestslug FROM ww_guests "
-            "WHERE guestslug != 'none' "
-            "ORDER BY guest ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -172,13 +171,13 @@ class Guest:
         if not valid_int_id(guest_id):
             return {}
 
+        query = """
+            SELECT guestid AS id, guest AS name, guestslug AS slug
+            FROM ww_guests
+            WHERE guestid = %s
+            LIMIT 1;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT guestid AS id, guest AS name, guestslug AS slug "
-            "FROM ww_guests "
-            "WHERE guestid = %s "
-            "LIMIT 1;"
-        )
         cursor.execute(query, (guest_id,))
         result = cursor.fetchone()
         cursor.close()

@@ -18,7 +18,7 @@ classifiers = [
 ]
 dependencies = [
     "mysql-connector-python==8.0.33",
-    "numpy==1.24.2",
+    "numpy==1.24.3",
     "python-dateutil==2.8.2",
     "python-slugify==8.0.1",
     "pytz==2023.3",
@@ -38,7 +38,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
-required-version = "23.3.0"
+required-version = "23.7.0"
 target-version = ["py38", "py39", "py310", "py311"]
 
 [tool.pytest.ini_options]

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Location Data Utility Functions
 """
@@ -50,10 +50,10 @@ class LocationUtility:
         if not valid_int_id(location_id):
             return None
 
+        query = """
+            SELECT locationslug FROM ww_locations WHERE locationid = %s LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT locationslug FROM ww_locations " "WHERE locationid = %s " "LIMIT 1;"
-        )
         cursor.execute(query, (location_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -78,10 +78,10 @@ class LocationUtility:
         except ValueError:
             return None
 
+        query = """
+            SELECT locationid FROM ww_locations WHERE locationslug = %s LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT locationid FROM ww_locations " "WHERE locationslug = %s " "LIMIT 1;"
-        )
         cursor.execute(query, (slug,))
         result = cursor.fetchone()
         cursor.close()
@@ -101,10 +101,10 @@ class LocationUtility:
         if not valid_int_id(location_id):
             return False
 
+        query = """
+            SELECT locationid FROM ww_locations WHERE locationid = %s LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT locationid FROM ww_locations " "WHERE locationid = %s " "LIMIT 1;"
-        )
         cursor.execute(query, (location_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -126,12 +126,12 @@ class LocationUtility:
         except ValueError:
             return False
 
+        query = """
+            SELECT locationslug FROM ww_locations
+            WHERE locationslug = %s
+            LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT locationslug FROM ww_locations "
-            "WHERE locationslug = %s "
-            "LIMIT 1;"
-        )
         cursor.execute(query, (slug,))
         result = cursor.fetchone()
         cursor.close()

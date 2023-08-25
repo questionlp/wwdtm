@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Data Retrieval Functions
 """
 from functools import lru_cache
 from typing import Any, Dict, List, Optional
 
-from mysql.connector import connect
+from mysql.connector import connect, DatabaseError
 from slugify import slugify
 from wwdtm.panelist.appearances import PanelistAppearances
 from wwdtm.panelist.statistics import PanelistStatistics
@@ -41,6 +41,21 @@ class Panelist:
 
             self.database_connection = database_connection
 
+        try:
+            query = (
+                "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
+            )
+            cursor = self.database_connection.cursor()
+            cursor.execute(query)
+            result = cursor.fetchone()
+            cursor.close()
+            if result:
+                self.has_decimal_column: bool = True
+            else:
+                self.has_decimal_column: bool = False
+        except DatabaseError:
+            self.has_decimal_column: bool = False
+
         self.appearances = PanelistAppearances(
             database_connection=self.database_connection
         )
@@ -57,14 +72,14 @@ class Panelist:
             information. If panelists could not be retrieved, an empty
             list is returned.
         """
+        query = """
+            SELECT panelistid AS id, panelist AS name, panelistslug AS slug,
+            panelistgender AS gender
+            FROM ww_panelists
+            WHERE panelistslug != 'multiple'
+            ORDER BY panelist ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
-            "panelistgender AS gender "
-            "FROM ww_panelists "
-            "WHERE panelistslug != 'multiple' "
-            "ORDER BY panelist ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -85,22 +100,29 @@ class Panelist:
 
         return panelists
 
-    def retrieve_all_details(self) -> List[Dict[str, Any]]:
+    def retrieve_all_details(
+        self, use_decimal_scores: bool = False
+    ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing panelist ID,
         name, slug string and appearance information for all panelists.
 
+        :param use_decimal_scores: Flag set to use decimal scores
+            instead of integer scores
         :return: List of all panelists and their corresponding
             information and appearances. If panelists could not be
             retrieved, an empty list is returned.
         """
+        if use_decimal_scores and not self.has_decimal_column:
+            return []
+
+        query = """
+            SELECT panelistid AS id, panelist AS name, panelistslug AS slug,
+            panelistgender AS gender
+            FROM ww_panelists
+            WHERE panelistslug != 'multiple'
+            ORDER BY panelist ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
-            "panelistgender AS gender "
-            "FROM ww_panelists "
-            "WHERE panelistslug != 'multiple' "
-            "ORDER BY panelist ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -116,9 +138,13 @@ class Panelist:
                     "name": row.name,
                     "slug": row.slug if row.slug else slugify(row.name),
                     "gender": row.gender,
-                    "statistics": self.statistics.retrieve_statistics_by_id(row.id),
+                    "statistics": self.statistics.retrieve_statistics_by_id(
+                        row.id, include_decimal_scores=use_decimal_scores
+                    ),
                     "bluffs": self.statistics.retrieve_bluffs_by_id(row.id),
-                    "appearances": self.appearances.retrieve_appearances_by_id(row.id),
+                    "appearances": self.appearances.retrieve_appearances_by_id(
+                        row.id, use_decimal_scores=use_decimal_scores
+                    ),
                 }
             )
 
@@ -131,12 +157,12 @@ class Panelist:
         :return: List of all panelist IDs. If panelist IDs could not be
             retrieved, an empty list is returned.
         """
+        query = """
+            SELECT panelistid FROM ww_panelists
+            WHERE panelistslug != 'multiple'
+            ORDER BY panelist ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT panelistid FROM ww_panelists "
-            "WHERE panelistslug != 'multiple' "
-            "ORDER BY panelist ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -153,12 +179,12 @@ class Panelist:
         :return: List of all panelist slug strings. If panelist slug
             strings could not be retrieved, an empty list is returned.
         """
+        query = """
+            SELECT panelistslug FROM ww_panelists
+            WHERE panelistslug != 'multiple'
+            ORDER BY panelist ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT panelistslug FROM ww_panelists "
-            "WHERE panelistslug != 'multiple' "
-            "ORDER BY panelist ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -181,14 +207,14 @@ class Panelist:
         if not valid_int_id(panelist_id):
             return {}
 
+        query = """
+            SELECT panelistid AS id, panelist AS name, panelistslug AS slug,
+            panelistgender AS gender
+            FROM ww_panelists
+            WHERE panelistid = %s
+            LIMIT 1;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
-            "panelistgender AS gender "
-            "FROM ww_panelists "
-            "WHERE panelistid = %s "
-            "LIMIT 1;"
-        )
         cursor.execute(query, (panelist_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -227,11 +253,15 @@ class Panelist:
         return self.retrieve_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_details_by_id(self, panelist_id: int) -> Dict[str, Any]:
+    def retrieve_details_by_id(
+        self, panelist_id: int, use_decimal_scores: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary object containing panelist ID, name, slug
         string and appearance information for the requested panelist ID.
 
         :param panelist_id: Panelist ID
+        :param use_decimal_scores: Flag set to use decimal scores
+            instead of integer scores
         :return: Dictionary containing panelist information and their
             appearances. If panelist information could not be retrieved,
             an empty dictionary is returned.
@@ -239,23 +269,34 @@ class Panelist:
         if not valid_int_id(panelist_id):
             return {}
 
+        if use_decimal_scores and not self.has_decimal_column:
+            return {}
+
         info = self.retrieve_by_id(panelist_id)
         if not info:
             return {}
 
-        info["statistics"] = self.statistics.retrieve_statistics_by_id(panelist_id)
+        info["statistics"] = self.statistics.retrieve_statistics_by_id(
+            panelist_id, include_decimal_scores=use_decimal_scores
+        )
         info["bluffs"] = self.statistics.retrieve_bluffs_by_id(panelist_id)
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(panelist_id)
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(
+            panelist_id, use_decimal_scores=use_decimal_scores
+        )
 
         return info
 
     @lru_cache(typed=True)
-    def retrieve_details_by_slug(self, panelist_slug: str) -> Dict[str, Any]:
+    def retrieve_details_by_slug(
+        self, panelist_slug: str, use_decimal_scores: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary object containing panelist ID, name, slug
         string and appearance information for the requested Panelist slug
         string.
 
         :param panelist_slug: Panelist slug string
+        :param use_decimal_scores: Flag set to use decimal scores
+            instead of integer scores
         :return: Dictionary containing panelist information and their
             appearances. If panelist information could not be retrieved,
             an empty dictionary is returned.
@@ -271,4 +312,4 @@ class Panelist:
         if not id_:
             return {}
 
-        return self.retrieve_details_by_id(id_)
+        return self.retrieve_details_by_id(id_, use_decimal_scores=use_decimal_scores)
