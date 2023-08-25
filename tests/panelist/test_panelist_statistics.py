@@ -103,10 +103,14 @@ def test_panelist_statistics_retrieve_statistics_by_id_decimal(panelist_id: int)
         information
     """
     statistics = PanelistStatistics(connect_dict=get_connect_dict())
-    stats = statistics.retrieve_statistics_by_id(panelist_id, include_decimal_scores=True)
+    stats = statistics.retrieve_statistics_by_id(
+        panelist_id, include_decimal_scores=True
+    )
 
     assert "scoring" in stats, f"'scoring' was not returned for ID {panelist_id}"
-    assert "scoring_decimal" in stats, f"'scoring_decimal' was not returned for ID {panelist_id}"
+    assert (
+        "scoring_decimal" in stats
+    ), f"'scoring_decimal' was not returned for ID {panelist_id}"
     assert "ranking" in stats, f"'ranking' was not returned for ID {panelist_id}"
 
 
@@ -133,8 +137,12 @@ def test_panelist_statistics_retrieve_statistics_by_slug_decimal(panelist_slug: 
         panelist information
     """
     statistics = PanelistStatistics(connect_dict=get_connect_dict())
-    stats = statistics.retrieve_statistics_by_slug(panelist_slug, include_decimal_scores=True)
+    stats = statistics.retrieve_statistics_by_slug(
+        panelist_slug, include_decimal_scores=True
+    )
 
     assert "scoring" in stats, f"'scoring' was not returned for slug {panelist_slug}"
-    assert "scoring_decimal" in stats, f"'scoring_decimal' was not returned for slug {panelist_slug}"
+    assert (
+        "scoring_decimal" in stats
+    ), f"'scoring_decimal' was not returned for slug {panelist_slug}"
     assert "ranking" in stats, f"'ranking' was not returned for slug {panelist_slug}"

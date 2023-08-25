@@ -57,7 +57,9 @@ def test_panelist_appearances_retrieve_appearances_by_id_decimal(panelist_id: in
     assert "shows" in appearance, f"'shows' was not returned for ID {panelist_id}"
 
 
-@pytest.mark.parametrize("panelist_slug", ["luke-burbank", "maeve-higgins", "peter-sagal"])
+@pytest.mark.parametrize(
+    "panelist_slug", ["luke-burbank", "maeve-higgins", "peter-sagal"]
+)
 def test_panelist_appearances_retrieve_appearances_by_slug(panelist_slug: str):
     """Testing for :py:meth:`wwdtm.panelist.PanelistAppearances.retrieve_appearances_by_slug`
 
@@ -71,7 +73,9 @@ def test_panelist_appearances_retrieve_appearances_by_slug(panelist_slug: str):
     assert "shows" in appearance, f"'shows' was not returned for slug {panelist_slug}"
 
 
-@pytest.mark.parametrize("panelist_slug", ["luke-burbank", "maeve-higgins", "peter-sagal"])
+@pytest.mark.parametrize(
+    "panelist_slug", ["luke-burbank", "maeve-higgins", "peter-sagal"]
+)
 def test_panelist_appearances_retrieve_appearances_by_slug_decimal(panelist_slug: str):
     """Testing for :py:meth:`wwdtm.panelist.PanelistAppearances.retrieve_appearances_by_slug`
     with decimal scores
