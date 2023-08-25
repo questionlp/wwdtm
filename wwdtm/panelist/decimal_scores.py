@@ -42,8 +42,10 @@ class PanelistDecimalScores:
             self.database_connection = database_connection
 
         try:
+            query = (
+                "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
+            )
             cursor = self.database_connection.cursor()
-            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal'"
             cursor.execute(query)
             result = cursor.fetchone()
             cursor.close()

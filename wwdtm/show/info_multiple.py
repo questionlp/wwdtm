@@ -43,8 +43,10 @@ class ShowInfoMultiple:
             self.database_connection = database_connection
 
         try:
+            query = (
+                "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
+            )
             cursor = self.database_connection.cursor()
-            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal'"
             cursor.execute(query)
             result = cursor.fetchone()
             cursor.close()
@@ -65,31 +67,28 @@ class ShowInfoMultiple:
         :return: Dictionary containing correct and chosen Bluff the
             Listener information.
         """
-
-        bluff_info = {}
-
+        query = """
+            SELECT s.showid AS show_id,
+            blm.chosenbluffpnlid AS panelist_id,
+            p.panelist AS name, p.panelistslug AS slug
+            FROM ww_showbluffmap blm
+            JOIN ww_shows s ON s.showid = blm.showid
+            JOIN ww_panelists p ON
+            p.panelistid = blm.chosenbluffpnlid;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT s.showid AS show_id, "
-            "blm.chosenbluffpnlid AS panelist_id, "
-            "p.panelist AS name, p.panelistslug AS slug "
-            "FROM ww_showbluffmap blm "
-            "JOIN ww_shows s ON s.showid = blm.showid "
-            "JOIN ww_panelists p ON "
-            "p.panelistid = blm.chosenbluffpnlid;"
-        )
         cursor.execute(query)
         chosen_results = cursor.fetchall()
 
-        query = (
-            "SELECT s.showid AS show_id, "
-            "blm.correctbluffpnlid AS panelist_id, "
-            "p.panelist AS name, p.panelistslug AS slug "
-            "FROM ww_showbluffmap blm "
-            "JOIN ww_shows s ON s.showid = blm.showid "
-            "JOIN ww_panelists p ON "
-            "p.panelistid = blm.correctbluffpnlid;"
-        )
+        query = """
+            SELECT s.showid AS show_id,
+            blm.correctbluffpnlid AS panelist_id,
+            p.panelist AS name, p.panelistslug AS slug
+            FROM ww_showbluffmap blm
+            JOIN ww_shows s ON s.showid = blm.showid
+            JOIN ww_panelists p ON
+            p.panelistid = blm.correctbluffpnlid;
+            """
         cursor.execute(query)
         correct_results = cursor.fetchall()
         cursor.close()
@@ -97,6 +96,7 @@ class ShowInfoMultiple:
         if not chosen_results or not correct_results:
             return {}
 
+        bluff_info = {}
         for show in chosen_results:
             if show.show_id not in bluff_info:
                 bluff_info[show.show_id] = {}
@@ -133,31 +133,31 @@ class ShowInfoMultiple:
             if not valid_int_id(show_id):
                 return {}
 
-        bluff_info = {}
-
-        cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT s.showid AS show_id, "
-            "blm.chosenbluffpnlid AS panelist_id, "
-            "p.panelist AS name, p.panelistslug AS slug "
-            "FROM ww_showbluffmap blm "
-            "JOIN ww_shows s ON s.showid = blm.showid "
-            "JOIN ww_panelists p ON "
-            "p.panelistid = blm.chosenbluffpnlid "
-            "WHERE s.showid IN ({ids});".format(ids=", ".join(str(v) for v in show_ids))
+        query = """
+            SELECT s.showid AS show_id,
+            blm.chosenbluffpnlid AS panelist_id,
+            p.panelist AS name, p.panelistslug AS slug
+            FROM ww_showbluffmap blm
+            JOIN ww_shows s ON s.showid = blm.showid
+            JOIN ww_panelists p ON
+            p.panelistid = blm.chosenbluffpnlid
+            WHERE s.showid IN ({ids});""".format(
+            ids=", ".join(str(v) for v in show_ids)
         )
+        cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         chosen_results = cursor.fetchall()
 
-        query = (
-            "SELECT s.showid AS show_id, "
-            "blm.correctbluffpnlid AS panelist_id, "
-            "p.panelist AS name, p.panelistslug AS slug "
-            "FROM ww_showbluffmap blm "
-            "JOIN ww_shows s ON s.showid = blm.showid "
-            "JOIN ww_panelists p ON "
-            "p.panelistid = blm.correctbluffpnlid "
-            "WHERE s.showid IN ({ids});".format(ids=", ".join(str(v) for v in show_ids))
+        query = """
+            SELECT s.showid AS show_id,
+            blm.correctbluffpnlid AS panelist_id,
+            p.panelist AS name, p.panelistslug AS slug
+            FROM ww_showbluffmap blm
+            JOIN ww_shows s ON s.showid = blm.showid
+            JOIN ww_panelists p ON
+            p.panelistid = blm.correctbluffpnlid
+            WHERE s.showid IN ({ids});""".format(
+            ids=", ".join(str(v) for v in show_ids)
         )
         cursor.execute(query)
         correct_results = cursor.fetchall()
@@ -166,6 +166,7 @@ class ShowInfoMultiple:
         if not chosen_results or not correct_results:
             return {}
 
+        bluff_info = {}
         for show in chosen_results:
             if show.show_id not in bluff_info:
                 bluff_info[show.show_id] = {}
@@ -195,32 +196,30 @@ class ShowInfoMultiple:
             description and notes. If show core information could not be
             retrieved, an empty dictionary will be returned.
         """
-
+        query = """
+            SELECT s.showid AS show_id, s.showdate AS date,
+            s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
+            l.locationid AS location_id, l.city, l.state,
+            l.venue, l.locationslug AS location_slug, h.hostid AS host_id,
+            h.host, h.hostslug AS host_slug, hm.guest as host_guest,
+            sk.scorekeeperid AS scorekeeper_id, sk.scorekeeper,
+            sk.scorekeeperslug AS scorekeeper_slug,
+            skm.guest AS scorekeeper_guest,
+            skm.description AS scorekeeper_description,
+            sd.showdescription AS show_description,
+            sn.shownotes AS show_notes
+            FROM ww_shows s
+            JOIN ww_showlocationmap lm ON lm.showid = s.showid
+            JOIN ww_locations l ON l.locationid = lm.locationid
+            JOIN ww_showhostmap hm ON hm.showid = s.showid
+            JOIN ww_hosts h ON h.hostid = hm.hostid
+            JOIN ww_showskmap skm ON skm.showid = s.showid
+            JOIN ww_scorekeepers sk ON sk.scorekeeperid = skm.scorekeeperid
+            JOIN ww_showdescriptions sd ON sd.showid = s.showid
+            JOIN ww_shownotes sn ON sn.showid = s.showid
+            ORDER BY s.showdate ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT s.showid AS show_id, s.showdate AS date, "
-            "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-            "l.locationid AS location_id, l.city, l.state, "
-            "l.venue, l.locationslug AS location_slug, h.hostid AS host_id, "
-            "h.host, h.hostslug AS host_slug, hm.guest as host_guest, "
-            "sk.scorekeeperid AS scorekeeper_id, sk.scorekeeper, "
-            "sk.scorekeeperslug AS scorekeeper_slug, "
-            "skm.guest AS scorekeeper_guest, "
-            "skm.description AS scorekeeper_description, "
-            "sd.showdescription AS show_description, "
-            "sn.shownotes AS show_notes "
-            "FROM ww_shows s "
-            "JOIN ww_showlocationmap lm ON lm.showid = s.showid "
-            "JOIN ww_locations l ON l.locationid = lm.locationid "
-            "JOIN ww_showhostmap hm ON hm.showid = s.showid "
-            "JOIN ww_hosts h ON h.hostid = hm.hostid "
-            "JOIN ww_showskmap skm ON skm.showid = s.showid "
-            "JOIN ww_scorekeepers sk ON "
-            "sk.scorekeeperid = skm.scorekeeperid "
-            "JOIN ww_showdescriptions sd ON sd.showid = s.showid "
-            "JOIN ww_shownotes sn ON sn.showid = s.showid "
-            "ORDER BY s.showdate ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -317,32 +316,32 @@ class ShowInfoMultiple:
             if not valid_int_id(show_id):
                 return {}
 
-        cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT s.showid AS show_id, s.showdate AS date, "
-            "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-            "l.locationid AS location_id, l.city, l.state, "
-            "l.venue, l.locationslug AS location_slug, h.hostid AS host_id, "
-            "h.host, h.hostslug AS host_slug, hm.guest as host_guest, "
-            "sk.scorekeeperid AS scorekeeper_id, sk.scorekeeper, "
-            "sk.scorekeeperslug AS scorekeeper_slug, "
-            "skm.guest AS scorekeeper_guest, "
-            "skm.description AS scorekeeper_description, "
-            "sd.showdescription AS show_description, "
-            "sn.shownotes AS show_notes "
-            "FROM ww_shows s "
-            "JOIN ww_showlocationmap lm ON lm.showid = s.showid "
-            "JOIN ww_locations l ON l.locationid = lm.locationid "
-            "JOIN ww_showhostmap hm ON hm.showid = s.showid "
-            "JOIN ww_hosts h ON h.hostid = hm.hostid "
-            "JOIN ww_showskmap skm ON skm.showid = s.showid "
-            "JOIN ww_scorekeepers sk ON "
-            "sk.scorekeeperid = skm.scorekeeperid "
-            "JOIN ww_showdescriptions sd ON sd.showid = s.showid "
-            "JOIN ww_shownotes sn ON sn.showid = s.showid "
-            "WHERE s.showid IN ({ids}) "
-            "ORDER BY s.showdate ASC;".format(ids=", ".join(str(v) for v in show_ids))
+        query = """
+            SELECT s.showid AS show_id, s.showdate AS date,
+            s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
+            l.locationid AS location_id, l.city, l.state,
+            l.venue, l.locationslug AS location_slug, h.hostid AS host_id,
+            h.host, h.hostslug AS host_slug, hm.guest as host_guest,
+            sk.scorekeeperid AS scorekeeper_id, sk.scorekeeper,
+            sk.scorekeeperslug AS scorekeeper_slug,
+            skm.guest AS scorekeeper_guest,
+            skm.description AS scorekeeper_description,
+            sd.showdescription AS show_description,
+            sn.shownotes AS show_notes
+            FROM ww_shows s
+            JOIN ww_showlocationmap lm ON lm.showid = s.showid
+            JOIN ww_locations l ON l.locationid = lm.locationid
+            JOIN ww_showhostmap hm ON hm.showid = s.showid
+            JOIN ww_hosts h ON h.hostid = hm.hostid
+            JOIN ww_showskmap skm ON skm.showid = s.showid
+            JOIN ww_scorekeepers sk ON sk.scorekeeperid = skm.scorekeeperid
+            JOIN ww_showdescriptions sd ON sd.showid = s.showid
+            JOIN ww_shownotes sn ON sn.showid = s.showid
+            WHERE s.showid IN ({ids})
+            ORDER BY s.showdate ASC;""".format(
+            ids=", ".join(str(v) for v in show_ids)
         )
+        cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -432,16 +431,16 @@ class ShowInfoMultiple:
             Not My Job information could not be retrieved, an empty list
             will be returned.
         """
+        query = """
+            SELECT s.showid AS show_id, gm.guestid AS guest_id,
+            g.guest AS name, g.guestslug AS slug,
+            gm.guestscore AS score, gm.exception AS score_exception
+            FROM ww_showguestmap gm
+            JOIN ww_guests g ON g.guestid = gm.guestid
+            JOIN ww_shows s ON s.showid = gm.showid
+            ORDER BY s.showdate ASC, gm.showguestmapid ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT s.showid AS show_id, gm.guestid AS guest_id, "
-            "g.guest AS name, g.guestslug AS slug, "
-            "gm.guestscore AS score, gm.exception AS score_exception "
-            "FROM ww_showguestmap gm "
-            "JOIN ww_guests g ON g.guestid = gm.guestid "
-            "JOIN ww_shows s ON s.showid = gm.showid "
-            "ORDER BY s.showdate ASC, gm.showguestmapid ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -481,18 +480,19 @@ class ShowInfoMultiple:
             if not valid_int_id(show_id):
                 return {}
 
-        cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT s.showid AS show_id, gm.guestid AS guest_id, "
-            "g.guest AS name, g.guestslug AS slug, "
-            "gm.guestscore AS score, gm.exception AS score_exception "
-            "FROM ww_showguestmap gm "
-            "JOIN ww_guests g ON g.guestid = gm.guestid "
-            "JOIN ww_shows s ON s.showid = gm.showid "
-            "WHERE gm.showid IN ({ids}) "
-            "ORDER BY s.showdate ASC, "
-            "gm.showguestmapid ASC;".format(ids=", ".join(str(v) for v in show_ids))
+        query = """
+            SELECT s.showid AS show_id, gm.guestid AS guest_id,
+            g.guest AS name, g.guestslug AS slug,
+            gm.guestscore AS score, gm.exception AS score_exception
+            FROM ww_showguestmap gm
+            JOIN ww_guests g ON g.guestid = gm.guestid
+            JOIN ww_shows s ON s.showid = gm.showid
+            WHERE gm.showid IN ({ids})
+            ORDER BY s.showdate ASC,
+            gm.showguestmapid ASC;""".format(
+            ids=", ".join(str(v) for v in show_ids)
         )
+        cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -529,36 +529,35 @@ class ShowInfoMultiple:
             ranking information. If panelist information could not be
             retrieved, an empty list will be returned.
         """
-
         if include_decimal_scores and self.panelist_decimal_column:
-            query = (
-                "SELECT s.showid AS show_id, pm.panelistid AS panelist_id, "
-                "p.panelist AS name, p.panelistslug AS slug, "
-                "pm.panelistlrndstart AS start, "
-                "pm.panelistlrndcorrect AS correct, "
-                "pm.panelistscore AS score, "
-                "pm.panelistscore_decimal AS score_decimal, "
-                "pm.showpnlrank AS pnl_rank "
-                "FROM ww_showpnlmap pm "
-                "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
-                "JOIN ww_shows s ON s.showid = pm.showid "
-                "ORDER by s.showdate ASC, pm.panelistscore DESC, "
-                "pm.showpnlmapid ASC;"
-            )
+            query = """
+                SELECT s.showid AS show_id, pm.panelistid AS panelist_id,
+                p.panelist AS name, p.panelistslug AS slug,
+                pm.panelistlrndstart AS start,
+                pm.panelistlrndcorrect AS correct,
+                pm.panelistscore AS score,
+                pm.panelistscore_decimal AS score_decimal,
+                pm.showpnlrank AS pnl_rank
+                FROM ww_showpnlmap pm
+                JOIN ww_panelists p ON p.panelistid = pm.panelistid
+                JOIN ww_shows s ON s.showid = pm.showid
+                ORDER by s.showdate ASC, pm.panelistscore DESC,
+                pm.showpnlmapid ASC;
+                """
         else:
-            query = (
-                "SELECT s.showid AS show_id, pm.panelistid AS panelist_id, "
-                "p.panelist AS name, p.panelistslug AS slug, "
-                "pm.panelistlrndstart AS start, "
-                "pm.panelistlrndcorrect AS correct, "
-                "pm.panelistscore AS score, "
-                "pm.showpnlrank AS pnl_rank "
-                "FROM ww_showpnlmap pm "
-                "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
-                "JOIN ww_shows s ON s.showid = pm.showid "
-                "ORDER by s.showdate ASC, pm.panelistscore DESC, "
-                "pm.showpnlmapid ASC;"
-            )
+            query = """
+                SELECT s.showid AS show_id, pm.panelistid AS panelist_id,
+                p.panelist AS name, p.panelistslug AS slug,
+                pm.panelistlrndstart AS start,
+                pm.panelistlrndcorrect AS correct,
+                pm.panelistscore AS score,
+                pm.showpnlrank AS pnl_rank
+                FROM ww_showpnlmap pm
+                JOIN ww_panelists p ON p.panelistid = pm.panelistid
+                JOIN ww_shows s ON s.showid = pm.showid
+                ORDER by s.showdate ASC, pm.panelistscore DESC,
+                pm.showpnlmapid ASC;
+                """
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -607,34 +606,36 @@ class ShowInfoMultiple:
                 return {}
 
         if include_decimal_scores and self.panelist_decimal_column:
-            query = (
-                "SELECT s.showid AS show_id, pm.panelistid AS panelist_id, "
-                "p.panelist AS name, p.panelistslug AS slug, "
-                "pm.panelistlrndstart AS start, "
-                "pm.panelistlrndcorrect AS correct, "
-                "pm.panelistscore AS score, "
-                "pm.panelistscore_decimal AS score_decimal, "
-                "pm.showpnlrank AS pnl_rank "
-                "FROM ww_showpnlmap pm "
-                "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
-                "JOIN ww_shows s ON s.showid = pm.showid "
-                "WHERE pm.showid IN ({ids}) "
-                "ORDER by s.showdate ASC, pm.panelistscore DESC, "
-                "pm.showpnlmapid ASC;".format(ids=", ".join(str(v) for v in show_ids))
+            query = """
+                SELECT s.showid AS show_id, pm.panelistid AS panelist_id,
+                p.panelist AS name, p.panelistslug AS slug,
+                pm.panelistlrndstart AS start,
+                pm.panelistlrndcorrect AS correct,
+                pm.panelistscore AS score,
+                pm.panelistscore_decimal AS score_decimal,
+                pm.showpnlrank AS pnl_rank
+                FROM ww_showpnlmap pm
+                JOIN ww_panelists p ON p.panelistid = pm.panelistid
+                JOIN ww_shows s ON s.showid = pm.showid
+                WHERE pm.showid IN ({ids})
+                ORDER by s.showdate ASC, pm.panelistscore DESC,
+                pm.showpnlmapid ASC;""".format(
+                ids=", ".join(str(v) for v in show_ids)
             )
         else:
-            query = (
-                "SELECT s.showid AS show_id, pm.panelistid AS panelist_id, "
-                "p.panelist AS name, p.panelistslug AS slug, "
-                "pm.panelistlrndstart AS start, "
-                "pm.panelistlrndcorrect AS correct, "
-                "pm.panelistscore AS score, pm.showpnlrank AS pnl_rank "
-                "FROM ww_showpnlmap pm "
-                "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
-                "JOIN ww_shows s ON s.showid = pm.showid "
-                "WHERE pm.showid IN ({ids}) "
-                "ORDER by s.showdate ASC, pm.panelistscore DESC, "
-                "pm.showpnlmapid ASC;".format(ids=", ".join(str(v) for v in show_ids))
+            query = """
+                SELECT s.showid AS show_id, pm.panelistid AS panelist_id,
+                p.panelist AS name, p.panelistslug AS slug,
+                pm.panelistlrndstart AS start,
+                pm.panelistlrndcorrect AS correct,
+                pm.panelistscore AS score, pm.showpnlrank AS pnl_rank
+                FROM ww_showpnlmap pm
+                JOIN ww_panelists p ON p.panelistid = pm.panelistid
+                JOIN ww_shows s ON s.showid = pm.showid
+                WHERE pm.showid IN ({ids})
+                ORDER by s.showdate ASC, pm.panelistscore DESC,
+                pm.showpnlmapid ASC;""".format(
+                ids=", ".join(str(v) for v in show_ids)
             )
 
         cursor = self.database_connection.cursor(named_tuple=True)

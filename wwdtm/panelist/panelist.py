@@ -42,8 +42,10 @@ class Panelist:
             self.database_connection = database_connection
 
         try:
+            query = (
+                "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
+            )
             cursor = self.database_connection.cursor()
-            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal'"
             cursor.execute(query)
             result = cursor.fetchone()
             cursor.close()
@@ -70,14 +72,14 @@ class Panelist:
             information. If panelists could not be retrieved, an empty
             list is returned.
         """
+        query = """
+            SELECT panelistid AS id, panelist AS name, panelistslug AS slug,
+            panelistgender AS gender
+            FROM ww_panelists
+            WHERE panelistslug != 'multiple'
+            ORDER BY panelist ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
-            "panelistgender AS gender "
-            "FROM ww_panelists "
-            "WHERE panelistslug != 'multiple' "
-            "ORDER BY panelist ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -113,14 +115,14 @@ class Panelist:
         if use_decimal_scores and not self.has_decimal_column:
             return []
 
+        query = """
+            SELECT panelistid AS id, panelist AS name, panelistslug AS slug,
+            panelistgender AS gender
+            FROM ww_panelists
+            WHERE panelistslug != 'multiple'
+            ORDER BY panelist ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
-            "panelistgender AS gender "
-            "FROM ww_panelists "
-            "WHERE panelistslug != 'multiple' "
-            "ORDER BY panelist ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -155,12 +157,12 @@ class Panelist:
         :return: List of all panelist IDs. If panelist IDs could not be
             retrieved, an empty list is returned.
         """
+        query = """
+            SELECT panelistid FROM ww_panelists
+            WHERE panelistslug != 'multiple'
+            ORDER BY panelist ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT panelistid FROM ww_panelists "
-            "WHERE panelistslug != 'multiple' "
-            "ORDER BY panelist ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -177,12 +179,12 @@ class Panelist:
         :return: List of all panelist slug strings. If panelist slug
             strings could not be retrieved, an empty list is returned.
         """
+        query = """
+            SELECT panelistslug FROM ww_panelists
+            WHERE panelistslug != 'multiple'
+            ORDER BY panelist ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT panelistslug FROM ww_panelists "
-            "WHERE panelistslug != 'multiple' "
-            "ORDER BY panelist ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -205,14 +207,14 @@ class Panelist:
         if not valid_int_id(panelist_id):
             return {}
 
+        query = """
+            SELECT panelistid AS id, panelist AS name, panelistslug AS slug,
+            panelistgender AS gender
+            FROM ww_panelists
+            WHERE panelistid = %s
+            LIMIT 1;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT panelistid AS id, panelist AS name, panelistslug AS slug, "
-            "panelistgender AS gender "
-            "FROM ww_panelists "
-            "WHERE panelistid = %s "
-            "LIMIT 1;"
-        )
         cursor.execute(query, (panelist_id,))
         result = cursor.fetchone()
         cursor.close()

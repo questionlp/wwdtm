@@ -53,17 +53,17 @@ class LocationRecordings:
         if not valid_int_id(location_id):
             return {}
 
+        query = """
+            SELECT (
+            SELECT COUNT(lm.showid) FROM ww_showlocationmap lm
+            JOIN ww_shows s ON s.showid = lm.showid
+            WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND
+            lm.locationid = %s ) AS regular_shows, (
+            SELECT COUNT(lm.showid) FROM ww_showlocationmap lm
+            JOIN ww_shows s ON s.showid = lm.showid
+            WHERE lm.locationid = %s ) AS all_shows;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT ( "
-            "SELECT COUNT(lm.showid) FROM ww_showlocationmap lm "
-            "JOIN ww_shows s ON s.showid = lm.showid "
-            "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
-            "lm.locationid = %s ) AS regular_shows, ( "
-            "SELECT COUNT(lm.showid) FROM ww_showlocationmap lm "
-            "JOIN ww_shows s ON s.showid = lm.showid "
-            "WHERE lm.locationid = %s ) AS all_shows;"
-        )
         cursor.execute(
             query,
             (
@@ -78,14 +78,14 @@ class LocationRecordings:
             "all_shows": result.all_shows,
         }
 
-        query = (
-            "SELECT lm.showid AS show_id, s.showdate AS date, "
-            "s.bestof AS best_of, s.repeatshowid AS repeat_show_id "
-            "FROM ww_showlocationmap lm "
-            "JOIN ww_shows s ON s.showid = lm.showid "
-            "WHERE lm.locationid = %s "
-            "ORDER BY s.showdate ASC;"
-        )
+        query = """
+            SELECT lm.showid AS show_id, s.showdate AS date,
+            s.bestof AS best_of, s.repeatshowid AS repeat_show_id
+            FROM ww_showlocationmap lm
+            JOIN ww_shows s ON s.showid = lm.showid
+            WHERE lm.locationid = %s
+            ORDER BY s.showdate ASC;
+            """
         cursor.execute(query, (location_id,))
         results = cursor.fetchall()
         cursor.close()

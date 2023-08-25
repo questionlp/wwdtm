@@ -44,8 +44,10 @@ class Show:
             self.database_connection = database_connection
 
         try:
+            query = (
+                "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
+            )
             cursor = self.database_connection.cursor()
-            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal'"
             cursor.execute(query)
             result = cursor.fetchone()
             cursor.close()
@@ -70,13 +72,13 @@ class Show:
             If show information could not be retrieved, an empty list
             will be returned.
         """
+        query = """
+            SELECT showid AS id, showdate AS date,
+            bestof AS best_of, repeatshowid AS repeat_show_id
+            FROM ww_shows
+            ORDER BY showdate ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT showid AS id, showdate AS date, "
-            "bestof AS best_of, repeatshowid AS repeat_show_id "
-            "FROM ww_shows "
-            "ORDER BY showdate ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -158,8 +160,10 @@ class Show:
         :return: List of all show IDs. If show IDs could not be
             retrieved, an empty list will be returned.
         """
+        query = """
+            SELECT showid FROM ww_shows ORDER BY showdate ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT showid FROM ww_shows " "ORDER BY showdate ASC;"
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -176,8 +180,10 @@ class Show:
         :return: List of all show date strings. If show dates could not
             be retrieved, an empty list will be returned.
         """
+        query = """
+            SELECT showdate FROM ww_shows ORDER BY showdate ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT showdate FROM ww_shows " "ORDER BY showdate ASC;"
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -195,13 +201,13 @@ class Show:
             and day. If show dates could not be retrieved, an empty list
             will be returned.
         """
+        query = """
+            SELECT YEAR(showdate), MONTH(showdate), DAY(showdate)
+            FROM ww_shows
+            ORDER BY YEAR(showdate) ASC, MONTH(showdate) ASC,
+            DAY(showdate) ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT YEAR(showdate), MONTH(showdate), DAY(showdate) "
-            "FROM ww_shows "
-            "ORDER BY YEAR(showdate) ASC, MONTH(showdate) ASC, "
-            "DAY(showdate) ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -219,12 +225,12 @@ class Show:
             If show dates could not be retrieved, an empty list will be
             returned.
         """
+        query = """
+            SELECT DISTINCT YEAR(showdate), MONTH(showdate)
+            FROM ww_shows
+            ORDER BY YEAR(showdate) ASC, MONTH(showdate) ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT DISTINCT YEAR(showdate), MONTH(showdate) "
-            "FROM ww_shows "
-            "ORDER BY YEAR(showdate) ASC, MONTH(showdate) ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -242,12 +248,12 @@ class Show:
             If show dates could not be retrieved, an empty list will be
             returned.
         """
+        query = """
+            SELECT DISTINCT YEAR(showdate), MONTH(showdate)
+            FROM ww_shows
+            ORDER BY YEAR(showdate) ASC, MONTH(showdate) ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT DISTINCT YEAR(showdate), MONTH(showdate) "
-            "FROM ww_shows "
-            "ORDER BY YEAR(showdate) ASC, MONTH(showdate) ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -310,14 +316,14 @@ class Show:
         if not valid_int_id(show_id):
             return {}
 
+        query = """
+            SELECT showid AS id, showdate AS date,
+            bestof AS best_of, repeatshowid AS repeat_show_id
+            FROM ww_shows
+            WHERE showid = %s
+            LIMIT 1;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT showid AS id, showdate AS date, "
-            "bestof AS best_of, repeatshowid AS repeat_show_id "
-            "FROM ww_shows "
-            "WHERE showid = %s "
-            "LIMIT 1;"
-        )
         cursor.execute(query, (show_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -354,13 +360,12 @@ class Show:
         if not 1 <= month <= 12 or not 1 <= day <= 31:
             return []
 
+        query = """
+            SELECT showid FROM ww_shows
+            WHERE MONTH(showdate) = %s AND DAY(showdate) = %s
+            ORDER BY showdate ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT showid FROM ww_shows "
-            "WHERE MONTH(showdate) = %s "
-            "AND DAY(showdate) = %s "
-            "ORDER BY showdate ASC;"
-        )
         cursor.execute(
             query,
             (
@@ -391,12 +396,12 @@ class Show:
         except ValueError:
             return []
 
+        query = """
+            SELECT showid FROM ww_shows
+            WHERE YEAR(showdate) = %s
+            ORDER BY showdate ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT showid FROM ww_shows "
-            "WHERE YEAR(showdate) = %s "
-            "ORDER BY showdate ASC;"
-        )
         cursor.execute(query, (parsed_year.year,))
         results = cursor.fetchall()
         cursor.close()
@@ -423,12 +428,12 @@ class Show:
         except ValueError:
             return []
 
+        query = """
+            SELECT showid FROM ww_shows
+            WHERE YEAR(showdate) = %s AND MONTH(showdate) = %s
+            ORDER BY showdate ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT showid FROM ww_shows "
-            "WHERE YEAR(showdate) = %s "
-            "AND MONTH(showdate) = %s ORDER BY showdate ASC;"
-        )
         cursor.execute(
             query,
             (
@@ -556,13 +561,12 @@ class Show:
         if not 1 <= month <= 12 or not 1 <= day <= 31:
             return []
 
+        query = """
+            SELECT showid FROM ww_shows
+            WHERE MONTH(showdate) = %s AND DAY(showdate) = %s
+            ORDER BY showdate ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT showid FROM ww_shows "
-            "WHERE MONTH(showdate) = %s "
-            "AND DAY(showdate) = %s "
-            "ORDER BY showdate ASC;"
-        )
         cursor.execute(
             query,
             (
@@ -621,12 +625,12 @@ class Show:
         except ValueError:
             return []
 
+        query = """
+            SELECT showid FROM ww_shows
+            WHERE YEAR(showdate) = %s
+            ORDER BY showdate ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT showid FROM ww_shows "
-            "WHERE YEAR(showdate) = %s "
-            "ORDER BY showdate ASC;"
-        )
         cursor.execute(query, (parsed_year.year,))
         results = cursor.fetchall()
         cursor.close()
@@ -680,13 +684,12 @@ class Show:
         except ValueError:
             return []
 
+        query = """
+            SELECT showid FROM ww_shows
+            WHERE YEAR(showdate) = %s AND MONTH(showdate) = %s
+            ORDER BY showdate ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT showid FROM ww_shows "
-            "WHERE YEAR(showdate) = %s "
-            "AND MONTH(showdate) = %s "
-            "ORDER BY showdate ASC;"
-        )
         cursor.execute(
             query,
             (
@@ -736,13 +739,13 @@ class Show:
         except ValueError:
             return []
 
+        query = """
+            SELECT DISTINCT MONTH(showdate)
+            FROM ww_shows
+            WHERE YEAR(showdate) = %s
+            ORDER BY MONTH(showdate) ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT DISTINCT MONTH(showdate) "
-            "FROM ww_shows "
-            "WHERE YEAR(showdate) = %s "
-            "ORDER BY MONTH(showdate) ASC;"
-        )
         cursor.execute(query, (year,))
         results = cursor.fetchall()
         cursor.close()
@@ -781,12 +784,12 @@ class Show:
         except OverflowError:
             return []
 
+        query = """
+            SELECT showid FROM ww_shows
+            WHERE showdate >= %s AND showdate <= %s
+            ORDER BY showdate ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT showid FROM ww_shows "
-            "WHERE showdate >= %s AND "
-            "showdate <= %s ORDER BY showdate ASC;"
-        )
         cursor.execute(
             query,
             (
@@ -838,12 +841,12 @@ class Show:
         except OverflowError:
             return []
 
+        query = """
+            SELECT showid FROM ww_shows
+            WHERE showdate >= %s AND showdate <= %s
+            ORDER BY showdate ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT showid FROM ww_shows "
-            "WHERE showdate >= %s AND "
-            "showdate <= %s ORDER BY showdate ASC;"
-        )
         cursor.execute(
             query,
             (
@@ -897,25 +900,25 @@ class Show:
             return []
 
         if use_decimal_scores:
-            query = (
-                "SELECT s.showdate AS date, pm.panelistscore_decimal AS score "
-                "FROM ww_showpnlmap pm "
-                "JOIN ww_shows s ON s.showid = pm.showid "
-                "WHERE s.bestof = 0 AND s.repeatshowid IS NULL "
-                "AND pm.panelistscore_decimal IS NOT NULL "
-                "AND YEAR(s.showdate) = %s "
-                "ORDER BY s.showdate ASC, pm.panelistscore_decimal ASC;"
-            )
+            query = """
+                SELECT s.showdate AS date, pm.panelistscore_decimal AS score
+                FROM ww_showpnlmap pm
+                JOIN ww_shows s ON s.showid = pm.showid
+                WHERE s.bestof = 0 AND s.repeatshowid IS NULL
+                AND pm.panelistscore_decimal IS NOT NULL
+                AND YEAR(s.showdate) = %s
+                ORDER BY s.showdate ASC, pm.panelistscore_decimal ASC;
+                """
         else:
-            query = (
-                "SELECT s.showdate AS date, pm.panelistscore AS score "
-                "FROM ww_showpnlmap pm "
-                "JOIN ww_shows s ON s.showid = pm.showid "
-                "WHERE s.bestof = 0 AND s.repeatshowid IS NULL "
-                "AND pm.panelistscore IS NOT NULL "
-                "AND YEAR(s.showdate) = %s "
-                "ORDER BY s.showdate ASC, pm.panelistscore ASC;"
-            )
+            query = """
+                SELECT s.showdate AS date, pm.panelistscore AS score
+                FROM ww_showpnlmap pm
+                JOIN ww_shows s ON s.showid = pm.showid
+                WHERE s.bestof = 0 AND s.repeatshowid IS NULL
+                AND pm.panelistscore IS NOT NULL
+                AND YEAR(s.showdate) = %s
+                ORDER BY s.showdate ASC, pm.panelistscore ASC;
+                """
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query, (year,))
         results = cursor.fetchall()
@@ -946,12 +949,12 @@ class Show:
         :return: List of available show years. If show dates could not
             be retrieved, an empty list will be returned.
         """
+        query = """
+            SELECT DISTINCT YEAR(showdate)
+            FROM ww_shows
+            ORDER BY YEAR(showdate) ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT DISTINCT YEAR(showdate) "
-            "FROM ww_shows "
-            "ORDER BY YEAR(showdate) ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()

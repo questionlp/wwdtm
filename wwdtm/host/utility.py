@@ -48,8 +48,10 @@ class HostUtility:
         if not valid_int_id(host_id):
             return None
 
+        query = """
+            SELECT hostslug FROM ww_hosts WHERE hostid = %s LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT hostslug FROM ww_hosts " "WHERE hostid = %s " "LIMIT 1;"
         cursor.execute(query, (host_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -73,8 +75,10 @@ class HostUtility:
         except ValueError:
             return None
 
+        query = """
+            SELECT hostid FROM ww_hosts WHERE hostslug = %s LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT hostid FROM ww_hosts " "WHERE hostslug = %s " "LIMIT 1;"
         cursor.execute(query, (slug,))
         result = cursor.fetchone()
         cursor.close()
@@ -94,8 +98,10 @@ class HostUtility:
         if not valid_int_id(host_id):
             return False
 
+        query = """
+            SELECT hostid FROM ww_hosts WHERE hostid = %s LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT hostid FROM ww_hosts " "WHERE hostid = %s " "LIMIT 1;"
         cursor.execute(query, (host_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -117,8 +123,10 @@ class HostUtility:
         except ValueError:
             return False
 
+        query = """
+            SELECT hostslug FROM ww_hosts WHERE hostslug = %s LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT hostslug FROM ww_hosts " "WHERE hostslug = %s " "LIMIT 1;"
         cursor.execute(query, (slug,))
         result = cursor.fetchone()
         cursor.close()

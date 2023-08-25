@@ -39,8 +39,10 @@ class PanelistAppearances:
             self.database_connection = database_connection
 
         try:
+            query = (
+                "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
+            )
             cursor = self.database_connection.cursor()
-            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal'"
             cursor.execute(query)
             result = cursor.fetchone()
             cursor.close()
@@ -70,23 +72,23 @@ class PanelistAppearances:
         if not valid_int_id(panelist_id):
             return {}
 
+        query = """
+            SELECT (
+            SELECT COUNT(pm.showid) FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND
+            pm.panelistid = %s ) AS regular_shows, (
+            SELECT COUNT(pm.showid) FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE pm.panelistid = %s ) AS all_shows, (
+            SELECT COUNT(pm.panelistid) FROM ww_showpnlmap pm
+            JOIN ww_shows s ON pm.showid = s.showid
+            WHERE pm.panelistid = %s AND s.bestof = 0 AND
+            s.repeatshowid IS NULL
+            AND pm.panelistscore IS NOT NULL )
+            AS shows_with_scores;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT ( "
-            "SELECT COUNT(pm.showid) FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
-            "pm.panelistid = %s ) AS regular_shows, ( "
-            "SELECT COUNT(pm.showid) FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s ) AS all_shows, ( "
-            "SELECT COUNT(pm.panelistid) FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON pm.showid = s.showid "
-            "WHERE pm.panelistid = %s AND s.bestof = 0 AND "
-            "s.repeatshowid IS NULL "
-            "AND pm.panelistscore IS NOT NULL ) "
-            "AS shows_with_scores;"
-        )
         cursor.execute(
             query,
             (
@@ -110,15 +112,15 @@ class PanelistAppearances:
                 "shows_with_scores": 0,
             }
 
-        query = (
-            "SELECT MIN(s.showid) AS first_id, MIN(s.showdate) AS first, "
-            "MAX(s.showid) AS most_recent_id, MAX(s.showdate) AS most_recent "
-            "FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE s.bestof = 0 AND s.repeatshowid IS NULL "
-            "AND pm.panelistid = %s "
-            "ORDER BY s.showdate ASC;"
-        )
+        query = """
+            SELECT MIN(s.showid) AS first_id, MIN(s.showdate) AS first,
+            MAX(s.showid) AS most_recent_id, MAX(s.showdate) AS most_recent
+            FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE s.bestof = 0 AND s.repeatshowid IS NULL
+            AND pm.panelistid = %s
+            ORDER BY s.showdate ASC;
+            """
         cursor.execute(query, (panelist_id,))
         result = cursor.fetchone()
 
@@ -147,32 +149,32 @@ class PanelistAppearances:
             }
 
         if use_decimal_scores and self.has_decimal_column:
-            query = (
-                "SELECT pm.showid AS show_id, s.showdate AS date, "
-                "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-                "pm.panelistlrndstart AS start, "
-                "pm.panelistlrndcorrect AS correct, "
-                "pm.panelistscore AS score, "
-                "pm.panelistscore_decimal AS score_decimal, "
-                "pm.showpnlrank AS pnl_rank FROM ww_showpnlmap pm "
-                "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
-                "JOIN ww_shows s ON s.showid = pm.showid "
-                "WHERE pm.panelistid = %s "
-                "ORDER BY s.showdate ASC;"
-            )
+            query = """
+                SELECT pm.showid AS show_id, s.showdate AS date,
+                s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
+                pm.panelistlrndstart AS start,
+                pm.panelistlrndcorrect AS correct,
+                pm.panelistscore AS score,
+                pm.panelistscore_decimal AS score_decimal,
+                pm.showpnlrank AS pnl_rank FROM ww_showpnlmap pm
+                JOIN ww_panelists p ON p.panelistid = pm.panelistid
+                JOIN ww_shows s ON s.showid = pm.showid
+                WHERE pm.panelistid = %s
+                ORDER BY s.showdate ASC;
+                """
         else:
-            query = (
-                "SELECT pm.showid AS show_id, s.showdate AS date, "
-                "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-                "pm.panelistlrndstart AS start, "
-                "pm.panelistlrndcorrect AS correct, "
-                "pm.panelistscore AS score, "
-                "pm.showpnlrank AS pnl_rank FROM ww_showpnlmap pm "
-                "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
-                "JOIN ww_shows s ON s.showid = pm.showid "
-                "WHERE pm.panelistid = %s "
-                "ORDER BY s.showdate ASC;"
-            )
+            query = """
+                SELECT pm.showid AS show_id, s.showdate AS date,
+                s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
+                pm.panelistlrndstart AS start,
+                pm.panelistlrndcorrect AS correct,
+                pm.panelistscore AS score,
+                pm.showpnlrank AS pnl_rank FROM ww_showpnlmap pm
+                JOIN ww_panelists p ON p.panelistid = pm.panelistid
+                JOIN ww_shows s ON s.showid = pm.showid
+                WHERE pm.panelistid = %s
+                ORDER BY s.showdate ASC;
+                """
 
         cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
@@ -241,33 +243,33 @@ class PanelistAppearances:
         if not valid_int_id(panelist_id):
             return {}
 
-        years = {}
+        query = """
+            SELECT DISTINCT YEAR(s.showdate) AS year
+            FROM ww_shows s
+            ORDER BY YEAR(s.showdate) ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT DISTINCT YEAR(s.showdate) AS year "
-            "FROM ww_shows s "
-            "ORDER BY YEAR(s.showdate) ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
 
         if not results:
             return {}
 
+        years = {}
         for row in results:
             years[row.year] = 0
 
-        query = (
-            "SELECT YEAR(s.showdate) AS year, "
-            "COUNT(p.panelist) AS count "
-            "FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "JOIN ww_panelists p ON p.panelistid = pm.panelistid "
-            "WHERE pm.panelistid = %s AND s.bestof = 0 "
-            "AND s.repeatshowid IS NULL "
-            "GROUP BY p.panelist, YEAR(s.showdate) "
-            "ORDER BY p.panelist ASC, YEAR(s.showdate) ASC;"
-        )
+        query = """
+            SELECT YEAR(s.showdate) AS year,
+            COUNT(p.panelist) AS count
+            FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            JOIN ww_panelists p ON p.panelistid = pm.panelistid
+            WHERE pm.panelistid = %s AND s.bestof = 0
+            AND s.repeatshowid IS NULL
+            GROUP BY p.panelist, YEAR(s.showdate)
+            ORDER BY p.panelist ASC, YEAR(s.showdate) ASC;
+            """
         cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()

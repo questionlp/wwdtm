@@ -10,6 +10,8 @@ Application Changes
 
 * Adding support for panelist decimal scores in ``panelist`` and ``show`` modules and defaulting existing methods to not use decimal scores for backwards compatibility. View docs for more information.
 * Add ``encoding="utf-8"`` to every instance of ``with open()``
+* Re-work SQL query strings to use triple-quotes rather than multiple strings wrapped in parentheses
+* Changed rounding of decimals or floats that return values with 4 places after the decimal point to 5 places
 
 Component Changes
 -----------------

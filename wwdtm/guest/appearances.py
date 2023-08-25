@@ -53,17 +53,17 @@ class GuestAppearances:
         if not valid_int_id(guest_id):
             return {}
 
+        query = """
+            SELECT (
+            SELECT COUNT(gm.showid) FROM ww_showguestmap gm
+            JOIN ww_shows s ON s.showid = gm.showid
+            WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND
+            gm.guestid = %s ) AS regular_shows, (
+            SELECT COUNT(gm.showid) FROM ww_showguestmap gm
+            JOIN ww_shows s ON s.showid = gm.showid
+            WHERE gm.guestid = %s ) AS all_shows;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT ( "
-            "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
-            "JOIN ww_shows s ON s.showid = gm.showid "
-            "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
-            "gm.guestid = %s ) AS regular_shows, ( "
-            "SELECT COUNT(gm.showid) FROM ww_showguestmap gm "
-            "JOIN ww_shows s ON s.showid = gm.showid "
-            "WHERE gm.guestid = %s ) AS all_shows;"
-        )
         cursor.execute(
             query,
             (
@@ -84,17 +84,17 @@ class GuestAppearances:
                 "all_shows": 0,
             }
 
+        query = """
+            SELECT gm.showid AS show_id, s.showdate AS date,
+            s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
+            gm.guestscore AS score, gm.exception AS score_exception
+            FROM ww_showguestmap gm
+            JOIN ww_guests g ON g.guestid = gm.guestid
+            JOIN ww_shows s ON s.showid = gm.showid
+            WHERE gm.guestid = %s
+            ORDER BY s.showdate ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT gm.showid AS show_id, s.showdate AS date, "
-            "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-            "gm.guestscore AS score, gm.exception AS score_exception "
-            "FROM ww_showguestmap gm "
-            "JOIN ww_guests g ON g.guestid = gm.guestid "
-            "JOIN ww_shows s ON s.showid = gm.showid "
-            "WHERE gm.guestid = %s "
-            "ORDER BY s.showdate ASC;"
-        )
         cursor.execute(query, (guest_id,))
         results = cursor.fetchall()
         cursor.close()

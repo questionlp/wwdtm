@@ -50,9 +50,9 @@ class PanelistUtility:
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT panelistslug FROM ww_panelists " "WHERE panelistid = %s " "LIMIT 1;"
-        )
+        query = """
+            SELECT panelistslug FROM ww_panelists WHERE panelistid = %s LIMIT 1;
+            """
         cursor.execute(query, (panelist_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -78,9 +78,9 @@ class PanelistUtility:
             return None
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT panelistid FROM ww_panelists " "WHERE panelistslug = %s " "LIMIT 1;"
-        )
+        query = """
+            SELECT panelistid FROM ww_panelists WHERE panelistslug = %s LIMIT 1;
+            """
         cursor.execute(query, (slug,))
         result = cursor.fetchone()
         cursor.close()
@@ -101,9 +101,9 @@ class PanelistUtility:
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT panelistid FROM ww_panelists " "WHERE panelistid = %s " "LIMIT 1;"
-        )
+        query = """
+            SELECT panelistid FROM ww_panelists WHERE panelistid = %s LIMIT 1;
+            """
         cursor.execute(query, (panelist_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -126,11 +126,11 @@ class PanelistUtility:
             return False
 
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT panelistslug FROM ww_panelists "
-            "WHERE panelistslug = %s "
-            "LIMIT 1;"
-        )
+        query = """
+            SELECT panelistslug FROM ww_panelists
+            WHERE panelistslug = %s
+            LIMIT 1;
+            """
         cursor.execute(query, (slug,))
         result = cursor.fetchone()
         cursor.close()

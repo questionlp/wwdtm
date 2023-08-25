@@ -54,17 +54,18 @@ class Location:
             information. If locations could not be retrieved, an empty
             list is returned.
         """
-        cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT locationid AS id, city, state, venue, "
-            "locationslug AS slug "
-            "FROM ww_locations "
-        )
+        query = """
+            SELECT locationid AS id, city, state, venue,
+            locationslug AS slug
+            FROM ww_locations
+            """
+
         if sort_by_venue:
             query = query + "ORDER BY venue ASC, city ASC, state ASC;"
         else:
             query = query + "ORDER BY state ASC, city ASC, venue ASC;"
 
+        cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -104,16 +105,17 @@ class Location:
             information and recordings. If locations could not be
             retrieved, an empty list is returned.
         """
-        cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT locationid AS id, city, state, venue, "
-            "locationslug AS slug "
-            "FROM ww_locations "
-        )
+        query = """
+            SELECT locationid AS id, city, state, venue,
+            locationslug AS slug
+            FROM ww_locations
+            """
         if sort_by_venue:
             query = query + "ORDER BY venue ASC, city ASC, state ASC;"
         else:
             query = query + "ORDER BY state ASC, city ASC, venue ASC;"
+
+        cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -151,12 +153,13 @@ class Location:
         :return: List of all location IDs. If location IDs could not be
             retrieved, an empty list is returned.
         """
-        cursor = self.database_connection.cursor(dictionary=False)
         query = "SELECT locationid FROM ww_locations "
         if sort_by_venue:
             query = query + "ORDER BY venue ASC, city ASC, state ASC;"
         else:
             query = query + "ORDER BY state ASC, city ASC, venue ASC;"
+
+        cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -175,12 +178,13 @@ class Location:
         :return: List of all location slug strings. If location slug
             strings could not be retrieved, an empty list is returned.
         """
-        cursor = self.database_connection.cursor(dictionary=False)
         query = "SELECT locationslug FROM ww_locations "
         if sort_by_venue:
             query = query + "ORDER BY venue ASC, city ASC, state ASC;"
         else:
             query = query + "ORDER BY state ASC, city ASC, venue ASC;"
+
+        cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -203,14 +207,14 @@ class Location:
         if not valid_int_id(location_id):
             return {}
 
+        query = """
+            SELECT locationid AS id, city, state, venue,
+            locationslug AS slug
+            FROM ww_locations
+            WHERE locationid = %s
+            LIMIT 1;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT locationid AS id, city, state, venue, "
-            "locationslug AS slug "
-            "FROM ww_locations "
-            "WHERE locationid = %s "
-            "LIMIT 1;"
-        )
         cursor.execute(query, (location_id,))
         result = cursor.fetchone()
         cursor.close()

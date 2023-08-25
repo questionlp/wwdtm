@@ -55,17 +55,17 @@ class ScorekeeperAppearances:
         if not valid_int_id(scorekeeper_id):
             return {}
 
+        query = """
+            SELECT (
+            SELECT COUNT(skm.showid) FROM ww_showskmap skm
+            JOIN ww_shows s ON s.showid = skm.showid
+            WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND
+            skm.scorekeeperid = %s ) AS regular_shows, (
+            SELECT COUNT(skm.showid) FROM ww_showskmap skm
+            JOIN ww_shows s ON s.showid = skm.showid
+            WHERE skm.scorekeeperid = %s ) AS all_shows;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT ( "
-            "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
-            "JOIN ww_shows s ON s.showid = skm.showid "
-            "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
-            "skm.scorekeeperid = %s ) AS regular_shows, ( "
-            "SELECT COUNT(skm.showid) FROM ww_showskmap skm "
-            "JOIN ww_shows s ON s.showid = skm.showid "
-            "WHERE skm.scorekeeperid = %s ) AS all_shows;"
-        )
         cursor.execute(
             query,
             (
@@ -86,16 +86,16 @@ class ScorekeeperAppearances:
                 "all_shows": 0,
             }
 
-        query = (
-            "SELECT skm.showid AS show_id, s.showdate AS date, "
-            "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-            "skm.guest, skm.description "
-            "FROM ww_showskmap skm "
-            "JOIN ww_scorekeepers sk ON sk.scorekeeperid = skm.scorekeeperid "
-            "JOIN ww_shows s ON s.showid = skm.showid "
-            "WHERE sk.scorekeeperid = %s "
-            "ORDER BY s.showdate ASC;"
-        )
+        query = """
+            SELECT skm.showid AS show_id, s.showdate AS date,
+            s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
+            skm.guest, skm.description
+            FROM ww_showskmap skm
+            JOIN ww_scorekeepers sk ON sk.scorekeeperid = skm.scorekeeperid
+            JOIN ww_shows s ON s.showid = skm.showid
+            WHERE sk.scorekeeperid = %s
+            ORDER BY s.showdate ASC;
+            """
         cursor.execute(query, (scorekeeper_id,))
         results = cursor.fetchall()
         cursor.close()

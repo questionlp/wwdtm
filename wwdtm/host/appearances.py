@@ -53,17 +53,17 @@ class HostAppearances:
         if not valid_int_id(host_id):
             return {}
 
+        query = """
+            SELECT (
+            SELECT COUNT(hm.showid) FROM ww_showhostmap hm
+            JOIN ww_shows s ON s.showid = hm.showid
+            WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND
+            hm.hostid = %s ) AS regular_shows, (
+            SELECT COUNT(hm.showid) FROM ww_showhostmap hm
+            JOIN ww_shows s ON s.showid = hm.showid
+            WHERE hm.hostid = %s ) AS all_shows;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT ( "
-            "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
-            "JOIN ww_shows s ON s.showid = hm.showid "
-            "WHERE s.bestof = 0 AND s.repeatshowid IS NULL AND "
-            "hm.hostid = %s ) AS regular_shows, ( "
-            "SELECT COUNT(hm.showid) FROM ww_showhostmap hm "
-            "JOIN ww_shows s ON s.showid = hm.showid "
-            "WHERE hm.hostid = %s ) AS all_shows;"
-        )
         cursor.execute(
             query,
             (
@@ -84,15 +84,15 @@ class HostAppearances:
                 "all_shows": 0,
             }
 
-        query = (
-            "SELECT hm.showid AS show_id, s.showdate AS date, "
-            "s.bestof AS best_of, s.repeatshowid AS repeat_show_id, "
-            "hm.guest FROM ww_showhostmap hm "
-            "JOIN ww_hosts h ON h.hostid = hm.hostid "
-            "JOIN ww_shows s ON s.showid = hm.showid "
-            "WHERE hm.hostid = %s "
-            "ORDER BY s.showdate ASC;"
-        )
+        query = """
+            SELECT hm.showid AS show_id, s.showdate AS date,
+            s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
+            hm.guest FROM ww_showhostmap hm
+            JOIN ww_hosts h ON h.hostid = hm.hostid
+            JOIN ww_shows s ON s.showid = hm.showid
+            WHERE hm.hostid = %s
+            ORDER BY s.showdate ASC;
+            """
         cursor.execute(query, (host_id,))
         results = cursor.fetchall()
         cursor.close()

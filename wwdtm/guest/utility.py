@@ -48,8 +48,10 @@ class GuestUtility:
         if not valid_int_id(guest_id):
             return None
 
+        query = """
+            SELECT guestslug FROM ww_guests WHERE guestid = %s LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT guestslug FROM ww_guests " "WHERE guestid = %s " "LIMIT 1;"
         cursor.execute(query, (guest_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -74,8 +76,10 @@ class GuestUtility:
         except ValueError:
             return None
 
+        query = """
+            SELECT guestid FROM ww_guests WHERE guestslug = %s LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT guestid FROM ww_guests " "WHERE guestslug = %s " "LIMIT 1;"
         cursor.execute(query, (slug,))
         result = cursor.fetchone()
         cursor.close()
@@ -95,8 +99,10 @@ class GuestUtility:
         if not valid_int_id(guest_id):
             return False
 
+        query = """
+            SELECT guestid FROM ww_guests WHERE guestid = %s LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT guestid FROM ww_guests " "WHERE guestid = %s " "LIMIT 1;"
         cursor.execute(query, (guest_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -118,8 +124,10 @@ class GuestUtility:
         except ValueError:
             return False
 
+        query = """
+            SELECT guestslug FROM ww_guests WHERE guestslug = %s LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT guestslug FROM ww_guests " "WHERE guestslug = %s " "LIMIT 1;"
         cursor.execute(query, (slug,))
         result = cursor.fetchone()
         cursor.close()
