@@ -22,6 +22,10 @@ Development Changes
 -------------------
 
 * Upgrade Black from 23.3.0 to 23.7.0
+* Upgrade flake8 from 6.0.0 to 6.1.0
+* Upgrade pycodestyle form 2.10.0 to 2.11.0
+* Upgrade pytest from 7.3.1 to 7.4.0
+* Upgrade wheel from 0.40.0 to 0.41.2
 
 2.1.0
 =====
