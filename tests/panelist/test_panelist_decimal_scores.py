@@ -3,13 +3,13 @@
 #
 # Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Testing for object: :py:class:`wwdtm.panelist.PanelistScores`
+"""Testing for object: :py:class:`wwdtm.panelist.PanelistDecimalScores`
 """
 import json
 from typing import Any, Dict
 
 import pytest
-from wwdtm.panelist import PanelistScores
+from wwdtm.panelist import PanelistDecimalScores
 
 
 @pytest.mark.skip
@@ -28,12 +28,12 @@ def get_connect_dict() -> Dict[str, Any]:
 
 @pytest.mark.parametrize("panelist_id", [14])
 def test_panelist_scores_retrieve_scores_by_id(panelist_id: int):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_by_id`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_by_id`
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
     """
-    scores = PanelistScores(connect_dict=get_connect_dict())
+    scores = PanelistDecimalScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_by_id(panelist_id)
 
     assert scoring, f"Scoring data not returned for ID {panelist_id}"
@@ -41,12 +41,12 @@ def test_panelist_scores_retrieve_scores_by_id(panelist_id: int):
 
 @pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
 def test_panelist_scores_retrieve_scores_by_slug(panelist_slug: str):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_by_slug`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_by_slug`
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
     """
-    scores = PanelistScores(connect_dict=get_connect_dict())
+    scores = PanelistDecimalScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_by_slug(panelist_slug)
 
     assert scoring, f"Scoring data not returned for slug {panelist_slug}"
@@ -54,12 +54,12 @@ def test_panelist_scores_retrieve_scores_by_slug(panelist_slug: str):
 
 @pytest.mark.parametrize("panelist_id", [14])
 def test_panelist_scores_retrieve_scores_grouped_list_by_id(panelist_id: int):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_grouped_list_by_id`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_grouped_list_by_id`
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
     """
-    scores = PanelistScores(connect_dict=get_connect_dict())
+    scores = PanelistDecimalScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_grouped_list_by_id(panelist_id)
 
     assert "score" in scoring, f"'score' was not returned for ID {panelist_id}"
@@ -68,12 +68,12 @@ def test_panelist_scores_retrieve_scores_grouped_list_by_id(panelist_id: int):
 
 @pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
 def test_panelist_scores_retrieve_scores_grouped_list_by_slug(panelist_slug: str):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_grouped_list_by_slug`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_grouped_list_by_slug`
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
     """
-    scores = PanelistScores(connect_dict=get_connect_dict())
+    scores = PanelistDecimalScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_grouped_list_by_slug(panelist_slug)
 
     assert "score" in scoring, f"'score' was not returned for slug {panelist_slug}"
@@ -82,12 +82,12 @@ def test_panelist_scores_retrieve_scores_grouped_list_by_slug(panelist_slug: str
 
 @pytest.mark.parametrize("panelist_id", [14])
 def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_id(panelist_id: int):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_grouped_ordered_pair_by_id`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_grouped_ordered_pair_by_id`
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
     """
-    scores = PanelistScores(connect_dict=get_connect_dict())
+    scores = PanelistDecimalScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_grouped_ordered_pair_by_id(panelist_id)
 
     assert scoring, f"Scoring data not returned for ID {panelist_id}"
@@ -98,12 +98,12 @@ def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_id(panelist_id:
 def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_slug(
     panelist_slug: str,
 ):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_grouped_ordered_pair_by_slug`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_grouped_ordered_pair_by_slug`
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
     """
-    scores = PanelistScores(connect_dict=get_connect_dict())
+    scores = PanelistDecimalScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_grouped_ordered_pair_by_slug(panelist_slug)
 
     assert scoring, f"Scoring data not returned for slug {panelist_slug}"
@@ -112,11 +112,11 @@ def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_slug(
 
 @pytest.mark.parametrize("panelist_id", [14])
 def test_panelist_scores_retrieve_scores_list_by_id(panelist_id: int):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_list_by_id`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_list_by_id`
 
     :param panelist_id: Panelist ID to test retrieving panelist information
     """
-    scores = PanelistScores(connect_dict=get_connect_dict())
+    scores = PanelistDecimalScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_list_by_id(panelist_id)
 
     assert "shows" in scoring, f"'shows' was not returned for ID {panelist_id}"
@@ -125,12 +125,12 @@ def test_panelist_scores_retrieve_scores_list_by_id(panelist_id: int):
 
 @pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
 def test_panelist_scores_retrieve_scores_list_by_slug(panelist_slug: str):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_list_by_slug`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_list_by_slug`
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
     """
-    scores = PanelistScores(connect_dict=get_connect_dict())
+    scores = PanelistDecimalScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_list_by_slug(panelist_slug)
 
     assert "shows" in scoring, f"'shows' was not returned for slug {panelist_slug}"
@@ -139,12 +139,12 @@ def test_panelist_scores_retrieve_scores_list_by_slug(panelist_slug: str):
 
 @pytest.mark.parametrize("panelist_id", [14])
 def test_panelist_scores_retrieve_scores_ordered_pair_by_id(panelist_id: int):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_ordered_pair_by_id`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_ordered_pair_by_id`
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
     """
-    scores = PanelistScores(connect_dict=get_connect_dict())
+    scores = PanelistDecimalScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_ordered_pair_by_id(panelist_id)
 
     assert scoring, f"Scoring data not returned for ID {panelist_id}"
@@ -152,12 +152,12 @@ def test_panelist_scores_retrieve_scores_ordered_pair_by_id(panelist_id: int):
 
 @pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
 def test_panelist_scores_retrieve_scores_ordered_pair_by_slug(panelist_slug: str):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistScores.retrieve_scores_ordered_pair_by_slug`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_ordered_pair_by_slug`
 
     :param panelist_slug: Panelist slug string to test retrieving panelist
         information
     """
-    scores = PanelistScores(connect_dict=get_connect_dict())
+    scores = PanelistDecimalScores(connect_dict=get_connect_dict())
     scoring = scores.retrieve_scores_ordered_pair_by_slug(panelist_slug)
 
     assert scoring, f"Scoring data not returned for slug {panelist_slug}"

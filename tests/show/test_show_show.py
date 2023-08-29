@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object :py:class:`wwdtm.show.Show`
 """
@@ -17,7 +17,7 @@ def get_connect_dict() -> Dict[str, Any]:
     """Read in database connection settings and return values as a
     dictionary.
     """
-    with open("config.json", "r") as config_file:
+    with open("config.json", "r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
@@ -36,6 +36,17 @@ def test_show_retrieve_all_details():
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_details`"""
     show = Show(connect_dict=get_connect_dict())
     shows = show.retrieve_all_details()
+
+    assert shows, "No shows could be retrieved"
+    assert "date" in shows[0], "'date' was not returned for the first list item"
+    assert "host" in shows[0], "'host' was not returned for first list item"
+
+
+def test_show_retrieve_all_details_decimal():
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_details`
+    with decimal scores"""
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_all_details(include_decimal_scores=True)
 
     assert shows, "No shows could be retrieved"
     assert "date" in shows[0], "'date' was not returned for the first list item"
@@ -205,6 +216,27 @@ def test_show_retrieve_details_by_date(year: int, month: int, day: int):
     )
 
 
+@pytest.mark.parametrize("year, month, day", [(2020, 4, 25)])
+def test_show_retrieve_details_by_date_decimal(year: int, month: int, day: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_date`
+    with decimal scores
+
+    :param year: Four digit year to test retrieving show details
+    :param month: One or two digit month to test retrieving show details
+    :param day: One or two digit day to test retrieving show details
+    """
+    show = Show(connect_dict=get_connect_dict())
+    info = show.retrieve_details_by_date(year, month, day, include_decimal_scores=True)
+
+    assert info, f"Show for date {year:04d}-{month:02d}-{day:02d} not found"
+    assert "date" in info, (
+        f"'date' was not returned for show " f"{year:04d}-{month:02d}-{day:02d}"
+    )
+    assert "host" in info, (
+        f"'host' was not returned for show " f"{year:04d}-{month:02d}-{day:02d}"
+    )
+
+
 @pytest.mark.parametrize("date", ["2018-10-27"])
 def test_show_retrieve_details_by_date_string(date: str):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_date_string`
@@ -214,6 +246,22 @@ def test_show_retrieve_details_by_date_string(date: str):
     """
     show = Show(connect_dict=get_connect_dict())
     info = show.retrieve_details_by_date_string(date)
+
+    assert info, f"Show for date {date} not found"
+    assert "date" in info, f"'date' was not returned for show {date}"
+    assert "host" in info, f"'host' was not returned for show {date}"
+
+
+@pytest.mark.parametrize("date", ["2018-10-27"])
+def test_show_retrieve_details_by_date_string_decimal(date: str):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_date_string`
+    with decimal scores
+
+    :param date: Show date string in ``YYYY-MM-DD`` format to test
+        retrieving show details
+    """
+    show = Show(connect_dict=get_connect_dict())
+    info = show.retrieve_details_by_date_string(date, include_decimal_scores=True)
 
     assert info, f"Show for date {date} not found"
     assert "date" in info, f"'date' was not returned for show {date}"
@@ -234,6 +282,21 @@ def test_show_retrieve_details_by_id(show_id: int):
     assert "host" in info, f"'host' was not returned for ID {show_id}"
 
 
+@pytest.mark.parametrize("show_id", [1162, 1246])
+def test_show_retrieve_details_by_id_decimal(show_id: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_id`
+    with decimal scores
+
+    :param show_id: Show ID to test retrieving show details
+    """
+    show = Show(connect_dict=get_connect_dict())
+    info = show.retrieve_details_by_id(show_id, include_decimal_scores=True)
+
+    assert info, f"Show ID {show_id} not found"
+    assert "date" in info, f"'date' was not returned for ID {show_id}"
+    assert "host" in info, f"'host' was not returned for ID {show_id}"
+
+
 @pytest.mark.parametrize("month, day", [(10, 28), (8, 19)])
 def test_show_retrieve_details_by_month_day(month: int, day: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_month_day`
@@ -243,6 +306,26 @@ def test_show_retrieve_details_by_month_day(month: int, day: int):
     """
     show = Show(connect_dict=get_connect_dict())
     shows = show.retrieve_details_by_month_day(month, day)
+
+    assert shows, (
+        f"No shows could be retrieved for month {month:02d} " "and day {day:02d}"
+    )
+    assert "id" in shows[0], (
+        f"'id' was not returned for the first list item "
+        f"for month {month:02d} and day {day:02d}"
+    )
+
+
+@pytest.mark.parametrize("month, day", [(10, 28), (8, 19)])
+def test_show_retrieve_details_by_month_day_decimal(month: int, day: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_month_day`
+    with decimal scores
+
+    :param month: One or two digit month to test retrieving show details
+    :param day: One or two digit day to test retrieving show details
+    """
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_details_by_month_day(month, day, include_decimal_scores=True)
 
     assert shows, (
         f"No shows could be retrieved for month {month:02d} " "and day {day:02d}"
@@ -271,6 +354,25 @@ def test_show_retrieve_details_by_year(year: int):
     )
 
 
+@pytest.mark.parametrize("year", [2021])
+def test_show_retrieve_details_by_year_decimal(year: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_year`
+    with decimal scores
+
+    :param year: Four digit year to test retrieving show details
+    """
+    show = Show(connect_dict=get_connect_dict())
+    info = show.retrieve_details_by_year(year, include_decimal_scores=True)
+
+    assert info, f"No shows could be retrieved for year {year:04d}"
+    assert "date" in info[0], (
+        f"'date' was not returned for first list " f"item for year {year:04d}"
+    )
+    assert "host" in info[0], (
+        f"'host' was not returned for first list " f"item for year {year:04d}"
+    )
+
+
 @pytest.mark.parametrize("year, month", [(2020, 4)])
 def test_show_retrieve_details_by_year_month(year: int, month: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_year_month`
@@ -280,6 +382,30 @@ def test_show_retrieve_details_by_year_month(year: int, month: int):
     """
     show = Show(connect_dict=get_connect_dict())
     info = show.retrieve_details_by_year_month(year, month)
+
+    assert info, (
+        f"No shows could be retrieved for year/month " f"{year:04d}-{month:02d}"
+    )
+    assert "date" in info[0], (
+        f"'date' was not returned for first list item "
+        f"for year/month {year:04d}-{month:02d}"
+    )
+    assert "host" in info[0], (
+        f"'host' was not returned for first list item "
+        f"for year/month {year:04d}-{month:02d}"
+    )
+
+
+@pytest.mark.parametrize("year, month", [(2020, 4)])
+def test_show_retrieve_details_by_year_month_decimal(year: int, month: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_year_month`
+    with decimal scores
+
+    :param year: Four digit year to test retrieving show details
+    :param month: One or two digit year to test retrieving show details
+    """
+    show = Show(connect_dict=get_connect_dict())
+    info = show.retrieve_details_by_year_month(year, month, include_decimal_scores=True)
 
     assert info, (
         f"No shows could be retrieved for year/month " f"{year:04d}-{month:02d}"
@@ -325,6 +451,17 @@ def test_show_retrieve_recent_details():
     assert "host" in shows[0], "'host' was not returned for first list item"
 
 
+def test_show_retrieve_recent_details_decimal():
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_recent_details`
+    with decimal scores"""
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_recent_details(include_decimal_scores=True)
+
+    assert shows, "No shows could be retrieved"
+    assert "date" in shows[0], "'date' was not returned for the first list item"
+    assert "host" in shows[0], "'host' was not returned for first list item"
+
+
 @pytest.mark.parametrize("year", [2018])
 def test_show_retrieve_scores_by_year(year: int):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_scores_by_year`
@@ -334,6 +471,20 @@ def test_show_retrieve_scores_by_year(year: int):
     """
     show = Show(connect_dict=get_connect_dict())
     scores = show.retrieve_scores_by_year(year)
+
+    assert scores, f"No scores could be retrieved by year {year:04d}"
+    assert isinstance(scores[0], tuple), "First list item is not a tuple"
+
+
+@pytest.mark.parametrize("year", [2018])
+def test_show_retrieve_scores_by_year_decimal(year: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_scores_by_year`
+
+    :param year: Four digit year to test retrieving scores for a show
+        year
+    """
+    show = Show(connect_dict=get_connect_dict())
+    scores = show.retrieve_scores_by_year(year, use_decimal_scores=True)
 
     assert scores, f"No scores could be retrieved by year {year:04d}"
     assert isinstance(scores[0], tuple), "First list item is not a tuple"

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Show Data Utility Functions
 """
@@ -53,8 +53,10 @@ class ShowUtility:
         except ValueError:
             return None
 
+        query = """
+            SELECT showid FROM ww_shows WHERE showdate = %s LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT showid FROM ww_shows " "WHERE showdate = %s " "LIMIT 1;"
         cursor.execute(query, (show_date.isoformat(),))
         result = cursor.fetchone()
         cursor.close()
@@ -74,8 +76,10 @@ class ShowUtility:
         if not valid_int_id(show_id):
             return None
 
+        query = """
+            SELECT showdate FROM ww_shows WHERE showid = %s LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT showdate FROM ww_shows " "WHERE showid = %s " "LIMIT 1;"
         cursor.execute(query, (show_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -99,8 +103,10 @@ class ShowUtility:
         except ValueError:
             return False
 
+        query = """
+            SELECT showid FROM ww_shows WHERE showdate = %s LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT showid FROM ww_shows " "WHERE showdate = %s " "LIMIT 1;"
         cursor.execute(query, (show_date.isoformat(),))
         result = cursor.fetchone()
         cursor.close()
@@ -117,8 +123,10 @@ class ShowUtility:
         if not valid_int_id(show_id):
             return False
 
+        query = """
+            SELECT showid FROM ww_shows WHERE showid = %s LIMIT 1;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT showid FROM ww_shows " "WHERE showid = %s " "LIMIT 1;"
         cursor.execute(query, (show_id,))
         result = cursor.fetchone()
         cursor.close()

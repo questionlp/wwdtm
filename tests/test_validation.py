@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Testing for object: :py:class:`wdtm.validation`
+"""Testing for object: :py:class:`wwdtm.validation`
 """
-import json
 
 import pytest
 from wwdtm.validation import valid_int_id

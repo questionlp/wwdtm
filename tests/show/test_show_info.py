@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object :py:class:`wwdtm.show.ShowInfo`
 """
@@ -17,7 +17,7 @@ def get_connect_dict() -> Dict[str, Any]:
     """Read in database connection settings and return values as a
     dictionary.
     """
-    with open("config.json", "r") as config_file:
+    with open("config.json", "r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
@@ -91,6 +91,27 @@ def test_show_info_retrieve_panelist_info_by_id(show_id: int):
     """
     info = ShowInfo(connect_dict=get_connect_dict())
     panelists = info.retrieve_panelist_info_by_id(show_id)
+
+    assert (
+        panelists
+    ), f"Panelist information for show ID {show_id} could not be retrieved"
+    assert (
+        "id" in panelists[0]
+    ), f"'id' was not returned for the first panelist for show ID {show_id}"
+    assert (
+        "score" in panelists[0]
+    ), f"'score' was not returned for the first panelist for show ID {show_id}"
+
+
+@pytest.mark.parametrize("show_id", [1162])
+def test_show_info_retrieve_panelist_info_by_id_decimal(show_id: int):
+    """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_panelist_info_by_id`
+    with decimal scores
+
+    :param show_id: Show ID to test retrieving show panelist information
+    """
+    info = ShowInfo(connect_dict=get_connect_dict())
+    panelists = info.retrieve_panelist_info_by_id(show_id, include_decimal_scores=True)
 
     assert (
         panelists

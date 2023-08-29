@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Host Data Retrieval Functions
 """
@@ -50,13 +50,13 @@ class Host:
         :return: List of all hosts and their corresponding information.
             If hosts could not be retrieved, an empty list is returned.
         """
+        query = """
+            SELECT hostid AS id, host AS name, hostslug AS slug,
+            hostgender AS gender
+            FROM ww_hosts
+            ORDER BY host ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT hostid AS id, host AS name, hostslug AS slug, "
-            "hostgender AS gender "
-            "FROM ww_hosts "
-            "ORDER BY host ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -85,13 +85,13 @@ class Host:
             and appearances. If hosts could not be retrieved, an empty
             list is returned.
         """
+        query = """
+            SELECT hostid AS id, host AS name, hostslug AS slug,
+            hostgender AS gender
+            FROM ww_hosts
+            ORDER BY host ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT hostid AS id, host AS name, hostslug AS slug, "
-            "hostgender AS gender "
-            "FROM ww_hosts "
-            "ORDER BY host ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -138,8 +138,10 @@ class Host:
         :return: List of all host slug strings. If host slug strings
             could not be retrieved, an empty list is returned.
         """
+        query = """
+            SELECT hostslug FROM ww_hosts ORDER BY host ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT hostslug FROM ww_hosts " "ORDER BY host ASC;"
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -162,14 +164,14 @@ class Host:
         if not valid_int_id(host_id):
             return {}
 
+        query = """
+            SELECT hostid AS id, host AS name, hostslug AS slug,
+            hostgender AS gender
+            FROM ww_hosts
+            WHERE hostid = %s
+            LIMIT 1;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT hostid AS id, host AS name, hostslug AS slug, "
-            "hostgender AS gender "
-            "FROM ww_hosts "
-            "WHERE hostid = %s "
-            "LIMIT 1;"
-        )
         cursor.execute(query, (host_id,))
         result = cursor.fetchone()
         cursor.close()

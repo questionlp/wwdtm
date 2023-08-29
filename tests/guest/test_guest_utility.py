@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wdtm.guest.GuestUtility`
 """
@@ -20,7 +20,7 @@ def get_connect_dict() -> Dict[str, Any]:
     :return: A dictionary containing database connection settings
         for use by mysql.connector
     """
-    with open("config.json", "r") as config_file:
+    with open("config.json", "r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]

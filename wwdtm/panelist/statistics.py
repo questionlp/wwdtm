@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Statistics Retrieval Functions
 """
+from decimal import Decimal
 from functools import lru_cache
 from typing import Any, Dict, Optional
 
-from mysql.connector import connect
+from mysql.connector import connect, DatabaseError
 import numpy
 from wwdtm.panelist.scores import PanelistScores
+from wwdtm.panelist.decimal_scores import PanelistDecimalScores
 from wwdtm.panelist.utility import PanelistUtility
 from wwdtm.validation import valid_int_id
 
@@ -41,7 +43,25 @@ class PanelistStatistics:
 
             self.database_connection = database_connection
 
+        try:
+            query = (
+                "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
+            )
+            cursor = self.database_connection.cursor()
+            cursor.execute(query)
+            result = cursor.fetchone()
+            cursor.close()
+            if result:
+                self.has_decimal_column: bool = True
+            else:
+                self.has_decimal_column: bool = False
+        except DatabaseError:
+            self.has_decimal_column: bool = False
+
         self.scores = PanelistScores(database_connection=self.database_connection)
+        self.scores_decimal = PanelistDecimalScores(
+            database_connection=self.database_connection
+        )
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
@@ -54,18 +74,18 @@ class PanelistStatistics:
             panelist Bluff counts could not be returned, an empty
             dictionary will be returned.
         """
+        query = """
+            SELECT (
+            SELECT COUNT(blm.chosenbluffpnlid) FROM ww_showbluffmap blm
+            JOIN ww_shows s ON s.showid = blm.showid
+            WHERE s.repeatshowid IS NULL AND blm.chosenbluffpnlid = %s
+            ) AS chosen, (
+            SELECT COUNT(blm.correctbluffpnlid) FROM ww_showbluffmap blm
+            JOIN ww_shows s ON s.showid = blm.showid
+            WHERE s.repeatshowid IS NULL AND blm.correctbluffpnlid = %s
+            ) AS correct;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT ( "
-            "SELECT COUNT(blm.chosenbluffpnlid) FROM ww_showbluffmap blm "
-            "JOIN ww_shows s ON s.showid = blm.showid "
-            "WHERE s.repeatshowid IS NULL AND blm.chosenbluffpnlid = %s "
-            ") AS chosen, ( "
-            "SELECT COUNT(blm.correctbluffpnlid) FROM ww_showbluffmap blm "
-            "JOIN ww_shows s ON s.showid = blm.showid "
-            "WHERE s.repeatshowid IS NULL AND blm.correctbluffpnlid = %s "
-            ") AS correct;"
-        )
         cursor.execute(
             query,
             (
@@ -113,31 +133,31 @@ class PanelistStatistics:
         if not valid_int_id(panelist_id):
             return {}
 
+        query = """
+            SELECT (
+            SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE pm.panelistid = %s AND pm.showpnlrank = '1' AND
+            s.bestof = 0 and s.repeatshowid IS NULL) as 'first', (
+            SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE pm.panelistid = %s AND pm.showpnlrank = '1t' AND
+            s.bestof = 0 and s.repeatshowid IS NULL) as 'first_tied', (
+            SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE pm.panelistid = %s AND pm.showpnlrank = '2' AND
+            s.bestof = 0 and s.repeatshowid IS NULL) as 'second', (
+            SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE pm.panelistid = %s AND pm.showpnlrank = '2t' AND
+            s.bestof = 0 and s.repeatshowid IS NULL) as 'second_tied', (
+            SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE pm.panelistid = %s AND pm.showpnlrank = '3' AND
+            s.bestof = 0 and s.repeatshowid IS NULL
+            ) as 'third';
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT ( "
-            "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s AND pm.showpnlrank = '1' AND "
-            "s.bestof = 0 and s.repeatshowid IS NULL) as 'first', ( "
-            "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s AND pm.showpnlrank = '1t' AND "
-            "s.bestof = 0 and s.repeatshowid IS NULL) as 'first_tied', ( "
-            "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s AND pm.showpnlrank = '2' AND "
-            "s.bestof = 0 and s.repeatshowid IS NULL) as 'second', ( "
-            "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s AND pm.showpnlrank = '2t' AND "
-            "s.bestof = 0 and s.repeatshowid IS NULL) as 'second_tied', ( "
-            "SELECT COUNT(pm.showpnlrank) FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s AND pm.showpnlrank = '3' AND "
-            "s.bestof = 0 and s.repeatshowid IS NULL "
-            ") as 'third';"
-        )
         cursor.execute(
             query,
             (
@@ -179,11 +199,16 @@ class PanelistStatistics:
         return self.retrieve_rank_info_by_id(id_)
 
     @lru_cache(typed=True)
-    def retrieve_statistics_by_id(self, panelist_id: int) -> Dict[str, Any]:
+    def retrieve_statistics_by_id(
+        self, panelist_id: int, include_decimal_scores: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary containing panelist statistics, ranking
         data, and scoring data for the requested panelist ID.
 
         :param panelist_id: Panelist ID
+        :param include_decimal_scores: Flag set to include statistics
+            based on decimal scores along with statistics based on
+            integer scores
         :return: Dictionary containing panelist statistics. If panelist
             statistics could not be returned, an empty dictionary will
             be returned.
@@ -193,25 +218,39 @@ class PanelistStatistics:
 
         score_data = self.scores.retrieve_scores_by_id(panelist_id)
         ranks = self.retrieve_rank_info_by_id(panelist_id)
-
         if not score_data or not ranks:
             return {}
+
+        if self.has_decimal_column and include_decimal_scores:
+            score_data_decimal = self.scores_decimal.retrieve_scores_by_id(panelist_id)
+            if not score_data_decimal:
+                return {}
 
         appearance_count = len(score_data)
         scoring = {
             "minimum": int(numpy.amin(score_data)),
             "maximum": int(numpy.amax(score_data)),
-            "mean": round(numpy.mean(score_data), 4),
+            "mean": round(numpy.mean(score_data), 5),
             "median": int(numpy.median(score_data)),
-            "standard_deviation": round(numpy.std(score_data), 4),
+            "standard_deviation": round(numpy.std(score_data), 5),
             "total": int(numpy.sum(score_data)),
         }
 
-        ranks_first = round(100 * (ranks["first"] / appearance_count), 4)
-        ranks_first_tied = round(100 * (ranks["first_tied"] / appearance_count), 4)
-        ranks_second = round(100 * (ranks["second"] / appearance_count), 4)
-        ranks_second_tied = round(100 * (ranks["second_tied"] / appearance_count), 4)
-        ranks_third = round(100 * (ranks["third"] / appearance_count), 4)
+        if include_decimal_scores:
+            scoring_decimal = {
+                "minimum": Decimal(numpy.amin(score_data_decimal)),
+                "maximum": Decimal(numpy.amax(score_data_decimal)),
+                "mean": round(Decimal(numpy.mean(score_data_decimal)), 5),
+                "median": Decimal(numpy.median(score_data_decimal)),
+                "standard_deviation": round(Decimal(numpy.std(score_data_decimal)), 5),
+                "total": Decimal(numpy.sum(score_data_decimal)),
+            }
+
+        ranks_first = round(100 * (ranks["first"] / appearance_count), 5)
+        ranks_first_tied = round(100 * (ranks["first_tied"] / appearance_count), 5)
+        ranks_second = round(100 * (ranks["second"] / appearance_count), 5)
+        ranks_second_tied = round(100 * (ranks["second_tied"] / appearance_count), 5)
+        ranks_third = round(100 * (ranks["third"] / appearance_count), 5)
 
         ranks_percentage = {
             "first": ranks_first,
@@ -226,17 +265,29 @@ class PanelistStatistics:
             "percentage": ranks_percentage,
         }
 
-        return {
-            "scoring": scoring,
-            "ranking": ranking,
-        }
+        if not include_decimal_scores:
+            return {
+                "scoring": scoring,
+                "ranking": ranking,
+            }
+        else:
+            return {
+                "scoring": scoring,
+                "scoring_decimal": scoring_decimal,
+                "ranking": ranking,
+            }
 
     @lru_cache(typed=True)
-    def retrieve_statistics_by_slug(self, panelist_slug: str) -> Dict[str, Any]:
+    def retrieve_statistics_by_slug(
+        self, panelist_slug: str, include_decimal_scores: bool = False
+    ) -> Dict[str, Any]:
         """Returns a dictionary containing panelist statistics, ranking
         data, and scoring data for the requested panelist slug string.
 
         :param panelist_slug: Panelist slug string
+        :param include_decimal_scores: Flag set to include statistics
+            based on decimal scores along with statistics based on
+            integer scores
         :return: Dictionary containing panelist statistics. If panelist
             statistics could not be returned, an empty dictionary will
             be returned.
@@ -245,4 +296,6 @@ class PanelistStatistics:
         if not id_:
             return {}
 
-        return self.retrieve_statistics_by_id(id_)
+        return self.retrieve_statistics_by_id(
+            id_, include_decimal_scores=include_decimal_scores
+        )

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Scorekeeper Data Retrieval Functions
 """
@@ -53,13 +53,13 @@ class Scorekeeper:
             information. If scorekeeper information could not be
             retrieved, an empty list will be returned.
         """
+        query = """
+            SELECT scorekeeperid AS id, scorekeeper AS name,
+            scorekeeperslug AS slug, scorekeepergender AS gender
+            FROM ww_scorekeepers
+            ORDER BY scorekeeper ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT scorekeeperid AS id, scorekeeper AS name, "
-            "scorekeeperslug AS slug, scorekeepergender AS gender "
-            "FROM ww_scorekeepers "
-            "ORDER BY scorekeeper ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -89,13 +89,13 @@ class Scorekeeper:
             information and appearances. If scorekeeper information
             could not be retrieved, an empty list will be returned.
         """
+        query = """
+            SELECT scorekeeperid AS id, scorekeeper AS name,
+            scorekeeperslug AS slug, scorekeepergender AS gender
+            FROM ww_scorekeepers
+            ORDER BY scorekeeper ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT scorekeeperid AS id, scorekeeper AS name, "
-            "scorekeeperslug AS slug, scorekeepergender AS gender "
-            "FROM ww_scorekeepers "
-            "ORDER BY scorekeeper ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -124,8 +124,10 @@ class Scorekeeper:
         :return: List of all scorekeeper IDs. If scorekeeper IDs could
             not be retrieved, an empty list would be returned.
         """
+        query = """
+            SELECT scorekeeperid FROM ww_scorekeepers ORDER BY scorekeeper ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT scorekeeperid FROM ww_scorekeepers " "ORDER BY scorekeeper ASC;"
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -143,10 +145,10 @@ class Scorekeeper:
             slug strings could not be retrieved, an empty list will be
             returned.
         """
+        query = """
+            SELECT scorekeeperslug FROM ww_scorekeepers ORDER BY scorekeeper ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = (
-            "SELECT scorekeeperslug FROM ww_scorekeepers " "ORDER BY scorekeeper ASC;"
-        )
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -169,14 +171,14 @@ class Scorekeeper:
         if not valid_int_id(scorekeeper_id):
             return {}
 
+        query = """
+            SELECT scorekeeperid AS id, scorekeeper AS name,
+            scorekeeperslug AS slug, scorekeepergender AS gender
+            FROM ww_scorekeepers
+            WHERE scorekeeperid = %s
+            LIMIT 1;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT scorekeeperid AS id, scorekeeper AS name, "
-            "scorekeeperslug AS slug, scorekeepergender AS gender "
-            "FROM ww_scorekeepers "
-            "WHERE scorekeeperid = %s "
-            "LIMIT 1;"
-        )
         cursor.execute(query, (scorekeeper_id,))
         result = cursor.fetchone()
         cursor.close()

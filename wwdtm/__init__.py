@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Explicitly listing all modules in this package"""
 
@@ -13,6 +13,7 @@ from wwdtm.location import Location, LocationRecordings, LocationUtility
 from wwdtm.panelist import (
     Panelist,
     PanelistAppearances,
+    PanelistDecimalScores,
     PanelistScores,
     PanelistStatistics,
     PanelistUtility,
@@ -21,4 +22,4 @@ from wwdtm.scorekeeper import Scorekeeper, ScorekeeperAppearances, ScorekeeperUt
 from wwdtm.show import Show, ShowInfo, ShowInfoMultiple, ShowUtility
 
 
-VERSION = "2.1.0"
+VERSION = "2.2.0"

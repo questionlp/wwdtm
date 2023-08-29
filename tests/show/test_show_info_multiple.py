@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object :py:class:`wwdtm.show.ShowInfo`
 """
@@ -17,7 +17,7 @@ def get_connect_dict() -> Dict[str, Any]:
     """Read in database connection settings and return values as a
     dictionary.
     """
-    with open("config.json", "r") as config_file:
+    with open("config.json", "r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
@@ -204,6 +204,31 @@ def test_show_info_retrieve_panelist_info_all(show_id: int):
     ), f"'score' was not returned for the first panelist for show ID {show_id}"
 
 
+@pytest.mark.parametrize("show_id", [1082])
+def test_show_info_retrieve_panelist_info_all_decimal(show_id: int):
+    """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_panelist_info_all`
+    with decimal scores
+
+    :param show_id: Show ID to test retrieving show panelist information
+        for all shows retrieved
+    """
+    info = ShowInfoMultiple(connect_dict=get_connect_dict())
+    shows_panelists = info.retrieve_panelist_info_all(include_decimal_scores=True)
+
+    assert shows_panelists, "Panelist information for all shows could not be retrieved"
+    assert (
+        show_id in shows_panelists
+    ), f"Panelist information could not be retrieved for show ID {show_id}"
+
+    panelists = shows_panelists[show_id]
+    assert (
+        "id" in panelists[0]
+    ), f"'id' was not returned for the first panelist for show ID {show_id}"
+    assert (
+        "score" in panelists[0]
+    ), f"'score' was not returned for the first panelist for show ID {show_id}"
+
+
 @pytest.mark.parametrize("show_ids", [[1082, 1162]])
 def test_show_info_retrieve_panelist_info_by_ids(show_ids: List[int]):
     """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_panelist_info_by_ids`
@@ -213,6 +238,37 @@ def test_show_info_retrieve_panelist_info_by_ids(show_ids: List[int]):
     """
     info = ShowInfoMultiple(connect_dict=get_connect_dict())
     shows_panelists = info.retrieve_panelist_info_by_ids(show_ids)
+
+    assert (
+        shows_panelists
+    ), f"Panelist information for show IDs {show_ids} could not be retrieved"
+
+    for show_id in shows_panelists:
+        assert (
+            show_id in shows_panelists
+        ), f"Panelist information could not be retrieved for show ID {show_id}"
+        panelists = shows_panelists[show_id]
+        if panelists:
+            assert (
+                "id" in panelists[0]
+            ), f"'id' was not returned for the first panelist for show ID {show_id}"
+            assert "score" in panelists[0], (
+                f"'score' was not returned for the first panelist for show ID "
+                f"{show_id}"
+            )
+
+
+@pytest.mark.parametrize("show_ids", [[1082, 1162]])
+def test_show_info_retrieve_panelist_info_by_ids_decimal(show_ids: List[int]):
+    """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_panelist_info_by_ids`
+
+    :param show_ids: List of show IDs to test retrieving show panelist
+        information
+    """
+    info = ShowInfoMultiple(connect_dict=get_connect_dict())
+    shows_panelists = info.retrieve_panelist_info_by_ids(
+        show_ids, include_decimal_scores=True
+    )
 
     assert (
         shows_panelists

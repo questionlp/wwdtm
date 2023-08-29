@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Wait Wait Don't Tell Me! Stats Panelist Scores Retrieval Functions
 """
@@ -52,16 +52,15 @@ class PanelistScores:
         if not valid_int_id(panelist_id):
             return []
 
-        scores = []
+        query = """
+            SELECT pm.panelistscore AS score
+            FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE panelistid = %s
+            AND s.bestof = 0 and s.repeatshowid IS NULL
+            ORDER BY s.showdate ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT pm.panelistscore AS score "
-            "FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE panelistid = %s "
-            "AND s.bestof = 0 and s.repeatshowid IS NULL "
-            "ORDER BY s.showdate ASC;"
-        )
         cursor.execute(query, (panelist_id,))
         result = cursor.fetchall()
         cursor.close()
@@ -69,6 +68,7 @@ class PanelistScores:
         if not result:
             return []
 
+        scores = []
         for appearance in result:
             if appearance.score:
                 scores.append(appearance.score)
@@ -106,13 +106,13 @@ class PanelistScores:
         if not valid_int_id(panelist_id):
             return {}
 
+        query = """
+            SELECT MIN(pm.panelistscore) AS min,
+            MAX(pm.panelistscore) AS max
+            FROM ww_showpnlmap pm
+            LIMIT 1;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT MIN(pm.panelistscore) AS min, "
-            "MAX(pm.panelistscore) AS max "
-            "FROM ww_showpnlmap pm "
-            "LIMIT 1;"
-        )
         cursor.execute(query)
         result = cursor.fetchone()
 
@@ -126,17 +126,17 @@ class PanelistScores:
         for score in range(min_score, max_score + 1):
             scores[score] = 0
 
-        query = (
-            "SELECT pm.panelistscore AS score, "
-            "COUNT(pm.panelistscore) AS score_count "
-            "FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s "
-            "AND s.bestof = 0 AND s.repeatshowid IS NULL "
-            "AND pm.panelistscore IS NOT NULL "
-            "GROUP BY pm.panelistscore "
-            "ORDER BY pm.panelistscore ASC;"
-        )
+        query = """
+            SELECT pm.panelistscore AS score,
+            COUNT(pm.panelistscore) AS score_count
+            FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE pm.panelistid = %s
+            AND s.bestof = 0 AND s.repeatshowid IS NULL
+            AND pm.panelistscore IS NOT NULL
+            GROUP BY pm.panelistscore
+            ORDER BY pm.panelistscore ASC;
+            """
         cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
@@ -187,12 +187,12 @@ class PanelistScores:
         if not valid_int_id(panelist_id):
             return []
 
+        query = """
+            SELECT MIN(pm.panelistscore) AS min,
+            MAX(pm.panelistscore) AS max
+            FROM ww_showpnlmap pm;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT MIN(pm.panelistscore) AS min, "
-            "MAX(pm.panelistscore) AS max "
-            "FROM ww_showpnlmap pm;"
-        )
         cursor.execute(query)
         result = cursor.fetchone()
 
@@ -206,17 +206,17 @@ class PanelistScores:
         for score in range(min_score, max_score + 1):
             scores[score] = 0
 
-        query = (
-            "SELECT pm.panelistscore AS score, "
-            "COUNT(pm.panelistscore) AS score_count "
-            "FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s "
-            "AND s.bestof = 0 AND s.repeatshowid IS NULL "
-            "AND pm.panelistscore IS NOT NULL "
-            "GROUP BY pm.panelistscore "
-            "ORDER BY pm.panelistscore ASC;"
-        )
+        query = """
+            SELECT pm.panelistscore AS score,
+            COUNT(pm.panelistscore) AS score_count
+            FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE pm.panelistid = %s
+            AND s.bestof = 0 AND s.repeatshowid IS NULL
+            AND pm.panelistscore IS NOT NULL
+            GROUP BY pm.panelistscore
+            ORDER BY pm.panelistscore ASC;
+            """
         cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
@@ -266,16 +266,16 @@ class PanelistScores:
         if not valid_int_id(panelist_id):
             return {}
 
+        query = """
+            SELECT s.showdate AS date, pm.panelistscore AS score
+            FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE pm.panelistid = %s
+            AND s.bestof = 0 AND s.repeatshowid IS NULL
+            AND pm.panelistscore IS NOT NULL
+            ORDER BY s.showdate ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT s.showdate AS date, pm.panelistscore AS score "
-            "FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s "
-            "AND s.bestof = 0 AND s.repeatshowid IS NULL "
-            "AND pm.panelistscore IS NOT NULL "
-            "ORDER BY s.showdate ASC;"
-        )
         cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
@@ -329,16 +329,16 @@ class PanelistScores:
         if not valid_int_id(panelist_id):
             return []
 
+        query = """
+            SELECT s.showdate AS date, pm.panelistscore AS score
+            FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE pm.panelistid = %s
+            AND s.bestof = 0 AND s.repeatshowid IS NULL
+            AND pm.panelistscore IS NOT NULL
+            ORDER BY s.showdate ASC;
+            """
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT s.showdate AS date, pm.panelistscore AS score "
-            "FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s "
-            "AND s.bestof = 0 AND s.repeatshowid IS NULL "
-            "AND pm.panelistscore IS NOT NULL "
-            "ORDER BY s.showdate ASC;"
-        )
         cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
