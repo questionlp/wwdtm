@@ -43,19 +43,25 @@ class ShowInfoMultiple:
             self.database_connection = database_connection
 
         try:
+            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistlrndstart_decimal';"
+            cursor = self.database_connection.cursor()
+            cursor.execute(query)
+            start_decimal = cursor.fetchone()
+
             query = (
                 "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
             )
             cursor = self.database_connection.cursor()
             cursor.execute(query)
-            result = cursor.fetchone()
+            score_decimal = cursor.fetchone()
             cursor.close()
-            if result:
-                self.panelist_decimal_column: bool = True
+
+            if start_decimal and score_decimal:
+                self.panelist_decimal_columns: bool = True
             else:
-                self.panelist_decimal_column: bool = False
+                self.panelist_decimal_columns: bool = False
         except DatabaseError:
-            self.panelist_decimal_column: bool = False
+            self.panelist_decimal_columns: bool = False
 
         self.utility = ShowUtility(database_connection=self.database_connection)
         self.loc_util = LocationUtility(database_connection=self.database_connection)
@@ -529,12 +535,14 @@ class ShowInfoMultiple:
             ranking information. If panelist information could not be
             retrieved, an empty list will be returned.
         """
-        if include_decimal_scores and self.panelist_decimal_column:
+        if include_decimal_scores and self.panelist_decimal_columns:
             query = """
                 SELECT s.showid AS show_id, pm.panelistid AS panelist_id,
                 p.panelist AS name, p.panelistslug AS slug,
                 pm.panelistlrndstart AS start,
+                pm.panelistlrndstart AS start_decimal,
                 pm.panelistlrndcorrect AS correct,
+                pm.panelistlrndcorrect AS correct_decimal,
                 pm.panelistscore AS score,
                 pm.panelistscore_decimal AS score_decimal,
                 pm.showpnlrank AS pnl_rank
@@ -577,7 +585,13 @@ class ShowInfoMultiple:
                     "name": panelist.name,
                     "slug": panelist.slug if panelist.slug else slugify(panelist.name),
                     "lightning_round_start": panelist.start,
+                    "lightning_round_start_decimal": panelist.start_decimal
+                    if "start_decimal" in panelist._fields
+                    else None,
                     "lightning_round_correct": panelist.correct,
+                    "lightning_round_correct_decimal": panelist.correct_decimal
+                    if "correct_decimal" in panelist._fields
+                    else None,
                     "score": panelist.score,
                     "score_decimal": panelist.score_decimal
                     if "score_decimal" in panelist._fields
@@ -605,12 +619,14 @@ class ShowInfoMultiple:
             if not valid_int_id(show_id):
                 return {}
 
-        if include_decimal_scores and self.panelist_decimal_column:
+        if include_decimal_scores and self.panelist_decimal_columns:
             query = """
                 SELECT s.showid AS show_id, pm.panelistid AS panelist_id,
                 p.panelist AS name, p.panelistslug AS slug,
                 pm.panelistlrndstart AS start,
+                pm.panelistlrndstart AS start_decimal,
                 pm.panelistlrndcorrect AS correct,
+                pm.panelistlrndcorrect AS correct_decimal,
                 pm.panelistscore AS score,
                 pm.panelistscore_decimal AS score_decimal,
                 pm.showpnlrank AS pnl_rank
@@ -657,8 +673,14 @@ class ShowInfoMultiple:
                     "name": panelist.name,
                     "slug": panelist.slug if panelist.slug else slugify(panelist.name),
                     "lightning_round_start": panelist.start if panelist.start else None,
+                    "lightning_round_start_decimal": panelist.start_decimal
+                    if "start_decimal" in panelist._fields
+                    else None,
                     "lightning_round_correct": panelist.correct
                     if panelist.correct
+                    else None,
+                    "lightning_round_correct_decimal": panelist.correct_decimal
+                    if "correct_decimal" in panelist._fields
                     else None,
                     "score": panelist.score,
                     "score_decimal": panelist.score_decimal

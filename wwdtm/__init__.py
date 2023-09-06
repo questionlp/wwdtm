@@ -22,4 +22,4 @@ from wwdtm.scorekeeper import Scorekeeper, ScorekeeperAppearances, ScorekeeperUt
 from wwdtm.show import Show, ShowInfo, ShowInfoMultiple, ShowUtility
 
 
-VERSION = "2.2.0"
+VERSION = "2.3.0-beta"

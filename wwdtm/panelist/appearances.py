@@ -39,19 +39,25 @@ class PanelistAppearances:
             self.database_connection = database_connection
 
         try:
+            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistlrndstart_decimal';"
+            cursor = self.database_connection.cursor()
+            cursor.execute(query)
+            start_decimal = cursor.fetchone()
+
             query = (
                 "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
             )
             cursor = self.database_connection.cursor()
             cursor.execute(query)
-            result = cursor.fetchone()
+            score_decimal = cursor.fetchone()
             cursor.close()
-            if result:
-                self.has_decimal_column: bool = True
+
+            if start_decimal and score_decimal:
+                self.has_decimal_columns: bool = True
             else:
-                self.has_decimal_column: bool = False
+                self.has_decimal_columns: bool = False
         except DatabaseError:
-            self.has_decimal_column: bool = False
+            self.has_decimal_columns: bool = False
 
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
@@ -148,12 +154,14 @@ class PanelistAppearances:
                 "milestones": None,
             }
 
-        if use_decimal_scores and self.has_decimal_column:
+        if use_decimal_scores and self.has_decimal_columns:
             query = """
                 SELECT pm.showid AS show_id, s.showdate AS date,
                 s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
                 pm.panelistlrndstart AS start,
+                pm.panelistlrndstart_decimal AS start_decimal,
                 pm.panelistlrndcorrect AS correct,
+                pm.panelistlrndcorrect_decimal AS correct_decimal,
                 pm.panelistscore AS score,
                 pm.panelistscore_decimal AS score_decimal,
                 pm.showpnlrank AS pnl_rank FROM ww_showpnlmap pm
@@ -189,7 +197,13 @@ class PanelistAppearances:
                     "best_of": bool(appearance.best_of),
                     "repeat_show": bool(appearance.repeat_show_id),
                     "lightning_round_start": appearance.start,
+                    "lightning_round_start_decimal": appearance.start_decimal
+                    if "start_decimal" in appearance._fields
+                    else None,
                     "lightning_round_correct": appearance.correct,
+                    "lightning_round_correct_decimal": appearance.correct_decimal
+                    if "correct_decimal" in appearance._fields
+                    else None,
                     "score": appearance.score,
                     "score_decimal": appearance.score_decimal
                     if "score_decimal" in appearance._fields
