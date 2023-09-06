@@ -43,9 +43,7 @@ class ShowInfo:
             self.database_connection = database_connection
 
         try:
-            query = (
-                "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistlrndstart_decimal';"
-            )
+            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistlrndstart_decimal';"
             cursor = self.database_connection.cursor()
             cursor.execute(query)
             start_decimal = cursor.fetchone()
@@ -314,7 +312,9 @@ class ShowInfo:
                 SELECT pm.panelistid AS id, p.panelist AS name,
                 p.panelistslug AS slug,
                 pm.panelistlrndstart AS start,
+                pm.panelistlrndstart_decimal AS start_decimal,
                 pm.panelistlrndcorrect AS correct,
+                pm.panelistlrndcorrect_decimal AS correct_decimal,
                 pm.panelistscore AS score,
                 pm.panelistscore_decimal AS score_decimal,
                 pm.showpnlrank AS pnl_rank
@@ -346,20 +346,23 @@ class ShowInfo:
 
         panelists = []
         for row in results:
-            if "score_decimal" not in row._fields:
-                score_decimal = None
-            else:
-                score_decimal = row.score_decimal
-
             panelists.append(
                 {
                     "id": row.id,
                     "name": row.name,
                     "slug": row.slug if row.slug else slugify(row.name),
                     "lightning_round_start": row.start,
+                    "lightning_round_start_decimal": row.start_decimal
+                    if "start_decimal" in row._fields
+                    else None,
                     "lightning_round_correct": row.correct,
+                    "lightning_round_correct_decimal": row.correct_decimal
+                    if "correct_decimal" in row._fields
+                    else None,
                     "score": row.score,
-                    "score_decimal": score_decimal,
+                    "score_decimal": row.score_decimal
+                    if "score_decimal" in row._fields
+                    else None,
                     "rank": row.pnl_rank if row.pnl_rank else None,
                 }
             )
