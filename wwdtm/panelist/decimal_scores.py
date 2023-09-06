@@ -42,19 +42,25 @@ class PanelistDecimalScores:
             self.database_connection = database_connection
 
         try:
+            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistlrndstart_decimal';"
+            cursor = self.database_connection.cursor()
+            cursor.execute(query)
+            start_decimal = cursor.fetchone()
+
             query = (
                 "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
             )
             cursor = self.database_connection.cursor()
             cursor.execute(query)
-            result = cursor.fetchone()
+            score_decimal = cursor.fetchone()
             cursor.close()
-            if result:
-                self.has_decimal_column: bool = True
+
+            if start_decimal and score_decimal:
+                self.has_decimal_columns: bool = True
             else:
-                self.has_decimal_column: bool = False
+                self.has_decimal_columns: bool = False
         except DatabaseError:
-            self.has_decimal_column: bool = False
+            self.has_decimal_columns: bool = False
 
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
@@ -67,19 +73,19 @@ class PanelistDecimalScores:
         :return: List containing panelist decimal scores. If panelist
             scores could not be retrieved, an empty list is returned.
         """
-        if not self.has_decimal_column or not valid_int_id(panelist_id):
+        if not self.has_decimal_columns or not valid_int_id(panelist_id):
             return []
 
         scores = []
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT pm.panelistscore_decimal AS score "
-            "FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE panelistid = %s "
-            "AND s.bestof = 0 and s.repeatshowid IS NULL "
-            "ORDER BY s.showdate ASC;"
-        )
+        query = """
+            SELECT pm.panelistscore_decimal AS score
+            FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE panelistid = %s
+            AND s.bestof = 0 and s.repeatshowid IS NULL
+            ORDER BY s.showdate ASC;
+            """
         cursor.execute(query, (panelist_id,))
         result = cursor.fetchall()
         cursor.close()
@@ -121,16 +127,16 @@ class PanelistDecimalScores:
             panelist scores could not be retrieved, an empty dictionary
             is returned.
         """
-        if not self.has_decimal_column or not valid_int_id(panelist_id):
+        if not self.has_decimal_columns or not valid_int_id(panelist_id):
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT MIN(pm.panelistscore_decimal) AS min, "
-            "MAX(pm.panelistscore_decimal) AS max "
-            "FROM ww_showpnlmap pm "
-            "LIMIT 1;"
-        )
+        query = """
+            SELECT MIN(pm.panelistscore_decimal) AS min,
+            MAX(pm.panelistscore_decimal) AS max
+            FROM ww_showpnlmap pm
+            LIMIT 1;
+            """
         cursor.execute(query)
         result = cursor.fetchone()
 
@@ -147,17 +153,17 @@ class PanelistDecimalScores:
             scores[f"{score.normalize():f}"] = 0
             scores[f"{score_plus_half.normalize():f}"] = 0
 
-        query = (
-            "SELECT pm.panelistscore_decimal AS score, "
-            "COUNT(pm.panelistscore_decimal) AS score_count "
-            "FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s "
-            "AND s.bestof = 0 AND s.repeatshowid IS NULL "
-            "AND pm.panelistscore_decimal IS NOT NULL "
-            "GROUP BY pm.panelistscore_decimal "
-            "ORDER BY pm.panelistscore_decimal ASC;"
-        )
+        query = """
+            SELECT pm.panelistscore_decimal AS score,
+            COUNT(pm.panelistscore_decimal) AS score_count
+            FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE pm.panelistid = %s
+            AND s.bestof = 0 AND s.repeatshowid IS NULL
+            AND pm.panelistscore_decimal IS NOT NULL
+            GROUP BY pm.panelistscore_decimal
+            ORDER BY pm.panelistscore_decimal ASC;
+            """
         cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
@@ -205,15 +211,15 @@ class PanelistDecimalScores:
             counts. If panelist decimal scores could not be retrieved,
             an empty list is returned.
         """
-        if not self.has_decimal_column or not valid_int_id(panelist_id):
+        if not self.has_decimal_columns or not valid_int_id(panelist_id):
             return []
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT MIN(pm.panelistscore_decimal) AS min, "
-            "MAX(pm.panelistscore_decimal) AS max "
-            "FROM ww_showpnlmap pm;"
-        )
+        query = """
+            SELECT MIN(pm.panelistscore_decimal) AS min,
+            MAX(pm.panelistscore_decimal) AS max
+            FROM ww_showpnlmap pm;
+            """
         cursor.execute(query)
         result = cursor.fetchone()
 
@@ -230,17 +236,17 @@ class PanelistDecimalScores:
             scores[f"{score.normalize():f}"] = 0
             scores[f"{score_plus_half.normalize():f}"] = 0
 
-        query = (
-            "SELECT pm.panelistscore_decimal AS score, "
-            "COUNT(pm.panelistscore_decimal) AS score_count "
-            "FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s "
-            "AND s.bestof = 0 AND s.repeatshowid IS NULL "
-            "AND pm.panelistscore_decimal IS NOT NULL "
-            "GROUP BY pm.panelistscore_decimal "
-            "ORDER BY pm.panelistscore_decimal ASC;"
-        )
+        query = """
+            SELECT pm.panelistscore_decimal AS score,
+            COUNT(pm.panelistscore_decimal) AS score_count
+            FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE pm.panelistid = %s
+            AND s.bestof = 0 AND s.repeatshowid IS NULL
+            AND pm.panelistscore_decimal IS NOT NULL
+            GROUP BY pm.panelistscore_decimal
+            ORDER BY pm.panelistscore_decimal ASC;
+            """
         cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
@@ -287,19 +293,19 @@ class PanelistDecimalScores:
             of decimal scores. If panelist scores could not be
             retrieved, an empty dictionary is returned.
         """
-        if not self.has_decimal_column or not valid_int_id(panelist_id):
+        if not self.has_decimal_columns or not valid_int_id(panelist_id):
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT s.showdate AS date, pm.panelistscore_decimal AS score "
-            "FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s "
-            "AND s.bestof = 0 AND s.repeatshowid IS NULL "
-            "AND pm.panelistscore_decimal IS NOT NULL "
-            "ORDER BY s.showdate ASC;"
-        )
+        query = """
+            SELECT s.showdate AS date, pm.panelistscore_decimal AS score
+            FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE pm.panelistid = %s
+            AND s.bestof = 0 AND s.repeatshowid IS NULL
+            AND pm.panelistscore_decimal IS NOT NULL
+            ORDER BY s.showdate ASC;
+            """
         cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
@@ -350,19 +356,19 @@ class PanelistDecimalScores:
             scores. If panelist scores could not be retrieved, an empty
             list is returned.
         """
-        if not self.has_decimal_column or not valid_int_id(panelist_id):
+        if not self.has_decimal_columns or not valid_int_id(panelist_id):
             return []
 
         cursor = self.database_connection.cursor(named_tuple=True)
-        query = (
-            "SELECT s.showdate AS date, pm.panelistscore_decimal AS score "
-            "FROM ww_showpnlmap pm "
-            "JOIN ww_shows s ON s.showid = pm.showid "
-            "WHERE pm.panelistid = %s "
-            "AND s.bestof = 0 AND s.repeatshowid IS NULL "
-            "AND pm.panelistscore_decimal IS NOT NULL "
-            "ORDER BY s.showdate ASC;"
-        )
+        query = """
+            SELECT s.showdate AS date, pm.panelistscore_decimal AS score
+            FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE pm.panelistid = %s
+            AND s.bestof = 0 AND s.repeatshowid IS NULL
+            AND pm.panelistscore_decimal IS NOT NULL
+            ORDER BY s.showdate ASC;
+            """
         cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()

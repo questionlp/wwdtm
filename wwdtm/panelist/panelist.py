@@ -42,19 +42,25 @@ class Panelist:
             self.database_connection = database_connection
 
         try:
+            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistlrndstart_decimal';"
+            cursor = self.database_connection.cursor()
+            cursor.execute(query)
+            start_decimal = cursor.fetchone()
+
             query = (
                 "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
             )
             cursor = self.database_connection.cursor()
             cursor.execute(query)
-            result = cursor.fetchone()
+            score_decimal = cursor.fetchone()
             cursor.close()
-            if result:
-                self.has_decimal_column: bool = True
+
+            if start_decimal and score_decimal:
+                self.has_decimal_columns: bool = True
             else:
-                self.has_decimal_column: bool = False
+                self.has_decimal_columns: bool = False
         except DatabaseError:
-            self.has_decimal_column: bool = False
+            self.has_decimal_columns: bool = False
 
         self.appearances = PanelistAppearances(
             database_connection=self.database_connection
@@ -112,7 +118,7 @@ class Panelist:
             information and appearances. If panelists could not be
             retrieved, an empty list is returned.
         """
-        if use_decimal_scores and not self.has_decimal_column:
+        if use_decimal_scores and not self.has_decimal_columns:
             return []
 
         query = """
@@ -269,7 +275,7 @@ class Panelist:
         if not valid_int_id(panelist_id):
             return {}
 
-        if use_decimal_scores and not self.has_decimal_column:
+        if use_decimal_scores and not self.has_decimal_columns:
             return {}
 
         info = self.retrieve_by_id(panelist_id)
