@@ -2,6 +2,14 @@
 Changes
 *******
 
+2.3.0
+=====
+
+Application Changes
+-------------------
+
+* Add support for decimal column and values for panelist Lightning round start and correct
+
 2.2.0
 =====
 
