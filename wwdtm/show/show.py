@@ -43,21 +43,6 @@ class Show:
 
             self.database_connection = database_connection
 
-        try:
-            query = (
-                "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
-            )
-            cursor = self.database_connection.cursor()
-            cursor.execute(query)
-            result = cursor.fetchone()
-            cursor.close()
-            if result:
-                self.panelist_decimal_column: bool = True
-            else:
-                self.panelist_decimal_column: bool = False
-        except DatabaseError:
-            self.panelist_decimal_column: bool = False
-
         self.info = ShowInfo(database_connection=self.database_connection)
         self.info_multiple = ShowInfoMultiple(
             database_connection=self.database_connection
@@ -118,9 +103,6 @@ class Show:
             If show information could not be retrieved, an empty list
             will be returned.
         """
-        if include_decimal_scores and not self.panelist_decimal_column:
-            return []
-
         info = self.info_multiple.retrieve_core_info_all()
 
         if not info:
@@ -180,9 +162,7 @@ class Show:
         :return: List of all show date strings. If show dates could not
             be retrieved, an empty list will be returned.
         """
-        query = """
-            SELECT showdate FROM ww_shows ORDER BY showdate ASC;
-            """
+        query = "SELECT showdate FROM ww_shows ORDER BY showdate ASC;"
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -464,9 +444,6 @@ class Show:
             show information could not be retrieved, an empty dictionary
             will be returned.
         """
-        if include_decimal_scores and not self.panelist_decimal_column:
-            return {}
-
         id_ = self.utility.convert_date_to_id(year, month, day)
         if not id_:
             return {}
@@ -490,9 +467,6 @@ class Show:
             show information could not be retrieved, an empty dictionary
             will be returned.
         """
-        if include_decimal_scores and not self.panelist_decimal_column:
-            return {}
-
         try:
             parsed_date_string = date_parser.parse(date_string)
         except ValueError:
@@ -521,9 +495,6 @@ class Show:
             show information could not be retrieved, an empty dictionary
             will be returned.
         """
-        if include_decimal_scores and not self.panelist_decimal_column:
-            return {}
-
         if not valid_int_id(show_id):
             return {}
 
@@ -555,9 +526,6 @@ class Show:
             show information could not be retrieved, an empty dictionary
             will be returned.
         """
-        if include_decimal_scores and not self.panelist_decimal_column:
-            return []
-
         if not 1 <= month <= 12 or not 1 <= day <= 31:
             return []
 
@@ -617,9 +585,6 @@ class Show:
             details. If show information could not be retrieved, an
             empty list will be returned.
         """
-        if include_decimal_scores and not self.panelist_decimal_column:
-            return []
-
         try:
             parsed_year = date_parser.parse(f"{year:04d}")
         except ValueError:
@@ -676,9 +641,6 @@ class Show:
             corresponding details. If show information could not be
             retrieved, an empty list will be returned.
         """
-        if include_decimal_scores and not self.panelist_decimal_column:
-            return []
-
         try:
             parsed_year_month = date_parser.parse(f"{year:04d}-{month:02d}-01")
         except ValueError:
@@ -826,9 +788,6 @@ class Show:
             information could not be retrieved, an empty list will be
             returned.
         """
-        if include_decimal_scores and not self.panelist_decimal_column:
-            return []
-
         try:
             past_days = int(include_days_back)
             future_days = int(include_days_ahead)
@@ -891,9 +850,6 @@ class Show:
             scores. If show scores could not be retrieved, an empty list
             will be returned.
         """
-        if use_decimal_scores and not self.panelist_decimal_column:
-            return []
-
         try:
             _ = date_parser.parse(f"{year:04d}")
         except ValueError:

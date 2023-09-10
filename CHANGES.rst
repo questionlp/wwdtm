@@ -2,6 +2,22 @@
 Changes
 *******
 
+2.4.0
+=====
+
+Application Changes
+-------------------
+
+* Remove unnecessary checks for existence of the panelist decimal score columns
+* This change means that this library only supports version 4.3 of the Wait Wait Stats Database when ``include_decimal_scores`` or ``use_decimal_scores`` parameters are set to ``True``.
+  Usage with older versions of the database will result in errors.
+
+Development Changes
+-------------------
+
+* Re-work ``panelist`` and ``show`` tests to remove separate tests for decimal scores and use ``@pytest.mark.parameterize`` to test including or using decimal scores or not
+* Update documentation to provide details for ``include_decimal_scores`` and ``use_decimal_scores`` testing parameters
+
 2.3.0
 =====
 

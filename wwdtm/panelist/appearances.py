@@ -38,27 +38,6 @@ class PanelistAppearances:
 
             self.database_connection = database_connection
 
-        try:
-            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistlrndstart_decimal';"
-            cursor = self.database_connection.cursor()
-            cursor.execute(query)
-            start_decimal = cursor.fetchone()
-
-            query = (
-                "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
-            )
-            cursor = self.database_connection.cursor()
-            cursor.execute(query)
-            score_decimal = cursor.fetchone()
-            cursor.close()
-
-            if start_decimal and score_decimal:
-                self.has_decimal_columns: bool = True
-            else:
-                self.has_decimal_columns: bool = False
-        except DatabaseError:
-            self.has_decimal_columns: bool = False
-
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
@@ -154,7 +133,7 @@ class PanelistAppearances:
                 "milestones": None,
             }
 
-        if use_decimal_scores and self.has_decimal_columns:
+        if use_decimal_scores:
             query = """
                 SELECT pm.showid AS show_id, s.showdate AS date,
                 s.bestof AS best_of, s.repeatshowid AS repeat_show_id,

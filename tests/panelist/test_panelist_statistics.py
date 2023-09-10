@@ -80,69 +80,54 @@ def test_panelist_statistics_retrieve_rank_info_by_slug(panelist_slug: str):
     assert "first" in ranks, f"'first' was not returned for slug {panelist_slug}"
 
 
-@pytest.mark.parametrize("panelist_id", [14])
-def test_panelist_statistics_retrieve_statistics_by_id(panelist_id: int):
+@pytest.mark.parametrize(
+    "panelist_id, include_decimal_scores", [(14, True), (14, False)]
+)
+def test_panelist_statistics_retrieve_statistics_by_id(
+    panelist_id: int, include_decimal_scores: bool
+):
     """Testing for :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_id`
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
-    """
-    statistics = PanelistStatistics(connect_dict=get_connect_dict())
-    stats = statistics.retrieve_statistics_by_id(panelist_id)
-
-    assert "scoring" in stats, f"'scoring' was not returned for ID {panelist_id}"
-    assert "ranking" in stats, f"'ranking' was not returned for ID {panelist_id}"
-
-
-@pytest.mark.parametrize("panelist_id", [14])
-def test_panelist_statistics_retrieve_statistics_by_id_decimal(panelist_id: int):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_id`
-    with decimal scores
-
-    :param panelist_id: Panelist ID to test retrieving panelist
-        information
+    :param include_decimal_scores: Flag set to include decimal score columns
+        and values
     """
     statistics = PanelistStatistics(connect_dict=get_connect_dict())
     stats = statistics.retrieve_statistics_by_id(
-        panelist_id, include_decimal_scores=True
+        panelist_id, include_decimal_scores=include_decimal_scores
     )
 
     assert "scoring" in stats, f"'scoring' was not returned for ID {panelist_id}"
-    assert (
-        "scoring_decimal" in stats
-    ), f"'scoring_decimal' was not returned for ID {panelist_id}"
+    if include_decimal_scores:
+        assert (
+            "scoring_decimal" in stats
+        ), f"'scoring' was not returned for ID {panelist_id}"
     assert "ranking" in stats, f"'ranking' was not returned for ID {panelist_id}"
 
 
-@pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
-def test_panelist_statistics_retrieve_statistics_by_slug(panelist_slug: str):
+@pytest.mark.parametrize(
+    "panelist_slug, include_decimal_scores",
+    [("luke-burbank", True), ("luke-burbank", False)],
+)
+def test_panelist_statistics_retrieve_statistics_by_slug(
+    panelist_slug: str, include_decimal_scores: bool
+):
     """Testing for :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_slug`
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
-    """
-    statistics = PanelistStatistics(connect_dict=get_connect_dict())
-    stats = statistics.retrieve_statistics_by_slug(panelist_slug)
-
-    assert "scoring" in stats, f"'scoring' was not returned for slug {panelist_slug}"
-    assert "ranking" in stats, f"'ranking' was not returned for slug {panelist_slug}"
-
-
-@pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
-def test_panelist_statistics_retrieve_statistics_by_slug_decimal(panelist_slug: str):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_slug`
-    with decimal scores
-
-    :param panelist_slug: Panelist slug string to test retrieving
-        panelist information
+    :param include_decimal_scores: Flag set to include decimal score columns
+        and values
     """
     statistics = PanelistStatistics(connect_dict=get_connect_dict())
     stats = statistics.retrieve_statistics_by_slug(
-        panelist_slug, include_decimal_scores=True
+        panelist_slug, include_decimal_scores=include_decimal_scores
     )
 
     assert "scoring" in stats, f"'scoring' was not returned for slug {panelist_slug}"
-    assert (
-        "scoring_decimal" in stats
-    ), f"'scoring_decimal' was not returned for slug {panelist_slug}"
+    if include_decimal_scores:
+        assert (
+            "scoring_decimal" in stats
+        ), f"'scoring' was not returned for ID {panelist_slug}"
     assert "ranking" in stats, f"'ranking' was not returned for slug {panelist_slug}"

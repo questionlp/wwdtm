@@ -42,27 +42,6 @@ class ShowInfo:
 
             self.database_connection = database_connection
 
-        try:
-            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistlrndstart_decimal';"
-            cursor = self.database_connection.cursor()
-            cursor.execute(query)
-            start_decimal = cursor.fetchone()
-
-            query = (
-                "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
-            )
-            cursor = self.database_connection.cursor()
-            cursor.execute(query)
-            score_decimal = cursor.fetchone()
-            cursor.close()
-
-            if start_decimal and score_decimal:
-                self.panelist_decimal_columns: bool = True
-            else:
-                self.panelist_decimal_columns: bool = False
-        except DatabaseError:
-            self.panelist_decimal_columns: bool = False
-
         self.utility = ShowUtility(database_connection=self.database_connection)
         self.loc_util = LocationUtility(database_connection=self.database_connection)
 
@@ -307,7 +286,7 @@ class ShowInfo:
         if not valid_int_id(show_id):
             return []
 
-        if include_decimal_scores and self.panelist_decimal_columns:
+        if include_decimal_scores:
             query = """
                 SELECT pm.panelistid AS id, p.panelist AS name,
                 p.panelistslug AS slug,
