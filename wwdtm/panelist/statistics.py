@@ -43,27 +43,6 @@ class PanelistStatistics:
 
             self.database_connection = database_connection
 
-        try:
-            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistlrndstart_decimal';"
-            cursor = self.database_connection.cursor()
-            cursor.execute(query)
-            start_decimal = cursor.fetchone()
-
-            query = (
-                "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
-            )
-            cursor = self.database_connection.cursor()
-            cursor.execute(query)
-            score_decimal = cursor.fetchone()
-            cursor.close()
-
-            if start_decimal and score_decimal:
-                self.has_decimal_columns: bool = True
-            else:
-                self.has_decimal_columns: bool = False
-        except DatabaseError:
-            self.has_decimal_columns: bool = False
-
         self.scores = PanelistScores(database_connection=self.database_connection)
         self.scores_decimal = PanelistDecimalScores(
             database_connection=self.database_connection
@@ -227,7 +206,7 @@ class PanelistStatistics:
         if not score_data or not ranks:
             return {}
 
-        if self.has_decimal_columns and include_decimal_scores:
+        if include_decimal_scores:
             score_data_decimal = self.scores_decimal.retrieve_scores_by_id(panelist_id)
             if not score_data_decimal:
                 return {}
@@ -271,15 +250,15 @@ class PanelistStatistics:
             "percentage": ranks_percentage,
         }
 
-        if not include_decimal_scores:
+        if include_decimal_scores:
             return {
                 "scoring": scoring,
+                "scoring_decimal": scoring_decimal,
                 "ranking": ranking,
             }
         else:
             return {
                 "scoring": scoring,
-                "scoring_decimal": scoring_decimal,
                 "ranking": ranking,
             }
 

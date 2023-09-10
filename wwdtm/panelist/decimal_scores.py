@@ -41,27 +41,6 @@ class PanelistDecimalScores:
 
             self.database_connection = database_connection
 
-        try:
-            query = "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistlrndstart_decimal';"
-            cursor = self.database_connection.cursor()
-            cursor.execute(query)
-            start_decimal = cursor.fetchone()
-
-            query = (
-                "SHOW COLUMNS FROM ww_showpnlmap WHERE Field = 'panelistscore_decimal';"
-            )
-            cursor = self.database_connection.cursor()
-            cursor.execute(query)
-            score_decimal = cursor.fetchone()
-            cursor.close()
-
-            if start_decimal and score_decimal:
-                self.has_decimal_columns: bool = True
-            else:
-                self.has_decimal_columns: bool = False
-        except DatabaseError:
-            self.has_decimal_columns: bool = False
-
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
     @lru_cache(typed=True)
@@ -73,7 +52,7 @@ class PanelistDecimalScores:
         :return: List containing panelist decimal scores. If panelist
             scores could not be retrieved, an empty list is returned.
         """
-        if not self.has_decimal_columns or not valid_int_id(panelist_id):
+        if not valid_int_id(panelist_id):
             return []
 
         scores = []
@@ -127,7 +106,7 @@ class PanelistDecimalScores:
             panelist scores could not be retrieved, an empty dictionary
             is returned.
         """
-        if not self.has_decimal_columns or not valid_int_id(panelist_id):
+        if not valid_int_id(panelist_id):
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
@@ -211,7 +190,7 @@ class PanelistDecimalScores:
             counts. If panelist decimal scores could not be retrieved,
             an empty list is returned.
         """
-        if not self.has_decimal_columns or not valid_int_id(panelist_id):
+        if not valid_int_id(panelist_id):
             return []
 
         cursor = self.database_connection.cursor(named_tuple=True)
@@ -293,7 +272,7 @@ class PanelistDecimalScores:
             of decimal scores. If panelist scores could not be
             retrieved, an empty dictionary is returned.
         """
-        if not self.has_decimal_columns or not valid_int_id(panelist_id):
+        if not valid_int_id(panelist_id):
             return {}
 
         cursor = self.database_connection.cursor(named_tuple=True)
@@ -356,7 +335,7 @@ class PanelistDecimalScores:
             scores. If panelist scores could not be retrieved, an empty
             list is returned.
         """
-        if not self.has_decimal_columns or not valid_int_id(panelist_id):
+        if not valid_int_id(panelist_id):
             return []
 
         cursor = self.database_connection.cursor(named_tuple=True)

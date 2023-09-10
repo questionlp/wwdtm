@@ -83,14 +83,22 @@ def test_show_info_retrieve_guest_info_by_id(show_id: int):
     ), f"'score' was not returned for the first guest for show ID {show_id}"
 
 
-@pytest.mark.parametrize("show_id", [1162])
-def test_show_info_retrieve_panelist_info_by_id(show_id: int):
+@pytest.mark.parametrize(
+    "show_id, include_decimal_scores", [(1162, True), (1162, False)]
+)
+def test_show_info_retrieve_panelist_info_by_id(
+    show_id: int, include_decimal_scores: bool
+):
     """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_panelist_info_by_id`
 
     :param show_id: Show ID to test retrieving show panelist information
+    :param include_decimal_scores: Flag set to include decimal score columns
+        and values
     """
     info = ShowInfo(connect_dict=get_connect_dict())
-    panelists = info.retrieve_panelist_info_by_id(show_id)
+    panelists = info.retrieve_panelist_info_by_id(
+        show_id, include_decimal_scores=include_decimal_scores
+    )
 
     assert (
         panelists
@@ -101,24 +109,7 @@ def test_show_info_retrieve_panelist_info_by_id(show_id: int):
     assert (
         "score" in panelists[0]
     ), f"'score' was not returned for the first panelist for show ID {show_id}"
-
-
-@pytest.mark.parametrize("show_id", [1162])
-def test_show_info_retrieve_panelist_info_by_id_decimal(show_id: int):
-    """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_panelist_info_by_id`
-    with decimal scores
-
-    :param show_id: Show ID to test retrieving show panelist information
-    """
-    info = ShowInfo(connect_dict=get_connect_dict())
-    panelists = info.retrieve_panelist_info_by_id(show_id, include_decimal_scores=True)
-
-    assert (
-        panelists
-    ), f"Panelist information for show ID {show_id} could not be retrieved"
-    assert (
-        "id" in panelists[0]
-    ), f"'id' was not returned for the first panelist for show ID {show_id}"
-    assert (
-        "score" in panelists[0]
-    ), f"'score' was not returned for the first panelist for show ID {show_id}"
+    if include_decimal_scores:
+        assert (
+            "score_decimal" in panelists[0]
+        ), f"'score_decimal' was not returned for the first panelist for show ID {show_id}"
