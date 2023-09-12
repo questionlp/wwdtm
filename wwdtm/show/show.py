@@ -124,7 +124,7 @@ class Show:
             if info[show]["id"] in bluffs:
                 info[show]["bluff"] = bluffs[info[show]["id"]]
             else:
-                info[show]["bluff"] = []
+                info[show]["bluff"] = {}
 
             if info[show]["id"] in guests:
                 info[show]["guests"] = guests[info[show]["id"]]

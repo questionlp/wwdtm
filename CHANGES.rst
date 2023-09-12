@@ -2,6 +2,14 @@
 Changes
 *******
 
+2.4.1
+=====
+
+Application Changes
+-------------------
+
+* Correct the value set for show ``bluff`` value in ``Show.retrieve_all_details``, which should return an empty dictionary and not an empty list when no Bluff the Listener data is available
+
 2.4.0
 =====
 
