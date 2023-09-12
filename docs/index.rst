@@ -38,6 +38,7 @@ Table of Contents
     wwdtm/index
     tests/index
     migrating/index
+    changelog
 
 Indices and tables
 ==================
