@@ -6,7 +6,7 @@ wheel==0.41.2
 build==0.10.0
 
 mysql-connector-python==8.0.33
-numpy==1.24.3
+numpy==1.24.4
 python-dateutil==2.8.2
 python-slugify==8.0.1
-pytz==2023.3
+pytz==2023.3.post1

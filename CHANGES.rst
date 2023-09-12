@@ -10,6 +10,12 @@ Application Changes
 
 * Correct the value set for show ``bluff`` value in ``Show.retrieve_all_details``, which should return an empty dictionary and not an empty list when no Bluff the Listener data is available
 
+Component Changes
+-----------------
+
+* Upgrade numpy from 1.24.3 to 1.24.4
+* Upgrade pytz from 2023.3 to 2023.3.post1
+
 2.4.0
 =====
 
