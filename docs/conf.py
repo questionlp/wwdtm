@@ -3,15 +3,14 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # vim: set noai syntax=python ts=4 sw=4:
-
-import os
+"""Sphinx Generator Configuration."""
 import sys
 from pathlib import Path
 
 from pallets_sphinx_themes import ProjectLink
 
 parent_path = Path.cwd().parent
-sys.path.insert(0, parent_path.resolve())
+sys.path.insert(0, str(parent_path))
 
 project = "wwdtm"
 copyright = "2021-2023 Linh Pham"
