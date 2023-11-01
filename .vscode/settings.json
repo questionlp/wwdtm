@@ -1,11 +1,11 @@
 {
     "python.autoComplete.extraPaths": ["${workspaceFolder}/wwdtm"],
-    "python.linting.pylintArgs": [
-        "--extension-pkg-whitelist=numpy,mysql,slugify,wwdtm"
-    ],
     "python.testing.pytestEnabled": true,
-    "python.analysis.extraPaths": [
-        "${workspaceFolder}/wwdtm"
-    ],
-    "python.formatting.provider": "black"
+    "python.analysis.extraPaths": ["${workspaceFolder}/wwdtm"],
+    "[python]": {
+        "diffEditor.ignoreTrimWhitespace": false,
+        "editor.formatOnType": true,
+        "editor.wordBasedSuggestions": false,
+        "editor.defaultFormatter": "charliermarsh.ruff",
+    },
 }

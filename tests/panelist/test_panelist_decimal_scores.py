@@ -1,26 +1,28 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
 # Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Testing for object: :py:class:`wwdtm.panelist.PanelistDecimalScores`
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Testing for object: :py:class:`wwdtm.panelist.PanelistDecimalScores`.
 """
 import json
+from pathlib import Path
 from typing import Any, Dict
 
 import pytest
+
 from wwdtm.panelist import PanelistDecimalScores
 
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
-    """Read in database connection settings and return values as a
-    dictionary.
+    """Read in database connection settings.
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
     """
-    with open("config.json", "r", encoding="utf-8") as config_file:
+    file_path = Path.cwd() / "config.json"
+    with file_path.open(mode="r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
@@ -28,7 +30,7 @@ def get_connect_dict() -> Dict[str, Any]:
 
 @pytest.mark.parametrize("panelist_id", [14])
 def test_panelist_scores_retrieve_scores_by_id(panelist_id: int):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_by_id`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_by_id`.
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
@@ -41,7 +43,7 @@ def test_panelist_scores_retrieve_scores_by_id(panelist_id: int):
 
 @pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
 def test_panelist_scores_retrieve_scores_by_slug(panelist_slug: str):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_by_slug`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_by_slug`.
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
@@ -54,7 +56,7 @@ def test_panelist_scores_retrieve_scores_by_slug(panelist_slug: str):
 
 @pytest.mark.parametrize("panelist_id", [14])
 def test_panelist_scores_retrieve_scores_grouped_list_by_id(panelist_id: int):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_grouped_list_by_id`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_grouped_list_by_id`.
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
@@ -68,7 +70,7 @@ def test_panelist_scores_retrieve_scores_grouped_list_by_id(panelist_id: int):
 
 @pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
 def test_panelist_scores_retrieve_scores_grouped_list_by_slug(panelist_slug: str):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_grouped_list_by_slug`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_grouped_list_by_slug`.
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
@@ -82,7 +84,7 @@ def test_panelist_scores_retrieve_scores_grouped_list_by_slug(panelist_slug: str
 
 @pytest.mark.parametrize("panelist_id", [14])
 def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_id(panelist_id: int):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_grouped_ordered_pair_by_id`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_grouped_ordered_pair_by_id`.
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
@@ -98,7 +100,7 @@ def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_id(panelist_id:
 def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_slug(
     panelist_slug: str,
 ):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_grouped_ordered_pair_by_slug`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_grouped_ordered_pair_by_slug`.
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
@@ -112,7 +114,7 @@ def test_panelist_scores_retrieve_scores_grouped_ordered_pair_by_slug(
 
 @pytest.mark.parametrize("panelist_id", [14])
 def test_panelist_scores_retrieve_scores_list_by_id(panelist_id: int):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_list_by_id`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_list_by_id`.
 
     :param panelist_id: Panelist ID to test retrieving panelist information
     """
@@ -125,7 +127,7 @@ def test_panelist_scores_retrieve_scores_list_by_id(panelist_id: int):
 
 @pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
 def test_panelist_scores_retrieve_scores_list_by_slug(panelist_slug: str):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_list_by_slug`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_list_by_slug`.
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
@@ -139,7 +141,7 @@ def test_panelist_scores_retrieve_scores_list_by_slug(panelist_slug: str):
 
 @pytest.mark.parametrize("panelist_id", [14])
 def test_panelist_scores_retrieve_scores_ordered_pair_by_id(panelist_id: int):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_ordered_pair_by_id`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_ordered_pair_by_id`.
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
@@ -152,7 +154,7 @@ def test_panelist_scores_retrieve_scores_ordered_pair_by_id(panelist_id: int):
 
 @pytest.mark.parametrize("panelist_slug", ["luke-burbank"])
 def test_panelist_scores_retrieve_scores_ordered_pair_by_slug(panelist_slug: str):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_ordered_pair_by_slug`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistDecimalScores.retrieve_scores_ordered_pair_by_slug`.
 
     :param panelist_slug: Panelist slug string to test retrieving panelist
         information

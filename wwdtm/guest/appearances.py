@@ -1,20 +1,21 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
 # Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Guest Appearance Retrieval Functions
-"""
-from functools import lru_cache
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Guest Appearance Retrieval Functions."""
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
+
 from wwdtm.guest.utility import GuestUtility
 from wwdtm.validation import valid_int_id
 
 
 class GuestAppearances:
-    """This class contains functions that retrieve guest appearance
+    """Guest Appearance Class.
+
+    This class contains functions that retrieve guest appearance
     information from a copy of the Wait Wait Stats database.
 
     :param connect_dict: Dictionary containing database connection
@@ -40,10 +41,8 @@ class GuestAppearances:
 
         self.utility = GuestUtility(database_connection=self.database_connection)
 
-    @lru_cache(typed=True)
     def retrieve_appearances_by_id(self, guest_id: int) -> Dict[str, Any]:
-        """Returns a list of dictionary objects containing appearance
-        information for the requested guest ID.
+        """Returns a list of dictionaries containing appearance information.
 
         :param guest_id: Guest ID
         :return: Dictionary containing appearance counts and list of
@@ -122,10 +121,8 @@ class GuestAppearances:
                 "shows": [],
             }
 
-    @lru_cache(typed=True)
     def retrieve_appearances_by_slug(self, guest_slug: str) -> Dict[str, Any]:
-        """Returns a list of dictionary objects containing appearance
-        information for the requested guest slug string.
+        """Returns a list of dictionaries containing appearance information.
 
         :param guest_slug: Guest slug string
         :return: Dictionary containing appearance counts and list of

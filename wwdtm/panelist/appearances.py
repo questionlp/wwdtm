@@ -1,14 +1,14 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
 # Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
 """Wait Wait Don't Tell Me! Stats Panelist Appearance Retrieval Functions
 """
 from functools import lru_cache
 from typing import Any, Dict, Optional
 
-from mysql.connector import connect, DatabaseError
+from mysql.connector import connect
 from wwdtm.panelist.utility import PanelistUtility
 from wwdtm.validation import valid_int_id
 

@@ -1,26 +1,28 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
 # Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Testing for object: :py:class:`wwdtm.location.LocationRecordings`
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Testing for object: :py:class:`wwdtm.location.LocationRecordings`.
 """
 import json
+from pathlib import Path
 from typing import Any, Dict
 
 import pytest
+
 from wwdtm.location import LocationRecordings
 
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
-    """Read in database connection settings and return values as a
-    dictionary.
+    """Read in database connection settings.
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
     """
-    with open("config.json", "r", encoding="utf-8") as config_file:
+    file_path = Path.cwd() / "config.json"
+    with file_path.open(mode="r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
@@ -28,7 +30,7 @@ def get_connect_dict() -> Dict[str, Any]:
 
 @pytest.mark.parametrize("location_id", [95])
 def test_location_recordings_retrieve_recordings_by_id(location_id: int):
-    """Testing for :py:meth:`wwdtm.location.LocationRecordings.retrieve_recordings_by_id`
+    """Testing for :py:meth:`wwdtm.location.LocationRecordings.retrieve_recordings_by_id`.
 
     :param location_id: Location ID to test retrieving location
         recordings
@@ -42,7 +44,7 @@ def test_location_recordings_retrieve_recordings_by_id(location_id: int):
 
 @pytest.mark.parametrize("location_slug", ["the-chicago-theatre-chicago-il"])
 def test_location_recordings_retrieve_recordings_by_slug(location_slug: str):
-    """Testing for :py:meth:`wwdtm.location.LocationRecordings.retrieve_recordings_by_slug`
+    """Testing for :py:meth:`wwdtm.location.LocationRecordings.retrieve_recordings_by_slug`.
 
     :param location_slug: Location slug string to test retrieving
         location recordings

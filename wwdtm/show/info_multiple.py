@@ -1,17 +1,17 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
 # Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Supplemental Show Information
-Retrieval Functions for Multiple Shows
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Multiple Show Information Module.
 """
 from typing import Any, Dict, List, Optional
 
-from mysql.connector import connect, DatabaseError
+from mysql.connector import connect
 from slugify import slugify
+
+from wwdtm.location import LocationUtility
 from wwdtm.show.utility import ShowUtility
-from wwdtm.location.location import LocationUtility
 from wwdtm.validation import valid_int_id
 
 
@@ -249,15 +249,8 @@ class ShowInfoMultiple:
                 else None,
             }
 
-            if show.show_description:
-                description = str(show.show_description).strip()
-            else:
-                description = None
-
-            if show.show_notes:
-                notes = str(show.show_notes).strip()
-            else:
-                notes = None
+            description = str(show.show_description).strip() if show.show_description else None
+            notes = str(show.show_notes).strip() if show.show_notes else None
 
             show_info = {
                 "id": show.show_id,
@@ -323,9 +316,7 @@ class ShowInfoMultiple:
             JOIN ww_showdescriptions sd ON sd.showid = s.showid
             JOIN ww_shownotes sn ON sn.showid = s.showid
             WHERE s.showid IN ({ids})
-            ORDER BY s.showdate ASC;""".format(
-            ids=", ".join(str(v) for v in show_ids)
-        )
+            ORDER BY s.showdate ASC;""".format(ids=", ".join(str(v) for v in show_ids))
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -371,15 +362,8 @@ class ShowInfoMultiple:
                 else None,
             }
 
-            if show.show_description:
-                description = str(show.show_description).strip()
-            else:
-                description = None
-
-            if show.show_notes:
-                notes = str(show.show_notes).strip()
-            else:
-                notes = None
+            description = str(show.show_description).strip() if show.show_description else None
+            notes = str(show.show_notes).strip() if show.show_notes else None
 
             show_info = {
                 "id": show.show_id,
@@ -474,9 +458,7 @@ class ShowInfoMultiple:
             JOIN ww_shows s ON s.showid = gm.showid
             WHERE gm.showid IN ({ids})
             ORDER BY s.showdate ASC,
-            gm.showguestmapid ASC;""".format(
-            ids=", ".join(str(v) for v in show_ids)
-        )
+            gm.showguestmapid ASC;""".format(ids=", ".join(str(v) for v in show_ids))
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -614,9 +596,7 @@ class ShowInfoMultiple:
                 JOIN ww_shows s ON s.showid = pm.showid
                 WHERE pm.showid IN ({ids})
                 ORDER by s.showdate ASC, pm.panelistscore DESC,
-                pm.showpnlmapid ASC;""".format(
-                ids=", ".join(str(v) for v in show_ids)
-            )
+                pm.showpnlmapid ASC;""".format(ids=", ".join(str(v) for v in show_ids))
         else:
             query = """
                 SELECT s.showid AS show_id, pm.panelistid AS panelist_id,
@@ -629,9 +609,7 @@ class ShowInfoMultiple:
                 JOIN ww_shows s ON s.showid = pm.showid
                 WHERE pm.showid IN ({ids})
                 ORDER by s.showdate ASC, pm.panelistscore DESC,
-                pm.showpnlmapid ASC;""".format(
-                ids=", ".join(str(v) for v in show_ids)
-            )
+                pm.showpnlmapid ASC;""".format(ids=", ".join(str(v) for v in show_ids))
 
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)

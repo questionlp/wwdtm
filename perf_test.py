@@ -1,12 +1,13 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Performance testing script for the core modules for wwdtm"""
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Performance testing script for the core modules for wwdtm."""
 
 import json
 import time
+from pathlib import Path
 from typing import Any, Dict
 
 from wwdtm.guest import Guest
@@ -18,21 +19,20 @@ from wwdtm.show import Show
 
 
 def get_connect_dict() -> Dict[str, Any]:
-    """Read in database connection settings and return values as a
-    dictionary.
+    """Read in database connection settings.
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
     :rtype: Dict[str, Any]
     """
-    with open("config.json", "r") as config_file:
+    with Path.open("config.json") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
 
 
 def perf_test_guest(connect_dict: Dict[str, Any]) -> float:
-    """Run performance test for the wwdtm.guest module
+    """Run performance test for the wwdtm.guest module.
 
     :param connect_dict: A dictionary containing database connection
         settings for use by mysql.connector
@@ -50,22 +50,22 @@ def perf_test_guest(connect_dict: Dict[str, Any]) -> float:
     _ = guest.retrieve_all_ids()
     _ = guest.retrieve_all_slugs()
 
-    for i in range(3):
+    for _ in range(3):
         _ = guest.retrieve_by_id(guest_id=54)
 
     _ = guest.retrieve_by_id(guest_id=116)
 
-    for i in range(3):
+    for _ in range(3):
         _ = guest.retrieve_by_slug(guest_slug="tom-hanks")
 
     _ = guest.retrieve_by_slug(guest_slug="tom-bodett")
 
-    for i in range(3):
+    for _ in range(3):
         _ = guest.retrieve_details_by_id(guest_id=54)
 
     _ = guest.retrieve_details_by_id(guest_id=116)
 
-    for i in range(3):
+    for _ in range(3):
         _ = guest.retrieve_details_by_slug(guest_slug="tom-hanks")
 
     _ = guest.retrieve_details_by_slug(guest_slug="tom-bodett")
@@ -76,7 +76,7 @@ def perf_test_guest(connect_dict: Dict[str, Any]) -> float:
 
 
 def perf_test_host(connect_dict: Dict[str, Any]) -> float:
-    """Run performance test for the wwdtm.host module
+    """Run performance test for the wwdtm.host module.
 
     :param connect_dict: A dictionary containing database connection
         settings for use by mysql.connector
@@ -94,22 +94,22 @@ def perf_test_host(connect_dict: Dict[str, Any]) -> float:
     _ = host.retrieve_all_ids()
     _ = host.retrieve_all_slugs()
 
-    for i in range(3):
+    for _ in range(3):
         _ = host.retrieve_by_id(host_id=1)
 
     _ = host.retrieve_by_id(host_id=2)
 
-    for i in range(3):
+    for _ in range(3):
         _ = host.retrieve_by_slug(host_slug="peter-sagal")
 
     _ = host.retrieve_by_slug(host_slug="luke-burbank")
 
-    for i in range(3):
+    for _ in range(3):
         _ = host.retrieve_details_by_id(host_id=1)
 
     _ = host.retrieve_details_by_id(host_id=2)
 
-    for i in range(3):
+    for _ in range(3):
         _ = host.retrieve_details_by_slug(host_slug="peter-sagal")
 
     _ = host.retrieve_details_by_slug(host_slug="luke-burbank")
@@ -120,7 +120,7 @@ def perf_test_host(connect_dict: Dict[str, Any]) -> float:
 
 
 def perf_test_location(connect_dict: Dict[str, Any]) -> float:
-    """Run performance test for the wwdtm.location module
+    """Run performance test for the wwdtm.location module.
 
     :param connect_dict: A dictionary containing database connection
         settings for use by mysql.connector
@@ -138,22 +138,22 @@ def perf_test_location(connect_dict: Dict[str, Any]) -> float:
     _ = location.retrieve_all_ids()
     _ = location.retrieve_all_slugs()
 
-    for i in range(3):
+    for _ in range(3):
         _ = location.retrieve_by_id(location_id=2)
 
     _ = location.retrieve_by_id(location_id=64)
 
-    for i in range(3):
+    for _ in range(3):
         _ = location.retrieve_by_slug(location_slug="chase-auditorium-chicago-il")
 
     _ = location.retrieve_by_slug(location_slug="nourse-theater-san-francisco-ca")
 
-    for i in range(3):
+    for _ in range(3):
         _ = location.retrieve_details_by_id(location_id=2)
 
     _ = location.retrieve_details_by_id(location_id=64)
 
-    for i in range(3):
+    for _ in range(3):
         _ = location.retrieve_details_by_slug(
             location_slug="chase-auditorium-chicago-il"
         )
@@ -168,7 +168,7 @@ def perf_test_location(connect_dict: Dict[str, Any]) -> float:
 
 
 def perf_test_panelist(connect_dict: Dict[str, Any]) -> float:
-    """Run performance test for the wwdtm.panelist module
+    """Run performance test for the wwdtm.panelist module.
 
     :param connect_dict: A dictionary containing database connection
         settings for use by mysql.connector
@@ -187,22 +187,22 @@ def perf_test_panelist(connect_dict: Dict[str, Any]) -> float:
     _ = panelist.retrieve_all_ids()
     _ = panelist.retrieve_all_slugs()
 
-    for i in range(3):
+    for _ in range(3):
         _ = panelist.retrieve_by_id(panelist_id=5)
 
     _ = panelist.retrieve_by_id(panelist_id=14)
 
-    for i in range(3):
+    for _ in range(3):
         _ = panelist.retrieve_by_slug(panelist_slug="adam-felber")
 
     _ = panelist.retrieve_by_slug(panelist_slug="luke-burbank")
 
-    for i in range(3):
+    for _ in range(3):
         _ = panelist.retrieve_details_by_id(panelist_id=5)
 
     _ = panelist.retrieve_details_by_id(panelist_id=14)
 
-    for i in range(3):
+    for _ in range(3):
         _ = panelist.retrieve_details_by_slug(panelist_slug="adam-felber")
 
     _ = panelist.retrieve_details_by_slug(panelist_slug="luke-burbank")
@@ -224,7 +224,7 @@ def perf_test_panelist(connect_dict: Dict[str, Any]) -> float:
 
 
 def perf_test_scorekeeper(connect_dict: Dict[str, Any]) -> float:
-    """Run performance test for the wwdtm.scorekeeper module
+    """Run performance test for the wwdtm.scorekeeper module.
 
     :param connect_dict: A dictionary containing database connection
         settings for use by mysql.connector
@@ -242,22 +242,22 @@ def perf_test_scorekeeper(connect_dict: Dict[str, Any]) -> float:
     _ = scorekeeper.retrieve_all_ids()
     _ = scorekeeper.retrieve_all_slugs()
 
-    for i in range(3):
+    for _ in range(3):
         _ = scorekeeper.retrieve_by_id(scorekeeper_id=1)
 
     _ = scorekeeper.retrieve_by_id(scorekeeper_id=11)
 
-    for i in range(3):
+    for _ in range(3):
         _ = scorekeeper.retrieve_by_slug(scorekeeper_slug="carl-kasell")
 
     _ = scorekeeper.retrieve_by_slug(scorekeeper_slug="bill-kurtis")
 
-    for i in range(3):
+    for _ in range(3):
         _ = scorekeeper.retrieve_details_by_id(scorekeeper_id=1)
 
     _ = scorekeeper.retrieve_details_by_id(scorekeeper_id=11)
 
-    for i in range(3):
+    for _ in range(3):
         _ = scorekeeper.retrieve_details_by_slug(scorekeeper_slug="carl-kasell")
 
     _ = scorekeeper.retrieve_details_by_slug(scorekeeper_slug="bill-kurtis")
@@ -268,7 +268,7 @@ def perf_test_scorekeeper(connect_dict: Dict[str, Any]) -> float:
 
 
 def perf_test_show(connect_dict: Dict[str, Any]) -> float:
-    """Run performance test for the wwdtm.show module
+    """Run performance test for the wwdtm.show module.
 
     :param connect_dict: A dictionary containing database connection
         settings for use by mysql.connector
@@ -289,52 +289,52 @@ def perf_test_show(connect_dict: Dict[str, Any]) -> float:
     _ = show.retrieve_all_show_years_months()
     _ = show.retrieve_all_shows_years_months_tuple()
 
-    for i in range(3):
+    for _ in range(3):
         _ = show.retrieve_by_date(year=2018, month=10, day=27)
 
     _ = show.retrieve_by_date(year=2006, month=8, day=19)
 
-    for i in range(3):
+    for _ in range(3):
         _ = show.retrieve_by_date_string(date_string="2018-10-27")
 
     _ = show.retrieve_by_date_string(date_string="2006-08-19")
 
-    for i in range(3):
+    for _ in range(3):
         _ = show.retrieve_by_id(show_id=1083)
 
     _ = show.retrieve_by_id(show_id=47)
 
-    for i in range(3):
+    for _ in range(3):
         _ = show.retrieve_by_year(year=2018)
 
     _ = show.retrieve_by_year(year=2006)
 
-    for i in range(3):
+    for _ in range(3):
         _ = show.retrieve_by_year_month(year=2018, month=10)
 
     _ = show.retrieve_by_year_month(year=2006, month=8)
 
-    for i in range(3):
+    for _ in range(3):
         _ = show.retrieve_details_by_date(year=2018, month=10, day=27)
 
     _ = show.retrieve_details_by_date(year=2006, month=8, day=19)
 
-    for i in range(3):
+    for _ in range(3):
         _ = show.retrieve_details_by_date_string(date_string="2018-10-27")
 
     _ = show.retrieve_details_by_date_string(date_string="2006-08-19")
 
-    for i in range(3):
+    for _ in range(3):
         _ = show.retrieve_details_by_id(show_id=1083)
 
     _ = show.retrieve_details_by_id(show_id=47)
 
-    for i in range(3):
+    for _ in range(3):
         _ = show.retrieve_details_by_year(year=2018)
 
     _ = show.retrieve_details_by_year(year=2006)
 
-    for i in range(3):
+    for _ in range(3):
         _ = show.retrieve_details_by_year_month(year=2018, month=10)
 
     _ = show.retrieve_details_by_year_month(year=2018, month=10)
@@ -348,7 +348,7 @@ def perf_test_show(connect_dict: Dict[str, Any]) -> float:
 
 
 def main():
-    """Runs performance testing against each of the wwdtm modules"""
+    """Runs performance testing against each of the wwdtm modules."""
     # Load configuration and set up database connection
     config = get_connect_dict()
 

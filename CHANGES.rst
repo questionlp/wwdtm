@@ -2,6 +2,21 @@
 Changes
 *******
 
+2.XX.XX
+=======
+
+Application Changes
+-------------------
+
+* Removing all use of ``lru_cache`` as it is not useful for caching data when the library is used for web applications and APIs.
+* Docstring updates to use more consistant formatting
+
+Development Changes
+-------------------
+
+* This release replaces the various linting and formatting tools with Ruff
+* Changed copyright block in each file to include SPDX identifier
+
 2.4.1
 =====
 

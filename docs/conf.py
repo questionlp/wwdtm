@@ -1,14 +1,17 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
 # Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+
 import os
 import sys
+from pathlib import Path
 
-from pallets_sphinx_themes import ProjectLink  # type: ignore
+from pallets_sphinx_themes import ProjectLink
 
-sys.path.insert(0, os.path.abspath("../"))
+parent_path = Path.cwd().parent
+sys.path.insert(0, parent_path.resolve())
 
 project = "wwdtm"
 copyright = "2021-2023 Linh Pham"

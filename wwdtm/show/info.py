@@ -1,23 +1,26 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
 # Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Supplemental Show Information
-Retrieval Functions
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Supplemental Show Information Retrieval Functions.
 """
+
 from functools import lru_cache
 from typing import Any, Dict, List, Optional
 
-from mysql.connector import connect, DatabaseError
+from mysql.connector import connect
 from slugify import slugify
-from wwdtm.show.utility import ShowUtility
+
 from wwdtm.location.location import LocationUtility
+from wwdtm.show.utility import ShowUtility
 from wwdtm.validation import valid_int_id
 
 
 class ShowInfo:
-    """This class contains functions that retrieve show supplemental
+    """Show Information Class.
+
+    Class contains functions that retrieve show supplemental
     show information, including panelist, guest and Bluff the Listener
     information from a copy of the Wait Wait Stats database.
 
@@ -45,10 +48,8 @@ class ShowInfo:
         self.utility = ShowUtility(database_connection=self.database_connection)
         self.loc_util = LocationUtility(database_connection=self.database_connection)
 
-    @lru_cache(typed=True)
     def retrieve_bluff_info_by_id(self, show_id: int) -> Dict[str, Any]:
-        """Returns a dictionary containing Bluff the Listener information
-        for the requested show ID.
+        """Return a dictionary containing Bluff the Listener information.
 
         :param show_id: Show ID
         :return: Dictionary containing correct and chosen Bluff the
@@ -74,9 +75,7 @@ class ShowInfo:
             chosen_bluff_info = {
                 "id": chosen_result.id,
                 "name": chosen_result.name,
-                "slug": chosen_result.slug
-                if chosen_result.slug
-                else slugify(chosen_result.name),
+                "slug": chosen_result.slug if chosen_result.slug else slugify(chosen_result.name),
             }
         else:
             chosen_bluff_info = None
@@ -98,9 +97,7 @@ class ShowInfo:
             correct_bluff_info = {
                 "id": correct_result.id,
                 "name": correct_result.name,
-                "slug": correct_result.slug
-                if correct_result.slug
-                else slugify(correct_result.name),
+                "slug": correct_result.slug if correct_result.slug else slugify(correct_result.name),
             }
         else:
             correct_bluff_info = None
@@ -111,8 +108,7 @@ class ShowInfo:
         }
 
     def retrieve_core_info_by_id(self, show_id: int) -> Dict[str, Any]:
-        """Returns a dictionary with core information for the requested
-        show ID.
+        """Returns a dictionary with core show information.
 
         :param show_ids: List of show IDs
         :return: Dictionary containing host, scorekeeper, location,
@@ -180,24 +176,13 @@ class ShowInfo:
         scorekeeper_info = {
             "id": result.scorekeeper_id,
             "name": result.scorekeeper,
-            "slug": result.scorekeeper_slug
-            if result.scorekeeper_slug
-            else slugify(result.scorekeeper),
+            "slug": result.scorekeeper_slug if result.scorekeeper_slug else slugify(result.scorekeeper),
             "guest": bool(result.scorekeeper_guest),
-            "description": result.scorekeeper_description
-            if result.scorekeeper_description
-            else None,
+            "description": result.scorekeeper_description if result.scorekeeper_description else None,
         }
 
-        if result.show_description:
-            description = str(result.show_description).strip()
-        else:
-            description = None
-
-        if result.show_notes:
-            notes = str(result.show_notes).strip()
-        else:
-            notes = None
+        description = str(result.show_description).strip() if result.show_description else None
+        notes = str(result.show_notes).strip() if result.show_notes else None
 
         show_info = {
             "id": result.show_id,
@@ -224,10 +209,8 @@ class ShowInfo:
 
         return show_info
 
-    @lru_cache(typed=True)
     def retrieve_guest_info_by_id(self, show_id: int) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing Not My Job
-        guest information for the requested show ID.
+        """Return a list of Not My Job guest information.
 
         :param show_id: Show ID
         :return: Dictionary containing Not My Job guest information. If
@@ -269,12 +252,8 @@ class ShowInfo:
 
         return guests
 
-    @lru_cache(typed=True)
-    def retrieve_panelist_info_by_id(
-        self, show_id: int, include_decimal_scores: bool = False
-    ) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing panelist
-        information for the requested show ID.
+    def retrieve_panelist_info_by_id(self, show_id: int, include_decimal_scores: bool = False) -> List[Dict[str, Any]]:
+        """Returns a list of panelist information.
 
         :param show_id: Show ID
         :param include_decimal_scores: Flag set to include panelist
@@ -331,17 +310,13 @@ class ShowInfo:
                     "name": row.name,
                     "slug": row.slug if row.slug else slugify(row.name),
                     "lightning_round_start": row.start,
-                    "lightning_round_start_decimal": row.start_decimal
-                    if "start_decimal" in row._fields
-                    else None,
+                    "lightning_round_start_decimal": row.start_decimal if "start_decimal" in row._fields else None,
                     "lightning_round_correct": row.correct,
                     "lightning_round_correct_decimal": row.correct_decimal
                     if "correct_decimal" in row._fields
                     else None,
                     "score": row.score,
-                    "score_decimal": row.score_decimal
-                    if "score_decimal" in row._fields
-                    else None,
+                    "score_decimal": row.score_decimal if "score_decimal" in row._fields else None,
                     "rank": row.pnl_rank if row.pnl_rank else None,
                 }
             )

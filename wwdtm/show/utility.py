@@ -1,20 +1,23 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
 # Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Show Data Utility Functions
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Show Utility Functions.
 """
 import datetime
 from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
+
 from wwdtm.validation import valid_int_id
 
 
 class ShowUtility:
-    """This class contains supporting functions used to check whether
+    """Show Utility Class.
+
+    This class contains supporting functions used to check whether
     a show ID or show date exists or to convert between show ID, and
     show dates.
 
@@ -39,7 +42,6 @@ class ShowUtility:
 
             self.database_connection = database_connection
 
-    @lru_cache(typed=True)
     def convert_date_to_id(self, year: int, month: int, day: int) -> Optional[int]:
         """Converts a show date to the matching show ID value.
 
@@ -66,7 +68,6 @@ class ShowUtility:
 
         return None
 
-    @lru_cache(typed=True)
     def convert_id_to_date(self, show_id: int) -> Optional[str]:
         """Converts a show's ID to the matching show date.
 
@@ -89,7 +90,6 @@ class ShowUtility:
 
         return None
 
-    @lru_cache(typed=True)
     def date_exists(self, year: int, month: int, day: int) -> bool:
         """Checks to see if a show date exists.
 
@@ -113,7 +113,6 @@ class ShowUtility:
 
         return bool(result)
 
-    @lru_cache(typed=True)
     def id_exists(self, show_id: int) -> bool:
         """Checks to see if a show ID exists.
 

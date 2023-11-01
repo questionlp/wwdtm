@@ -1,26 +1,28 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
 # Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Testing for object: :py:class:`wwdtm.panelist.PanelistUtility`
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Testing for object: :py:class:`wwdtm.panelist.PanelistUtility`.
 """
 import json
+from pathlib import Path
 from typing import Any, Dict
 
 import pytest
+
 from wwdtm.panelist import PanelistUtility
 
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
-    """Read in database connection settings and return values as a
-    dictionary.
+    """Read in database connection settings.
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
     """
-    with open("config.json", "r", encoding="utf-8") as config_file:
+    file_path = Path.cwd() / "config.json"
+    with file_path.open(mode="r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
@@ -28,7 +30,7 @@ def get_connect_dict() -> Dict[str, Any]:
 
 @pytest.mark.parametrize("panelist_id", [14])
 def test_panelist_utility_convert_id_to_slug(panelist_id: int):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistUtility.convert_id_to_slug`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistUtility.convert_id_to_slug`.
 
     :param panelist_id: Panelist ID to test converting into panelist
         slug string
@@ -42,7 +44,7 @@ def test_panelist_utility_convert_id_to_slug(panelist_id: int):
 
 @pytest.mark.parametrize("panelist_id", [-1])
 def test_panelist_utility_convert_invalid_id_to_slug(panelist_id: int):
-    """Negative testing for :py:meth:`wwdtm.panelist.PanelistUtility.convert_id_to_slug`
+    """Negative testing for :py:meth:`wwdtm.panelist.PanelistUtility.convert_id_to_slug`.
 
     :param panelist_id: Panelist ID to test failing to convert into
         panelist slug string
@@ -55,7 +57,7 @@ def test_panelist_utility_convert_invalid_id_to_slug(panelist_id: int):
 
 @pytest.mark.parametrize("panelist_slug", ["faith-salie"])
 def test_panelist_utility_convert_slug_to_id(panelist_slug: str):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistUtility.convert_slug_to_id`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistUtility.convert_slug_to_id`.
 
     :param panelist_slug: Panelist slug string to test converting into
         panelist ID
@@ -69,7 +71,7 @@ def test_panelist_utility_convert_slug_to_id(panelist_slug: str):
 
 @pytest.mark.parametrize("panelist_slug", ["faith-sale"])
 def test_panelist_utility_convert_invalid_slug_to_id(panelist_slug: str):
-    """Negative testing for :py:meth:`wwdtm.panelist.PanelistUtility.convert_slug_to_id`
+    """Negative testing for :py:meth:`wwdtm.panelist.PanelistUtility.convert_slug_to_id`.
 
     :param panelist_slug: Panelist slug string to test failing to
         convert into panelist ID
@@ -82,7 +84,7 @@ def test_panelist_utility_convert_invalid_slug_to_id(panelist_slug: str):
 
 @pytest.mark.parametrize("panelist_id", [14])
 def test_panelist_utility_id_exists(panelist_id: int):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistUtility.id_exists`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistUtility.id_exists`.
 
     :param panelist_id: Panelist ID to test if a panelist exists
     """
@@ -94,7 +96,7 @@ def test_panelist_utility_id_exists(panelist_id: int):
 
 @pytest.mark.parametrize("panelist_id", [-1])
 def test_panelist_utility_id_not_exists(panelist_id: int):
-    """Negative testing for :py:meth:`wwdtm.panelist.PanelistUtility.id_exists`
+    """Negative testing for :py:meth:`wwdtm.panelist.PanelistUtility.id_exists`.
 
     :param panelist_id: Panelist ID to test if a panelist does not exist
     """
@@ -106,7 +108,7 @@ def test_panelist_utility_id_not_exists(panelist_id: int):
 
 @pytest.mark.parametrize("panelist_slug", ["faith-salie"])
 def test_panelist_utility_slug_exists(panelist_slug: str):
-    """Testing for :py:meth:`wwdtm.panelist.PanelistUtility.slug_exists`
+    """Testing for :py:meth:`wwdtm.panelist.PanelistUtility.slug_exists`.
 
     :param panelist_slug: Panelist slug string to test if a panelist
         exists
@@ -119,7 +121,7 @@ def test_panelist_utility_slug_exists(panelist_slug: str):
 
 @pytest.mark.parametrize("panelist_slug", ["faith-sale"])
 def test_panelist_utility_slug_not_exists(panelist_slug: str):
-    """Negative testing for :py:meth:`wwdtm.panelist.PanelistUtility.slug_exists`
+    """Negative testing for :py:meth:`wwdtm.panelist.PanelistUtility.slug_exists`.
 
     :param panelist_slug: Panelist slug string to test if a panelist
         does not exist

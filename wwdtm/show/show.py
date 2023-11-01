@@ -1,17 +1,18 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
 # Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Show Data Retrieval Functions
-"""
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Show Data Retrieval Functions."""
+
 import datetime
-import dateutil.parser as date_parser
 from decimal import Decimal
 from functools import lru_cache
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from mysql.connector import connect, DatabaseError
+import dateutil.parser as date_parser
+from mysql.connector import connect
+
 from wwdtm.show.info import ShowInfo
 from wwdtm.show.info_multiple import ShowInfoMultiple
 from wwdtm.show.utility import ShowUtility
@@ -19,7 +20,9 @@ from wwdtm.validation import valid_int_id
 
 
 class Show:
-    """This class contains functions used to retrieve show data from a
+    """Show Data Class.
+
+    This class contains functions used to retrieve show data from a
     copy of the Wait Wait Stats database.
 
     :param connect_dict: Dictionary containing database connection
@@ -44,9 +47,7 @@ class Show:
             self.database_connection = database_connection
 
         self.info = ShowInfo(database_connection=self.database_connection)
-        self.info_multiple = ShowInfoMultiple(
-            database_connection=self.database_connection
-        )
+        self.info_multiple = ShowInfoMultiple(database_connection=self.database_connection)
         self.utility = ShowUtility(database_connection=self.database_connection)
 
     def retrieve_all(self) -> List[Dict[str, Any]]:
@@ -82,17 +83,13 @@ class Show:
 
             if row.repeat_show_id:
                 show["original_show_id"] = row.repeat_show_id
-                show["original_show_date"] = self.utility.convert_id_to_date(
-                    row.repeat_show_id
-                )
+                show["original_show_date"] = self.utility.convert_id_to_date(row.repeat_show_id)
 
             shows.append(show)
 
         return shows
 
-    def retrieve_all_details(
-        self, include_decimal_scores: bool = False
-    ) -> List[Dict[str, Any]]:
+    def retrieve_all_details(self, include_decimal_scores: bool = False) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
         for all shows.
@@ -108,28 +105,20 @@ class Show:
         if not info:
             return []
 
-        panelists = self.info_multiple.retrieve_panelist_info_all(
-            include_decimal_scores=include_decimal_scores
-        )
+        panelists = self.info_multiple.retrieve_panelist_info_all(include_decimal_scores=include_decimal_scores)
         bluffs = self.info_multiple.retrieve_bluff_info_all()
         guests = self.info_multiple.retrieve_guest_info_all()
 
         shows = []
         for show in info:
             if info[show]["id"] in panelists:
-                info[show]["panelists"] = panelists[info[show]["id"]]
-            else:
-                info[show]["panelists"] = []
+                info[show]["panelists"] = panelists.get(info[show]["id"], [])
 
             if info[show]["id"] in bluffs:
-                info[show]["bluff"] = bluffs[info[show]["id"]]
-            else:
-                info[show]["bluff"] = {}
+                info[show]["bluff"] = bluffs.get(info[show]["id"], {})
 
             if info[show]["id"] in guests:
-                info[show]["guests"] = guests[info[show]["id"]]
-            else:
-                info[show]["guests"] = []
+                info[show]["guests"] = guests.get(info[show]["id"], [])
 
             shows.append(info[show])
 
@@ -243,7 +232,6 @@ class Show:
 
         return [tuple(v) for v in results]
 
-    @lru_cache(typed=True)
     def retrieve_by_date(self, year: int, month: int, day: int) -> Dict[str, Any]:
         """Returns a dictionary object containing show ID, show date,
         Best Of and Repeat Show information for the requested show date.
@@ -261,7 +249,6 @@ class Show:
 
         return self.retrieve_by_id(id_)
 
-    @lru_cache(typed=True)
     def retrieve_by_date_string(self, date_string: str) -> Dict[str, Any]:
         """Returns a dictionary object containing show ID, show date,
         Best Of and Repeat Show information for the requested show date
@@ -277,13 +264,10 @@ class Show:
         except ValueError:
             return {}
 
-        id_ = self.utility.convert_date_to_id(
-            parsed_date_string.year, parsed_date_string.month, parsed_date_string.day
-        )
+        id_ = self.utility.convert_date_to_id(parsed_date_string.year, parsed_date_string.month, parsed_date_string.day)
 
         return self.retrieve_by_id(id_)
 
-    @lru_cache(typed=True)
     def retrieve_by_id(self, show_id: int) -> Dict[str, Any]:
         """Returns a dictionary object containing show ID, show date,
         Best Of and Repeat Show information for the requested show ID.
@@ -320,13 +304,10 @@ class Show:
 
         if result.repeat_show_id:
             info["original_show_id"] = result.repeat_show_id
-            info["original_show_date"] = self.utility.convert_id_to_date(
-                result.repeat_show_id
-            )
+            info["original_show_date"] = self.utility.convert_id_to_date(result.repeat_show_id)
 
         return info
 
-    @lru_cache(typed=True)
     def retrieve_by_month_day(self, month: int, day: int) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing with show
         information for the requested month and day, sorted by year.
@@ -361,7 +342,6 @@ class Show:
 
         return [self.retrieve_by_id(v[0]) for v in results]
 
-    @lru_cache(typed=True)
     def retrieve_by_year(self, year: int) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing with show
         information for the requested year, sorted by show date.
@@ -391,7 +371,6 @@ class Show:
 
         return [self.retrieve_by_id(v[0]) for v in results]
 
-    @lru_cache(typed=True)
     def retrieve_by_year_month(self, year: int, month: int) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show
         information for the requested year and month, sorted by show
@@ -429,7 +408,6 @@ class Show:
 
         return [self.retrieve_by_id(v[0]) for v in results]
 
-    @lru_cache(typed=True)
     def retrieve_details_by_date(
         self, year: int, month: int, day: int, include_decimal_scores: bool = False
     ) -> Dict[str, Any]:
@@ -448,14 +426,9 @@ class Show:
         if not id_:
             return {}
 
-        return self.retrieve_details_by_id(
-            id_, include_decimal_scores=include_decimal_scores
-        )
+        return self.retrieve_details_by_id(id_, include_decimal_scores=include_decimal_scores)
 
-    @lru_cache(typed=True)
-    def retrieve_details_by_date_string(
-        self, date_string: str, include_decimal_scores: bool = False
-    ) -> Dict[str, Any]:
+    def retrieve_details_by_date_string(self, date_string: str, include_decimal_scores: bool = False) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
         for the requested show date string.
@@ -472,18 +445,11 @@ class Show:
         except ValueError:
             return {}
 
-        id_ = self.utility.convert_date_to_id(
-            parsed_date_string.year, parsed_date_string.month, parsed_date_string.day
-        )
+        id_ = self.utility.convert_date_to_id(parsed_date_string.year, parsed_date_string.month, parsed_date_string.day)
 
-        return self.retrieve_details_by_id(
-            id_, include_decimal_scores=include_decimal_scores
-        )
+        return self.retrieve_details_by_id(id_, include_decimal_scores=include_decimal_scores)
 
-    @lru_cache(typed=True)
-    def retrieve_details_by_id(
-        self, show_id: int, include_decimal_scores: bool = False
-    ) -> Dict[str, Any]:
+    def retrieve_details_by_id(self, show_id: int, include_decimal_scores: bool = False) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
         for the requested show ID.
@@ -510,7 +476,6 @@ class Show:
 
         return info
 
-    @lru_cache(typed=True)
     def retrieve_details_by_month_day(
         self, month: int, day: int, include_decimal_scores: bool = False
     ) -> List[Dict[str, Any]]:
@@ -560,20 +525,13 @@ class Show:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
                     info[show]["id"], include_decimal_scores=include_decimal_scores
                 )
-                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(
-                    info[show]["id"]
-                )
-                info[show]["guests"] = self.info.retrieve_guest_info_by_id(
-                    info[show]["id"]
-                )
+                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(info[show]["id"])
+                info[show]["guests"] = self.info.retrieve_guest_info_by_id(info[show]["id"])
                 shows.append(info[show])
 
         return shows
 
-    @lru_cache(typed=True)
-    def retrieve_details_by_year(
-        self, year: int, include_decimal_scores: bool = False
-    ) -> List[Dict[str, Any]]:
+    def retrieve_details_by_year(self, year: int, include_decimal_scores: bool = False) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information for
         the requested year, sorted by show date.
@@ -615,17 +573,12 @@ class Show:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
                     info[show]["id"], include_decimal_scores=include_decimal_scores
                 )
-                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(
-                    info[show]["id"]
-                )
-                info[show]["guests"] = self.info.retrieve_guest_info_by_id(
-                    info[show]["id"]
-                )
+                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(info[show]["id"])
+                info[show]["guests"] = self.info.retrieve_guest_info_by_id(info[show]["id"])
                 shows.append(info[show])
 
         return shows
 
-    @lru_cache(typed=True)
     def retrieve_details_by_year_month(
         self, year: int, month: int, include_decimal_scores: bool = False
     ) -> List[Dict[str, Any]]:
@@ -677,17 +630,12 @@ class Show:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
                     info[show]["id"], include_decimal_scores=include_decimal_scores
                 )
-                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(
-                    info[show]["id"]
-                )
-                info[show]["guests"] = self.info.retrieve_guest_info_by_id(
-                    info[show]["id"]
-                )
+                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(info[show]["id"])
+                info[show]["guests"] = self.info.retrieve_guest_info_by_id(info[show]["id"])
                 shows.append(info[show])
 
         return shows
 
-    @lru_cache(typed=True)
     def retrieve_months_by_year(self, year: int) -> List[int]:
         """Returns a list of show months available for the requested
         year, sorted by month.
@@ -717,7 +665,6 @@ class Show:
 
         return [v[0] for v in results]
 
-    @lru_cache(typed=True)
     def retrieve_recent(
         self,
         include_days_ahead: Optional[int] = 7,
@@ -767,7 +714,6 @@ class Show:
 
         return [self.retrieve_by_id(v[0]) for v in results]
 
-    @lru_cache(typed=True)
     def retrieve_recent_details(
         self,
         include_days_ahead: Optional[int] = 7,
@@ -836,7 +782,6 @@ class Show:
 
         return shows
 
-    @lru_cache(typed=True)
     def retrieve_scores_by_year(
         self, year: int, use_decimal_scores: bool = False
     ) -> List[Tuple[str, Union[int, Decimal]]]:

@@ -1,22 +1,23 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
 # Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Guest Data Retrieval Functions
-"""
-from functools import lru_cache
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Guest Data Retrieval Functions."""
 from typing import Any, Dict, List, Optional
 
 from mysql.connector import connect
 from slugify import slugify
+
 from wwdtm.guest.appearances import GuestAppearances
 from wwdtm.guest.utility import GuestUtility
 from wwdtm.validation import valid_int_id
 
 
 class Guest:
-    """This class contains functions used to retrieve guest data from a
+    """Guest Information Class.
+
+    This class contains functions used to retrieve guest data from a
     copy of the Wait Wait Stats database.
 
     :param connect_dict: Dictionary containing database connection
@@ -40,14 +41,13 @@ class Guest:
 
             self.database_connection = database_connection
 
-        self.appearances = GuestAppearances(
-            database_connection=self.database_connection
-        )
+        self.appearances = GuestAppearances(database_connection=self.database_connection)
         self.utility = GuestUtility(database_connection=self.database_connection)
 
     def retrieve_all(self) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing guest ID,
-        name and slug string for all guests.
+        """Returns a list of dictionaries containing guest information.
+
+        Returned information includes: guest ID, name and slug string for all guests.
 
         :return: List of all guests and their corresponding
             information. If guests could not be retrieved, an empty list
@@ -80,8 +80,9 @@ class Guest:
         return guests
 
     def retrieve_all_details(self) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing guest ID,
-        name, slug string and appearance information for all guests.
+        """Returns a list of dictionariess containing detailed guest information.
+
+        Returned information includes: guest ID, name, slug string and appearance information for all guests.
 
         :return: List of all guests and their corresponding
             information and appearances. If guests could not be
@@ -115,8 +116,7 @@ class Guest:
         return guests
 
     def retrieve_all_ids(self) -> List[int]:
-        """Returns a list of all guest IDs from the database, sorted by
-        guest name.
+        """Returns a list of all guest IDs, sorted by guest name.
 
         :return: List of all guest IDs. If guest IDs could not be
             retrieved, an empty list is returned.
@@ -137,8 +137,7 @@ class Guest:
         return [v[0] for v in results]
 
     def retrieve_all_slugs(self) -> List[str]:
-        """Returns a list of all guest slug strings from the database,
-        sorted by guest name.
+        """Returns a list of all guest slug strings, sorted by guest name.
 
         :return: List of all guest slug strings. If guest slug strings
             could not be retrieved, an emtpy list is returned.
@@ -158,10 +157,10 @@ class Guest:
 
         return [v[0] for v in results]
 
-    @lru_cache(typed=True)
     def retrieve_by_id(self, guest_id: int) -> Dict[str, Any]:
-        """Returns a dictionary object containing guest ID, name and
-        slug string for the requested guest ID.
+        """Returns a dictionary containing guest information.
+
+        Returned information includes: guest ID, name and slug string for the requested guest ID.
 
         :param guest_id: Guest ID
         :return: Dictionary containing guest information. If guest
@@ -191,10 +190,10 @@ class Guest:
             "slug": result.slug if result.slug else slugify(result.name),
         }
 
-    @lru_cache(typed=True)
     def retrieve_by_slug(self, guest_slug: str) -> Dict[str, Any]:
-        """Returns a dictionary object containing guest ID, name and
-        slug string for the requested guest slug string.
+        """Returns a dictionary containing guest information.
+
+        Returned informatio includes: guest ID, name and slug string for the requested guest slug string.
 
         :param guest_slug: Guest slug string
         :return: Dictionary containing guest information. If guest
@@ -214,10 +213,10 @@ class Guest:
 
         return self.retrieve_by_id(id_)
 
-    @lru_cache(typed=True)
     def retrieve_details_by_id(self, guest_id: int) -> Dict[str, Any]:
-        """Returns a dictionary object containing guest ID, name, slug
-        string and appearance information for the requested Guest ID.
+        """Returns a dictionary containing detailed guest information.
+
+        Returned information includes: guest ID, name, slug string and appearance information for the requested Guest ID.
 
         :param guest_id: Guest ID
         :return: Dictionary containing guest information and their
@@ -235,11 +234,10 @@ class Guest:
 
         return info
 
-    @lru_cache(typed=True)
     def retrieve_details_by_slug(self, guest_slug: str) -> Dict[str, Any]:
-        """Returns a dictionary object containing guest ID, name, slug
-        string and appearance information for the requested Guest slug
-        string.
+        """Returns a dictionary containing detailed guest information.
+
+        Returned information includes: guest ID, name, slug string and appearance information for the requested Guest slug string.
 
         :param guest_slug: Guest slug string
         :return: Dictionary containing guest information and their

@@ -1,19 +1,22 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
 # Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Guest Data Utility Functions
-"""
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Guest Data Utility Functions."""
+
 from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
+
 from wwdtm.validation import valid_int_id
 
 
 class GuestUtility:
-    """This class contains supporting functions used to check whether
+    """Guest Utility Class.
+
+    This class contains supporting functions used to check whether
     a Guest ID or slug string exists or to convert an ID to a slug
     string, or vice versa.
 
@@ -38,7 +41,6 @@ class GuestUtility:
 
             self.database_connection = database_connection
 
-    @lru_cache(typed=True)
     def convert_id_to_slug(self, guest_id: int) -> Optional[str]:
         """Converts a guest's ID to the matching guest slug string.
 
@@ -61,10 +63,10 @@ class GuestUtility:
 
         return None
 
-    @lru_cache(typed=True)
     def convert_slug_to_id(self, guest_slug: str) -> Optional[int]:
-        """Converts a guest's slug string to the matching guest ID, if
-        a match is found. If no match is found, None is returned.
+        """Converts a guest's slug string to a matching guest ID.
+
+        If a match is not found, then None is returned.
 
         :param guest_slug: Guest slug string
         :return: Guest ID, if a match is found
@@ -89,7 +91,6 @@ class GuestUtility:
 
         return None
 
-    @lru_cache(typed=True)
     def id_exists(self, guest_id: int) -> bool:
         """Checks to see if a guest ID exists.
 
@@ -109,7 +110,6 @@ class GuestUtility:
 
         return bool(result)
 
-    @lru_cache(typed=True)
     def slug_exists(self, guest_slug: str) -> bool:
         """Checks to see if a guest slug string exists.
 

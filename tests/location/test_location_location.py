@@ -1,33 +1,36 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
 # Copyright (c) 2018-2023 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Testing for object: :py:class:`wwdtm.location.Location`
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Testing for object: :py:class:`wwdtm.location.Location`.
 """
 import json
+from pathlib import Path
 from typing import Any, Dict
 
 import pytest
+
 from wwdtm.location import Location
 
 
 @pytest.mark.skip
 def get_connect_dict() -> Dict[str, Any]:
-    """Read in database connection settings and return values as a
-    dictionary.
+    """Read in database connection settings.
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
     """
-    with open("config.json", "r", encoding="utf-8") as config_file:
+    file_path = Path.cwd() / "config.json"
+    with file_path.open(mode="r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
 
 
 def test_location_retrieve_all():
-    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all`"""
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all`.
+    """
     location = Location(connect_dict=get_connect_dict())
     locations = location.retrieve_all()
 
@@ -36,19 +39,21 @@ def test_location_retrieve_all():
 
 
 def test_location_retrieve_all_details():
-    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_details`"""
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_details`.
+    """
     location = Location(connect_dict=get_connect_dict())
     locations = location.retrieve_all_details()
 
     assert locations, "No locations could be retrieved"
     assert "id" in locations[0], "'id' was not returned for first list item"
     assert "recordings" in locations[0], (
-        "'recordings' was not returned for " "the first list item"
+        "'recordings' was not returned for the first list item"
     )
 
 
 def test_location_retrieve_all_ids():
-    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_ids`"""
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_ids`.
+    """
     location = Location(connect_dict=get_connect_dict())
     ids = location.retrieve_all_ids()
 
@@ -56,7 +61,8 @@ def test_location_retrieve_all_ids():
 
 
 def test_location_retrieve_all_slugs():
-    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_slugs`"""
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_all_slugs`.
+    """
     location = Location(connect_dict=get_connect_dict())
     slugs = location.retrieve_all_slugs()
 
@@ -65,7 +71,7 @@ def test_location_retrieve_all_slugs():
 
 @pytest.mark.parametrize("location_id", [95])
 def test_location_retrieve_by_id(location_id: int):
-    """Testing for :py:meth:`wwdtm.location.Location.retrieve_by_id`
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_by_id`.
 
     :param location_id: Location ID to test retrieving location
         information
@@ -79,7 +85,7 @@ def test_location_retrieve_by_id(location_id: int):
 
 @pytest.mark.parametrize("location_id", [95])
 def test_location_retrieve_details_by_id(location_id: int):
-    """Testing for :py:meth:`wwdtm.location.location.retrieve_details_by_id`
+    """Testing for :py:meth:`wwdtm.location.location.retrieve_details_by_id`.
 
     :param location_id: Location ID to test retrieving location details
     """
@@ -93,7 +99,7 @@ def test_location_retrieve_details_by_id(location_id: int):
 
 @pytest.mark.parametrize("location_slug", ["the-chicago-theatre-chicago-il"])
 def test_location_retrieve_by_slug(location_slug: str):
-    """Testing for :py:meth:`wwdtm.location.Location.retrieve_by_slug`
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_by_slug`.
 
     :param location_slug: Location slug string to test retrieving
         location information
@@ -107,7 +113,7 @@ def test_location_retrieve_by_slug(location_slug: str):
 
 @pytest.mark.parametrize("location_slug", ["the-chicago-theatre-chicago-il"])
 def test_location_retrieve_details_by_slug(location_slug: str):
-    """Testing for :py:meth:`wwdtm.location.Location.retrieve_details_by_slug`
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_details_by_slug`.
 
     :param location_slug: Location slug string to test retrieving
         location details
