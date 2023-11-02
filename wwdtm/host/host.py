@@ -3,20 +3,21 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # vim: set noai syntax=python ts=4 sw=4:
-"""Wait Wait Don't Tell Me! Stats Host Data Retrieval Functions
-"""
-from functools import lru_cache
+"""Wait Wait Don't Tell Me! Stats Host Data Retrieval Functions."""
 from typing import Any, Dict, List, Optional
 
 from mysql.connector import connect
 from slugify import slugify
+
 from wwdtm.host.appearances import HostAppearances
 from wwdtm.host.utility import HostUtility
 from wwdtm.validation import valid_int_id
 
 
 class Host:
-    """This class contains functions used to retrieve host data from a
+    """Host Information Class.
+
+    This class contains functions used to retrieve host data from a
     copy of the Wait Wait Stats database.
 
     :param connect_dict: Dictionary containing database connection
@@ -44,8 +45,9 @@ class Host:
         self.utility = HostUtility(database_connection=self.database_connection)
 
     def retrieve_all(self) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing host ID,
-        name and slug string for all hosts.
+        """Returns a list of dictionaries containing information for all hosts.
+
+        Returned information includes: host ID, name and slug string.
 
         :return: List of all hosts and their corresponding information.
             If hosts could not be retrieved, an empty list is returned.
@@ -78,8 +80,9 @@ class Host:
         return hosts
 
     def retrieve_all_details(self) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing host ID,
-        name, slug string and appearance information for all hosts.
+        """Returns a list of dictionaries containing detailed information for all hosts.
+
+        Returned information includes: host ID, name, slug string and appearances.
 
         :return: List of all hosts and their corresponding information
             and appearances. If hosts could not be retrieved, an empty
@@ -114,14 +117,13 @@ class Host:
         return hosts
 
     def retrieve_all_ids(self) -> List[int]:
-        """Returns a list of all host IDs from the database, sorted by
-        host name.
+        """Returns a list of all host IDs, sorted by host name.
 
         :return: List of all host IDs. If host IDs could not be
             retrieved, an empty list is returned.
         """
         cursor = self.database_connection.cursor(dictionary=False)
-        query = "SELECT hostid FROM ww_hosts " "ORDER BY host ASC;"
+        query = "SELECT hostid FROM ww_hosts ORDER BY host ASC;"
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -132,8 +134,7 @@ class Host:
         return [v[0] for v in results]
 
     def retrieve_all_slugs(self) -> List[str]:
-        """Returns a list of all host slug strings from the database,
-        sorted by host name.
+        """Returns a list of all host slug strings, sorted by host name.
 
         :return: List of all host slug strings. If host slug strings
             could not be retrieved, an empty list is returned.
@@ -151,10 +152,10 @@ class Host:
 
         return [v[0] for v in results]
 
-    @lru_cache(typed=True)
     def retrieve_by_id(self, host_id: int) -> Dict[str, Any]:
-        """Returns a dictionary object containing host ID, name and
-        slug string for the requested host ID.
+        """Returns a dictionary containing host information.
+
+        Returned information includes: host ID, name and slug string.
 
         :param host_id: Host ID
         :return: Dictionary containing host information. If host
@@ -186,10 +187,10 @@ class Host:
             "slug": result.slug if result.slug else slugify(result.name),
         }
 
-    @lru_cache(typed=True)
     def retrieve_by_slug(self, host_slug: str) -> Dict[str, Any]:
-        """Returns a dictionary object containing host ID, name and
-        slug string for the requested host slug string.
+        """Returns a dictionary containing host information.
+
+        Returned information includes: host ID, name and slug string.
 
         :param host_slug: Host slug string
         :return: Dictionary containing host information. If host
@@ -209,10 +210,10 @@ class Host:
 
         return self.retrieve_by_id(id_)
 
-    @lru_cache(typed=True)
     def retrieve_details_by_id(self, host_id: int) -> Dict[str, Any]:
-        """Returns a dictionary object containing host ID, name, slug
-        string and appearance information for the requested host ID.
+        """Returns a dictionary containing detailed host information.
+
+        Returned information includes: host ID, name, slug string and appearances.
 
         :param host_id: Host ID
         :return: Dictionary containing host information and their
@@ -230,11 +231,10 @@ class Host:
 
         return info
 
-    @lru_cache(typed=True)
     def retrieve_details_by_slug(self, host_slug: str) -> Dict[str, Any]:
-        """Returns a dictionary object containing host ID, name, slug
-        string and appearance information for the requested host slug
-        string.
+        """Returns a dictionary containing detailed host information.
+
+        Returned information includes: host ID, name, slug string and appearances.
 
         :param host_slug: Host slug string
         :return: Dictionary containing host information and their

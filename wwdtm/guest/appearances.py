@@ -13,7 +13,7 @@ from wwdtm.validation import valid_int_id
 
 
 class GuestAppearances:
-    """Guest Appearance Class.
+    """Guest Appearances Class.
 
     This class contains functions that retrieve guest appearance
     information from a copy of the Wait Wait Stats database.

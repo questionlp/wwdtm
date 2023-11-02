@@ -45,9 +45,9 @@ class Guest:
         self.utility = GuestUtility(database_connection=self.database_connection)
 
     def retrieve_all(self) -> List[Dict[str, Any]]:
-        """Returns a list of dictionaries containing guest information.
+        """Returns a list of dictionaries containing information for all guests.
 
-        Returned information includes: guest ID, name and slug string for all guests.
+        Returned information includes: guest ID, name and slug string.
 
         :return: List of all guests and their corresponding
             information. If guests could not be retrieved, an empty list
@@ -80,9 +80,9 @@ class Guest:
         return guests
 
     def retrieve_all_details(self) -> List[Dict[str, Any]]:
-        """Returns a list of dictionariess containing detailed guest information.
+        """Returns a list of dictionariess containing detailed information for all guests.
 
-        Returned information includes: guest ID, name, slug string and appearance information for all guests.
+        Returned information includes: guest ID, name, slug string and appearances.
 
         :return: List of all guests and their corresponding
             information and appearances. If guests could not be
