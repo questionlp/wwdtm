@@ -3,17 +3,19 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # vim: set noai syntax=python ts=4 sw=4:
-"""Wait Wait Don't Tell Me! Stats Host Data Utility Functions
-"""
+"""Wait Wait Don't Tell Me! Stats Host Data Utility Functions."""
 from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
+
 from wwdtm.validation import valid_int_id
 
 
 class HostUtility:
-    """This class contains supporting functions used to check whether
+    """Host Uility Class.
+
+    This class contains supporting functions used to check whether
     a host ID or slug string exists or to convert an ID to a slug
     string, or vice versa.
 
@@ -38,7 +40,6 @@ class HostUtility:
 
             self.database_connection = database_connection
 
-    @lru_cache(typed=True)
     def convert_id_to_slug(self, host_id: int) -> Optional[str]:
         """Converts a host's ID to the matching host slug string value.
 
@@ -61,7 +62,6 @@ class HostUtility:
 
         return None
 
-    @lru_cache(typed=True)
     def convert_slug_to_id(self, host_slug: str) -> Optional[int]:
         """Converts a host's slug string to the matching host ID value.
 
@@ -88,7 +88,6 @@ class HostUtility:
 
         return None
 
-    @lru_cache(typed=True)
     def id_exists(self, host_id: int) -> bool:
         """Checks to see if a host ID exists.
 
@@ -108,7 +107,6 @@ class HostUtility:
 
         return bool(result)
 
-    @lru_cache(typed=True)
     def slug_exists(self, host_slug: str) -> bool:
         """Checks to see if a host slug string exists.
 

@@ -47,7 +47,9 @@ class Show:
             self.database_connection = database_connection
 
         self.info = ShowInfo(database_connection=self.database_connection)
-        self.info_multiple = ShowInfoMultiple(database_connection=self.database_connection)
+        self.info_multiple = ShowInfoMultiple(
+            database_connection=self.database_connection
+        )
         self.utility = ShowUtility(database_connection=self.database_connection)
 
     def retrieve_all(self) -> List[Dict[str, Any]]:
@@ -83,13 +85,17 @@ class Show:
 
             if row.repeat_show_id:
                 show["original_show_id"] = row.repeat_show_id
-                show["original_show_date"] = self.utility.convert_id_to_date(row.repeat_show_id)
+                show["original_show_date"] = self.utility.convert_id_to_date(
+                    row.repeat_show_id
+                )
 
             shows.append(show)
 
         return shows
 
-    def retrieve_all_details(self, include_decimal_scores: bool = False) -> List[Dict[str, Any]]:
+    def retrieve_all_details(
+        self, include_decimal_scores: bool = False
+    ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
         for all shows.
@@ -105,7 +111,9 @@ class Show:
         if not info:
             return []
 
-        panelists = self.info_multiple.retrieve_panelist_info_all(include_decimal_scores=include_decimal_scores)
+        panelists = self.info_multiple.retrieve_panelist_info_all(
+            include_decimal_scores=include_decimal_scores
+        )
         bluffs = self.info_multiple.retrieve_bluff_info_all()
         guests = self.info_multiple.retrieve_guest_info_all()
 
@@ -264,7 +272,9 @@ class Show:
         except ValueError:
             return {}
 
-        id_ = self.utility.convert_date_to_id(parsed_date_string.year, parsed_date_string.month, parsed_date_string.day)
+        id_ = self.utility.convert_date_to_id(
+            parsed_date_string.year, parsed_date_string.month, parsed_date_string.day
+        )
 
         return self.retrieve_by_id(id_)
 
@@ -304,7 +314,9 @@ class Show:
 
         if result.repeat_show_id:
             info["original_show_id"] = result.repeat_show_id
-            info["original_show_date"] = self.utility.convert_id_to_date(result.repeat_show_id)
+            info["original_show_date"] = self.utility.convert_id_to_date(
+                result.repeat_show_id
+            )
 
         return info
 
@@ -426,9 +438,13 @@ class Show:
         if not id_:
             return {}
 
-        return self.retrieve_details_by_id(id_, include_decimal_scores=include_decimal_scores)
+        return self.retrieve_details_by_id(
+            id_, include_decimal_scores=include_decimal_scores
+        )
 
-    def retrieve_details_by_date_string(self, date_string: str, include_decimal_scores: bool = False) -> Dict[str, Any]:
+    def retrieve_details_by_date_string(
+        self, date_string: str, include_decimal_scores: bool = False
+    ) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
         for the requested show date string.
@@ -445,11 +461,17 @@ class Show:
         except ValueError:
             return {}
 
-        id_ = self.utility.convert_date_to_id(parsed_date_string.year, parsed_date_string.month, parsed_date_string.day)
+        id_ = self.utility.convert_date_to_id(
+            parsed_date_string.year, parsed_date_string.month, parsed_date_string.day
+        )
 
-        return self.retrieve_details_by_id(id_, include_decimal_scores=include_decimal_scores)
+        return self.retrieve_details_by_id(
+            id_, include_decimal_scores=include_decimal_scores
+        )
 
-    def retrieve_details_by_id(self, show_id: int, include_decimal_scores: bool = False) -> Dict[str, Any]:
+    def retrieve_details_by_id(
+        self, show_id: int, include_decimal_scores: bool = False
+    ) -> Dict[str, Any]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information
         for the requested show ID.
@@ -525,13 +547,19 @@ class Show:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
                     info[show]["id"], include_decimal_scores=include_decimal_scores
                 )
-                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(info[show]["id"])
-                info[show]["guests"] = self.info.retrieve_guest_info_by_id(info[show]["id"])
+                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(
+                    info[show]["id"]
+                )
+                info[show]["guests"] = self.info.retrieve_guest_info_by_id(
+                    info[show]["id"]
+                )
                 shows.append(info[show])
 
         return shows
 
-    def retrieve_details_by_year(self, year: int, include_decimal_scores: bool = False) -> List[Dict[str, Any]]:
+    def retrieve_details_by_year(
+        self, year: int, include_decimal_scores: bool = False
+    ) -> List[Dict[str, Any]]:
         """Returns a list of dictionary objects containing show ID,
         show date, host, scorekeeper, panelist and guest information for
         the requested year, sorted by show date.
@@ -573,8 +601,12 @@ class Show:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
                     info[show]["id"], include_decimal_scores=include_decimal_scores
                 )
-                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(info[show]["id"])
-                info[show]["guests"] = self.info.retrieve_guest_info_by_id(info[show]["id"])
+                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(
+                    info[show]["id"]
+                )
+                info[show]["guests"] = self.info.retrieve_guest_info_by_id(
+                    info[show]["id"]
+                )
                 shows.append(info[show])
 
         return shows
@@ -630,8 +662,12 @@ class Show:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
                     info[show]["id"], include_decimal_scores=include_decimal_scores
                 )
-                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(info[show]["id"])
-                info[show]["guests"] = self.info.retrieve_guest_info_by_id(info[show]["id"])
+                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(
+                    info[show]["id"]
+                )
+                info[show]["guests"] = self.info.retrieve_guest_info_by_id(
+                    info[show]["id"]
+                )
                 shows.append(info[show])
 
         return shows

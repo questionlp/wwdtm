@@ -3,12 +3,13 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # vim: set noai syntax=python ts=4 sw=4:
-"""Wait Wait Don't Tell Me! Stats Panelist Appearance Retrieval Functions
+"""Wait Wait Don't Tell Me! Stats Panelist Appearance Retrieval Functions.
 """
 from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
+
 from wwdtm.panelist.utility import PanelistUtility
 from wwdtm.validation import valid_int_id
 
@@ -176,20 +177,26 @@ class PanelistAppearances:
                     "best_of": bool(appearance.best_of),
                     "repeat_show": bool(appearance.repeat_show_id),
                     "lightning_round_start": appearance.start,
-                    "lightning_round_start_decimal": appearance.start_decimal
-                    if "start_decimal" in appearance._fields
-                    else None,
+                    "lightning_round_start_decimal": (
+                        appearance.start_decimal
+                        if "start_decimal" in appearance._fields
+                        else None
+                    ),
                     "lightning_round_correct": appearance.correct,
-                    "lightning_round_correct_decimal": appearance.correct_decimal
-                    if "correct_decimal" in appearance._fields
-                    else None,
+                    "lightning_round_correct_decimal": (
+                        appearance.correct_decimal
+                        if "correct_decimal" in appearance._fields
+                        else None
+                    ),
                     "score": appearance.score,
-                    "score_decimal": appearance.score_decimal
-                    if "score_decimal" in appearance._fields
-                    else None,
-                    "rank": appearance.pnl_rank
-                    if appearance.pnl_rank is not None
-                    else None,
+                    "score_decimal": (
+                        appearance.score_decimal
+                        if "score_decimal" in appearance._fields
+                        else None
+                    ),
+                    "rank": (
+                        appearance.pnl_rank if appearance.pnl_rank is not None else None
+                    ),
                 }
                 appearances.append(info)
 

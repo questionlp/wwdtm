@@ -41,7 +41,9 @@ class Guest:
 
             self.database_connection = database_connection
 
-        self.appearances = GuestAppearances(database_connection=self.database_connection)
+        self.appearances = GuestAppearances(
+            database_connection=self.database_connection
+        )
         self.utility = GuestUtility(database_connection=self.database_connection)
 
     def retrieve_all(self) -> List[Dict[str, Any]]:

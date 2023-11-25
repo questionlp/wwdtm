@@ -36,7 +36,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
-required-version = "23.7.0"
+required-version = "23.10.1"
 target-version = ["py38", "py39", "py310", "py311"]
 
 [tool.pytest.ini_options]

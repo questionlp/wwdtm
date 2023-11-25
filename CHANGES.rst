@@ -14,7 +14,7 @@ Application Changes
 Development Changes
 -------------------
 
-* This release replaces the various linting and formatting tools with Ruff
+* This release replaces various linting tools with Ruff, but keep Black for formatting
 * Changed copyright block in each file to include SPDX identifier
 
 2.4.1

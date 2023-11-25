@@ -240,16 +240,22 @@ class ShowInfoMultiple:
             scorekeeper_info = {
                 "id": show.scorekeeper_id,
                 "name": show.scorekeeper,
-                "slug": show.scorekeeper_slug
-                if show.scorekeeper_slug
-                else slugify(show.scorekeeper),
+                "slug": (
+                    show.scorekeeper_slug
+                    if show.scorekeeper_slug
+                    else slugify(show.scorekeeper)
+                ),
                 "guest": bool(show.scorekeeper_guest),
-                "description": show.scorekeeper_description
-                if show.scorekeeper_description
-                else None,
+                "description": (
+                    show.scorekeeper_description
+                    if show.scorekeeper_description
+                    else None
+                ),
             }
 
-            description = str(show.show_description).strip() if show.show_description else None
+            description = (
+                str(show.show_description).strip() if show.show_description else None
+            )
             notes = str(show.show_notes).strip() if show.show_notes else None
 
             show_info = {
@@ -316,7 +322,9 @@ class ShowInfoMultiple:
             JOIN ww_showdescriptions sd ON sd.showid = s.showid
             JOIN ww_shownotes sn ON sn.showid = s.showid
             WHERE s.showid IN ({ids})
-            ORDER BY s.showdate ASC;""".format(ids=", ".join(str(v) for v in show_ids))
+            ORDER BY s.showdate ASC;""".format(
+            ids=", ".join(str(v) for v in show_ids)
+        )
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -353,16 +361,22 @@ class ShowInfoMultiple:
             scorekeeper_info = {
                 "id": show.scorekeeper_id,
                 "name": show.scorekeeper,
-                "slug": show.scorekeeper_slug
-                if show.scorekeeper_slug
-                else slugify(show.scorekeeper),
+                "slug": (
+                    show.scorekeeper_slug
+                    if show.scorekeeper_slug
+                    else slugify(show.scorekeeper)
+                ),
                 "guest": bool(show.scorekeeper_guest),
-                "description": show.scorekeeper_description
-                if show.scorekeeper_description
-                else None,
+                "description": (
+                    show.scorekeeper_description
+                    if show.scorekeeper_description
+                    else None
+                ),
             }
 
-            description = str(show.show_description).strip() if show.show_description else None
+            description = (
+                str(show.show_description).strip() if show.show_description else None
+            )
             notes = str(show.show_notes).strip() if show.show_notes else None
 
             show_info = {
@@ -458,7 +472,9 @@ class ShowInfoMultiple:
             JOIN ww_shows s ON s.showid = gm.showid
             WHERE gm.showid IN ({ids})
             ORDER BY s.showdate ASC,
-            gm.showguestmapid ASC;""".format(ids=", ".join(str(v) for v in show_ids))
+            gm.showguestmapid ASC;""".format(
+            ids=", ".join(str(v) for v in show_ids)
+        )
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -546,17 +562,23 @@ class ShowInfoMultiple:
                     "name": panelist.name,
                     "slug": panelist.slug if panelist.slug else slugify(panelist.name),
                     "lightning_round_start": panelist.start,
-                    "lightning_round_start_decimal": panelist.start_decimal
-                    if "start_decimal" in panelist._fields
-                    else None,
+                    "lightning_round_start_decimal": (
+                        panelist.start_decimal
+                        if "start_decimal" in panelist._fields
+                        else None
+                    ),
                     "lightning_round_correct": panelist.correct,
-                    "lightning_round_correct_decimal": panelist.correct_decimal
-                    if "correct_decimal" in panelist._fields
-                    else None,
+                    "lightning_round_correct_decimal": (
+                        panelist.correct_decimal
+                        if "correct_decimal" in panelist._fields
+                        else None
+                    ),
                     "score": panelist.score,
-                    "score_decimal": panelist.score_decimal
-                    if "score_decimal" in panelist._fields
-                    else None,
+                    "score_decimal": (
+                        panelist.score_decimal
+                        if "score_decimal" in panelist._fields
+                        else None
+                    ),
                     "rank": panelist.pnl_rank if panelist.pnl_rank else None,
                 }
             )
@@ -596,7 +618,9 @@ class ShowInfoMultiple:
                 JOIN ww_shows s ON s.showid = pm.showid
                 WHERE pm.showid IN ({ids})
                 ORDER by s.showdate ASC, pm.panelistscore DESC,
-                pm.showpnlmapid ASC;""".format(ids=", ".join(str(v) for v in show_ids))
+                pm.showpnlmapid ASC;""".format(
+                ids=", ".join(str(v) for v in show_ids)
+            )
         else:
             query = """
                 SELECT s.showid AS show_id, pm.panelistid AS panelist_id,
@@ -609,7 +633,9 @@ class ShowInfoMultiple:
                 JOIN ww_shows s ON s.showid = pm.showid
                 WHERE pm.showid IN ({ids})
                 ORDER by s.showdate ASC, pm.panelistscore DESC,
-                pm.showpnlmapid ASC;""".format(ids=", ".join(str(v) for v in show_ids))
+                pm.showpnlmapid ASC;""".format(
+                ids=", ".join(str(v) for v in show_ids)
+            )
 
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
@@ -630,19 +656,25 @@ class ShowInfoMultiple:
                     "name": panelist.name,
                     "slug": panelist.slug if panelist.slug else slugify(panelist.name),
                     "lightning_round_start": panelist.start if panelist.start else None,
-                    "lightning_round_start_decimal": panelist.start_decimal
-                    if "start_decimal" in panelist._fields
-                    else None,
-                    "lightning_round_correct": panelist.correct
-                    if panelist.correct
-                    else None,
-                    "lightning_round_correct_decimal": panelist.correct_decimal
-                    if "correct_decimal" in panelist._fields
-                    else None,
+                    "lightning_round_start_decimal": (
+                        panelist.start_decimal
+                        if "start_decimal" in panelist._fields
+                        else None
+                    ),
+                    "lightning_round_correct": (
+                        panelist.correct if panelist.correct else None
+                    ),
+                    "lightning_round_correct_decimal": (
+                        panelist.correct_decimal
+                        if "correct_decimal" in panelist._fields
+                        else None
+                    ),
                     "score": panelist.score,
-                    "score_decimal": panelist.score_decimal
-                    if "score_decimal" in panelist._fields
-                    else None,
+                    "score_decimal": (
+                        panelist.score_decimal
+                        if "score_decimal" in panelist._fields
+                        else None
+                    ),
                     "rank": panelist.pnl_rank if panelist.pnl_rank else None,
                 }
             )

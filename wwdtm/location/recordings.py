@@ -3,18 +3,19 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # vim: set noai syntax=python ts=4 sw=4:
-"""Wait Wait Don't Tell Me! Stats Location Recordings Retrieval Functions
-"""
-from functools import lru_cache
+"""Wait Wait Don't Tell Me! Stats Location Recordings Retrieval Functions."""
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
+
 from wwdtm.location.utility import LocationUtility
 from wwdtm.validation import valid_int_id
 
 
 class LocationRecordings:
-    """This class contains functions that retrieve location recordings
+    """Location Recordings Class.
+
+    This class contains functions that retrieve location recordings
     information from a copy of the Wait Wait Stats database.
 
     :param connect_dict: Dictionary containing database connection
@@ -40,14 +41,12 @@ class LocationRecordings:
 
         self.utility = LocationUtility(database_connection=self.database_connection)
 
-    @lru_cache(typed=True)
     def retrieve_recordings_by_id(self, location_id: int) -> Dict[str, Any]:
-        """Returns a list of dictionary objects containing recording
-        information for the requested location ID.
+        """Returns a list of dictionaries containing recording information.
 
         :param location_id: Location ID
         :return: Dictionary containing recording counts and a list of
-            appearances for a location. If location recordings could
+            recordings for a location. If location recordings could
             not be retrieved, an empty dictionary is returned.
         """
         if not valid_int_id(location_id):
@@ -111,14 +110,12 @@ class LocationRecordings:
                 "shows": [],
             }
 
-    @lru_cache(typed=True)
     def retrieve_recordings_by_slug(self, location_slug: str) -> Dict[str, Any]:
-        """Returns a list of dictionary objects containing recording
-        information for the requested location slug string.
+        """Returns a list of dictionaries containing recording information.
 
         :param location_slug: Location slug string
         :return: Dictionary containing recording counts and a list of
-            appearances for a location. If location recordings could
+            recordings for a location. If location recordings could
             not be retrieved, an empty dictionary is returned.
         """
         id_ = self.utility.convert_slug_to_id(location_slug)

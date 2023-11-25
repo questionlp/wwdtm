@@ -75,7 +75,11 @@ class ShowInfo:
             chosen_bluff_info = {
                 "id": chosen_result.id,
                 "name": chosen_result.name,
-                "slug": chosen_result.slug if chosen_result.slug else slugify(chosen_result.name),
+                "slug": (
+                    chosen_result.slug
+                    if chosen_result.slug
+                    else slugify(chosen_result.name)
+                ),
             }
         else:
             chosen_bluff_info = None
@@ -97,7 +101,11 @@ class ShowInfo:
             correct_bluff_info = {
                 "id": correct_result.id,
                 "name": correct_result.name,
-                "slug": correct_result.slug if correct_result.slug else slugify(correct_result.name),
+                "slug": (
+                    correct_result.slug
+                    if correct_result.slug
+                    else slugify(correct_result.name)
+                ),
             }
         else:
             correct_bluff_info = None
@@ -176,12 +184,22 @@ class ShowInfo:
         scorekeeper_info = {
             "id": result.scorekeeper_id,
             "name": result.scorekeeper,
-            "slug": result.scorekeeper_slug if result.scorekeeper_slug else slugify(result.scorekeeper),
+            "slug": (
+                result.scorekeeper_slug
+                if result.scorekeeper_slug
+                else slugify(result.scorekeeper)
+            ),
             "guest": bool(result.scorekeeper_guest),
-            "description": result.scorekeeper_description if result.scorekeeper_description else None,
+            "description": (
+                result.scorekeeper_description
+                if result.scorekeeper_description
+                else None
+            ),
         }
 
-        description = str(result.show_description).strip() if result.show_description else None
+        description = (
+            str(result.show_description).strip() if result.show_description else None
+        )
         notes = str(result.show_notes).strip() if result.show_notes else None
 
         show_info = {
@@ -252,7 +270,9 @@ class ShowInfo:
 
         return guests
 
-    def retrieve_panelist_info_by_id(self, show_id: int, include_decimal_scores: bool = False) -> List[Dict[str, Any]]:
+    def retrieve_panelist_info_by_id(
+        self, show_id: int, include_decimal_scores: bool = False
+    ) -> List[Dict[str, Any]]:
         """Returns a list of panelist information.
 
         :param show_id: Show ID
@@ -310,13 +330,19 @@ class ShowInfo:
                     "name": row.name,
                     "slug": row.slug if row.slug else slugify(row.name),
                     "lightning_round_start": row.start,
-                    "lightning_round_start_decimal": row.start_decimal if "start_decimal" in row._fields else None,
+                    "lightning_round_start_decimal": (
+                        row.start_decimal if "start_decimal" in row._fields else None
+                    ),
                     "lightning_round_correct": row.correct,
-                    "lightning_round_correct_decimal": row.correct_decimal
-                    if "correct_decimal" in row._fields
-                    else None,
+                    "lightning_round_correct_decimal": (
+                        row.correct_decimal
+                        if "correct_decimal" in row._fields
+                        else None
+                    ),
                     "score": row.score,
-                    "score_decimal": row.score_decimal if "score_decimal" in row._fields else None,
+                    "score_decimal": (
+                        row.score_decimal if "score_decimal" in row._fields else None
+                    ),
                     "rank": row.pnl_rank if row.pnl_rank else None,
                 }
             )

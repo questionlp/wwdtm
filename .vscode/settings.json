@@ -1,14 +1,18 @@
 {
-    "python.autoComplete.extraPaths": ["${workspaceFolder}/wwdtm"],
+    "python.autoComplete.extraPaths": [
+        "${workspaceFolder}/wwdtm"
+    ],
     "python.testing.pytestEnabled": true,
-    "python.analysis.extraPaths": ["${workspaceFolder}/wwdtm"],
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/wwdtm"
+    ],
     "[python]": {
         "diffEditor.ignoreTrimWhitespace": false,
-        "editor.formatOnType": true,
-        "editor.wordBasedSuggestions": false,
-        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
-            "source.organizeImports": true,
+            "source.fixAll": true,
+            "source.organizeImports": false
         },
-    },
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    }
 }

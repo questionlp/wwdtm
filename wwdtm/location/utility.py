@@ -3,18 +3,20 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # vim: set noai syntax=python ts=4 sw=4:
-"""Wait Wait Don't Tell Me! Stats Location Data Utility Functions
-"""
+"""Wait Wait Don't Tell Me! Stats Location Data Utility Functions."""
 from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from mysql.connector import connect
 from slugify import slugify
+
 from wwdtm.validation import valid_int_id
 
 
 class LocationUtility:
-    """This class contains supporting functions used to check whether
+    """Location Utility Class.
+
+    This class contains supporting functions used to check whether
     a Location ID or slug string exists or to convert an ID to a slug
     string, or vice versa.
 
@@ -39,10 +41,8 @@ class LocationUtility:
 
             self.database_connection = database_connection
 
-    @lru_cache(typed=True)
     def convert_id_to_slug(self, location_id: int) -> Optional[str]:
-        """Converts a location's ID to the matching location slug
-        string value.
+        """Converts a location's ID to the matching location slug string value.
 
         :param location_id: Location ID
         :return: Location slug string, if a match is found
@@ -63,10 +63,8 @@ class LocationUtility:
 
         return None
 
-    @lru_cache(typed=True)
     def convert_slug_to_id(self, location_slug: str) -> Optional[int]:
-        """Converts a location's slug string to the matching location
-        ID value.
+        """Converts a location's slug string to the matching location ID value.
 
         :param location_slug: Location slug string
         :return: Location ID, if a match is found
@@ -91,7 +89,6 @@ class LocationUtility:
 
         return None
 
-    @lru_cache(typed=True)
     def id_exists(self, location_id: int) -> bool:
         """Checks to see if a location ID exists.
 
@@ -111,7 +108,6 @@ class LocationUtility:
 
         return bool(result)
 
-    @lru_cache(typed=True)
     def slug_exists(self, location_slug: str) -> bool:
         """Checks to see if a location slug string exists.
 
@@ -145,8 +141,7 @@ class LocationUtility:
         city: Optional[str] = None,
         state: Optional[str] = None,
     ) -> str:
-        """Generates a slug string based on the location's venue name,
-        city, state and/or location ID.
+        """Generates a slug string based on the location's venue name, city, state and/or location ID.
 
         :param location_id: Location ID
         :param venue: Location venue name

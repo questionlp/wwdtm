@@ -3,21 +3,22 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # vim: set noai syntax=python ts=4 sw=4:
-"""Wait Wait Don't Tell Me! Stats Panelist Decimal Scores Retrieval
-Functions
-"""
-from functools import lru_cache
+"""Wait Wait Don't Tell Me! Stats Panelist Decimal Scores Retrieval Functions."""
 from decimal import Decimal
+from functools import lru_cache
 from math import floor
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from mysql.connector import connect
+
 from wwdtm.panelist.utility import PanelistUtility
 from wwdtm.validation import valid_int_id
 
 
 class PanelistDecimalScores:
-    """This class contains functions used to retrieve panelist decimal
+    """Panelist Decimal Scores Class.
+
+    This class contains functions used to retrieve panelist decimal
     scores from a copy of the Wait Wait Stats database.
 
     :param connect_dict: Dictionary containing database connection
@@ -43,10 +44,8 @@ class PanelistDecimalScores:
 
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
-    @lru_cache(typed=True)
     def retrieve_scores_by_id(self, panelist_id: int) -> List[Decimal]:
-        """Returns a list of panelist decimal scores for appearances for
-        the requested panelist ID.
+        """Returns a list of panelist decimal scores for each appearance.
 
         :param panelist_id: Panelist ID
         :return: List containing panelist decimal scores. If panelist
@@ -78,10 +77,8 @@ class PanelistDecimalScores:
 
         return scores
 
-    @lru_cache(typed=True)
     def retrieve_scores_by_slug(self, panelist_slug: str) -> List[Decimal]:
-        """Returns a list of panelist decimal scores for appearances for
-        the requested panelist slug string.
+        """Returns a list of panelist decimal scores for each appearance.
 
         :param panelist_slug: Panelist slug string
         :return: List containing panelist decimal scores. If panelist
@@ -93,12 +90,10 @@ class PanelistDecimalScores:
 
         return self.retrieve_scores_by_id(id_)
 
-    @lru_cache(typed=True)
     def retrieve_scores_grouped_list_by_id(
         self, panelist_id: int
     ) -> Dict[str, List[Union[str, int]]]:
-        """Returns a panelist's decimal score grouping for the requested
-        panelist ID.
+        """Returns a dictionary containing a list of scores and a list of counts for each score.
 
         :param panelist_id: Panelist ID
         :return: Dictionary containing two lists, one containing decimal
@@ -158,12 +153,10 @@ class PanelistDecimalScores:
             "count": list(scores.values()),
         }
 
-    @lru_cache(typed=True)
     def retrieve_scores_grouped_list_by_slug(
         self, panelist_slug: str
     ) -> Dict[str, List[int]]:
-        """Returns a panelist's score grouping for the requested
-        panelist slug string.
+        """Returns a dictionary containing a list of scores and a list of counts for each score.
 
         :param panelist_slug: Panelist slug string
         :return: Dictionary containing two lists, one containing scores
@@ -177,13 +170,10 @@ class PanelistDecimalScores:
 
         return self.retrieve_scores_grouped_list_by_id(id_)
 
-    @lru_cache(typed=True)
     def retrieve_scores_grouped_ordered_pair_by_id(
         self, panelist_id: int
     ) -> List[Tuple[str, int]]:
-        """Returns a list of tuples containing a decimal score and the
-        corresponding number of instances a panelist has scored that
-        amount for the requested panelist ID.
+        """Returns a list of tuples with a score and a count for each score.
 
         :param panelist_id: Panelist ID
         :return: List of tuples containing decimal scores and score
@@ -238,14 +228,11 @@ class PanelistDecimalScores:
 
         return list(scores.items())
 
-    @lru_cache(typed=True)
     def retrieve_scores_grouped_ordered_pair_by_slug(
         self,
         panelist_slug: str,
     ) -> List[Tuple[str, int]]:
-        """Returns a list of tuples containing a decimal score and the
-        corresponding number of instances a panelist has scored that amount
-        for the requested panelist slug string.
+        """Returns a list of tuples with a score and a count for each score.
 
         :param panelist_slug: Panelist slug string
         :return: List of tuples containing decimal scores and score
@@ -258,14 +245,11 @@ class PanelistDecimalScores:
 
         return self.retrieve_scores_grouped_ordered_pair_by_id(id_)
 
-    @lru_cache(typed=True)
     def retrieve_scores_list_by_id(
         self,
         panelist_id: int,
     ) -> Dict[str, List[Union[str, Decimal]]]:
-        """Returns a dictionary containing two lists, one with show
-        dates and one with corresponding decimal scores for the
-        requested panelist ID.
+        """Returns a dictionary containing a list with show dates a list of corresponding scores.
 
         :param panelist_id: Panelist ID
         :return: Dictionary containing a list show dates and a list
@@ -303,14 +287,11 @@ class PanelistDecimalScores:
             "scores": score_list,
         }
 
-    @lru_cache(typed=True)
     def retrieve_scores_list_by_slug(
         self,
         panelist_slug: str,
     ) -> Dict[str, List[Union[str, Decimal]]]:
-        """Returns a dictionary containing two lists, one with show
-        dates and one with corresponding decimal scores for the
-        requested panelist slug string.
+        """Returns a dictionary containing a list with show dates a list of corresponding scores.
 
         :param panelist_slug: Panelist slug string
         :return: Dictionary containing a list show dates and a list
@@ -323,7 +304,6 @@ class PanelistDecimalScores:
 
         return self.retrieve_scores_list_by_id(id_)
 
-    @lru_cache(typed=True)
     def retrieve_scores_ordered_pair_by_id(
         self, panelist_id: int
     ) -> List[Tuple[str, Decimal]]:
