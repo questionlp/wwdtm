@@ -2,6 +2,44 @@
 Changes
 *******
 
+2.5.0
+=====
+
+**Starting with version 2.5.0, support for all versions of Python prior to 3.10 have been deprecated.**
+
+Application Changes
+-------------------
+
+* Remove use of ``dateutil`` from the ``show`` module as it uses methods that have been marked for deprecated
+* Replace ``dateutil.parser.parse`` with ``datetime.datetime.strptime``
+
+Component Changes
+-----------------
+
+* Upgrade MySQL Connector/Python from 8.0.33 to 8.2.0
+* Upgrade numpy from 1.24.4 to 1.26.0
+* Remove python-dateutil from dependencies
+
+Documentation Changes
+---------------------
+
+* Change Python version from 3.10 to 3.12
+* Upgrade Sphinx from 6.1.2 to 7.2.6
+* Upgrade sphinx-autodoc-typehints from 1.23.0 to 1.25.2
+* Upgrade sphinx-toolbox from 3.4.0 to 3.5.0
+* Upgrade Pallets-Sphinx-Themes from 2.0.3 to 2.1.1
+* Sync up dependency versions in ``docs/requirements.txt`` with ``requirements-dev.txt``
+
+Development Changes
+-------------------
+
+* Upgrade pytest from 7.3.1 to 7.4.3
+* Upgrade black from 23.7.0 to 23.11.0
+* Upgrade wheel from 0.41.2 to 0.41.3
+* Upgrade build from 0.10.0 to 1.0.3
+* Remove ``py38`` and ``py39`` from ``tool.black`` in ``pyproject.toml``
+* Bump minimum pytest version from 7.0 to 7.4 in ``pyproject.toml``
+
 2.4.1
 =====
 

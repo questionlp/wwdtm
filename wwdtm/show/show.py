@@ -6,12 +6,11 @@
 """Wait Wait Don't Tell Me! Stats Show Data Retrieval Functions
 """
 import datetime
-import dateutil.parser as date_parser
 from decimal import Decimal
 from functools import lru_cache
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from mysql.connector import connect, DatabaseError
+from mysql.connector import connect
 from wwdtm.show.info import ShowInfo
 from wwdtm.show.info_multiple import ShowInfoMultiple
 from wwdtm.show.utility import ShowUtility
@@ -273,12 +272,12 @@ class Show:
             be returned.
         """
         try:
-            parsed_date_string = date_parser.parse(date_string)
+            parsed_date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
         except ValueError:
             return {}
 
         id_ = self.utility.convert_date_to_id(
-            parsed_date_string.year, parsed_date_string.month, parsed_date_string.day
+            parsed_date.year, parsed_date.month, parsed_date.day
         )
 
         return self.retrieve_by_id(id_)
@@ -372,7 +371,7 @@ class Show:
             an empty list will be returned.
         """
         try:
-            parsed_year = date_parser.parse(f"{year:04d}")
+            parsed_year = datetime.datetime.strptime(f"{year:04d}", "%Y")
         except ValueError:
             return []
 
@@ -404,7 +403,9 @@ class Show:
             retrieved, a list of dictionaries will be returned.
         """
         try:
-            parsed_year_month = date_parser.parse(f"{year:04d}-{month:02d}-01")
+            parsed_year_month = datetime.datetime.strptime(
+                f"{year:04d}-{month:02d}-01", "%Y-%m-%d"
+            )
         except ValueError:
             return []
 
@@ -468,12 +469,12 @@ class Show:
             will be returned.
         """
         try:
-            parsed_date_string = date_parser.parse(date_string)
+            parsed_date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
         except ValueError:
             return {}
 
         id_ = self.utility.convert_date_to_id(
-            parsed_date_string.year, parsed_date_string.month, parsed_date_string.day
+            parsed_date.year, parsed_date.month, parsed_date.day
         )
 
         return self.retrieve_details_by_id(
@@ -586,7 +587,7 @@ class Show:
             empty list will be returned.
         """
         try:
-            parsed_year = date_parser.parse(f"{year:04d}")
+            parsed_year = datetime.datetime.strptime(f"{year:04d}", "%Y")
         except ValueError:
             return []
 
@@ -642,7 +643,9 @@ class Show:
             retrieved, an empty list will be returned.
         """
         try:
-            parsed_year_month = date_parser.parse(f"{year:04d}-{month:02d}-01")
+            parsed_year_month = datetime.datetime.strptime(
+                f"{year:04d}-{month:02d}-01", "%Y-%m-%d"
+            )
         except ValueError:
             return []
 
@@ -697,7 +700,7 @@ class Show:
             could not be retrieved, an empty list will be returned.
         """
         try:
-            _ = date_parser.parse(f"{year:04d}")
+            _ = datetime.datetime.strptime(f"{year:04d}", "%Y")
         except ValueError:
             return []
 
@@ -851,7 +854,7 @@ class Show:
             will be returned.
         """
         try:
-            _ = date_parser.parse(f"{year:04d}")
+            _ = datetime.datetime.strptime(f"{year:04d}", "%Y")
         except ValueError:
             return []
 
