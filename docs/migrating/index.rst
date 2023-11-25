@@ -22,11 +22,11 @@ modules:
 Python Version
 ==============
 
-Python 3.8 or higher is now required for ``wwdtm`` due to dependent packages
-requiring Python 3.8 as the minimum version.
+Starting with version 2.5.0, ``wwdtm`` has deprecated all versions of Python
+prior to 3.10.
 
-Development and testing of ``wwdtm`` version 2 is done using Python 3.8 and
-3.10, with preliminary testing done on 3.11.
+All development and testing of ``wwdtm`` is done using Python 3.10 and
+3.12.
 
 Handling Database Connections
 =============================
