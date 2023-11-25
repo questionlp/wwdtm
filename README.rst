@@ -15,7 +15,7 @@ Requirements
 ============
 
 Starting with version 2.5.0, the minimum supported version of Python has been
-increased from Python 3.8 to 3.10. All versions prior to 3.10 will no longer
+changed from Python 3.8 to 3.10. All versions prior to 3.10 will no longer
 be supported.
 
 Testing for this library has been done using Python 3.10 and 3.12.
