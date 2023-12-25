@@ -6,7 +6,7 @@
 """Testing for object :py:class:`wwdtm.show.ShowInfo`
 """
 import json
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 import pytest
 from wwdtm.show import ShowInfo
@@ -23,7 +23,7 @@ def get_connect_dict() -> Dict[str, Any]:
             return config_dict["database"]
 
 
-@pytest.mark.parametrize("show_id", [1162])
+@pytest.mark.parametrize("show_id", [319, 1162])
 def test_show_info_retrieve_bluff_info_by_id(show_id: int):
     """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_bluff_info_by_id`
 
@@ -34,19 +34,20 @@ def test_show_info_retrieve_bluff_info_by_id(show_id: int):
     bluff = info.retrieve_bluff_info_by_id(show_id)
 
     assert (
-        bluff
-    ), f"Bluff the Listener information for show ID {show_id} could not be retrieved"
-    assert "chosen_panelist" in bluff, (
+        isinstance(bluff, List) and bluff
+    ), f"Bluff the Listener information for the show ID {show_id} could not be retrieved"
+
+    assert "chosen_panelist" in bluff[0], (
         "'chosen_panelist' was not returned with panelist information for show ID "
         f"{show_id}"
     )
-    assert "correct_panelist" in bluff, (
+    assert "correct_panelist" in bluff[0], (
         "'correct_panelist' was not returned with panelist information for show ID "
         f"{show_id}"
     )
 
 
-@pytest.mark.parametrize("show_id", [1162])
+@pytest.mark.parametrize("show_id", [319, 1162])
 def test_show_info_retrieve_core_info_by_id(show_id: int):
     """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_core_info_by_id`
 

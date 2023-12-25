@@ -9,7 +9,7 @@ Retrieval Functions
 from functools import lru_cache
 from typing import Any, Dict, List, Optional
 
-from mysql.connector import connect, DatabaseError
+from mysql.connector import connect
 from slugify import slugify
 from wwdtm.show.utility import ShowUtility
 from wwdtm.location.location import LocationUtility
@@ -44,71 +44,121 @@ class ShowInfo:
 
         self.utility = ShowUtility(database_connection=self.database_connection)
         self.loc_util = LocationUtility(database_connection=self.database_connection)
+        self.panelists = self._retrieve_panelists()
+
+    def _retrieve_panelists(self) -> Dict[int, Dict[str, str]]:
+        """Returns a dictionary of panelist information.
+
+        :return: Dictionary containing panelist ID as the key and
+            panelist name and slug string as a dictionary as a value.
+        """
+        query = """
+            SELECT panelistid, panelist, panelistslug
+            FROM ww_panelists
+            ORDER BY panelistid ASC;
+        """
+        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor.execute(query)
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return {}
+
+        panelists = {}
+        for row in results:
+            panelists[row.panelistid] = {
+                "name": row.panelist,
+                "slug": row.panelistslug,
+            }
+
+        return panelists
 
     @lru_cache(typed=True)
-    def retrieve_bluff_info_by_id(self, show_id: int) -> Dict[str, Any]:
-        """Returns a dictionary containing Bluff the Listener information
-        for the requested show ID.
+    def retrieve_bluff_info_by_id(self, show_id: int) -> List[Dict[str, Any]]:
+        """Returns a list of Bluff the Listener information for the
+        requested show ID.
 
         :param show_id: Show ID
-        :return: Dictionary containing correct and chosen Bluff the
-            Listener information.
+        :return: List containing each of the correct and chosen Bluff
+            the Listener information.
         """
         if not valid_int_id(show_id):
             return {}
 
         query = """
-            SELECT blm.chosenbluffpnlid AS id,
-            p.panelist AS name, p.panelistslug As slug
-            FROM ww_showbluffmap blm
-            JOIN ww_shows s ON s.showid = blm.showid
-            JOIN ww_panelists p ON
-            p.panelistid = blm.chosenbluffpnlid
-            WHERE s.showid = %s;
+            SELECT segment, chosenbluffpnlid AS chosen_id,
+            correctbluffpnlid AS correct_id
+            FROM ww_showbluffmap
+            WHERE showid = %s;
             """
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query, (show_id,))
-        chosen_result = cursor.fetchone()
+        result = cursor.fetchall()
 
-        if chosen_result:
-            chosen_bluff_info = {
-                "id": chosen_result.id,
-                "name": chosen_result.name,
-                "slug": chosen_result.slug
-                if chosen_result.slug
-                else slugify(chosen_result.name),
-            }
-        else:
-            chosen_bluff_info = None
+        if not result:
+            return []
 
-        query = """
-            SELECT blm.correctbluffpnlid AS id,
-            p.panelist AS name, p.panelistslug AS slug
-            FROM ww_showbluffmap blm
-            JOIN ww_shows s ON s.showid = blm.showid
-            JOIN ww_panelists p ON
-            p.panelistid = blm.correctbluffpnlid
-            WHERE s.showid = %s;
-            """
-        cursor.execute(query, (show_id,))
-        correct_result = cursor.fetchone()
-        cursor.close()
+        bluffs = []
+        for row in result:
+            if not row.chosen_id and not row.correct_id:
+                bluffs.append(
+                    {
+                        "segment": row.segment,
+                        "chosen_panelist": {},
+                        "correct_panelist": {},
+                    }
+                )
+            elif row.chosen_id and not row.correct_id:
+                bluffs.append(
+                    {
+                        "segment": row.segment,
+                        "chosen_panelist": {
+                            "id": row.chosen_id,
+                            "name": self.panelists[row.chosen_id]["name"],
+                            "slug": self.panelists[row.chosen_id]["slug"]
+                            if self.panelists[row.chosen_id]["slug"]
+                            else slugify(self.panelists[row.chosen_id]["name"]),
+                        },
+                        "correct_panelist": {},
+                    }
+                )
+            elif row.correct_id and not row.chosen_id:
+                bluffs.append(
+                    {
+                        "segment": row.segment,
+                        "chosen_panelist": {},
+                        "correct_panelist": {
+                            "id": row.correct_id,
+                            "name": self.panelists[row.correct_id]["name"],
+                            "slug": self.panelists[row.correct_id]["slug"]
+                            if self.panelists[row.correct_id]["slug"]
+                            else slugify(self.panelists[row.correct_id]["name"]),
+                        },
+                    }
+                )
+            else:
+                bluffs.append(
+                    {
+                        "segment": row.segment,
+                        "chosen_panelist": {
+                            "id": row.chosen_id,
+                            "name": self.panelists[row.chosen_id]["name"],
+                            "slug": self.panelists[row.chosen_id]["slug"]
+                            if self.panelists[row.chosen_id]["slug"]
+                            else slugify(self.panelists[row.chosen_id]["name"]),
+                        },
+                        "correct_panelist": {
+                            "id": row.correct_id,
+                            "name": self.panelists[row.correct_id]["name"],
+                            "slug": self.panelists[row.correct_id]["slug"]
+                            if self.panelists[row.correct_id]["slug"]
+                            else slugify(self.panelists[row.correct_id]["name"]),
+                        },
+                    }
+                )
 
-        if correct_result:
-            correct_bluff_info = {
-                "id": correct_result.id,
-                "name": correct_result.name,
-                "slug": correct_result.slug
-                if correct_result.slug
-                else slugify(correct_result.name),
-            }
-        else:
-            correct_bluff_info = None
-
-        return {
-            "chosen_panelist": chosen_bluff_info,
-            "correct_panelist": correct_bluff_info,
-        }
+        return bluffs
 
     def retrieve_core_info_by_id(self, show_id: int) -> Dict[str, Any]:
         """Returns a dictionary with core information for the requested

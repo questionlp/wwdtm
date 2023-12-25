@@ -8,7 +8,7 @@ Retrieval Functions for Multiple Shows
 """
 from typing import Any, Dict, List, Optional
 
-from mysql.connector import connect, DatabaseError
+from mysql.connector import connect
 from slugify import slugify
 from wwdtm.show.utility import ShowUtility
 from wwdtm.location.location import LocationUtility
@@ -44,63 +44,118 @@ class ShowInfoMultiple:
 
         self.utility = ShowUtility(database_connection=self.database_connection)
         self.loc_util = LocationUtility(database_connection=self.database_connection)
+        self.panelists = self._retrieve_panelists()
 
-    def retrieve_bluff_info_all(self) -> Dict[int, List[Dict[str, Any]]]:
-        """Returns a dictionary containing Bluff the Listener information
-        for all shows.
+    def _retrieve_panelists(self) -> Dict[int, Dict[str, str]]:
+        """Returns a dictionary of panelist information.
 
-        :return: Dictionary containing correct and chosen Bluff the
-            Listener information.
+        :return: Dictionary containing panelist ID as the key and
+            panelist name and slug string as a dictionary as a value.
         """
         query = """
-            SELECT s.showid AS show_id,
-            blm.chosenbluffpnlid AS panelist_id,
-            p.panelist AS name, p.panelistslug AS slug
-            FROM ww_showbluffmap blm
-            JOIN ww_shows s ON s.showid = blm.showid
-            JOIN ww_panelists p ON
-            p.panelistid = blm.chosenbluffpnlid;
+            SELECT panelistid, panelist, panelistslug
+            FROM ww_panelists
+            ORDER BY panelistid ASC;
+        """
+        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor.execute(query)
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return {}
+
+        panelists = {}
+        for row in results:
+            panelists[row.panelistid] = {
+                "name": row.panelist,
+                "slug": row.panelistslug,
+            }
+
+        return panelists
+
+    def retrieve_bluff_info_all(self) -> Dict[int, List[Dict[str, Any]]]:
+        """Returns a dictionary of Bluff the Listener information for
+        all shows.
+
+        :return: Dictionary containing each of the correct and chosen
+            Bluff the Listener information.
+        """
+
+        query = """
+            SELECT showid, segment, chosenbluffpnlid AS chosen_id,
+            correctbluffpnlid AS correct_id
+            FROM ww_showbluffmap;
             """
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
-        chosen_results = cursor.fetchall()
-
-        query = """
-            SELECT s.showid AS show_id,
-            blm.correctbluffpnlid AS panelist_id,
-            p.panelist AS name, p.panelistslug AS slug
-            FROM ww_showbluffmap blm
-            JOIN ww_shows s ON s.showid = blm.showid
-            JOIN ww_panelists p ON
-            p.panelistid = blm.correctbluffpnlid;
-            """
-        cursor.execute(query)
-        correct_results = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not chosen_results or not correct_results:
+        if not results:
             return {}
 
         bluff_info = {}
-        for show in chosen_results:
-            if show.show_id not in bluff_info:
-                bluff_info[show.show_id] = {}
+        for row in results:
+            if row.showid not in bluff_info:
+                bluff_info[row.showid] = []
 
-            bluff_info[show.show_id]["chosen_panelist"] = {
-                "id": show.panelist_id,
-                "name": show.name,
-                "slug": show.slug if show.slug else slugify(show.name),
-            }
-
-        for show in correct_results:
-            if show.show_id not in bluff_info:
-                bluff_info[show.show_id] = {}
-
-            bluff_info[show.show_id]["correct_panelist"] = {
-                "id": show.panelist_id,
-                "name": show.name,
-                "slug": show.slug if show.slug else slugify(show.name),
-            }
+            if not row.chosen_id and not row.correct_id:
+                bluff_info[row.showid].append(
+                    {
+                        "segment": row.segment,
+                        "chosen_panelist": {},
+                        "correct_panelist": {},
+                    }
+                )
+            elif row.chosen_id and not row.correct_id:
+                bluff_info[row.showid].append(
+                    {
+                        "segment": row.segment,
+                        "chosen_panelist": {
+                            "id": row.chosen_id,
+                            "name": self.panelists[row.chosen_id]["name"],
+                            "slug": self.panelists[row.chosen_id]["slug"]
+                            if self.panelists[row.chosen_id]["slug"]
+                            else slugify(self.panelists[row.chosen_id]["name"]),
+                        },
+                        "correct_panelist": {},
+                    }
+                )
+            elif row.correct_id and not row.chosen_id:
+                bluff_info[row.showid].append(
+                    {
+                        "segment": row.segment,
+                        "chosen_panelist": {},
+                        "correct_panelist": {
+                            "id": row.correct_id,
+                            "name": self.panelists[row.correct_id]["name"],
+                            "slug": self.panelists[row.correct_id]["slug"]
+                            if self.panelists[row.correct_id]["slug"]
+                            else slugify(self.panelists[row.correct_id]["name"]),
+                        },
+                    }
+                )
+            else:
+                bluff_info[row.showid].append(
+                    {
+                        "segment": row.segment,
+                        "chosen_panelist": {
+                            "id": row.chosen_id,
+                            "name": self.panelists[row.chosen_id]["name"],
+                            "slug": self.panelists[row.chosen_id]["slug"]
+                            if self.panelists[row.chosen_id]["slug"]
+                            else slugify(self.panelists[row.chosen_id]["name"]),
+                        },
+                        "correct_panelist": {
+                            "id": row.correct_id,
+                            "name": self.panelists[row.correct_id]["name"],
+                            "slug": self.panelists[row.correct_id]["slug"]
+                            if self.panelists[row.correct_id]["slug"]
+                            else slugify(self.panelists[row.correct_id]["name"]),
+                        },
+                    }
+                )
 
         return bluff_info
 
@@ -119,58 +174,79 @@ class ShowInfoMultiple:
                 return {}
 
         query = """
-            SELECT s.showid AS show_id,
-            blm.chosenbluffpnlid AS panelist_id,
-            p.panelist AS name, p.panelistslug AS slug
-            FROM ww_showbluffmap blm
-            JOIN ww_shows s ON s.showid = blm.showid
-            JOIN ww_panelists p ON
-            p.panelistid = blm.chosenbluffpnlid
-            WHERE s.showid IN ({ids});""".format(
-            ids=", ".join(str(v) for v in show_ids)
-        )
+            SELECT showid, segment, chosenbluffpnlid AS chosen_id,
+            correctbluffpnlid AS correct_id
+            FROM ww_showbluffmap
+            WHERE showid IN ({ids});""".format(ids=", ".join(str(v) for v in show_ids))
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
-        chosen_results = cursor.fetchall()
-
-        query = """
-            SELECT s.showid AS show_id,
-            blm.correctbluffpnlid AS panelist_id,
-            p.panelist AS name, p.panelistslug AS slug
-            FROM ww_showbluffmap blm
-            JOIN ww_shows s ON s.showid = blm.showid
-            JOIN ww_panelists p ON
-            p.panelistid = blm.correctbluffpnlid
-            WHERE s.showid IN ({ids});""".format(
-            ids=", ".join(str(v) for v in show_ids)
-        )
-        cursor.execute(query)
-        correct_results = cursor.fetchall()
+        results = cursor.fetchall()
         cursor.close()
 
-        if not chosen_results or not correct_results:
+        if not results:
             return {}
 
         bluff_info = {}
-        for show in chosen_results:
-            if show.show_id not in bluff_info:
-                bluff_info[show.show_id] = {}
+        for row in results:
+            if row.showid not in bluff_info:
+                bluff_info[row.showid] = []
 
-            bluff_info[show.show_id]["chosen_panelist"] = {
-                "id": show.panelist_id,
-                "name": show.name,
-                "slug": show.slug if show.slug else slugify(show.name),
-            }
-
-        for show in correct_results:
-            if show.show_id not in bluff_info:
-                bluff_info[show.show_id] = {}
-
-            bluff_info[show.show_id]["correct_panelist"] = {
-                "id": show.panelist_id,
-                "name": show.name,
-                "slug": show.slug if show.slug else slugify(show.name),
-            }
+            if not row.chosen_id and not row.correct_id:
+                bluff_info[row.showid].append(
+                    {
+                        "segment": row.segment,
+                        "chosen_panelist": {},
+                        "correct_panelist": {},
+                    }
+                )
+            elif row.chosen_id and not row.correct_id:
+                bluff_info[row.showid].append(
+                    {
+                        "segment": row.segment,
+                        "chosen_panelist": {
+                            "id": row.chosen_id,
+                            "name": self.panelists[row.chosen_id]["name"],
+                            "slug": self.panelists[row.chosen_id]["slug"]
+                            if self.panelists[row.chosen_id]["slug"]
+                            else slugify(self.panelists[row.chosen_id]["name"]),
+                        },
+                        "correct_panelist": {},
+                    }
+                )
+            elif row.correct_id and not row.chosen_id:
+                bluff_info[row.showid].append(
+                    {
+                        "segment": row.segment,
+                        "chosen_panelist": {},
+                        "correct_panelist": {
+                            "id": row.correct_id,
+                            "name": self.panelists[row.correct_id]["name"],
+                            "slug": self.panelists[row.correct_id]["slug"]
+                            if self.panelists[row.correct_id]["slug"]
+                            else slugify(self.panelists[row.correct_id]["name"]),
+                        },
+                    }
+                )
+            else:
+                bluff_info[row.showid].append(
+                    {
+                        "segment": row.segment,
+                        "chosen_panelist": {
+                            "id": row.chosen_id,
+                            "name": self.panelists[row.chosen_id]["name"],
+                            "slug": self.panelists[row.chosen_id]["slug"]
+                            if self.panelists[row.chosen_id]["slug"]
+                            else slugify(self.panelists[row.chosen_id]["name"]),
+                        },
+                        "correct_panelist": {
+                            "id": row.correct_id,
+                            "name": self.panelists[row.correct_id]["name"],
+                            "slug": self.panelists[row.correct_id]["slug"]
+                            if self.panelists[row.correct_id]["slug"]
+                            else slugify(self.panelists[row.correct_id]["name"]),
+                        },
+                    }
+                )
 
         return bluff_info
 
@@ -323,9 +399,7 @@ class ShowInfoMultiple:
             JOIN ww_showdescriptions sd ON sd.showid = s.showid
             JOIN ww_shownotes sn ON sn.showid = s.showid
             WHERE s.showid IN ({ids})
-            ORDER BY s.showdate ASC;""".format(
-            ids=", ".join(str(v) for v in show_ids)
-        )
+            ORDER BY s.showdate ASC;""".format(ids=", ".join(str(v) for v in show_ids))
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -474,9 +548,7 @@ class ShowInfoMultiple:
             JOIN ww_shows s ON s.showid = gm.showid
             WHERE gm.showid IN ({ids})
             ORDER BY s.showdate ASC,
-            gm.showguestmapid ASC;""".format(
-            ids=", ".join(str(v) for v in show_ids)
-        )
+            gm.showguestmapid ASC;""".format(ids=", ".join(str(v) for v in show_ids))
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -614,9 +686,7 @@ class ShowInfoMultiple:
                 JOIN ww_shows s ON s.showid = pm.showid
                 WHERE pm.showid IN ({ids})
                 ORDER by s.showdate ASC, pm.panelistscore DESC,
-                pm.showpnlmapid ASC;""".format(
-                ids=", ".join(str(v) for v in show_ids)
-            )
+                pm.showpnlmapid ASC;""".format(ids=", ".join(str(v) for v in show_ids))
         else:
             query = """
                 SELECT s.showid AS show_id, pm.panelistid AS panelist_id,
@@ -629,9 +699,7 @@ class ShowInfoMultiple:
                 JOIN ww_shows s ON s.showid = pm.showid
                 WHERE pm.showid IN ({ids})
                 ORDER by s.showdate ASC, pm.panelistscore DESC,
-                pm.showpnlmapid ASC;""".format(
-                ids=", ".join(str(v) for v in show_ids)
-            )
+                pm.showpnlmapid ASC;""".format(ids=", ".join(str(v) for v in show_ids))
 
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)

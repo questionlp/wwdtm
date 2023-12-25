@@ -9,7 +9,7 @@ from decimal import Decimal
 from functools import lru_cache
 from typing import Any, Dict, Optional
 
-from mysql.connector import connect, DatabaseError
+from mysql.connector import connect
 import numpy
 from wwdtm.panelist.scores import PanelistScores
 from wwdtm.panelist.decimal_scores import PanelistDecimalScores
