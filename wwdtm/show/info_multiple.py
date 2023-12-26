@@ -83,9 +83,11 @@ class ShowInfoMultiple:
         """
 
         query = """
-            SELECT showid, segment, chosenbluffpnlid AS chosen_id,
-            correctbluffpnlid AS correct_id
-            FROM ww_showbluffmap;
+            SELECT blm.showid, blm.segment, blm.chosenbluffpnlid AS chosen_id,
+            blm.correctbluffpnlid AS correct_id
+            FROM ww_showbluffmap blm
+            JOIN ww_shows s on s.showid = blm.showid
+            ORDER BY s.showid ASC, blm.segment ASC;
             """
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
@@ -177,7 +179,8 @@ class ShowInfoMultiple:
             SELECT showid, segment, chosenbluffpnlid AS chosen_id,
             correctbluffpnlid AS correct_id
             FROM ww_showbluffmap
-            WHERE showid IN ({ids});""".format(ids=", ".join(str(v) for v in show_ids))
+            WHERE showid IN ({ids})
+            ORDER BY showid ASC, segment ASC;""".format(ids=", ".join(str(v) for v in show_ids))
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         results = cursor.fetchall()

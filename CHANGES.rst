@@ -2,6 +2,15 @@
 Changes
 *******
 
+2.6.1
+=====
+
+Application Changes
+-------------------
+
+* Change ordering of bluff information to be sorted by segment number for individual shows, or
+  sorted by either show ID or show date when retrieving information for multiple shows.
+
 2.6.0
 =====
 

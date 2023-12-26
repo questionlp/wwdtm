@@ -90,7 +90,8 @@ class ShowInfo:
             SELECT segment, chosenbluffpnlid AS chosen_id,
             correctbluffpnlid AS correct_id
             FROM ww_showbluffmap
-            WHERE showid = %s;
+            WHERE showid = %s
+            ORDER BY segment ASC;
             """
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query, (show_id,))
