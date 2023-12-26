@@ -8,7 +8,7 @@
 from functools import lru_cache
 from typing import Any, Dict, List, Optional
 
-from mysql.connector import connect, DatabaseError
+from mysql.connector import connect
 from slugify import slugify
 from wwdtm.panelist.appearances import PanelistAppearances
 from wwdtm.panelist.statistics import PanelistStatistics

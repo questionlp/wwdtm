@@ -2,15 +2,29 @@
 Changes
 *******
 
-2.5.0
+2.6.0
 =====
-
-**Starting with version 2.5.0, support for all versions of Python prior to 3.10 have been deprecated.**
 
 Application Changes
 -------------------
 
-* Remove use of ``dateutil`` from the ``show`` module as it uses methods that have been marked for deprecated
+* Starting with version 2.6.0 of this library, the minimum required version of the Wait Wait
+  Stats Database is 4.4.
+* Add support for shows that contain multiple Bluff the Listener-like segments by returning Bluff
+  information as a list of dictionaries. Each dictionary contains a segment number and both the
+  chosen and correct panelist information.
+
+2.5.0
+=====
+
+**Starting with version 2.5.0, support for all versions of Python prior to 3.10 have been
+deprecated.**
+
+Application Changes
+-------------------
+
+* Remove use of ``dateutil`` from the ``show`` module as it uses methods that have been marked as
+  deprecated
 * Replace ``dateutil.parser.parse`` with ``datetime.datetime.strptime``
 
 Component Changes
@@ -46,7 +60,8 @@ Development Changes
 Application Changes
 -------------------
 
-* Correct the value set for show ``bluff`` value in ``Show.retrieve_all_details``, which should return an empty dictionary and not an empty list when no Bluff the Listener data is available
+* Correct the value set for show ``bluff`` value in ``Show.retrieve_all_details``, which should
+  return an empty dictionary and not an empty list when no Bluff the Listener data is available
 
 Component Changes
 -----------------
@@ -61,14 +76,17 @@ Application Changes
 -------------------
 
 * Remove unnecessary checks for existence of the panelist decimal score columns
-* This change means that this library only supports version 4.3 of the Wait Wait Stats Database when ``include_decimal_scores`` or ``use_decimal_scores`` parameters are set to ``True``.
+* This change means that this library only supports version 4.3 of the Wait Wait Stats Database
+  when ``include_decimal_scores`` or ``use_decimal_scores`` parameters are set to ``True``.
   Usage with older versions of the database will result in errors.
 
 Development Changes
 -------------------
 
-* Re-work ``panelist`` and ``show`` tests to remove separate tests for decimal scores and use ``@pytest.mark.parameterize`` to test including or using decimal scores or not
-* Update documentation to provide details for ``include_decimal_scores`` and ``use_decimal_scores`` testing parameters
+* Re-work ``panelist`` and ``show`` tests to remove separate tests for decimal scores and use
+  ``@pytest.mark.parameterize`` to test including or using decimal scores or not
+* Update documentation to provide details for ``include_decimal_scores`` and ``use_decimal_scores``
+  testing parameters
 
 2.3.0
 =====
@@ -84,10 +102,12 @@ Application Changes
 Application Changes
 -------------------
 
-* Adding support for panelist decimal scores in ``panelist`` and ``show`` modules and defaulting existing methods to not use decimal scores for backwards compatibility. View docs for more information.
+* Adding support for panelist decimal scores in ``panelist`` and ``show`` modules and defaulting
+  existing methods to not use decimal scores for backwards compatibility. View docs for more information.
 * Add ``encoding="utf-8"`` to every instance of ``with open()``
 * Re-work SQL query strings to use triple-quotes rather than multiple strings wrapped in parentheses
-* Changed rounding of decimals or floats that return values with 4 places after the decimal point to 5 places
+* Changed rounding of decimals or floats that return values with 4 places after the decimal point
+  to 5 places
 
 Component Changes
 -----------------

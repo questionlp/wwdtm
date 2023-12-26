@@ -23,33 +23,30 @@ def get_connect_dict() -> Dict[str, Any]:
             return config_dict["database"]
 
 
-@pytest.mark.parametrize("show_id", [1083, 1162])
+@pytest.mark.parametrize("show_id", [319, 1083, 1162])
 def test_show_info_retrieve_bluff_info_all(show_id: int):
-    """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_bluff_info_all`
-
-    :param show_id: Show ID to test retrieving show Bluff the Listener
-        information from all shows retrieved
-    """
+    """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_bluff_info_all`"""
     info = ShowInfoMultiple(connect_dict=get_connect_dict())
     bluffs = info.retrieve_bluff_info_all()
 
-    assert bluffs, "Bluff the Listener information for all shows could not be retrieved"
-    assert (
-        show_id in bluffs
+    assert isinstance(
+        bluffs, Dict
+    ), "Bluff the Listener information for all shows could not be retrieved"
+
+    assert show_id in bluffs and isinstance(
+        bluffs[show_id], List
     ), f"Bluff the Listener information was not returned for show ID {show_id}"
 
-    bluff = bluffs[show_id]
-    assert "chosen_panelist" in bluff, (
-        "'chosen_panelist' was not returned with "
-        f"panelist information for show ID {show_id}"
-    )
-    assert "correct_panelist" in bluff, (
-        "'correct_panelist' was not returned with "
-        f"panelist information for show ID {show_id}"
-    )
+    assert (
+        "chosen_panelist" in bluffs[show_id][0]
+    ), f"'chosen_panelist' was not returned with panelist information for show ID {show_id}"
+
+    assert (
+        "correct_panelist" in bluffs[show_id][0]
+    ), f"'correct_panelist' was not returned with panelist information for show ID {show_id}"
 
 
-@pytest.mark.parametrize("show_ids", [[1083, 1162]])
+@pytest.mark.parametrize("show_ids", [[319, 1083, 1162]])
 def test_show_info_retrieve_bluff_info_by_ids(show_ids: List[int]):
     """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_bluff_info_by_ids`
 
@@ -65,14 +62,16 @@ def test_show_info_retrieve_bluff_info_by_ids(show_ids: List[int]):
     )
 
     for show_id in show_ids:
-        assert show_id in bluffs, (
+        assert show_id in bluffs and isinstance(bluffs[show_id], List), (
             "Bluff the Listener information was not " f"returned for show ID {show_id}"
         )
-        assert "chosen_panelist" in bluffs[show_id], (
+
+        assert "chosen_panelist" in bluffs[show_id][0], (
             "'chosen_panelist' was not returned with panelist information for show ID "
             f"{show_id}"
         )
-        assert "correct_panelist" in bluffs[show_id], (
+
+        assert "correct_panelist" in bluffs[show_id][0], (
             "'correct_panelist' was not returned with panelist information for show "
             f"ID {show_id}"
         )
