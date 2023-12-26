@@ -121,9 +121,9 @@ class Show:
                 info[show]["panelists"] = []
 
             if info[show]["id"] in bluffs:
-                info[show]["bluff"] = bluffs[info[show]["id"]]
+                info[show]["bluffs"] = bluffs[info[show]["id"]]
             else:
-                info[show]["bluff"] = {}
+                info[show]["bluffs"] = {}
 
             if info[show]["id"] in guests:
                 info[show]["guests"] = guests[info[show]["id"]]
@@ -506,7 +506,7 @@ class Show:
         info["panelists"] = self.info.retrieve_panelist_info_by_id(
             show_id, include_decimal_scores=include_decimal_scores
         )
-        info["bluff"] = self.info.retrieve_bluff_info_by_id(show_id)
+        info["bluffs"] = self.info.retrieve_bluff_info_by_id(show_id)
         info["guests"] = self.info.retrieve_guest_info_by_id(show_id)
 
         return info
@@ -561,7 +561,7 @@ class Show:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
                     info[show]["id"], include_decimal_scores=include_decimal_scores
                 )
-                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(
+                info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(
                     info[show]["id"]
                 )
                 info[show]["guests"] = self.info.retrieve_guest_info_by_id(
@@ -616,7 +616,7 @@ class Show:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
                     info[show]["id"], include_decimal_scores=include_decimal_scores
                 )
-                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(
+                info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(
                     info[show]["id"]
                 )
                 info[show]["guests"] = self.info.retrieve_guest_info_by_id(
@@ -680,7 +680,7 @@ class Show:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
                     info[show]["id"], include_decimal_scores=include_decimal_scores
                 )
-                info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(
+                info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(
                     info[show]["id"]
                 )
                 info[show]["guests"] = self.info.retrieve_guest_info_by_id(
@@ -833,7 +833,7 @@ class Show:
             info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
                 show, include_decimal_scores=include_decimal_scores
             )
-            info[show]["bluff"] = self.info.retrieve_bluff_info_by_id(show)
+            info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(show)
             info[show]["guests"] = self.info.retrieve_guest_info_by_id(show)
             shows.append(info[show])
 
