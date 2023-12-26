@@ -104,8 +104,8 @@ class ShowInfoMultiple:
                 bluff_info[row.showid].append(
                     {
                         "segment": row.segment,
-                        "chosen_panelist": {},
-                        "correct_panelist": {},
+                        "chosen_panelist": None,
+                        "correct_panelist": None,
                     }
                 )
             elif row.chosen_id and not row.correct_id:
@@ -119,14 +119,14 @@ class ShowInfoMultiple:
                             if self.panelists[row.chosen_id]["slug"]
                             else slugify(self.panelists[row.chosen_id]["name"]),
                         },
-                        "correct_panelist": {},
+                        "correct_panelist": None,
                     }
                 )
             elif row.correct_id and not row.chosen_id:
                 bluff_info[row.showid].append(
                     {
                         "segment": row.segment,
-                        "chosen_panelist": {},
+                        "chosen_panelist": None,
                         "correct_panelist": {
                             "id": row.correct_id,
                             "name": self.panelists[row.correct_id]["name"],
@@ -195,8 +195,8 @@ class ShowInfoMultiple:
                 bluff_info[row.showid].append(
                     {
                         "segment": row.segment,
-                        "chosen_panelist": {},
-                        "correct_panelist": {},
+                        "chosen_panelist": None,
+                        "correct_panelist": None,
                     }
                 )
             elif row.chosen_id and not row.correct_id:
@@ -210,14 +210,14 @@ class ShowInfoMultiple:
                             if self.panelists[row.chosen_id]["slug"]
                             else slugify(self.panelists[row.chosen_id]["name"]),
                         },
-                        "correct_panelist": {},
+                        "correct_panelist": None,
                     }
                 )
             elif row.correct_id and not row.chosen_id:
                 bluff_info[row.showid].append(
                     {
                         "segment": row.segment,
-                        "chosen_panelist": {},
+                        "chosen_panelist": None,
                         "correct_panelist": {
                             "id": row.correct_id,
                             "name": self.panelists[row.correct_id]["name"],
