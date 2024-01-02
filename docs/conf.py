@@ -1,28 +1,26 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-import os
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
 import sys
+from pathlib import Path
 
-from pallets_sphinx_themes import ProjectLink  # type: ignore
+from pallets_sphinx_themes import ProjectLink  # type: ignore[report-missing-imports]
 
-sys.path.insert(0, os.path.abspath("../"))
+current_path = Path.cwd()
+sys.path.insert(0, str(current_path.parent))
 
 project = "wwdtm"
-copyright = "2021-2023 Linh Pham"
+copyright = "2018-2024 Linh Pham"
 author = "Linh Pham"
 
 extensions = [
     "pallets_sphinx_themes",
-    "sphinx.ext.autodoc",
-    "sphinx.ext.intersphinx",
-    "sphinx.ext.coverage",
     "sphinx.ext.napoleon",
     "sphinx_copybutton",
-    "sphinx_toolbox.more_autodoc.typehints",
-    "sphinx_autodoc_typehints",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
 ]
 
 templates_path = [
@@ -79,4 +77,4 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
 }
 
-always_document_param_types = True
+autodoc_typehints = "description"
