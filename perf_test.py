@@ -1,13 +1,13 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2022 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Performance testing script for the core modules for wwdtm"""
-
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Deprecated: Performance testing script for the core modules for wwdtm."""
 import json
 import time
-from typing import Any, Dict
+from pathlib import Path
+from typing import Any
 
 from wwdtm.guest import Guest
 from wwdtm.host import Host
@@ -17,22 +17,21 @@ from wwdtm.scorekeeper import Scorekeeper
 from wwdtm.show import Show
 
 
-def get_connect_dict() -> Dict[str, Any]:
-    """Read in database connection settings and return values as a
-    dictionary.
+def get_connect_dict() -> dict[str, Any]:
+    """Return database connection settings as a dictionary.
 
     :return: A dictionary containing database connection settings
         for use by mysql.connector
-    :rtype: Dict[str, Any]
     """
-    with open("config.json", "r") as config_file:
+    file_path = Path.cwd() / "config.json"
+    with file_path.open(mode="r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
 
 
-def perf_test_guest(connect_dict: Dict[str, Any]) -> float:
-    """Run performance test for the wwdtm.guest module
+def perf_test_guest(connect_dict: dict[str, Any]) -> float:
+    """Run performance test for the wwdtm.guest module.
 
     :param connect_dict: A dictionary containing database connection
         settings for use by mysql.connector
@@ -75,8 +74,8 @@ def perf_test_guest(connect_dict: Dict[str, Any]) -> float:
     return round(end_time - start_time, 5)
 
 
-def perf_test_host(connect_dict: Dict[str, Any]) -> float:
-    """Run performance test for the wwdtm.host module
+def perf_test_host(connect_dict: dict[str, Any]) -> float:
+    """Run performance test for the wwdtm.host module.
 
     :param connect_dict: A dictionary containing database connection
         settings for use by mysql.connector
@@ -119,8 +118,8 @@ def perf_test_host(connect_dict: Dict[str, Any]) -> float:
     return round(end_time - start_time, 5)
 
 
-def perf_test_location(connect_dict: Dict[str, Any]) -> float:
-    """Run performance test for the wwdtm.location module
+def perf_test_location(connect_dict: dict[str, Any]) -> float:
+    """Run performance test for the wwdtm.location module.
 
     :param connect_dict: A dictionary containing database connection
         settings for use by mysql.connector
@@ -167,8 +166,8 @@ def perf_test_location(connect_dict: Dict[str, Any]) -> float:
     return round(end_time - start_time, 5)
 
 
-def perf_test_panelist(connect_dict: Dict[str, Any]) -> float:
-    """Run performance test for the wwdtm.panelist module
+def perf_test_panelist(connect_dict: dict[str, Any]) -> float:
+    """Run performance test for the wwdtm.panelist module.
 
     :param connect_dict: A dictionary containing database connection
         settings for use by mysql.connector
@@ -223,8 +222,8 @@ def perf_test_panelist(connect_dict: Dict[str, Any]) -> float:
     return round(end_time - start_time, 5)
 
 
-def perf_test_scorekeeper(connect_dict: Dict[str, Any]) -> float:
-    """Run performance test for the wwdtm.scorekeeper module
+def perf_test_scorekeeper(connect_dict: dict[str, Any]) -> float:
+    """Run performance test for the wwdtm.scorekeeper module.
 
     :param connect_dict: A dictionary containing database connection
         settings for use by mysql.connector
@@ -267,8 +266,8 @@ def perf_test_scorekeeper(connect_dict: Dict[str, Any]) -> float:
     return round(end_time - start_time, 5)
 
 
-def perf_test_show(connect_dict: Dict[str, Any]) -> float:
-    """Run performance test for the wwdtm.show module
+def perf_test_show(connect_dict: dict[str, Any]) -> float:
+    """Run performance test for the wwdtm.show module.
 
     :param connect_dict: A dictionary containing database connection
         settings for use by mysql.connector
@@ -348,7 +347,7 @@ def perf_test_show(connect_dict: Dict[str, Any]) -> float:
 
 
 def main():
-    """Runs performance testing against each of the wwdtm modules"""
+    """Runs performance testing against each of the wwdtm modules."""
     # Load configuration and set up database connection
     config = get_connect_dict()
 
