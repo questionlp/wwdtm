@@ -1,12 +1,17 @@
 .. module:: wwdtm.scorekeeper
 
-***********
-scorekeeper
-***********
+*******************
+Module: scorekeeper
+*******************
 
 This module provides objects used to retrieve scorekeepers, scorekeeper
 information and scorekeeper details from a copy of the Wait Wait Don't Tell Me!
 Stats database.
+
+.. contents:: Contents
+    :depth: 1
+    :local:
+    :backlinks: none
 
 Scorekeeper
 ===========

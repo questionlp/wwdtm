@@ -12,7 +12,7 @@ current_path = Path.cwd()
 sys.path.insert(0, str(current_path.parent))
 
 project = "wwdtm"
-copyright = "2018-2024 Linh Pham"
+copyright = "2018-2024 Linh Pham. All Rights Reserved"
 author = "Linh Pham"
 
 extensions = [
@@ -78,3 +78,4 @@ intersphinx_mapping = {
 }
 
 autodoc_typehints = "description"
+python_display_short_literal_types = True

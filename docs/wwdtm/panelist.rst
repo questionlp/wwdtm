@@ -1,12 +1,17 @@
 .. module:: wwdtm.panelist
 
-********
-panelist
-********
+****************
+Module: panelist
+****************
 
 This module provides objects used to retrieve panelists, panelist information
 and panelist details from a copy of the Wait Wait Don't Tell Me! Stats
 database.
+
+.. contents:: Contents
+    :depth: 1
+    :local:
+    :backlinks: none
 
 Panelist
 ========
