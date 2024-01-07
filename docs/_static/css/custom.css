@@ -22,6 +22,13 @@
         font-size: 1rem;
     }
 
+    nav#contents {
+        margin-left: 1em;
+        padding-bottom: 1em;
+        padding-left: 1em;
+        width: 90%;
+    }
+
     p.caption, .caption-text {
         font-weight: bold;
     }
