@@ -1,33 +1,35 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Location Data Retrieval Functions
-"""
-from functools import lru_cache
-from typing import Any, Dict, List, Optional
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Location Data Retrieval Functions."""
+from typing import Any
 
 from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
+
 from wwdtm.location.recordings import LocationRecordings
 from wwdtm.location.utility import LocationUtility
 from wwdtm.validation import valid_int_id
 
 
 class Location:
-    """This class contains functions used to retrieve location data
-    from a copy of the Wait Wait Stats database.
+    """Location information retrieval class.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    Contains methods used to retrieve location IDs, venue names and
+    locations, including city and state, and recording dates.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -44,15 +46,13 @@ class Location:
         )
         self.utility = LocationUtility(database_connection=self.database_connection)
 
-    def retrieve_all(self, sort_by_venue: bool = False) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing location ID,
-        city, state, venue and slug string for all locations.
+    def retrieve_all(self, sort_by_venue: bool = False) -> list[dict[str, int | str]]:
+        """Retrieves location information for all locations.
 
-        :param sort_by_venue: Sets whether to sort by venue first, or
-            by state and city first
-        :return: List of all locations and their corresponding
-            information. If locations could not be retrieved, an empty
-            list is returned.
+        :param sort_by_venue: A boolean to determine if the returned
+            list is sorted by venue first or by state and city first
+        :return: A list of dictionaries containing location ID, venue
+            name, city, state and slug string
         """
         query = """
             SELECT locationid AS id, city, state, venue,
@@ -94,16 +94,13 @@ class Location:
 
         return locations
 
-    def retrieve_all_details(self, sort_by_venue: bool = False) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing location ID,
-        city, state, venue, slug string and recording information for
-        all locations.
+    def retrieve_all_details(self, sort_by_venue: bool = False) -> list[dict[str, Any]]:
+        """Retrieves location information and recordings for all locations.
 
-        :param sort_by_venue: Sets whether to sort by venue first, or
-            by state and city first
-        :return: List of all locations and their corresponding
-            information and recordings. If locations could not be
-            retrieved, an empty list is returned.
+        :param sort_by_venue: A boolean to determine if the returned
+            list is sorted by venue first or by state and city first
+        :return: A list of dictionaries containing location ID, venue
+            name, city, state, slug string and a list of recordings
         """
         query = """
             SELECT locationid AS id, city, state, venue,
@@ -145,13 +142,12 @@ class Location:
 
         return locations
 
-    def retrieve_all_ids(self, sort_by_venue: bool = False) -> List[int]:
-        """Returns a list of all locations IDs from the database.
+    def retrieve_all_ids(self, sort_by_venue: bool = False) -> list[int]:
+        """Retrieves all location IDs.
 
-        :param sort_by_venue: Sets whether to sort by venue first, or
-            by state and city first
-        :return: List of all location IDs. If location IDs could not be
-            retrieved, an empty list is returned.
+        :param sort_by_venue: A boolean to determine if the returned
+            list is sorted by venue first or by state and city first
+        :return: A list of location IDs as integers
         """
         query = "SELECT locationid FROM ww_locations "
         if sort_by_venue:
@@ -169,14 +165,12 @@ class Location:
 
         return [v[0] for v in results]
 
-    def retrieve_all_slugs(self, sort_by_venue: bool = False) -> List[str]:
-        """Returns a list of all location slug strings from the
-        database.
+    def retrieve_all_slugs(self, sort_by_venue: bool = False) -> list[str]:
+        """Retrieves all location slug strings.
 
-        :param sort_by_venue: Sets whether to sort by venue first, or
-            by state and city first
-        :return: List of all location slug strings. If location slug
-            strings could not be retrieved, an empty list is returned.
+        :param sort_by_venue: A boolean to determine if the returned
+            list is sorted by venue first or by state and city first
+        :return: A list of location slug strings
         """
         query = "SELECT locationslug FROM ww_locations "
         if sort_by_venue:
@@ -194,15 +188,12 @@ class Location:
 
         return [v[0] for v in results]
 
-    @lru_cache(typed=True)
-    def retrieve_by_id(self, location_id: int) -> Dict[str, Any]:
-        """Returns a dictionary object containing location ID, venue,
-        city, state and slug string for the requested location ID.
+    def retrieve_by_id(self, location_id: int) -> dict[str, int | str]:
+        """Retrieves location information.
 
         :param location_id: Location ID
-        :return: Dictionary containing location information. If
-            location information could not be retrieved, an empty
-            dictionary is returned.
+        :return: A dictionary containing location ID, venue, city, state
+            and slug string
         """
         if not valid_int_id(location_id):
             return {}
@@ -237,15 +228,12 @@ class Location:
             ),
         }
 
-    @lru_cache(typed=True)
-    def retrieve_by_slug(self, location_slug: str) -> Dict[str, Any]:
-        """Returns a dictionary object containing location ID, venue,
-        city, state and slug string for the requested location ID.
+    def retrieve_by_slug(self, location_slug: str) -> dict[str, int | str]:
+        """Retrieves location information.
 
         :param location_slug: Location slug string
-        :return: Dictionary containing location information. If
-            location information could not be retrieved, an empty
-            dictionary is returned.
+        :return: A dictionary containing location ID, venue, city, state
+            and slug string
         """
         try:
             slug = location_slug.strip()
@@ -260,16 +248,12 @@ class Location:
 
         return self.retrieve_by_id(id_)
 
-    @lru_cache(typed=True)
-    def retrieve_details_by_id(self, location_id: int) -> Dict[str, Any]:
-        """Returns a dictionary object containing location ID, venue,
-        city, state, slug string and a list of recordings for the
-        requested location ID.
+    def retrieve_details_by_id(self, location_id: int) -> dict[str, Any]:
+        """Retrieves location information and recordings.
 
         :param location_id: Location ID
-        :return: Dictionary containing location information and their
-            recordings. If location information could not be retrieved,
-            an empty dictionary is returned.
+        :return: A dictionary containing location ID, venue name, city,
+            state, slug string and a list of recordings
         """
         if not valid_int_id(location_id):
             return {}
@@ -282,16 +266,12 @@ class Location:
 
         return info
 
-    @lru_cache(typed=True)
-    def retrieve_details_by_slug(self, location_slug: str) -> Dict[str, Any]:
-        """Returns a dictionary object containing location ID, venue,
-        city, state, slug string and a list of recordings for the
-        requested location slug string.
+    def retrieve_details_by_slug(self, location_slug: str) -> dict[str, Any]:
+        """Retrieves location information and recordings.
 
         :param location_slug: Location slug string
-        :return: Dictionary containing location information and their
-            recordings. If location information could not be retrieved,
-            an empty dictionary is returned.
+        :return: A dictionary containing location ID, venue name, city,
+            state, slug string and a list of recordings
         """
         try:
             slug = location_slug.strip()

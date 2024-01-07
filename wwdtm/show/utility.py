@@ -1,33 +1,34 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Show Data Utility Functions
-"""
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Show Data Utility Functions."""
 import datetime
-from functools import lru_cache
-from typing import Any, Dict, Optional
+from typing import Any
 
 from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
+
 from wwdtm.validation import valid_int_id
 
 
 class ShowUtility:
-    """This class contains supporting functions used to check whether
-    a show ID or show date exists or to convert between show ID, and
-    show dates.
+    """Show information and utility class.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    Contains methods to convert between show ID and date, and to check
+    if show IDs and dates exist.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -39,14 +40,14 @@ class ShowUtility:
 
             self.database_connection = database_connection
 
-    @lru_cache(typed=True)
-    def convert_date_to_id(self, year: int, month: int, day: int) -> Optional[int]:
-        """Converts a show date to the matching show ID value.
+    def convert_date_to_id(self, year: int, month: int, day: int) -> int | None:
+        """Converts a show date to the corresponding show ID.
 
         :param year: Year portion of a show date
         :param month: Month portion of a show date
         :param day: Day portion of a show date
-        :return: Show ID, if a match is found
+        :return: Show ID if a corresponding value is found. Otherwise,
+            ``None`` is returned
         """
         try:
             show_date = datetime.datetime(year, month, day)
@@ -66,12 +67,12 @@ class ShowUtility:
 
         return None
 
-    @lru_cache(typed=True)
-    def convert_id_to_date(self, show_id: int) -> Optional[str]:
-        """Converts a show's ID to the matching show date.
+    def convert_id_to_date(self, show_id: int) -> str | None:
+        """Converts a show ID to the corresponding show date.
 
         :param show_id: Show ID
-        :return: Show date, if a match is found
+        :return: Show date if a corresponding value is found. Otherwise,
+            ``None`` is returned
         """
         if not valid_int_id(show_id):
             return None
@@ -89,14 +90,13 @@ class ShowUtility:
 
         return None
 
-    @lru_cache(typed=True)
     def date_exists(self, year: int, month: int, day: int) -> bool:
-        """Checks to see if a show date exists.
+        """Validates if a show date exists.
 
         :param year: Year portion of a show date
         :param month: Month portion of a show date
         :param day: Day portion of a show date
-        :return: True or False, based on whether the show date exists
+        :return: ``True`` if the show date exists, otherwise ``False``
         """
         try:
             show_date = datetime.datetime(year, month, day)
@@ -113,12 +113,11 @@ class ShowUtility:
 
         return bool(result)
 
-    @lru_cache(typed=True)
     def id_exists(self, show_id: int) -> bool:
-        """Checks to see if a show ID exists.
+        """Validates if a show ID exists.
 
         :param show_id: Show ID
-        :return: True or False, based on whether the show ID exists
+        :return: ``True`` if the show ID exists, otherwise ``False``
         """
         if not valid_int_id(show_id):
             return False

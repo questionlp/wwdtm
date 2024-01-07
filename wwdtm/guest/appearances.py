@@ -1,32 +1,34 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Guest Appearance Retrieval Functions
-"""
-from functools import lru_cache
-from typing import Any, Dict, Optional
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Guest Appearance Retrieval Functions."""
+from typing import Any
 
 from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
+
 from wwdtm.guest.utility import GuestUtility
 from wwdtm.validation import valid_int_id
 
 
 class GuestAppearances:
-    """This class contains functions that retrieve guest appearance
-    information from a copy of the Wait Wait Stats database.
+    """Guest appearance information retrieval class.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    Contains methods used to retrieve Not My Job guest appearance
+    information, scores and scoring exceptions.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -40,15 +42,13 @@ class GuestAppearances:
 
         self.utility = GuestUtility(database_connection=self.database_connection)
 
-    @lru_cache(typed=True)
-    def retrieve_appearances_by_id(self, guest_id: int) -> Dict[str, Any]:
-        """Returns a list of dictionary objects containing appearance
-        information for the requested guest ID.
+    def retrieve_appearances_by_id(self, guest_id: int) -> dict[str, Any]:
+        """Retrieves guest appearance information.
 
         :param guest_id: Guest ID
-        :return: Dictionary containing appearance counts and list of
-            appearances for a guest. If guest appearances could not be
-            retrieved, an empty dictionary is returned.
+        :return: A dictionary containing guest appearances with
+            corresponding show dates, Best Of or Repeat show flags,
+            score and score exception flag
         """
         if not valid_int_id(guest_id):
             return {}
@@ -122,15 +122,13 @@ class GuestAppearances:
                 "shows": [],
             }
 
-    @lru_cache(typed=True)
-    def retrieve_appearances_by_slug(self, guest_slug: str) -> Dict[str, Any]:
-        """Returns a list of dictionary objects containing appearance
-        information for the requested guest slug string.
+    def retrieve_appearances_by_slug(self, guest_slug: str) -> dict[str, Any]:
+        """Retrieves guest appearance information.
 
         :param guest_slug: Guest slug string
-        :return: Dictionary containing appearance counts and list of
-            appearances for a guest. If guest appearances could not be
-            retrieved, empty dictionary is returned.
+        :return: A dictionary containing guest appearances with
+            corresponding show dates, Best Of or Repeat show flags,
+            score and score exception flag
         """
         id_ = self.utility.convert_slug_to_id(guest_slug)
         if not id_:

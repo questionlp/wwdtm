@@ -1,35 +1,36 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Panelist Decimal Scores Retrieval
-Functions
-"""
-from functools import lru_cache
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Panelist Decimal Scores Retrieval Functions."""
 from decimal import Decimal
 from math import floor
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
-from mysql.connector import connect, DatabaseError
+from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
+
 from wwdtm.panelist.utility import PanelistUtility
 from wwdtm.validation import valid_int_id
 
 
 class PanelistDecimalScores:
-    """This class contains functions used to retrieve panelist decimal
-    scores from a copy of the Wait Wait Stats database.
+    """Panelist decimal score retrieval class.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    Contains methods used to retrieve panelist decimal scores and
+    calculate scoring statistics.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -43,14 +44,11 @@ class PanelistDecimalScores:
 
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
-    @lru_cache(typed=True)
-    def retrieve_scores_by_id(self, panelist_id: int) -> List[Decimal]:
-        """Returns a list of panelist decimal scores for appearances for
-        the requested panelist ID.
+    def retrieve_scores_by_id(self, panelist_id: int) -> list[Decimal]:
+        """Retrieves a list of panelist decimal scores, sorted by show date.
 
         :param panelist_id: Panelist ID
-        :return: List containing panelist decimal scores. If panelist
-            scores could not be retrieved, an empty list is returned.
+        :return: A list containing panelist decimal scores
         """
         if not valid_int_id(panelist_id):
             return []
@@ -78,14 +76,11 @@ class PanelistDecimalScores:
 
         return scores
 
-    @lru_cache(typed=True)
-    def retrieve_scores_by_slug(self, panelist_slug: str) -> List[Decimal]:
-        """Returns a list of panelist decimal scores for appearances for
-        the requested panelist slug string.
+    def retrieve_scores_by_slug(self, panelist_slug: str) -> list[Decimal]:
+        """Retrieves a list of panelist decimal scores, sorted by show date.
 
         :param panelist_slug: Panelist slug string
-        :return: List containing panelist decimal scores. If panelist
-            scores could not be retrieved, an empty list is returned.
+        :return: A list containing panelist decimal scores
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:
@@ -93,18 +88,14 @@ class PanelistDecimalScores:
 
         return self.retrieve_scores_by_id(id_)
 
-    @lru_cache(typed=True)
     def retrieve_scores_grouped_list_by_id(
         self, panelist_id: int
-    ) -> Dict[str, List[Union[str, int]]]:
-        """Returns a panelist's decimal score grouping for the requested
-        panelist ID.
+    ) -> dict[str, list[str | int]]:
+        """Retrieves panelist grouped decimal scores.
 
         :param panelist_id: Panelist ID
-        :return: Dictionary containing two lists, one containing decimal
-            scores and one containing counts of those scores. If
-            panelist scores could not be retrieved, an empty dictionary
-            is returned.
+        :return: A dictionary containing two lists, one containing
+            decimal scores and one containing counts of those scores
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -158,18 +149,14 @@ class PanelistDecimalScores:
             "count": list(scores.values()),
         }
 
-    @lru_cache(typed=True)
     def retrieve_scores_grouped_list_by_slug(
         self, panelist_slug: str
-    ) -> Dict[str, List[int]]:
-        """Returns a panelist's score grouping for the requested
-        panelist slug string.
+    ) -> dict[str, list[int]]:
+        """Retrieves panelist grouped decimal scores.
 
         :param panelist_slug: Panelist slug string
-        :return: Dictionary containing two lists, one containing scores
-            and one containing counts of those scores. If panelist
-            scores could not be retrieved, an empty dictionary is
-            returned.
+        :return: A dictionary containing two lists, one containing
+            decimal scores and one containing counts of those scores
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:
@@ -177,18 +164,14 @@ class PanelistDecimalScores:
 
         return self.retrieve_scores_grouped_list_by_id(id_)
 
-    @lru_cache(typed=True)
     def retrieve_scores_grouped_ordered_pair_by_id(
         self, panelist_id: int
-    ) -> List[Tuple[str, int]]:
-        """Returns a list of tuples containing a decimal score and the
-        corresponding number of instances a panelist has scored that
-        amount for the requested panelist ID.
+    ) -> list[tuple[str, int]]:
+        """Retrieves a list of panelist decimal scores and counts as a tuple.
 
         :param panelist_id: Panelist ID
-        :return: List of tuples containing decimal scores and score
-            counts. If panelist decimal scores could not be retrieved,
-            an empty list is returned.
+        :return: A list of tuples containing decimal scores and score
+            counts
         """
         if not valid_int_id(panelist_id):
             return []
@@ -238,19 +221,15 @@ class PanelistDecimalScores:
 
         return list(scores.items())
 
-    @lru_cache(typed=True)
     def retrieve_scores_grouped_ordered_pair_by_slug(
         self,
         panelist_slug: str,
-    ) -> List[Tuple[str, int]]:
-        """Returns a list of tuples containing a decimal score and the
-        corresponding number of instances a panelist has scored that amount
-        for the requested panelist slug string.
+    ) -> list[tuple[str, int]]:
+        """Retrieves a list of panelist decimal scores and counts as a tuple.
 
         :param panelist_slug: Panelist slug string
-        :return: List of tuples containing decimal scores and score
-            counts. If panelist decimal scores could not be retrieved,
-            an empty list is returned.
+        :return: A list of tuples containing decimal scores and score
+            counts
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:
@@ -258,19 +237,15 @@ class PanelistDecimalScores:
 
         return self.retrieve_scores_grouped_ordered_pair_by_id(id_)
 
-    @lru_cache(typed=True)
     def retrieve_scores_list_by_id(
         self,
         panelist_id: int,
-    ) -> Dict[str, List[Union[str, Decimal]]]:
-        """Returns a dictionary containing two lists, one with show
-        dates and one with corresponding decimal scores for the
-        requested panelist ID.
+    ) -> dict[str, list[str | Decimal]]:
+        """Retrieves panelist appearances and decimal scores as paired lists.
 
         :param panelist_id: Panelist ID
-        :return: Dictionary containing a list show dates and a list
-            of decimal scores. If panelist scores could not be
-            retrieved, an empty dictionary is returned.
+        :return: A dictionary containing a list show dates and a list
+            of decimal scores
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -303,19 +278,15 @@ class PanelistDecimalScores:
             "scores": score_list,
         }
 
-    @lru_cache(typed=True)
     def retrieve_scores_list_by_slug(
         self,
         panelist_slug: str,
-    ) -> Dict[str, List[Union[str, Decimal]]]:
-        """Returns a dictionary containing two lists, one with show
-        dates and one with corresponding decimal scores for the
-        requested panelist slug string.
+    ) -> dict[str, list[str | Decimal]]:
+        """Retrieves panelist appearances and decimal scores as paired lists.
 
         :param panelist_slug: Panelist slug string
-        :return: Dictionary containing a list show dates and a list
-            of decimal scores. If panelist scores could not be
-            retrieved, an empty dictionary is returned.
+        :return: A dictionary containing a list show dates and a list
+            of decimal scores
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:
@@ -323,17 +294,14 @@ class PanelistDecimalScores:
 
         return self.retrieve_scores_list_by_id(id_)
 
-    @lru_cache(typed=True)
     def retrieve_scores_ordered_pair_by_id(
         self, panelist_id: int
-    ) -> List[Tuple[str, Decimal]]:
-        """Returns a list of tuples containing a show date and the
-        corresponding decimal score for the requested panelist ID.
+    ) -> list[tuple[str, Decimal]]:
+        """Retrieves panelist appearances and decimal scores as a list of tuples.
 
         :param panelist_id: Panelist ID
-        :return: List of tuples containing show dates and decimal
-            scores. If panelist scores could not be retrieved, an empty
-            list is returned.
+        :return: A list of tuples containing show dates and decimal
+            scores
         """
         if not valid_int_id(panelist_id):
             return []
@@ -363,19 +331,15 @@ class PanelistDecimalScores:
 
         return scores
 
-    @lru_cache(typed=True)
     def retrieve_scores_ordered_pair_by_slug(
         self,
         panelist_slug: str,
-    ) -> List[Tuple[str, Decimal]]:
-        """Returns a list of tuples containing a show date and the
-        corresponding decimal score for the requested panelist slug
-        string.
+    ) -> list[tuple[str, Decimal]]:
+        """Retrieves panelist appearances and decimal scores as a list of tuples.
 
         :param panelist_slug: Panelist slug string
-        :return: List of tuples containing show dates and decimal
-            scores. If panelist scores could not be retrieved, an empty
-            list is returned.
+        :return: A list of tuples containing show dates and decimal
+            scores
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:

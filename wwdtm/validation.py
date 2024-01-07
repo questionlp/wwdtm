@@ -1,14 +1,13 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Type validation module"""
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Type validation module."""
 
 
 def valid_int_id(int_id: int) -> bool:
-    """Validates an ID value as a signed 32-bit integer used
-    in ID fields in MySQL tables.
+    """Validates an ID value as a signed 32-bit integer used in ID fields in MySQL tables.
 
     :param int_id: ID number to validate
     :return: True or False, based on if the integer falls inclusively

@@ -1,34 +1,36 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Guest Data Retrieval Functions
-"""
-from functools import lru_cache
-from typing import Any, Dict, List, Optional
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Guest Data Retrieval Functions."""
+from typing import Any
 
 from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
 from slugify import slugify
+
 from wwdtm.guest.appearances import GuestAppearances
 from wwdtm.guest.utility import GuestUtility
 from wwdtm.validation import valid_int_id
 
 
 class Guest:
-    """This class contains functions used to retrieve guest data from a
-    copy of the Wait Wait Stats database.
+    """Guest information retrieval class.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    Contains methods used to retrieve Not My Job guest information,
+    including IDs, names, slug strings, appearances and scores.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -45,13 +47,11 @@ class Guest:
         )
         self.utility = GuestUtility(database_connection=self.database_connection)
 
-    def retrieve_all(self) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing guest ID,
-        name and slug string for all guests.
+    def retrieve_all(self) -> list[dict[str, int | str]]:
+        """Retrieves guest information for all guests.
 
-        :return: List of all guests and their corresponding
-            information. If guests could not be retrieved, an empty list
-            is returned.
+        :return: A list of dictionaries containing guest ID, name and
+            slug string for each guest
         """
         query = """
             SELECT guestid AS id, guest AS name, guestslug AS slug
@@ -79,13 +79,12 @@ class Guest:
 
         return guests
 
-    def retrieve_all_details(self) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing guest ID,
-        name, slug string and appearance information for all guests.
+    def retrieve_all_details(self) -> list[dict[str, Any]]:
+        """Retrieves guest information and appearances for all guests.
 
-        :return: List of all guests and their corresponding
-            information and appearances. If guests could not be
-            retrieved, an empty list is returned.
+        :return: A list of dictionaries containing guest ID, name, slug
+            string, and a list of appearances with show flags, scores
+            and scoring exceptions
         """
         query = """
             SELECT guestid AS id, guest AS name, guestslug AS slug
@@ -114,12 +113,10 @@ class Guest:
 
         return guests
 
-    def retrieve_all_ids(self) -> List[int]:
-        """Returns a list of all guest IDs from the database, sorted by
-        guest name.
+    def retrieve_all_ids(self) -> list[int]:
+        """Retrieves all guest IDs, sorted by guest name.
 
-        :return: List of all guest IDs. If guest IDs could not be
-            retrieved, an empty list is returned.
+        :return: A list of guest IDs as integers
         """
         query = """
             SELECT guestid FROM ww_guests
@@ -136,12 +133,10 @@ class Guest:
 
         return [v[0] for v in results]
 
-    def retrieve_all_slugs(self) -> List[str]:
-        """Returns a list of all guest slug strings from the database,
-        sorted by guest name.
+    def retrieve_all_slugs(self) -> list[str]:
+        """Retrieves all guest slug strings, sorted by guest name.
 
-        :return: List of all guest slug strings. If guest slug strings
-            could not be retrieved, an emtpy list is returned.
+        :return: A list of guest slug strings
         """
         query = """
             SELECT guestslug FROM ww_guests
@@ -158,15 +153,11 @@ class Guest:
 
         return [v[0] for v in results]
 
-    @lru_cache(typed=True)
-    def retrieve_by_id(self, guest_id: int) -> Dict[str, Any]:
-        """Returns a dictionary object containing guest ID, name and
-        slug string for the requested guest ID.
+    def retrieve_by_id(self, guest_id: int) -> dict[str, int | str]:
+        """Retrieves guest information.
 
         :param guest_id: Guest ID
-        :return: Dictionary containing guest information. If guest
-            information could not be retrieved, an empty dictionary is
-            returned.
+        :return: A dictionary containing guest ID, name and slug string
         """
         if not valid_int_id(guest_id):
             return {}
@@ -191,15 +182,11 @@ class Guest:
             "slug": result.slug if result.slug else slugify(result.name),
         }
 
-    @lru_cache(typed=True)
-    def retrieve_by_slug(self, guest_slug: str) -> Dict[str, Any]:
-        """Returns a dictionary object containing guest ID, name and
-        slug string for the requested guest slug string.
+    def retrieve_by_slug(self, guest_slug: str) -> dict[str, int | str]:
+        """Retrieves guest information.
 
         :param guest_slug: Guest slug string
-        :return: Dictionary containing guest information. If guest
-            information could not be retrieved, an empty dictionary is
-            returned.
+        :return: A dictionary containing guest ID, name and slug string
         """
         try:
             slug = guest_slug.strip()
@@ -214,15 +201,13 @@ class Guest:
 
         return self.retrieve_by_id(id_)
 
-    @lru_cache(typed=True)
-    def retrieve_details_by_id(self, guest_id: int) -> Dict[str, Any]:
-        """Returns a dictionary object containing guest ID, name, slug
-        string and appearance information for the requested Guest ID.
+    def retrieve_details_by_id(self, guest_id: int) -> dict[str, Any]:
+        """Retrieves guest information and appearances.
 
         :param guest_id: Guest ID
-        :return: Dictionary containing guest information and their
-            appearances. If guest information could not be retrieved,
-            an empty dictionary is returned.
+        :return: A dictionary containing guest ID, name, slug string,
+            list of appearances with show flags, scores and scoring
+            exceptions
         """
         if not valid_int_id(guest_id):
             return {}
@@ -235,16 +220,13 @@ class Guest:
 
         return info
 
-    @lru_cache(typed=True)
-    def retrieve_details_by_slug(self, guest_slug: str) -> Dict[str, Any]:
-        """Returns a dictionary object containing guest ID, name, slug
-        string and appearance information for the requested Guest slug
-        string.
+    def retrieve_details_by_slug(self, guest_slug: str) -> dict[str, Any]:
+        """Retrieves guest information and appearances.
 
         :param guest_slug: Guest slug string
-        :return: Dictionary containing guest information and their
-            appearances. If guest information could not be retrieved,
-            an empty dictionary is returned.
+        :return: A dictionary containing guest ID, name, slug string,
+            list of appearances with show flags, scores and scoring
+            exceptions
         """
         try:
             slug = guest_slug.strip()

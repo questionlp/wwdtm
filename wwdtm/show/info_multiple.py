@@ -1,36 +1,36 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Supplemental Show Information
-Retrieval Functions for Multiple Shows
-"""
-from typing import Any, Dict, List, Optional
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Show Detailed Information Retrieval Functions for Multiple Shows."""
+from typing import Any
 
 from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
 from slugify import slugify
-from wwdtm.show.utility import ShowUtility
+
 from wwdtm.location.location import LocationUtility
+from wwdtm.show.utility import ShowUtility
 from wwdtm.validation import valid_int_id
 
 
 class ShowInfoMultiple:
-    """This class contains functions that retrieve show supplemental
-    show information, including panelist, guest and Bluff the Listener
-    information for multiple shows from a copy of the Wait Wait Stats
-    database
+    """Multiple show information retrieval class.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    Contains methods used to retrieve panelist, guest and Bluff the
+    Listener information for multiple shows.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -46,11 +46,11 @@ class ShowInfoMultiple:
         self.loc_util = LocationUtility(database_connection=self.database_connection)
         self.panelists = self._retrieve_panelists()
 
-    def _retrieve_panelists(self) -> Dict[int, Dict[str, str]]:
-        """Returns a dictionary of panelist information.
+    def _retrieve_panelists(self) -> dict[int, dict[str, str]]:
+        """Retrieves panelist basic information.
 
-        :return: Dictionary containing panelist ID as the key and
-            panelist name and slug string as a dictionary as a value.
+        :return: A dictionary with panelist ID as the key and a
+            dictionary with name and slug string as the value
         """
         query = """
             SELECT panelistid, panelist, panelistslug
@@ -74,14 +74,13 @@ class ShowInfoMultiple:
 
         return panelists
 
-    def retrieve_bluff_info_all(self) -> Dict[int, List[Dict[str, Any]]]:
-        """Returns a dictionary of Bluff the Listener information for
-        all shows.
+    def retrieve_bluff_info_all(self) -> dict[int, list[dict[str, Any]]]:
+        """Retrieves Bluff the Listener information for all shows.
 
-        :return: Dictionary containing each of the correct and chosen
-            Bluff the Listener information.
+        :return: A dictionary containing Bluff the Listener segment ID
+            and information about the chosen Bluff panelist and correct
+            Bluff panelist.
         """
-
         query = """
             SELECT blm.showid, blm.segment, blm.chosenbluffpnlid AS chosen_id,
             blm.correctbluffpnlid AS correct_id
@@ -162,14 +161,14 @@ class ShowInfoMultiple:
         return bluff_info
 
     def retrieve_bluff_info_by_ids(
-        self, show_ids: List[int]
-    ) -> Dict[int, List[Dict[str, Any]]]:
-        """Returns a dictionary containing Bluff the Listener information
-        for the requested show IDs.
+        self, show_ids: list[int]
+    ) -> dict[int, list[dict[str, Any]]]:
+        """Retrieves Bluff the Listener information for a list of shows.
 
-        :param show_ids: List of show IDs
-        :return: Dictionary containing correct and chosen Bluff the
-            Listener information.
+        :param show_id: A list of show IDs
+        :return: A dictionary containing Bluff the Listener segment ID
+            and information about the chosen Bluff panelist and correct
+            Bluff panelist.
         """
         for show_id in show_ids:
             if not valid_int_id(show_id):
@@ -180,7 +179,9 @@ class ShowInfoMultiple:
             correctbluffpnlid AS correct_id
             FROM ww_showbluffmap
             WHERE showid IN ({ids})
-            ORDER BY showid ASC, segment ASC;""".format(ids=", ".join(str(v) for v in show_ids))
+            ORDER BY showid ASC, segment ASC;""".format(
+            ids=", ".join(str(v) for v in show_ids)
+        )
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -253,12 +254,11 @@ class ShowInfoMultiple:
 
         return bluff_info
 
-    def retrieve_core_info_all(self) -> Dict[int, Dict[str, Any]]:
-        """Returns a dictionary with core information for all shows.
+    def retrieve_core_info_all(self) -> dict[int, dict[str, Any]]:
+        """Retrieves core information for all shows.
 
-        :return: Dictionary containing host, scorekeeper, location,
-            description and notes. If show core information could not be
-            retrieved, an empty dictionary will be returned.
+        :return: A dictionary containing host, scorekeeper, location,
+            description and notes
         """
         query = """
             SELECT s.showid AS show_id, s.showdate AS date,
@@ -333,10 +333,7 @@ class ShowInfoMultiple:
             else:
                 description = None
 
-            if show.show_notes:
-                notes = str(show.show_notes).strip()
-            else:
-                notes = None
+            notes = str(show.show_notes).strip() if show.show_notes else None
 
             show_info = {
                 "id": show.show_id,
@@ -366,15 +363,13 @@ class ShowInfoMultiple:
         return shows
 
     def retrieve_core_info_by_ids(
-        self, show_ids: List[int]
-    ) -> Dict[int, Dict[str, Any]]:
-        """Returns a dictionary with core information for the requested
-        show IDs.
+        self, show_ids: list[int]
+    ) -> dict[int, dict[str, Any]]:
+        """Retrieves core information for a list of shows.
 
-        :param show_ids: List of show IDs
-        :return: Dictionary containing host, scorekeeper, location,
-            description and notes. If show core information could not be
-            retrieved, an empty dictionary will be returned.
+        :param show_ids: A list of show IDs
+        :return: A dictionary containing host, scorekeeper, location,
+            description and notes
         """
         for show_id in show_ids:
             if not valid_int_id(show_id):
@@ -402,7 +397,9 @@ class ShowInfoMultiple:
             JOIN ww_showdescriptions sd ON sd.showid = s.showid
             JOIN ww_shownotes sn ON sn.showid = s.showid
             WHERE s.showid IN ({ids})
-            ORDER BY s.showdate ASC;""".format(ids=", ".join(str(v) for v in show_ids))
+            ORDER BY s.showdate ASC;""".format(
+            ids=", ".join(str(v) for v in show_ids)
+        )
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -453,10 +450,7 @@ class ShowInfoMultiple:
             else:
                 description = None
 
-            if show.show_notes:
-                notes = str(show.show_notes).strip()
-            else:
-                notes = None
+            notes = str(show.show_notes).strip() if show.show_notes else None
 
             show_info = {
                 "id": show.show_id,
@@ -485,13 +479,11 @@ class ShowInfoMultiple:
 
         return shows
 
-    def retrieve_guest_info_all(self) -> Dict[int, List[Dict[str, Any]]]:
-        """Returns a list of dictionary objects containing Not My Job
-        guest information for all shows.
+    def retrieve_guest_info_all(self) -> dict[int, list[dict[str, Any]]]:
+        """Retrieves Not My Job guest information for all shows.
 
-        :return: Dictionary containing Not My Job guest information. If
-            Not My Job information could not be retrieved, an empty list
-            will be returned.
+        :return: A dictionary containing Not My Job guest information,
+            including score and scoring exception for each guest
         """
         query = """
             SELECT s.showid AS show_id, gm.guestid AS guest_id,
@@ -528,15 +520,13 @@ class ShowInfoMultiple:
         return shows
 
     def retrieve_guest_info_by_ids(
-        self, show_ids: List[int]
-    ) -> Dict[int, List[Dict[str, Any]]]:
-        """Returns a list of dictionary objects containing Not My Job
-        guest information for the requested show IDs.
+        self, show_ids: list[int]
+    ) -> dict[int, list[dict[str, Any]]]:
+        """Retrieves Not My Job guest information for all shows.
 
-        :param show_ids: List of show IDs
-        :return: Dictionary containing Not My Job guest information. If
-            Not My Job information could not be retrieved, an empty list
-            will be returned.
+        :param show_ids: A list of show IDs
+        :return: A dictionary containing Not My Job guest information,
+            including score and scoring exception for each guest.
         """
         for show_id in show_ids:
             if not valid_int_id(show_id):
@@ -551,7 +541,9 @@ class ShowInfoMultiple:
             JOIN ww_shows s ON s.showid = gm.showid
             WHERE gm.showid IN ({ids})
             ORDER BY s.showdate ASC,
-            gm.showguestmapid ASC;""".format(ids=", ".join(str(v) for v in show_ids))
+            gm.showguestmapid ASC;""".format(
+            ids=", ".join(str(v) for v in show_ids)
+        )
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -579,15 +571,13 @@ class ShowInfoMultiple:
 
     def retrieve_panelist_info_all(
         self, include_decimal_scores: bool = False
-    ) -> Dict[int, List[Dict[str, Any]]]:
-        """Returns a list of dictionary objects containing panelist
-        information for all shows.
+    ) -> dict[int, list[dict[str, Any]]]:
+        """Retrieves panelist information for all shows.
 
-        :param include_decimal_scores: Flag set to include panelist
-            decimal scores, if available
-        :return: List of panelists with corresponding scores and
-            ranking information. If panelist information could not be
-            retrieved, an empty list will be returned.
+        :param use_decimal_scores: A boolean to determine if decimal
+            scores should be used and returned instead of integer scores
+        :return: A dictionary containing panelist information, scores
+            and rankings
         """
         if include_decimal_scores:
             query = """
@@ -657,17 +647,15 @@ class ShowInfoMultiple:
         return panelists
 
     def retrieve_panelist_info_by_ids(
-        self, show_ids: List[int], include_decimal_scores: bool = False
-    ) -> Dict[int, List[Dict[str, Any]]]:
-        """Returns a list of dictionary objects containing panelist
-        information for the requested show IDs.
+        self, show_ids: list[int], include_decimal_scores: bool = False
+    ) -> dict[int, list[dict[str, Any]]]:
+        """Retrieves panelist information for a list of shows.
 
-        :param show_ids: List of show IDs
-        :param include_decimal_scores: Flag set to include panelist
-            decimal scores, if available
-        :return: List of panelists with corresponding scores and
-            ranking information. If panelist information could not be
-            retrieved, an empty list will be returned.
+        :param show_ids: A list of show IDs
+        :param use_decimal_scores: A boolean to determine if decimal
+            scores should be used and returned instead of integer scores
+        :return: A dictionary containing panelist information, scores
+            and rankings
         """
         for show_id in show_ids:
             if not valid_int_id(show_id):
@@ -689,7 +677,9 @@ class ShowInfoMultiple:
                 JOIN ww_shows s ON s.showid = pm.showid
                 WHERE pm.showid IN ({ids})
                 ORDER by s.showdate ASC, pm.panelistscore DESC,
-                pm.showpnlmapid ASC;""".format(ids=", ".join(str(v) for v in show_ids))
+                pm.showpnlmapid ASC;""".format(
+                ids=", ".join(str(v) for v in show_ids)
+            )
         else:
             query = """
                 SELECT s.showid AS show_id, pm.panelistid AS panelist_id,
@@ -702,7 +692,9 @@ class ShowInfoMultiple:
                 JOIN ww_shows s ON s.showid = pm.showid
                 WHERE pm.showid IN ({ids})
                 ORDER by s.showdate ASC, pm.panelistscore DESC,
-                pm.showpnlmapid ASC;""".format(ids=", ".join(str(v) for v in show_ids))
+                pm.showpnlmapid ASC;""".format(
+                ids=", ".join(str(v) for v in show_ids)
+            )
 
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
