@@ -18,15 +18,15 @@ classifiers = [
 ]
 dependencies = [
     "mysql-connector-python==8.2.0",
-    "numpy==1.26.0",
+    "numpy==1.26.3",
     "python-slugify==8.0.1",
     "pytz==2023.3.post1",
 ]
 
 [project.urls]
-documentation = "https://docs.wwdt.me"
-homepage = "https://github.com/questionlp/wwdtm"
-repository = "https://github.com/questionlp/wwdtm"
+Documentation = "https://docs.wwdt.me"
+"Source Code" = "https://github.com/questionlp/wwdtm"
+"Stats Page" = "https://stats.wwdt.me"
 Mastodon = "https://linh.social/@qlp"
 
 [tool.setuptools.dynamic]
@@ -37,7 +37,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
-required-version = "23.11.0"
+required-version = "23.12.0"
 target-version = ["py310", "py311", "py312"]
 line-length = 88
 

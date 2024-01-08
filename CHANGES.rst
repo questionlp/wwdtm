@@ -15,11 +15,19 @@ Application Changes
 * Remove use of :py:meth:`functools.lru_cache` as caching should be done by the application consuming
   the library
 
+Component Changes
+-----------------
+
+* Upgrade NumPy from 1.26.0 to 1.26.3
+
 Development Changes
 -------------------
 
 * Switch to Ruff for code linting and formatting (with the help of Black)
 * Deprecate ``perf_test.py`` for performance testing
+* Upgrade pytest from 7.4.3 to 7.4.4
+* Upgrade black from 23.11.0 to 23.12.0
+* Upgrade wheel from 0.41.3 to 0.42.0
 
 Documentation Changes
 ---------------------
