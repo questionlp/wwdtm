@@ -1,33 +1,34 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Testing for object: :py:class:`wwdtm.panelist.Panelist`
-"""
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Testing for object: :py:class:`wwdtm.panelist.Panelist`."""
 import json
-from typing import Any, Dict
+from pathlib import Path
+from typing import Any
 
 import pytest
+
 from wwdtm.panelist import Panelist
 
 
 @pytest.mark.skip
-def get_connect_dict() -> Dict[str, Any]:
-    """Read in database connection settings and return values as a
-    dictionary.
+def get_connect_dict() -> dict[str, Any]:
+    """Retrieves database connection settings.
 
-    :return: A dictionary containing database connection settings
-        for use by mysql.connector
+    :return: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
     """
-    with open("config.json", "r", encoding="utf-8") as config_file:
+    file_path = Path.cwd() / "config.json"
+    with file_path.open(mode="r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
 
 
 def test_panelist_retrieve_all():
-    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all`"""
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all`."""
     panelist = Panelist(connect_dict=get_connect_dict())
     panelists = panelist.retrieve_all()
 
@@ -37,7 +38,7 @@ def test_panelist_retrieve_all():
 
 @pytest.mark.parametrize("use_decimal_scores", [True, False])
 def test_panelist_retrieve_all_details(use_decimal_scores: bool):
-    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_details`
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_details`.
 
     :param use_decimal_scores: Flag set to use decimal score columns
         and values
@@ -53,7 +54,7 @@ def test_panelist_retrieve_all_details(use_decimal_scores: bool):
 
 
 def test_panelist_retrieve_all_ids():
-    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_ids`"""
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_ids`."""
     panelist = Panelist(connect_dict=get_connect_dict())
     ids = panelist.retrieve_all_ids()
 
@@ -61,7 +62,7 @@ def test_panelist_retrieve_all_ids():
 
 
 def test_panelist_retrieve_all_slugs():
-    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_slugs`"""
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_slugs`."""
     panelist = Panelist(connect_dict=get_connect_dict())
     slugs = panelist.retrieve_all_slugs()
 
@@ -70,7 +71,7 @@ def test_panelist_retrieve_all_slugs():
 
 @pytest.mark.parametrize("panelist_id", [14])
 def test_panelist_retrieve_by_id(panelist_id: int):
-    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_by_id`
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_by_id`.
 
     :param panelist_id: Panelist ID to test retrieving panelist
         information
@@ -84,7 +85,7 @@ def test_panelist_retrieve_by_id(panelist_id: int):
 
 @pytest.mark.parametrize("panelist_id, use_decimal_scores", [(14, True), (14, False)])
 def test_panelist_retrieve_details_by_id(panelist_id: int, use_decimal_scores: bool):
-    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_details_by_id`
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_details_by_id`.
 
     :param panelist_id: Panelist ID to test retrieving panelist details
     :param use_decimal_scores: Flag set to use decimal score columns
@@ -102,7 +103,7 @@ def test_panelist_retrieve_details_by_id(panelist_id: int, use_decimal_scores: b
 
 @pytest.mark.parametrize("panelist_slug", ["luke-burbank", "drew-carey"])
 def test_panelist_retrieve_by_slug(panelist_slug: str):
-    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_by_slug`
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_by_slug`.
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist information
@@ -121,7 +122,7 @@ def test_panelist_retrieve_by_slug(panelist_slug: str):
 def test_panelist_retrieve_details_by_slug(
     panelist_slug: str, use_decimal_scores: bool
 ):
-    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_details_by_slug`
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_details_by_slug`.
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist details
