@@ -32,13 +32,13 @@ Table of Contents
 =================
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     known_issues
     wwdtm/index
     tests/index
     migrating/index
-    changelog
+    changes/index
 
 Indices and tables
 ==================
