@@ -26,6 +26,7 @@ dependencies = [
 [project.urls]
 Documentation = "https://docs.wwdt.me"
 "Source Code" = "https://github.com/questionlp/wwdtm"
+Changes = "https://docs.wwdt.me/latest/changes/"
 "Stats Page" = "https://stats.wwdt.me"
 Mastodon = "https://linh.social/@qlp"
 
