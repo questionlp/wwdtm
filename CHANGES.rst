@@ -2,6 +2,43 @@
 Changes
 *******
 
+2.7.0
+=====
+
+Application Changes
+-------------------
+
+* Update type hints for parameters and return values to be more specific and to replace the use
+  of :py:class:`typing.Optional` and :py:class:`typing.Union` with the conventions documented in PEP-484 and PEP-604.
+* Replace use of :py:class:`typing.Dict`, :py:class:`typing.List` and :py:class:`typing.Tuple` with :py:class:`dict`,
+  :py:class:`list` and :py:class:`tuple` respectively in type hints
+* Remove use of :py:meth:`functools.lru_cache` as caching should be done by the application consuming
+  the library
+
+Component Changes
+-----------------
+
+* Upgrade NumPy from 1.26.0 to 1.26.3
+
+Development Changes
+-------------------
+
+* Switch to Ruff for code linting and formatting (with the help of Black)
+* Deprecate ``perf_test.py`` for performance testing
+* Upgrade pytest from 7.4.3 to 7.4.4
+* Upgrade black from 23.11.0 to 23.12.0
+* Upgrade wheel from 0.41.3 to 0.42.0
+
+Documentation Changes
+---------------------
+
+* Update Sphinx configuration to be more similar to the conventions used by Pallets projects
+* Change the base font from IBM Plex Sans to IBM Plex Serif
+* Clean up and rewrite docstrings to be more consistent and succint
+* Add table of contents to each module page
+* Update the copyright block at the top of each file to remove ``coding`` line and to include
+  the appropriate SPDX license identifier
+
 2.6.1
 =====
 

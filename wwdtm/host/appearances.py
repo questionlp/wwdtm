@@ -1,32 +1,34 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Host Appearance Retrieval Functions
-"""
-from functools import lru_cache
-from typing import Any, Dict, Optional
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Host Appearance Retrieval Functions."""
+from typing import Any
 
 from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
+
 from wwdtm.host.utility import HostUtility
 from wwdtm.validation import valid_int_id
 
 
 class HostAppearances:
-    """This class contains functions that retrieve host appearance
-    information from a copy of the Wait Wait Stats database.
+    """Host appearance information retrieval class.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    Contains methods used to retrieve host appearance information,
+    including show flags.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -40,15 +42,12 @@ class HostAppearances:
 
         self.utility = HostUtility(database_connection=self.database_connection)
 
-    @lru_cache(typed=True)
-    def retrieve_appearances_by_id(self, host_id: int) -> Dict[str, Any]:
-        """Returns a list of dictionary objects containing appearance
-        information for the requested host ID.
+    def retrieve_appearances_by_id(self, host_id: int) -> dict[str, Any]:
+        """Retrieves host appearance information.
 
         :param host_id: Host ID
-        :return:  Dictionary containing appearance counts and list of
-            appearances for a host. If host appearances could not be
-            retrieved, an empty dictionary is returned.
+        :return: A dictionary containing host appearances with
+            corresponding show dates and Best Of or Repeat show flags
         """
         if not valid_int_id(host_id):
             return {}
@@ -119,15 +118,12 @@ class HostAppearances:
                 "shows": [],
             }
 
-    @lru_cache(typed=True)
-    def retrieve_appearances_by_slug(self, host_slug: str) -> Dict[str, Any]:
-        """Returns a list of dictionary objects containing appearance
-        information for the requested host ID.
+    def retrieve_appearances_by_slug(self, host_slug: str) -> dict[str, Any]:
+        """Retrieves host appearance information.
 
         :param host_slug: Host slug string
-        :return:  Dictionary containing appearance counts and list of
-            appearances for a host. If host appearances could not be
-            retrieved, an empty dictionary is returned.
+        :return: A dictionary containing host appearances with
+            corresponding show dates and Best Of or Repeat show flags
         """
         id_ = self.utility.convert_slug_to_id(host_slug)
         if not id_:

@@ -1,32 +1,33 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Guest Data Utility Functions
-"""
-from functools import lru_cache
-from typing import Any, Dict, Optional
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Guest Data Utility Functions."""
+from typing import Any
 
 from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
+
 from wwdtm.validation import valid_int_id
 
 
 class GuestUtility:
-    """This class contains supporting functions used to check whether
-    a Guest ID or slug string exists or to convert an ID to a slug
-    string, or vice versa.
+    """Guest information and utilities class.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    Contains methods used to convert between guest ID and slug strings,
+    and to check if guest IDs and slug strings exist.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -38,12 +39,12 @@ class GuestUtility:
 
             self.database_connection = database_connection
 
-    @lru_cache(typed=True)
-    def convert_id_to_slug(self, guest_id: int) -> Optional[str]:
-        """Converts a guest's ID to the matching guest slug string.
+    def convert_id_to_slug(self, guest_id: int) -> str | None:
+        """Converts a guest ID to the corresponding guest slug string.
 
         :param guest_id: Guest ID
-        :return: Guest slug string, if a match is found
+        :return: Guest slug string if a corresponding value is found.
+            Otherwise, ``None`` is returned
         """
         if not valid_int_id(guest_id):
             return None
@@ -61,13 +62,12 @@ class GuestUtility:
 
         return None
 
-    @lru_cache(typed=True)
-    def convert_slug_to_id(self, guest_slug: str) -> Optional[int]:
-        """Converts a guest's slug string to the matching guest ID, if
-        a match is found. If no match is found, None is returned.
+    def convert_slug_to_id(self, guest_slug: str) -> int | None:
+        """Converts a guest slug string to the corresponding guest ID.
 
         :param guest_slug: Guest slug string
-        :return: Guest ID, if a match is found
+        :return: Guest ID if a corresponding value is found. Otherwise,
+            ``None`` is returned
         """
         try:
             slug = guest_slug.strip()
@@ -89,12 +89,11 @@ class GuestUtility:
 
         return None
 
-    @lru_cache(typed=True)
     def id_exists(self, guest_id: int) -> bool:
-        """Checks to see if a guest ID exists.
+        """Validates if a guest ID exists.
 
         :param guest_id: Guest ID
-        :return: True or False, based on whether the guest ID exists
+        :return: ``True`` if the ID exists, otherwise ``False``
         """
         if not valid_int_id(guest_id):
             return False
@@ -109,13 +108,11 @@ class GuestUtility:
 
         return bool(result)
 
-    @lru_cache(typed=True)
     def slug_exists(self, guest_slug: str) -> bool:
-        """Checks to see if a guest slug string exists.
+        """Validates if a guest slug string exists.
 
         :param guest_slug: Guest slug string
-        :return: True or False, based on whether the guest slug string
-            exists
+        :return: ``True`` if the slug string exists, otherwise ``False``
         """
         try:
             slug = guest_slug.strip()

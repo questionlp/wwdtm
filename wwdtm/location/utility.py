@@ -1,33 +1,35 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Location Data Utility Functions
-"""
-from functools import lru_cache
-from typing import Any, Dict, Optional
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Location Data Utility Functions."""
+from typing import Any
 
 from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
 from slugify import slugify
+
 from wwdtm.validation import valid_int_id
 
 
 class LocationUtility:
-    """This class contains supporting functions used to check whether
-    a Location ID or slug string exists or to convert an ID to a slug
+    """Location information and utilities class.
+
+    This class contains supporting functions used to check whether
+    a location ID or slug string exists or to convert an ID to a slug
     string, or vice versa.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -39,13 +41,12 @@ class LocationUtility:
 
             self.database_connection = database_connection
 
-    @lru_cache(typed=True)
-    def convert_id_to_slug(self, location_id: int) -> Optional[str]:
-        """Converts a location's ID to the matching location slug
-        string value.
+    def convert_id_to_slug(self, location_id: int) -> str | None:
+        """Converts a location ID to the corresponding location slug string.
 
         :param location_id: Location ID
-        :return: Location slug string, if a match is found
+        :return: Location slug string if a corresponding value is found.
+            Otherwise, ``None`` is returned
         """
         if not valid_int_id(location_id):
             return None
@@ -63,13 +64,12 @@ class LocationUtility:
 
         return None
 
-    @lru_cache(typed=True)
-    def convert_slug_to_id(self, location_slug: str) -> Optional[int]:
-        """Converts a location's slug string to the matching location
-        ID value.
+    def convert_slug_to_id(self, location_slug: str) -> int | None:
+        """Converts a location slug string to the corresponding location ID.
 
         :param location_slug: Location slug string
-        :return: Location ID, if a match is found
+        :return: Location ID if a corresponding value is found.
+            Otherwise, ``None`` is returned
         """
         try:
             slug = location_slug.strip()
@@ -91,12 +91,11 @@ class LocationUtility:
 
         return None
 
-    @lru_cache(typed=True)
     def id_exists(self, location_id: int) -> bool:
-        """Checks to see if a location ID exists.
+        """Validates if a location ID exists.
 
         :param location_id: Location ID
-        :return: True or False, based on whether the location ID exists
+        :return: ``True`` if the ID exists, otherwise ``False``
         """
         if not valid_int_id(location_id):
             return False
@@ -111,13 +110,11 @@ class LocationUtility:
 
         return bool(result)
 
-    @lru_cache(typed=True)
     def slug_exists(self, location_slug: str) -> bool:
-        """Checks to see if a location slug string exists.
+        """Validates if a location slug string exists.
 
         :param location_slug: Location slug string
-        :return: True or False, based on whether the location slug
-            string exists
+        :return: ``True`` if the slug string exists, otherwise ``False``
         """
         try:
             slug = location_slug.strip()
@@ -140,13 +137,12 @@ class LocationUtility:
 
     @staticmethod
     def slugify_location(
-        location_id: Optional[int] = None,
-        venue: Optional[str] = None,
-        city: Optional[str] = None,
-        state: Optional[str] = None,
+        location_id: int = None,
+        venue: str = None,
+        city: str = None,
+        state: str = None,
     ) -> str:
-        """Generates a slug string based on the location's venue name,
-        city, state and/or location ID.
+        """Generates a slug string using the location ID, venue, city and/or state.
 
         :param location_id: Location ID
         :param venue: Location venue name

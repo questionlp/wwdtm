@@ -1,33 +1,34 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Scorekeeper Appearance Retrieval
-Functions
-"""
-from functools import lru_cache
-from typing import Any, Dict, Optional
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Scorekeeper Appearance Retrieval Functions."""
+from typing import Any
 
 from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
+
 from wwdtm.scorekeeper.utility import ScorekeeperUtility
 from wwdtm.validation import valid_int_id
 
 
 class ScorekeeperAppearances:
-    """This class contains functions that retrieve scorekeeper
-    appearance information from a copy of the Wait Wait Stats database.
+    """Scorekeeper appearance information retrieval class.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    Contains methods used to retrieve scorekeeper appearance
+    information, including show flags.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -41,16 +42,12 @@ class ScorekeeperAppearances:
 
         self.utility = ScorekeeperUtility(database_connection=self.database_connection)
 
-    @lru_cache(typed=True)
-    def retrieve_appearances_by_id(self, scorekeeper_id: int) -> Dict[str, Any]:
-        """Returns a list of dictionary objects containing appearance
-        information for the requested scorekeeper ID.
+    def retrieve_appearances_by_id(self, scorekeeper_id: int) -> dict[str, Any]:
+        """Retrieves scorekeeper appearance information.
 
         :param scorekeeper_id: Scorekeeper ID
-        :return: Dictionary containing appearance counts and list of
-            appearances for a scorekeeper. If scorekeeper appearances
-            could not be retrieved, an empty dictionary would be
-            returned.
+        :return: A dictionary containing scorekeeper appearances with
+            corresponding show dates and Best Of or Repeat show flags
         """
         if not valid_int_id(scorekeeper_id):
             return {}
@@ -124,16 +121,12 @@ class ScorekeeperAppearances:
                 "shows": [],
             }
 
-    @lru_cache(typed=True)
-    def retrieve_appearances_by_slug(self, scorekeeper_slug: str) -> Dict[str, Any]:
-        """Returns a list of dictionary objects containing appearance
-        information for the requested scorekeeper ID.
+    def retrieve_appearances_by_slug(self, scorekeeper_slug: str) -> dict[str, Any]:
+        """Retrieves scorekeeper appearance information.
 
         :param scorekeeper_slug: Scorekeeper slug string
-        :return: Dictionary containing appearance counts and list of
-            appearances for a scorekeeper. If scorekeeper appearances
-            could not be retrieved, an empty dictionary would be
-            returned.
+        :return: A dictionary containing scorekeeper appearances with
+            corresponding show dates and Best Of or Repeat show flags
         """
         id_ = self.utility.convert_slug_to_id(scorekeeper_slug)
         if not id_:

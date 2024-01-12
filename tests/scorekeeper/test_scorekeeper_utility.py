@@ -1,23 +1,27 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Testing for object: :py:class:`wwdtm.scorekeeper.ScorekeeperUtility`
-"""
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Testing for object: :py:class:`wwdtm.scorekeeper.ScorekeeperUtility`."""
 import json
-from typing import Any, Dict
+from pathlib import Path
+from typing import Any
 
 import pytest
+
 from wwdtm.scorekeeper import ScorekeeperUtility
 
 
 @pytest.mark.skip
-def get_connect_dict() -> Dict[str, Any]:
-    """Read in database connection settings and return values as a
-    dictionary.
+def get_connect_dict() -> dict[str, Any]:
+    """Retrieves database connection settings.
+
+    :return: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
     """
-    with open("config.json", "r", encoding="utf-8") as config_file:
+    file_path = Path.cwd() / "config.json"
+    with file_path.open(mode="r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
@@ -25,7 +29,7 @@ def get_connect_dict() -> Dict[str, Any]:
 
 @pytest.mark.parametrize("scorekeeper_id", [2])
 def test_scorekeeper_utility_convert_id_to_slug(scorekeeper_id: int):
-    """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.convert_id_to_slug`
+    """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.convert_id_to_slug`.
 
     :param scorekeeper_id: Scorekeeper ID to test converting into
         scorekeeper slug string
@@ -39,7 +43,7 @@ def test_scorekeeper_utility_convert_id_to_slug(scorekeeper_id: int):
 
 @pytest.mark.parametrize("scorekeeper_id", [-1])
 def test_scorekeeper_utility_convert_invalid_id_to_slug(scorekeeper_id: int):
-    """Negative testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.convert_id_to_slug`
+    """Negative testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.convert_id_to_slug`.
 
     :param scorekeeper_id: Scorekeeper ID to test failing to convert
         into scorekeeper slug string
@@ -52,7 +56,7 @@ def test_scorekeeper_utility_convert_invalid_id_to_slug(scorekeeper_id: int):
 
 @pytest.mark.parametrize("scorekeeper_slug", ["korva-coleman"])
 def test_scorekeeper_utility_convert_slug_to_id(scorekeeper_slug: str):
-    """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.convert_slug_to_id`
+    """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.convert_slug_to_id`.
 
     :param scorekeeper_slug: Scorekeeper slug string to test converting
         into scorekeeper ID
@@ -66,7 +70,7 @@ def test_scorekeeper_utility_convert_slug_to_id(scorekeeper_slug: str):
 
 @pytest.mark.parametrize("scorekeeper_slug", ["corva-coleman"])
 def test_scorekeeper_utility_convert_invalid_slug_to_id(scorekeeper_slug: str):
-    """Negative testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.convert_slug_to_id`
+    """Negative testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.convert_slug_to_id`.
 
     :param scorekeeper_slug: Scorekeeper slug string to test failing to
         convert into scorekeeper ID
@@ -79,7 +83,7 @@ def test_scorekeeper_utility_convert_invalid_slug_to_id(scorekeeper_slug: str):
 
 @pytest.mark.parametrize("scorekeeper_id", [2])
 def test_scorekeeper_utility_id_exists(scorekeeper_id: int):
-    """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.id_exists`
+    """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.id_exists`.
 
     :param scorekeeper_id: Scorekeeper ID to test if a scorekeeper
         exists
@@ -92,7 +96,7 @@ def test_scorekeeper_utility_id_exists(scorekeeper_id: int):
 
 @pytest.mark.parametrize("scorekeeper_id", [-1])
 def test_scorekeeper_utility_id_not_exists(scorekeeper_id: int):
-    """Negative testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.id_exists`
+    """Negative testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.id_exists`.
 
     :param scorekeeper_id: Scorekeeper ID to test if a scorekeeper does
         not exist
@@ -105,7 +109,7 @@ def test_scorekeeper_utility_id_not_exists(scorekeeper_id: int):
 
 @pytest.mark.parametrize("scorekeeper_slug", ["korva-coleman"])
 def test_scorekeeper_utility_slug_exists(scorekeeper_slug: str):
-    """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.slug_exists`
+    """Testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.slug_exists`.
 
     :param scorekeeper_slug: Scorekeeper slug string to test if a
         scorekeeper exists
@@ -118,7 +122,7 @@ def test_scorekeeper_utility_slug_exists(scorekeeper_slug: str):
 
 @pytest.mark.parametrize("scorekeeper_slug", ["corva-coleman"])
 def test_scorekeeper_utility_slug_not_exists(scorekeeper_slug: str):
-    """Negative testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.slug_exists`
+    """Negative testing for :py:meth:`wwdtm.scorekeeper.ScorekeeperUtility.slug_exists`.
 
     :param scorekeeper_slug: Scorekeeper slug string to test if a
         scorekeeper does not exist

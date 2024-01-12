@@ -1,16 +1,17 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Show Data Retrieval Functions
-"""
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Show Information Retrieval Functions."""
 import datetime
 from decimal import Decimal
-from functools import lru_cache
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
+
 from wwdtm.show.info import ShowInfo
 from wwdtm.show.info_multiple import ShowInfoMultiple
 from wwdtm.show.utility import ShowUtility
@@ -18,19 +19,21 @@ from wwdtm.validation import valid_int_id
 
 
 class Show:
-    """This class contains functions used to retrieve show data from a
-    copy of the Wait Wait Stats database.
+    """Show retrieval class.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    Contains methods used to retrieve basic and detailed show
+    information, including hosts, scorekeepers, guests, panelists and
+    scores.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -48,13 +51,11 @@ class Show:
         )
         self.utility = ShowUtility(database_connection=self.database_connection)
 
-    def retrieve_all(self) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing show ID,
-        show date, Best Of and Repeat Show information for all shows.
+    def retrieve_all(self) -> list[dict[str, Any]]:
+        """Retrieves basic show information for all shows.
 
-        :return: List of all shows and their corresponding information.
-            If show information could not be retrieved, an empty list
-            will be returned.
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag and repeat show ID (if applicable)
         """
         query = """
             SELECT showid AS id, showdate AS date,
@@ -91,10 +92,16 @@ class Show:
 
     def retrieve_all_details(
         self, include_decimal_scores: bool = False
-    ) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing show ID,
-        show date, host, scorekeeper, panelist and guest information
-        for all shows.
+    ) -> list[dict[str, Any]]:
+        """Retrieves detailed show information for all shows.
+
+        :param include_decimal_scores: A boolean to determine if decimal
+            scores should be used and returned instead of integer scores
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag, repeat show ID (if applicable), host,
+            scorekeeper, location, panelists and guests
+        """
+        """Returns a list of dictionaries with show information and details for all shows.
 
         :param include_decimal_scores: Flag set to include panelist decimal
             scores, if available
@@ -115,31 +122,17 @@ class Show:
 
         shows = []
         for show in info:
-            if info[show]["id"] in panelists:
-                info[show]["panelists"] = panelists[info[show]["id"]]
-            else:
-                info[show]["panelists"] = []
-
-            if info[show]["id"] in bluffs:
-                info[show]["bluffs"] = bluffs[info[show]["id"]]
-            else:
-                info[show]["bluffs"] = {}
-
-            if info[show]["id"] in guests:
-                info[show]["guests"] = guests[info[show]["id"]]
-            else:
-                info[show]["guests"] = []
-
+            info[show]["panelists"] = panelists.get(info[show]["id"], [])
+            info[show]["bluffs"] = bluffs.get(info[show]["id"], {})
+            info[show]["guests"] = guests.get(info[show]["id"], [])
             shows.append(info[show])
 
         return shows
 
-    def retrieve_all_ids(self) -> List[int]:
-        """Returns a list of all show IDs from the database, sorted by
-        show date.
+    def retrieve_all_ids(self) -> list[int]:
+        """Retrieves all show IDs, sorted by show date.
 
-        :return: List of all show IDs. If show IDs could not be
-            retrieved, an empty list will be returned.
+        :return: A list of all show IDs as integers
         """
         query = """
             SELECT showid FROM ww_shows ORDER BY showdate ASC;
@@ -154,12 +147,11 @@ class Show:
 
         return [v[0] for v in results]
 
-    def retrieve_all_dates(self) -> List[str]:
-        """Returns a list of all show dates from the database, sorted
-        by show date.
+    def retrieve_all_dates(self) -> list[str]:
+        """Retrieves all show dates, sorted by show date.
 
-        :return: List of all show date strings. If show dates could not
-            be retrieved, an empty list will be returned.
+        :return: A list of all show date strings in ``YYYY-MM-DD``
+            format
         """
         query = "SELECT showdate FROM ww_shows ORDER BY showdate ASC;"
         cursor = self.database_connection.cursor(dictionary=False)
@@ -172,13 +164,11 @@ class Show:
 
         return [v[0].isoformat() for v in results]
 
-    def retrieve_all_dates_tuple(self) -> List[Tuple[int, int, int]]:
-        """Returns a list of all show dates as a tuple of year, month,
-        and day, sorted by show date.
+    def retrieve_all_dates_tuple(self) -> list[tuple[int, int, int]]:
+        """Retrieves all show dates as a tuple.
 
-        :return: List of allow show dates as a tuple of year, month
-            and day. If show dates could not be retrieved, an empty list
-            will be returned.
+        :return: A list of all show dates as a tuple of year, month and
+            day
         """
         query = """
             SELECT YEAR(showdate), MONTH(showdate), DAY(showdate)
@@ -196,13 +186,11 @@ class Show:
 
         return [tuple(v) for v in results]
 
-    def retrieve_all_show_years_months(self) -> List[str]:
-        """Returns a list of all show years and months as a string,
-        sorted by year and month.
+    def retrieve_all_show_years_months(self) -> list[str]:
+        """Retrieves all show years and months.
 
-        :return: List of all show years and month in ``YYYY-MM`` format.
-            If show dates could not be retrieved, an empty list will be
-            returned.
+        :return: A list of all show years and month as a string in
+            ``YYYY-MM`` format
         """
         query = """
             SELECT DISTINCT YEAR(showdate), MONTH(showdate)
@@ -219,13 +207,10 @@ class Show:
 
         return [f"{v[0]}-{v[1]}" for v in results]
 
-    def retrieve_all_shows_years_months_tuple(self) -> List[Tuple[int, int]]:
-        """Returns a list of all show years and months as a tuple of
-        year and month, sorted by year and month.
+    def retrieve_all_shows_years_months_tuple(self) -> list[tuple[int, int]]:
+        """Retrieves all show years and months as a tuple.
 
-        :return: List of allow show dates as a tuple of year and month.
-            If show dates could not be retrieved, an empty list will be
-            returned.
+        :return: A list of all show dates as a tuple of year and month
         """
         query = """
             SELECT DISTINCT YEAR(showdate), MONTH(showdate)
@@ -242,17 +227,14 @@ class Show:
 
         return [tuple(v) for v in results]
 
-    @lru_cache(typed=True)
-    def retrieve_by_date(self, year: int, month: int, day: int) -> Dict[str, Any]:
-        """Returns a dictionary object containing show ID, show date,
-        Best Of and Repeat Show information for the requested show date.
+    def retrieve_by_date(self, year: int, month: int, day: int) -> dict[str, Any]:
+        """Retrieves basic show information.
 
         :param year: Four-digit year
         :param month: One or two-digit month
         :param day: One or two-digit day
-        :return: Dictionary containing show information. If show
-            information could not be retrieved, an empty dictionary will
-            be returned.
+        :return: A dictionary containing show ID, show date, Best Of
+            show flag and repeat show ID (if applicable)
         """
         id_ = self.utility.convert_date_to_id(year, month, day)
         if not id_:
@@ -260,16 +242,12 @@ class Show:
 
         return self.retrieve_by_id(id_)
 
-    @lru_cache(typed=True)
-    def retrieve_by_date_string(self, date_string: str) -> Dict[str, Any]:
-        """Returns a dictionary object containing show ID, show date,
-        Best Of and Repeat Show information for the requested show date
-        string.
+    def retrieve_by_date_string(self, date_string: str) -> dict[str, Any]:
+        """Retrieves basic show information.
 
         :param date_string: Show date in ``YYYY-MM-DD`` format
-        :return: Dictionary containing show information. If show
-            information could not be retrieved, an empty dictionary will
-            be returned.
+        :return: A dictionary containing show ID, show date, Best Of
+            show flag and repeat show ID (if applicable)
         """
         try:
             parsed_date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
@@ -282,15 +260,12 @@ class Show:
 
         return self.retrieve_by_id(id_)
 
-    @lru_cache(typed=True)
-    def retrieve_by_id(self, show_id: int) -> Dict[str, Any]:
-        """Returns a dictionary object containing show ID, show date,
-        Best Of and Repeat Show information for the requested show ID.
+    def retrieve_by_id(self, show_id: int) -> dict[str, Any]:
+        """Retrieves basic show information.
 
         :param show_id: Show ID
-        :return: Dictionary containing show information. If show
-            information could not be retrieved, an empty dictionary will
-            be returned.
+        :return: A dictionary containing show ID, show date, Best Of
+            show flag and repeat show ID (if applicable)
         """
         if not valid_int_id(show_id):
             return {}
@@ -325,16 +300,13 @@ class Show:
 
         return info
 
-    @lru_cache(typed=True)
-    def retrieve_by_month_day(self, month: int, day: int) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing with show
-        information for the requested month and day, sorted by year.
+    def retrieve_by_month_day(self, month: int, day: int) -> list[dict[str, Any]]:
+        """Retrieves basic show information for shows by month and day.
 
         :param month: One or two-digit month
         :param day: One or two-digit day
-        :return: List of shows for the requested month, day, and
-            corresponding information. If show information could not be
-            retrieved, an empty list will be returned.
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag and repeat show ID (if applicable)
         """
         if not 1 <= month <= 12 or not 1 <= day <= 31:
             return []
@@ -360,15 +332,12 @@ class Show:
 
         return [self.retrieve_by_id(v[0]) for v in results]
 
-    @lru_cache(typed=True)
-    def retrieve_by_year(self, year: int) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing with show
-        information for the requested year, sorted by show date.
+    def retrieve_by_year(self, year: int) -> list[dict[str, Any]]:
+        """Retrieves basic show information by year.
 
         :param year: Four-digit year
-        :return: List of shows for the requested year and corresponding
-            information. If show information could not be retrieved,
-            an empty list will be returned.
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag and repeat show ID (if applicable)
         """
         try:
             parsed_year = datetime.datetime.strptime(f"{year:04d}", "%Y")
@@ -390,17 +359,13 @@ class Show:
 
         return [self.retrieve_by_id(v[0]) for v in results]
 
-    @lru_cache(typed=True)
-    def retrieve_by_year_month(self, year: int, month: int) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing show
-        information for the requested year and month, sorted by show
-        date.
+    def retrieve_by_year_month(self, year: int, month: int) -> list[dict[str, Any]]:
+        """Retrieves basic show information by year and month.
 
         :param year: Four-digit year
         :param month: One or two-digit month
-        :return: List of shows for the requested year and month, and
-            corresponding information. If show information could not be
-            retrieved, a list of dictionaries will be returned.
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag and repeat show ID (if applicable)
         """
         try:
             parsed_year_month = datetime.datetime.strptime(
@@ -430,20 +395,19 @@ class Show:
 
         return [self.retrieve_by_id(v[0]) for v in results]
 
-    @lru_cache(typed=True)
     def retrieve_details_by_date(
         self, year: int, month: int, day: int, include_decimal_scores: bool = False
-    ) -> Dict[str, Any]:
-        """Returns a list of dictionary objects containing show ID,
-        show date, host, scorekeeper, panelist and guest information
-        for the requested show date.
+    ) -> dict[str, Any]:
+        """Retrieves detailed show information.
 
         :param year: Four-digit year
         :param month: One or two-digit month
         :param day: One or two digit day
-        :return: Dictionary containing show information and details. If
-            show information could not be retrieved, an empty dictionary
-            will be returned.
+        :param include_decimal_scores: A boolean to determine if decimal
+            scores should be included
+        :return: A dictionary containing show ID, show date, Best Of
+            show flag, repeat show ID (if applicable), host,
+            scorekeeper, location, panelists and guests
         """
         id_ = self.utility.convert_date_to_id(year, month, day)
         if not id_:
@@ -453,20 +417,17 @@ class Show:
             id_, include_decimal_scores=include_decimal_scores
         )
 
-    @lru_cache(typed=True)
     def retrieve_details_by_date_string(
         self, date_string: str, include_decimal_scores: bool = False
-    ) -> Dict[str, Any]:
-        """Returns a list of dictionary objects containing show ID,
-        show date, host, scorekeeper, panelist and guest information
-        for the requested show date string.
+    ) -> dict[str, Any]:
+        """Retrieves detailed show information.
 
         :param date_string: Show date in ``YYYY-MM-DD`` format
-        :param include_decimal_scores: Flag set to include panelist decimal
-            scores, if available
-        :return: Dictionary containing show information and details. If
-            show information could not be retrieved, an empty dictionary
-            will be returned.
+        :param include_decimal_scores: A boolean to determine if decimal
+            scores should be included
+        :return: A dictionary containing show ID, show date, Best Of
+            show flag, repeat show ID (if applicable), host,
+            scorekeeper, location, panelists and guests
         """
         try:
             parsed_date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
@@ -481,20 +442,17 @@ class Show:
             id_, include_decimal_scores=include_decimal_scores
         )
 
-    @lru_cache(typed=True)
     def retrieve_details_by_id(
         self, show_id: int, include_decimal_scores: bool = False
-    ) -> Dict[str, Any]:
-        """Returns a list of dictionary objects containing show ID,
-        show date, host, scorekeeper, panelist and guest information
-        for the requested show ID.
+    ) -> dict[str, Any]:
+        """Retrieve detailed show information.
 
         :param show_id: Show ID
-        :param include_decimal_scores: Flag set to include panelist decimal
-            scores, if available
-        :return: Dictionary containing show information and details. If
-            show information could not be retrieved, an empty dictionary
-            will be returned.
+        :param include_decimal_scores: A boolean to determine if decimal
+            scores should be included
+        :return: A dictionary containing show ID, show date, Best Of
+            show flag, repeat show ID (if applicable), host,
+            scorekeeper, location, panelists and guests
         """
         if not valid_int_id(show_id):
             return {}
@@ -511,21 +469,18 @@ class Show:
 
         return info
 
-    @lru_cache(typed=True)
     def retrieve_details_by_month_day(
         self, month: int, day: int, include_decimal_scores: bool = False
-    ) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing show ID,
-        show date, host, scorekeeper, panelist and guest information
-        for the requested month and day, sorted by year.
+    ) -> list[dict[str, Any]]:
+        """Retrieves detailed show information by month and day.
 
         :param month: One or two-digit month
         :param day: One or two-digit day
-        :param include_decimal_scores: Flag set to include panelist decimal
-            scores, if available
-        :return: Dictionary containing show information and details. If
-            show information could not be retrieved, an empty dictionary
-            will be returned.
+        :param include_decimal_scores: A boolean to determine if decimal
+            scores should be included
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag, repeat show ID (if applicable), host,
+            scorekeeper, location, panelists and guests
         """
         if not 1 <= month <= 12 or not 1 <= day <= 31:
             return []
@@ -571,20 +526,17 @@ class Show:
 
         return shows
 
-    @lru_cache(typed=True)
     def retrieve_details_by_year(
         self, year: int, include_decimal_scores: bool = False
-    ) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing show ID,
-        show date, host, scorekeeper, panelist and guest information for
-        the requested year, sorted by show date.
+    ) -> list[dict[str, Any]]:
+        """Retrieves detailed show information by year.
 
         :param year: Four-digit year
-        :param include_decimal_scores: Flag set to include panelist decimal
-            scores, if available
-        :return: List of shows for the requested year and corresponding
-            details. If show information could not be retrieved, an
-            empty list will be returned.
+        :param include_decimal_scores: A boolean to determine if decimal
+            scores should be included
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag, repeat show ID (if applicable), host,
+            scorekeeper, location, panelists and guests
         """
         try:
             parsed_year = datetime.datetime.strptime(f"{year:04d}", "%Y")
@@ -626,21 +578,18 @@ class Show:
 
         return shows
 
-    @lru_cache(typed=True)
     def retrieve_details_by_year_month(
         self, year: int, month: int, include_decimal_scores: bool = False
-    ) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing show ID,
-        show date, host, scorekeeper, panelist and guest information for
-        the requested year and month, sorted by show date.
+    ) -> list[dict[str, Any]]:
+        """Retrieves detailed show information by year and month.
 
         :param year: Four-digit year
         :param month: One or two-digit month
-        :param include_decimal_scores: Flag set to include panelist decimal
-            scores, if available
-        :return: List of shows for the requested year and month, and
-            corresponding details. If show information could not be
-            retrieved, an empty list will be returned.
+        :param include_decimal_scores: A boolean to determine if decimal
+            scores should be included
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag, repeat show ID (if applicable), host,
+            scorekeeper, location, panelists and guests
         """
         try:
             parsed_year_month = datetime.datetime.strptime(
@@ -690,14 +639,11 @@ class Show:
 
         return shows
 
-    @lru_cache(typed=True)
-    def retrieve_months_by_year(self, year: int) -> List[int]:
-        """Returns a list of show months available for the requested
-        year, sorted by month.
+    def retrieve_months_by_year(self, year: int) -> list[int]:
+        """Retrieves show months for a year.
 
         :param year: Four-digit year
-        :return: List of available show months. If show information
-            could not be retrieved, an empty list will be returned.
+        :return: A list of available show months
         """
         try:
             _ = datetime.datetime.strptime(f"{year:04d}", "%Y")
@@ -720,19 +666,17 @@ class Show:
 
         return [v[0] for v in results]
 
-    @lru_cache(typed=True)
     def retrieve_recent(
         self,
-        include_days_ahead: Optional[int] = 7,
-        include_days_back: Optional[int] = 32,
-    ) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing show ID,
-        show date, Best Of and Repeat Show information for recent shows.
+        include_days_ahead: int = 7,
+        include_days_back: int = 32,
+    ) -> list[dict[str, Any]]:
+        """Retrieves basic show information for recent shows.
 
         :param include_days_ahead: Number of days in the future to
-            include, defaults to 7
+            include
         :param include_days_back: Number of days in the past to
-            include, defaults to 32
+            include
         :return: List of recent shows and corresponding information. If
             show information could not be retrieved, an empty list will
             be returned.
@@ -770,23 +714,20 @@ class Show:
 
         return [self.retrieve_by_id(v[0]) for v in results]
 
-    @lru_cache(typed=True)
     def retrieve_recent_details(
         self,
-        include_days_ahead: Optional[int] = 7,
-        include_days_back: Optional[int] = 32,
+        include_days_ahead: int = 7,
+        include_days_back: int = 32,
         include_decimal_scores: bool = False,
-    ) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing show ID,
-        show date, host, scorekeeper, panelist and guest information
-        for recent shows.
+    ) -> list[dict[str, Any]]:
+        """Retrieves detailed show information for recent shows.
 
         :param include_days_ahead: Number of days in the future to
-            include, defaults to 7
+            include
         :param include_days_back: Number of days in the past to
-            include, defaults to 32
-        :param include_decimal_scores: Flag set to include panelist decimal
-            scores, if available
+            include
+        :param include_decimal_scores: A boolean to determine if decimal
+            scores should be included
         :return: List of recent shows and corresponding details. If show
             information could not be retrieved, an empty list will be
             returned.
@@ -839,19 +780,16 @@ class Show:
 
         return shows
 
-    @lru_cache(typed=True)
     def retrieve_scores_by_year(
         self, year: int, use_decimal_scores: bool = False
-    ) -> List[Tuple[str, Union[int, Decimal]]]:
-        """Returns a list of tuples containing panelist scores for all
-        shows in the requested year, sorted by show date.
+    ) -> list[tuple[str, int | Decimal]]:
+        """Retrieves panelist scores for all shows as a tuple.
 
         :param year: Four-digit year
-        :param use_decimal_scores: Flag set to use panelist decimal scores,
-            if available
-        :return: List of tuples each containing show date and panelist
-            scores. If show scores could not be retrieved, an empty list
-            will be returned.
+        :param use_decimal_scores: A boolean to determine if decimal
+            scores should be used and returned instead of integer scores
+        :return: A list of tuples each containing show date and panelist
+            scores
         """
         try:
             _ = datetime.datetime.strptime(f"{year:04d}", "%Y")
@@ -902,11 +840,10 @@ class Show:
 
         return show_scores
 
-    def retrieve_years(self) -> List[int]:
-        """Returns a list of available show years, sorted by year.
+    def retrieve_years(self) -> list[int]:
+        """Retrieves show years.
 
-        :return: List of available show years. If show dates could not
-            be retrieved, an empty list will be returned.
+        :return: A list of available show years
         """
         query = """
             SELECT DISTINCT YEAR(showdate)
