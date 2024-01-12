@@ -34,7 +34,7 @@ Documentation Changes
 
 * Update Sphinx configuration to be more similar to the conventions used by Pallets projects
 * Change the base font from IBM Plex Sans to IBM Plex Serif
-* Clean up and rewrite docstrings to be more consistent and succint
+* Clean up and rewrite docstrings to be more consistent and succinct
 * Add table of contents to each module page
 * Update the copyright block at the top of each file to remove ``coding`` line and to include
   the appropriate SPDX license identifier
