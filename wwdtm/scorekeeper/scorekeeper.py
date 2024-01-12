@@ -1,34 +1,36 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Scorekeeper Data Retrieval Functions
-"""
-from functools import lru_cache
-from typing import Any, Dict, List, Optional
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Scorekeeper Data Retrieval Functions."""
+from typing import Any
 
 from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
 from slugify import slugify
+
 from wwdtm.scorekeeper.appearances import ScorekeeperAppearances
 from wwdtm.scorekeeper.utility import ScorekeeperUtility
 from wwdtm.validation import valid_int_id
 
 
 class Scorekeeper:
-    """This class contains functions used to retrieve scorekeeper data
-    from a copy of the Wait Wait Stats database.
+    """Scorekeeper information retrieval class.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    Contains methods used to retrieve scorekeeper information, including
+    IDs, names, slug strings and appearances.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -45,13 +47,11 @@ class Scorekeeper:
         )
         self.utility = ScorekeeperUtility(database_connection=self.database_connection)
 
-    def retrieve_all(self) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing scorekeeper
-        ID, name and slug string for all scorekeepers.
+    def retrieve_all(self) -> list[dict[str, Any]]:
+        """Retrieves scorekeeper information for all scorekeepers.
 
-        :return: List of all scorekeepers and their corresponding
-            information. If scorekeeper information could not be
-            retrieved, an empty list will be returned.
+        :return: A list of dictionaries containing scorekeeper ID, name,
+            gender and slug string for each scorekeeper
         """
         query = """
             SELECT scorekeeperid AS id, scorekeeper AS name,
@@ -80,14 +80,12 @@ class Scorekeeper:
 
         return scorekeepers
 
-    def retrieve_all_details(self) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing scorekeeper
-        ID, name, slug string and appearance information for all
-        scorekeepers.
+    def retrieve_all_details(self) -> list[dict[str, Any]]:
+        """Retrieves scorekeeper information and appearances for all scorekeepers.
 
-        :return: List of all scorekeepers and their corresponding
-            information and appearances. If scorekeeper information
-            could not be retrieved, an empty list will be returned.
+        :return: A list of dictionaries containing scorekeeper ID, name,
+            slug string, gender and a list of appearances with show
+            flags for each scorekeeper
         """
         query = """
             SELECT scorekeeperid AS id, scorekeeper AS name,
@@ -117,12 +115,10 @@ class Scorekeeper:
 
         return scorekeepers
 
-    def retrieve_all_ids(self) -> List[int]:
-        """Returns a list of all scorekeeper IDs from the database,
-        sorted by scorekeeper name.
+    def retrieve_all_ids(self) -> list[int]:
+        """Retrieves all scorekeeper IDs, sorted by scorekeeper name.
 
-        :return: List of all scorekeeper IDs. If scorekeeper IDs could
-            not be retrieved, an empty list would be returned.
+        :return: A list of scorekeeper IDs as integers
         """
         query = """
             SELECT scorekeeperid FROM ww_scorekeepers ORDER BY scorekeeper ASC;
@@ -137,13 +133,10 @@ class Scorekeeper:
 
         return [v[0] for v in results]
 
-    def retrieve_all_slugs(self) -> List[str]:
-        """Returns a list of all scorekeeper slug strings from the
-        database, sorted by scorekeeper name.
+    def retrieve_all_slugs(self) -> list[str]:
+        """Retrieves all scorekeeper slug strings, sorted by scorekeeper name.
 
-        :return: List of all scorekeeper slug strings. If scorekeeper
-            slug strings could not be retrieved, an empty list will be
-            returned.
+        :return: A list of scorekeeper slug strings
         """
         query = """
             SELECT scorekeeperslug FROM ww_scorekeepers ORDER BY scorekeeper ASC;
@@ -158,15 +151,12 @@ class Scorekeeper:
 
         return [v[0] for v in results]
 
-    @lru_cache(typed=True)
-    def retrieve_by_id(self, scorekeeper_id: int) -> Dict[str, Any]:
-        """Returns a dictionary object containing scorekeeper ID, name
-        and slug string for the requested scorekeeper ID.
+    def retrieve_by_id(self, scorekeeper_id: int) -> dict[str, Any]:
+        """Retrieves scorekeeper information.
 
         :param scorekeeper_id: Scorekeeper ID
-        :return: Dictionary containing scorekeeper information. If
-            scorekeeper information could not be retrieved, an empty
-            dictionary will be returned.
+        :return: A dictionary containing host ID, name, slug string and
+            gender
         """
         if not valid_int_id(scorekeeper_id):
             return {}
@@ -193,15 +183,12 @@ class Scorekeeper:
             "gender": result.gender,
         }
 
-    @lru_cache(typed=True)
-    def retrieve_by_slug(self, scorekeeper_slug: str) -> Dict[str, Any]:
-        """Returns a dictionary object containing scorekeeper ID, name
-        and slug string for the requested scorekeeper slug string.
+    def retrieve_by_slug(self, scorekeeper_slug: str) -> dict[str, Any]:
+        """Retrieves scorekeeper information.
 
         :param scorekeeper_slug: Scorekeeper slug string
-        :return: Dictionary containing scorekeeper information. If
-            scorekeeper information could not be retrieved, an empty
-            dictionary will be returned.
+        :return: A dictionary containing host ID, name, slug string and
+            gender
         """
         try:
             slug = scorekeeper_slug.strip()
@@ -216,16 +203,12 @@ class Scorekeeper:
 
         return self.retrieve_by_id(id_)
 
-    @lru_cache(typed=True)
-    def retrieve_details_by_id(self, scorekeeper_id: int) -> Dict[str, Any]:
-        """Returns a dictionary object containing scorekeeper ID, name,
-        slug string and appearance information for the requested
-        scorekeeper ID.
+    def retrieve_details_by_id(self, scorekeeper_id: int) -> dict[str, Any]:
+        """Retrieves scorekeeper information and appearances.
 
         :param scorekeeper_id: Scorekeeper ID
-        :return: Dictionary containing scorekeeper information and
-            their appearances. If scorekeeper information could not be
-            retrieved, an empty dictionary will be returned.
+        :return: A dictionaries containing scorekeeper ID, name, slug
+            string, gender and a list of appearances with show flags
         """
         if not valid_int_id(scorekeeper_id):
             return {}
@@ -240,16 +223,12 @@ class Scorekeeper:
 
         return info
 
-    @lru_cache(typed=True)
-    def retrieve_details_by_slug(self, scorekeeper_slug: str) -> Dict[str, Any]:
-        """Returns a dictionary object containing scorekeeper ID, name,
-        slug string and appearance information for the requested
-        scorekeeper slug string.
+    def retrieve_details_by_slug(self, scorekeeper_slug: str) -> dict[str, Any]:
+        """Retrieves scorekeeper information and appearances.
 
         :param scorekeeper_slug: Scorekeeper slug string
-        :return: Dictionary containing scorekeeper information and
-            their appearances. If scorekeeper information could not be
-            retrieved, an empty dictionary will be returned.
+        :return: A dictionaries containing scorekeeper ID, name, slug
+            string, gender and a list of appearances with show flags
         """
         try:
             slug = scorekeeper_slug.strip()

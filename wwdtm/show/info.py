@@ -1,36 +1,36 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Supplemental Show Information
-Retrieval Functions
-"""
-from functools import lru_cache
-from typing import Any, Dict, List, Optional
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Show Detailed Information Retrieval Functions."""
+from typing import Any
 
 from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
 from slugify import slugify
-from wwdtm.show.utility import ShowUtility
+
 from wwdtm.location.location import LocationUtility
+from wwdtm.show.utility import ShowUtility
 from wwdtm.validation import valid_int_id
 
 
 class ShowInfo:
-    """This class contains functions that retrieve show supplemental
-    show information, including panelist, guest and Bluff the Listener
-    information from a copy of the Wait Wait Stats database.
+    """Show information retrieval class.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    Contains methods used to retrieve panelist, guest and Bluff the
+    Listener information.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -46,7 +46,7 @@ class ShowInfo:
         self.loc_util = LocationUtility(database_connection=self.database_connection)
         self.panelists = self._retrieve_panelists()
 
-    def _retrieve_panelists(self) -> Dict[int, Dict[str, str]]:
+    def _retrieve_panelists(self) -> dict[int, dict[str, str]]:
         """Returns a dictionary of panelist information.
 
         :return: Dictionary containing panelist ID as the key and
@@ -74,14 +74,13 @@ class ShowInfo:
 
         return panelists
 
-    @lru_cache(typed=True)
-    def retrieve_bluff_info_by_id(self, show_id: int) -> List[Dict[str, Any]]:
-        """Returns a list of Bluff the Listener information for the
-        requested show ID.
+    def retrieve_bluff_info_by_id(self, show_id: int) -> list[dict[str, Any]]:
+        """Retrieves Bluff the Listener information.
 
         :param show_id: Show ID
-        :return: List containing each of the correct and chosen Bluff
-            the Listener information.
+        :return: A dictionary containing Bluff the Listener segment ID
+            and information about the chosen Bluff panelist and correct
+            Bluff panelist.
         """
         if not valid_int_id(show_id):
             return {}
@@ -161,14 +160,12 @@ class ShowInfo:
 
         return bluffs
 
-    def retrieve_core_info_by_id(self, show_id: int) -> Dict[str, Any]:
-        """Returns a dictionary with core information for the requested
-        show ID.
+    def retrieve_core_info_by_id(self, show_id: int) -> dict[str, Any]:
+        """Retrieves core information.
 
-        :param show_ids: List of show IDs
-        :return: Dictionary containing host, scorekeeper, location,
-            description and notes. If show core information could not be
-            retrieved, an empty dictionary will be returned.
+        :param show_id: Show ID
+        :return: A dictionary containing host, scorekeeper, location,
+            description and notes
         """
         if not valid_int_id(show_id):
             return {}
@@ -245,10 +242,7 @@ class ShowInfo:
         else:
             description = None
 
-        if result.show_notes:
-            notes = str(result.show_notes).strip()
-        else:
-            notes = None
+        notes = str(result.show_notes).strip() if result.show_notes else None
 
         show_info = {
             "id": result.show_id,
@@ -275,15 +269,12 @@ class ShowInfo:
 
         return show_info
 
-    @lru_cache(typed=True)
-    def retrieve_guest_info_by_id(self, show_id: int) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing Not My Job
-        guest information for the requested show ID.
+    def retrieve_guest_info_by_id(self, show_id: int) -> list[dict[str, Any]]:
+        """Retrieves Not My Job guest information.
 
         :param show_id: Show ID
-        :return: Dictionary containing Not My Job guest information. If
-            Not My Job information could not be retrieved, an empty list
-            will be returned.
+        :return: A dictionary containing Not My Job guest information,
+            including score and scoring exception for each guest
         """
         if not valid_int_id(show_id):
             return []
@@ -320,19 +311,16 @@ class ShowInfo:
 
         return guests
 
-    @lru_cache(typed=True)
     def retrieve_panelist_info_by_id(
         self, show_id: int, include_decimal_scores: bool = False
-    ) -> List[Dict[str, Any]]:
-        """Returns a list of dictionary objects containing panelist
-        information for the requested show ID.
+    ) -> list[dict[str, Any]]:
+        """Retrieves panelist information.
 
         :param show_id: Show ID
-        :param include_decimal_scores: Flag set to include panelist
-            decimal scores, if available
-        :return: List of panelists with corresponding scores and
-            ranking information. If panelist information could not be
-            retrieved, an empty list will be returned.
+        :param use_decimal_scores: A boolean to determine if decimal
+            scores should be used and returned instead of integer scores
+        :return: A dictionary containing panelist information, scores
+            and rankings
         """
         if not valid_int_id(show_id):
             return []

@@ -1,32 +1,33 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Host Data Utility Functions
-"""
-from functools import lru_cache
-from typing import Any, Dict, Optional
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Host Data Utility Functions."""
+from typing import Any
 
 from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
+
 from wwdtm.validation import valid_int_id
 
 
 class HostUtility:
-    """This class contains supporting functions used to check whether
-    a host ID or slug string exists or to convert an ID to a slug
-    string, or vice versa.
+    """Host information and utilities class.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    Contains methods used to convert between host ID and slug strings,
+    and to check if host IDs and slug strings exist.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -38,12 +39,12 @@ class HostUtility:
 
             self.database_connection = database_connection
 
-    @lru_cache(typed=True)
-    def convert_id_to_slug(self, host_id: int) -> Optional[str]:
-        """Converts a host's ID to the matching host slug string value.
+    def convert_id_to_slug(self, host_id: int) -> str | None:
+        """Converts a host ID to the corresponding host slug string.
 
         :param host_id: Host ID
-        :return: Host slug string, if a match is found
+        :return: Host slug string if a corresponding value is found.
+            Otherwise, ``None`` is returned
         """
         if not valid_int_id(host_id):
             return None
@@ -61,12 +62,12 @@ class HostUtility:
 
         return None
 
-    @lru_cache(typed=True)
-    def convert_slug_to_id(self, host_slug: str) -> Optional[int]:
-        """Converts a host's slug string to the matching host ID value.
+    def convert_slug_to_id(self, host_slug: str) -> int | None:
+        """Converts a host slug string to the corresponding host ID.
 
         :param host_slug: Host slug string
-        :return: Host ID, if a match is found
+        :return: Host ID as an integer if a corresponding value is
+            found. Otherwise, ``None`` is returned
         """
         try:
             slug = host_slug.strip()
@@ -88,12 +89,11 @@ class HostUtility:
 
         return None
 
-    @lru_cache(typed=True)
     def id_exists(self, host_id: int) -> bool:
-        """Checks to see if a host ID exists.
+        """Validates if a host ID exists.
 
         :param host_id: Host ID
-        :return: True or False, based on whether the host ID exists
+        :return: ``True`` if the ID exists, otherwise ``False``
         """
         if not valid_int_id(host_id):
             return False
@@ -108,13 +108,11 @@ class HostUtility:
 
         return bool(result)
 
-    @lru_cache(typed=True)
     def slug_exists(self, host_slug: str) -> bool:
-        """Checks to see if a host slug string exists.
+        """Validates if a host slug string exists.
 
         :param host_slug: Host slug string
-        :return: True or False, based on whether the host slug string
-            exists
+        :return: ``True`` if the slug string exists, otherwise ``False``
         """
         try:
             slug = host_slug.strip()

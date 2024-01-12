@@ -1,23 +1,27 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Testing for object :py:class:`wwdtm.show.ShowUtility`
-"""
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Testing for object :py:class:`wwdtm.show.ShowUtility`."""
 import json
-from typing import Any, Dict
+from pathlib import Path
+from typing import Any
 
 import pytest
+
 from wwdtm.show import ShowUtility
 
 
 @pytest.mark.skip
-def get_connect_dict() -> Dict[str, Any]:
-    """Read in database connection settings and return values as a
-    dictionary.
+def get_connect_dict() -> dict[str, Any]:
+    """Retrieves database connection settings.
+
+    :return: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
     """
-    with open("config.json", "r", encoding="utf-8") as config_file:
+    file_path = Path.cwd() / "config.json"
+    with file_path.open(mode="r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
@@ -25,7 +29,7 @@ def get_connect_dict() -> Dict[str, Any]:
 
 @pytest.mark.parametrize("year, month, day", [(2018, 10, 27)])
 def test_show_utility_convert_date_to_id(year: int, month: int, day: int):
-    """Testing for :py:meth:`wwdtm.show.ShowUtility.convert_date_to_id`
+    """Testing for :py:meth:`wwdtm.show.ShowUtility.convert_date_to_id`.
 
     :param year: Four digit year to test converting into show ID
     :param month: One or two digit month to test converting into show ID
@@ -35,14 +39,14 @@ def test_show_utility_convert_date_to_id(year: int, month: int, day: int):
     id_ = utility.convert_date_to_id(year, month, day)
 
     assert id_, f"Show ID for date {year:04d}-{month:02d}-{day:02d} not found"
-    assert isinstance(id_, int), (
-        f"Invalid value returned for date " f"{year:04d}-{month:02d}-{day:02d}"
-    )
+    assert isinstance(
+        id_, int
+    ), f"Invalid value returned for date {year:04d}-{month:02d}-{day:02d}"
 
 
 @pytest.mark.parametrize("year, month, day", [(2018, 10, 26)])
 def test_show_utility_convert_invalid_date_to_id(year: int, month: int, day: int):
-    """Negative testing for :py:meth:`wwdtm.show.ShowUtility.convert_date_to_id`
+    """Negative testing for :py:meth:`wwdtm.show.ShowUtility.convert_date_to_id`.
 
     :param year: Four digit year to test failing to convert into show ID
     :param month: One or two digit month to test failing to convert
@@ -58,7 +62,7 @@ def test_show_utility_convert_invalid_date_to_id(year: int, month: int, day: int
 
 @pytest.mark.parametrize("show_id", [1162])
 def test_show_utility_convert_id_to_date(show_id: int):
-    """Testing for :py:meth:`wwdtm.show.ShowUtility.convert_id_to_date`
+    """Testing for :py:meth:`wwdtm.show.ShowUtility.convert_id_to_date`.
 
     :param show_id: Show ID to test converting into show date
     """
@@ -71,7 +75,7 @@ def test_show_utility_convert_id_to_date(show_id: int):
 
 @pytest.mark.parametrize("show_id", [-1])
 def test_show_utility_convert_invalid_id_to_date(show_id: int):
-    """Negative testing for :py:meth:`wwdtm.show.ShowUtility.convert_id_to_date`
+    """Negative testing for :py:meth:`wwdtm.show.ShowUtility.convert_id_to_date`.
 
     :param show_id: Show ID to test failing to convert into show date
     """
@@ -83,7 +87,7 @@ def test_show_utility_convert_invalid_id_to_date(show_id: int):
 
 @pytest.mark.parametrize("year, month, day", [(2020, 4, 25)])
 def test_show_utility_date_exists(year: int, month: int, day: int):
-    """Testing for :py:meth:`wwdtm.show.ShowUtility.date_exists`
+    """Testing for :py:meth:`wwdtm.show.ShowUtility.date_exists`.
 
     :param year: Four digit year to test if a show exists
     :param month: One or two digit month to test if a show exists
@@ -97,7 +101,7 @@ def test_show_utility_date_exists(year: int, month: int, day: int):
 
 @pytest.mark.parametrize("year, month, day", [(2020, 4, 24)])
 def test_show_utility_date_not_exists(year: int, month: int, day: int):
-    """Negative testing for :py:meth:`wwdtm.show.ShowUtility.date_exists`
+    """Negative testing for :py:meth:`wwdtm.show.ShowUtility.date_exists`.
 
     :param year: Four digit year to test if a show does not exist
     :param month: One or two digit month to test if a show does not
@@ -112,7 +116,7 @@ def test_show_utility_date_not_exists(year: int, month: int, day: int):
 
 @pytest.mark.parametrize("show_id", [1162])
 def test_show_utility_id_exists(show_id: int):
-    """Testing for :py:meth:`wwdtm.show.ShowUtility.id_exists`
+    """Testing for :py:meth:`wwdtm.show.ShowUtility.id_exists`.
 
     :param show_id: Show ID to test if a show exists
     """
@@ -124,7 +128,7 @@ def test_show_utility_id_exists(show_id: int):
 
 @pytest.mark.parametrize("show_id", [-1])
 def test_show_utility_id_not_exists(show_id: int):
-    """Negative testing for :py:meth:`wwdtm.show.ShowUtility.id_exists`
+    """Negative testing for :py:meth:`wwdtm.show.ShowUtility.id_exists`.
 
     :param show_id: Show ID to test if a show does not exist
     """

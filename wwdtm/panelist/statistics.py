@@ -1,37 +1,38 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Panelist Statistics Retrieval Functions
-"""
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Panelist Statistics Retrieval Functions."""
 from decimal import Decimal
-from functools import lru_cache
-from typing import Any, Dict, Optional
+from typing import Any
 
-from mysql.connector import connect
 import numpy
-from wwdtm.panelist.scores import PanelistScores
+from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
+
 from wwdtm.panelist.decimal_scores import PanelistDecimalScores
+from wwdtm.panelist.scores import PanelistScores
 from wwdtm.panelist.utility import PanelistUtility
 from wwdtm.validation import valid_int_id
 
 
 class PanelistStatistics:
-    """This class contains functions used to retrieve data from a copy
-    of the Wait Wait Stats database and calculate statistics for
-    panelists.
+    """Panelist statistics information retrieval and calculation class.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    Contains methods used to retrieve Bluff the Listener, ranking
+    and scoring statistics.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -49,15 +50,13 @@ class PanelistStatistics:
         )
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
-    @lru_cache(typed=True)
-    def retrieve_bluffs_by_id(self, panelist_id: int) -> Dict[str, int]:
-        """Returns a dictionary containing the number of chosen Bluffs
-        and correct Bluffs for the requested panelist ID.
+    def retrieve_bluffs_by_id(self, panelist_id: int) -> dict[str, int]:
+        """Retrieve panelist Bluff the Listener statistics.
 
         :param panelist_id: Panelist ID
-        :return: Dictionary containing panelist Bluff counts. If
-            panelist Bluff counts could not be returned, an empty
-            dictionary will be returned.
+        :return: A dictionary containing number of times a panelist's
+            Bluff the Listener story was chosen and number of times
+            they had the correct story
         """
         query = """
             SELECT (
@@ -89,15 +88,13 @@ class PanelistStatistics:
             "correct": result.correct,
         }
 
-    @lru_cache(typed=True)
-    def retrieve_bluffs_by_slug(self, panelist_slug: str) -> Dict[str, int]:
-        """Returns a dictionary containing the number of chosen Bluffs
-        and correct Bluffs for the requested panelist slug string.
+    def retrieve_bluffs_by_slug(self, panelist_slug: str) -> dict[str, int]:
+        """Retrieve panelist Bluff the Listener statistics.
 
         :param panelist_slug: Panelist slug string
-        :return: Dictionary containing panelist Bluff counts. If
-            panelist Bluff counts could not be returned, an empty
-            dictionary will be returned.
+        :return: A dictionary containing number of times a panelist's
+            Bluff the Listener story was chosen and number of times
+            they had the correct story
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:
@@ -105,15 +102,12 @@ class PanelistStatistics:
 
         return self.retrieve_bluffs_by_id(id_)
 
-    @lru_cache(typed=True)
-    def retrieve_rank_info_by_id(self, panelist_id: int) -> Dict[str, int]:
-        """Returns a dictionary with ranking information for the
-        requested panelist ID.
+    def retrieve_rank_info_by_id(self, panelist_id: int) -> dict[str, int]:
+        """Retrieves panelist ranking information.
 
         :param panelist_id: Panelist ID
-        :return: Dictionary containing panelist ranking information. If
-            panelist ranking information could not be returned, an empty
-            dictionary will be returned.
+        :return: A dictionary containing the number of times a panelist
+            has finished in 1st, 1st tied, 2nd, 2nd tied and 3rd place
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -167,15 +161,12 @@ class PanelistStatistics:
             "third": result.third,
         }
 
-    @lru_cache(typed=True)
-    def retrieve_rank_info_by_slug(self, panelist_slug: str) -> Dict[str, int]:
-        """Returns a dictionary with ranking information for the
-        requested panelist slug string.
+    def retrieve_rank_info_by_slug(self, panelist_slug: str) -> dict[str, int]:
+        """Retrieves panelist ranking information.
 
         :param panelist_slug: Panelist slug string
-        :return: Dictionary containing panelist ranking information. If
-            panelist ranking information could not be returned, an empty
-            dictionary will be returned.
+        :return: A dictionary containing the number of times a panelist
+            has finished in 1st, 1st tied, 2nd, 2nd tied and 3rd place
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:
@@ -183,20 +174,16 @@ class PanelistStatistics:
 
         return self.retrieve_rank_info_by_id(id_)
 
-    @lru_cache(typed=True)
     def retrieve_statistics_by_id(
         self, panelist_id: int, include_decimal_scores: bool = False
-    ) -> Dict[str, Any]:
-        """Returns a dictionary containing panelist statistics, ranking
-        data, and scoring data for the requested panelist ID.
+    ) -> dict[str, Any]:
+        """Retrieves and calculates panelist statistics.
 
         :param panelist_id: Panelist ID
-        :param include_decimal_scores: Flag set to include statistics
-            based on decimal scores along with statistics based on
-            integer scores
-        :return: Dictionary containing panelist statistics. If panelist
-            statistics could not be returned, an empty dictionary will
-            be returned.
+        :param use_decimal_scores: A boolean to determine if decimal
+            scores should be used and returned instead of integer scores
+        :return: A dictionary containing panelist scoring and ranking
+            statistics
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -262,20 +249,16 @@ class PanelistStatistics:
                 "ranking": ranking,
             }
 
-    @lru_cache(typed=True)
     def retrieve_statistics_by_slug(
         self, panelist_slug: str, include_decimal_scores: bool = False
-    ) -> Dict[str, Any]:
-        """Returns a dictionary containing panelist statistics, ranking
-        data, and scoring data for the requested panelist slug string.
+    ) -> dict[str, Any]:
+        """Retrieves and calculates panelist statistics.
 
         :param panelist_slug: Panelist slug string
-        :param include_decimal_scores: Flag set to include statistics
-            based on decimal scores along with statistics based on
-            integer scores
-        :return: Dictionary containing panelist statistics. If panelist
-            statistics could not be returned, an empty dictionary will
-            be returned.
+        :param use_decimal_scores: A boolean to determine if decimal
+            scores should be used and returned instead of integer scores
+        :return: A dictionary containing panelist scoring and ranking
+            statistics
         """
         id_ = self.utility.convert_slug_to_id(panelist_slug)
         if not id_:

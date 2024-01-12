@@ -1,23 +1,27 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Testing for object :py:class:`wwdtm.show.ShowInfo`
-"""
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Testing for object :py:class:`wwdtm.show.ShowInfo`."""
 import json
-from typing import Any, Dict, List
+from pathlib import Path
+from typing import Any
 
 import pytest
+
 from wwdtm.show import ShowInfo
 
 
 @pytest.mark.skip
-def get_connect_dict() -> Dict[str, Any]:
-    """Read in database connection settings and return values as a
-    dictionary.
+def get_connect_dict() -> dict[str, Any]:
+    """Retrieves database connection settings.
+
+    :return: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
     """
-    with open("config.json", "r", encoding="utf-8") as config_file:
+    file_path = Path.cwd() / "config.json"
+    with file_path.open(mode="r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
@@ -25,7 +29,7 @@ def get_connect_dict() -> Dict[str, Any]:
 
 @pytest.mark.parametrize("show_id", [319, 1162])
 def test_show_info_retrieve_bluff_info_by_id(show_id: int):
-    """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_bluff_info_by_id`
+    """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_bluff_info_by_id`.
 
     :param show_id: Show ID to test retrieving show Bluff the Listener
         information
@@ -34,7 +38,7 @@ def test_show_info_retrieve_bluff_info_by_id(show_id: int):
     bluff = info.retrieve_bluff_info_by_id(show_id)
 
     assert (
-        isinstance(bluff, List) and bluff
+        isinstance(bluff, list) and bluff
     ), f"Bluff the Listener information for the show ID {show_id} could not be retrieved"
 
     assert "chosen_panelist" in bluff[0], (
@@ -49,7 +53,7 @@ def test_show_info_retrieve_bluff_info_by_id(show_id: int):
 
 @pytest.mark.parametrize("show_id", [319, 1162])
 def test_show_info_retrieve_core_info_by_id(show_id: int):
-    """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_core_info_by_id`
+    """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_core_info_by_id`.
 
     :param show_id: Show ID to test retrieving show core information
     """
@@ -68,7 +72,7 @@ def test_show_info_retrieve_core_info_by_id(show_id: int):
 
 @pytest.mark.parametrize("show_id", [1162])
 def test_show_info_retrieve_guest_info_by_id(show_id: int):
-    """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_guest_info_by_id`
+    """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_guest_info_by_id`.
 
     :param show_id: Show ID to test retrieving show guest information
     """
@@ -90,7 +94,7 @@ def test_show_info_retrieve_guest_info_by_id(show_id: int):
 def test_show_info_retrieve_panelist_info_by_id(
     show_id: int, include_decimal_scores: bool
 ):
-    """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_panelist_info_by_id`
+    """Testing for :py:meth:`wwdtm.show.ShowInfo.retrieve_panelist_info_by_id`.
 
     :param show_id: Show ID to test retrieving show panelist information
     :param include_decimal_scores: Flag set to include decimal score columns

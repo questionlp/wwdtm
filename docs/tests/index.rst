@@ -4,8 +4,8 @@
 Testing Modules
 ***************
 
-This section of the documentation covers the ``pytest`` testing modules for
-each of the ``wwdtm`` library modules:
+This section of the documentation covers the :py:mod:`pytest` testing modules for
+each of the :py:mod:`wwdtm` library modules:
 
 .. toctree::
     :maxdepth: 2

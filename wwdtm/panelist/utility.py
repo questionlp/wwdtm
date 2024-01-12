@@ -1,32 +1,33 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Wait Wait Don't Tell Me! Stats Panelist Data Utility Functions
-"""
-from functools import lru_cache
-from typing import Any, Dict, Optional
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Wait Wait Don't Tell Me! Stats Panelist Data Utility Functions."""
+from typing import Any
 
 from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
+
 from wwdtm.validation import valid_int_id
 
 
 class PanelistUtility:
-    """This class contains supporting functions used to check whether
-    a panelist ID or slug string exists or to convert an ID to a slug
-    string, or vice versa.
+    """Panelist information and utilities class.
 
-    :param connect_dict: Dictionary containing database connection
-        settings as required by mysql.connector.connect
-    :param database_connection: mysql.connector.connect database
-        connection
+    Contains methods used to convert between panelist ID and slug
+    strings, and to check if panelist IDs and slug strings exist.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
         self,
-        connect_dict: Optional[Dict[str, Any]] = None,
-        database_connection: Optional[connect] = None,
+        connect_dict: dict[str, Any] = None,
+        database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
         """Class initialization method."""
         if connect_dict:
@@ -38,13 +39,12 @@ class PanelistUtility:
 
             self.database_connection = database_connection
 
-    @lru_cache(typed=True)
-    def convert_id_to_slug(self, panelist_id: int) -> Optional[str]:
-        """Converts a panelist's ID to the matching panelist slug
-        string value.
+    def convert_id_to_slug(self, panelist_id: int) -> str | None:
+        """Converts a panelist ID to the corresponding panelist slug string.
 
         :param panelist_id: Panelist ID
-        :return: Panelist slug string, if a match is found
+        :return: Panelist slug string if a corresponding value is found.
+            Otherwise, ``None`` is returned
         """
         if not valid_int_id(panelist_id):
             return None
@@ -62,13 +62,12 @@ class PanelistUtility:
 
         return None
 
-    @lru_cache(typed=True)
-    def convert_slug_to_id(self, panelist_slug: str) -> Optional[int]:
-        """Converts a panelist's slug string to the matching panelist ID
-        value.
+    def convert_slug_to_id(self, panelist_slug: str) -> int | None:
+        """Converts a panelist slug string to the corresponding panelist ID.
 
         :param panelist_slug: Panelist slug string
-        :return: Panelists ID, if a match is found
+        :return: Panelist ID if a corresponding value is found.
+            Otherwise, ``None`` is returned
         """
         try:
             slug = panelist_slug.strip()
@@ -90,12 +89,11 @@ class PanelistUtility:
 
         return None
 
-    @lru_cache(typed=True)
     def id_exists(self, panelist_id: int) -> bool:
-        """Checks to see if a panelist ID exists.
+        """Validates if a panelist ID exists.
 
         :param panelist_id: Panelist ID
-        :return: True or False, based on whether the panelist ID exists
+        :return: ``True`` if the ID exists, otherwise ``False``
         """
         if not valid_int_id(panelist_id):
             return False
@@ -110,13 +108,11 @@ class PanelistUtility:
 
         return bool(result)
 
-    @lru_cache(typed=True)
     def slug_exists(self, panelist_slug: str) -> bool:
-        """Checks to see if a panelist slug string exists.
+        """Validates if a panelist slug string exists.
 
         :param panelist_slug: Panelist slug string
-        :return: True or False, based on whether the panelist slug
-            string exists
+        :return: ``True`` if the slug string exists, otherwise ``False``
         """
         try:
             slug = panelist_slug.strip()

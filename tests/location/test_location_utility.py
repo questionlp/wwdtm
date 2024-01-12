@@ -1,26 +1,27 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Testing for object: :py:class:`wwdtm.location.LocationUtility`
-"""
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Testing for object: :py:class:`wwdtm.location.LocationUtility`."""
 import json
-from typing import Any, Dict
+from pathlib import Path
+from typing import Any
 
 import pytest
+
 from wwdtm.location import LocationUtility
 
 
 @pytest.mark.skip
-def get_connect_dict() -> Dict[str, Any]:
-    """Read in database connection settings and return values as a
-    dictionary.
+def get_connect_dict() -> dict[str, Any]:
+    """Retrieves database connection settings.
 
-    :return: A dictionary containing database connection settings
-        for use by mysql.connector
+    :return: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
     """
-    with open("config.json", "r", encoding="utf-8") as config_file:
+    file_path = Path.cwd() / "config.json"
+    with file_path.open(mode="r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
@@ -28,7 +29,7 @@ def get_connect_dict() -> Dict[str, Any]:
 
 @pytest.mark.parametrize("location_id", [95])
 def test_location_utility_convert_id_to_slug(location_id: int):
-    """Testing for :py:meth:`wwdtm.location.LocationUtility.convert_id_to_slug`
+    """Testing for :py:meth:`wwdtm.location.LocationUtility.convert_id_to_slug`.
 
     :param location_id: Location ID to test converting into location
         slug string
@@ -41,7 +42,7 @@ def test_location_utility_convert_id_to_slug(location_id: int):
 
 @pytest.mark.parametrize("location_id", [-1])
 def test_location_utility_convert_invalid_id_to_slug(location_id: int):
-    """Negative testing for :py:meth:`wwdtm.location.LocationUtility.convert_id_to_slug`
+    """Negative testing for :py:meth:`wwdtm.location.LocationUtility.convert_id_to_slug`.
 
     :param location_id: Location ID to test failing to convert into
         location slug string
@@ -54,7 +55,7 @@ def test_location_utility_convert_invalid_id_to_slug(location_id: int):
 
 @pytest.mark.parametrize("location_slug", ["the-chicago-theatre-chicago-il"])
 def test_location_utility_convert_slug_to_id(location_slug: str):
-    """Testing for :py:meth:`wwdtm.location.LocationUtility.convert_slug_to_id`
+    """Testing for :py:meth:`wwdtm.location.LocationUtility.convert_slug_to_id`.
 
     :param location_slug: Location slug string to test converting into
         location ID
@@ -67,7 +68,7 @@ def test_location_utility_convert_slug_to_id(location_slug: str):
 
 @pytest.mark.parametrize("location_slug", ["the-chicago-theatre-chicago-li"])
 def test_location_utility_convert_invalid_slug_to_id(location_slug: str):
-    """Negative testing for :py:meth:`wwdtm.location.LocationUtility.convert_slug_to_id`
+    """Negative testing for :py:meth:`wwdtm.location.LocationUtility.convert_slug_to_id`.
 
     :param location_slug: Location slug string to test failing to
         convert into location ID
@@ -80,7 +81,7 @@ def test_location_utility_convert_invalid_slug_to_id(location_slug: str):
 
 @pytest.mark.parametrize("location_id", [95])
 def test_location_utility_id_exists(location_id: int):
-    """Testing for :py:meth:`wwdtm.location.LocationUtility.id_exists`
+    """Testing for :py:meth:`wwdtm.location.LocationUtility.id_exists`.
 
     :param location_id: Location ID to test if a location exists
     """
@@ -92,7 +93,7 @@ def test_location_utility_id_exists(location_id: int):
 
 @pytest.mark.parametrize("location_id", [-1])
 def test_location_utility_id_not_exists(location_id: int):
-    """Negative testing for :py:meth:`wwdtm.location.LocationUtility.id_exists`
+    """Negative testing for :py:meth:`wwdtm.location.LocationUtility.id_exists`.
 
     :param location_id: Location ID to test if a location does not exist
     """
@@ -104,7 +105,7 @@ def test_location_utility_id_not_exists(location_id: int):
 
 @pytest.mark.parametrize("location_slug", ["the-chicago-theatre-chicago-il"])
 def test_location_utility_slug_exists(location_slug: str):
-    """Testing for :py:meth:`wwdtm.location.LocationUtility.slug_exists`
+    """Testing for :py:meth:`wwdtm.location.LocationUtility.slug_exists`.
 
     :param location_slug: Location slug string to test if a location
         exists
@@ -117,8 +118,7 @@ def test_location_utility_slug_exists(location_slug: str):
 
 @pytest.mark.parametrize("location_slug", ["the-chicago-theatre-chicago-li"])
 def test_location_utility_slug_not_exists(location_slug: str):
-    """Testing for :py:meth:`wwdtm.location.LocationUtility.slug_exists`
-    with venue name
+    """Testing for :py:meth:`wwdtm.location.LocationUtility.slug_exists` with venue name.
 
     :param location_slug: Location slug string to test if a location
         does not exists
@@ -131,8 +131,7 @@ def test_location_utility_slug_not_exists(location_slug: str):
 
 @pytest.mark.parametrize("city", ["Chicago"])
 def test_location_utility_slugify_location_city(city: str):
-    """Negative testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`
-    with city name
+    """Negative testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location` with city name.
 
     :param city: City to include in the slug string
     """
@@ -146,8 +145,7 @@ def test_location_utility_slugify_location_city(city: str):
 
 @pytest.mark.parametrize("city, state", [("Chicago", "IL")])
 def test_location_utility_slugify_location_city_state(city: str, state: str):
-    """Negative testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`
-    with city and state names
+    """Negative testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location` with city and state names.
 
     :param city: City to include in the slug string
     :param state: State to include in the slug string
@@ -166,8 +164,7 @@ def test_location_utility_slugify_location_city_state(city: str, state: str):
 def test_location_utility_slugify_location_full(
     location_id: int, venue: str, city: str, state: str
 ):
-    """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`
-    with location ID, venue, city and state names
+    """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location` with location ID, venue, city and state names.
 
     :param location_id: Location ID to include in the slug string
     :param venue: Venue name to include in the slug string
@@ -185,8 +182,7 @@ def test_location_utility_slugify_location_full(
 
 @pytest.mark.parametrize("location_id, venue", [(2, "Chase Auditorium")])
 def test_location_utility_slugify_location_venue(location_id: int, venue: str):
-    """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`
-    with venue name
+    """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location` with venue name.
 
     :param location_id: Location ID to include in the slug string
     :param venue: Venue name to include in the slug string
@@ -202,7 +198,7 @@ def test_location_utility_slugify_location_venue(location_id: int, venue: str):
 def test_location_utility_slugify_location_venue_city_state(
     venue: str, city: str, state: str
 ):
-    """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`
+    """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`.
 
     :param venue: Venue name to include in the slug string
     :param city: City to include in the slug string
@@ -217,8 +213,7 @@ def test_location_utility_slugify_location_venue_city_state(
 
 @pytest.mark.parametrize("location_id", [2])
 def test_location_utility_slugify_location_id(location_id: int):
-    """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`
-    with venue, city and state names
+    """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location` with venue, city and state names.
 
     :param location_id: Location ID to include in the slug string
     """

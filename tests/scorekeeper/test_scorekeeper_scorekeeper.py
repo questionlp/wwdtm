@@ -1,30 +1,34 @@
-# -*- coding: utf-8 -*-
-# vim: set noai syntax=python ts=4 sw=4:
-#
-# Copyright (c) 2018-2023 Linh Pham
+# Copyright (c) 2018-2024 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
-"""Testing for object: :py:class:`wwdtm.scorekeeper.Scorekeeper`
-"""
+# SPDX-License-Identifier: Apache-2.0
+#
+# vim: set noai syntax=python ts=4 sw=4:
+"""Testing for object: :py:class:`wwdtm.scorekeeper.Scorekeeper`."""
 import json
-from typing import Any, Dict
+from pathlib import Path
+from typing import Any
 
 import pytest
+
 from wwdtm.scorekeeper import Scorekeeper
 
 
 @pytest.mark.skip
-def get_connect_dict() -> Dict[str, Any]:
-    """Read in database connection settings and return values as a
-    dictionary.
+def get_connect_dict() -> dict[str, Any]:
+    """Retrieves database connection settings.
+
+    :return: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
     """
-    with open("config.json", "r", encoding="utf-8") as config_file:
+    file_path = Path.cwd() / "config.json"
+    with file_path.open(mode="r", encoding="utf-8") as config_file:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
 
 
 def test_scorekeeper_retrieve_all():
-    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all`"""
+    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all`."""
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
     scorekeepers = scorekeeper.retrieve_all()
 
@@ -33,7 +37,7 @@ def test_scorekeeper_retrieve_all():
 
 
 def test_scorekeeper_retrieve_all_details():
-    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all_details`"""
+    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all_details`."""
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
     scorekeepers = scorekeeper.retrieve_all_details()
 
@@ -45,7 +49,7 @@ def test_scorekeeper_retrieve_all_details():
 
 
 def test_scorekeeper_retrieve_all_ids():
-    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all_ids`"""
+    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all_ids`."""
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
     ids = scorekeeper.retrieve_all_ids()
 
@@ -53,7 +57,7 @@ def test_scorekeeper_retrieve_all_ids():
 
 
 def test_scorekeeper_retrieve_all_slugs():
-    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all_slugs`"""
+    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all_slugs`."""
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
     slugs = scorekeeper.retrieve_all_slugs()
 
@@ -62,7 +66,7 @@ def test_scorekeeper_retrieve_all_slugs():
 
 @pytest.mark.parametrize("scorekeeper_id", [13])
 def test_scorekeeper_retrieve_by_id(scorekeeper_id: int):
-    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_by_id`
+    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_by_id`.
 
     :param scorekeeper_id: Scorekeeper ID to test retrieving scorekeeper
         information
@@ -76,7 +80,7 @@ def test_scorekeeper_retrieve_by_id(scorekeeper_id: int):
 
 @pytest.mark.parametrize("scorekeeper_id", [13])
 def test_scorekeeper_retrieve_details_by_id(scorekeeper_id: int):
-    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_details_by_id`
+    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_details_by_id`.
 
     :param scorekeeper_id: Scorekeeper ID to test retrieving scorekeeper
         details
@@ -93,7 +97,7 @@ def test_scorekeeper_retrieve_details_by_id(scorekeeper_id: int):
 
 @pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson"])
 def test_scorekeeper_retrieve_by_slug(scorekeeper_slug: str):
-    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_by_slug`
+    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_by_slug`.
 
     :param scorekeeper_slug: Scorekeeper slug string to test retrieving
         scorekeeper information
@@ -107,7 +111,7 @@ def test_scorekeeper_retrieve_by_slug(scorekeeper_slug: str):
 
 @pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson"])
 def test_scorekeeper_retrieve_details_by_slug(scorekeeper_slug: str):
-    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_details_by_slug`
+    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_details_by_slug`.
 
     :param scorekeeper_slug: Scorekeeper slug string to test retrieving
         scorekeeper details
