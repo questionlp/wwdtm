@@ -11,8 +11,8 @@ Application Changes
 * Starting with version 2.8.0 of this library, the minimum required version of the Wait Wait
   Stats Database is 4.5
 * Adds support for returning the NPR.org show URL with the show basic and detailed information
-  retrieved from the `showurl` column from the `ww_shows` database table. If `showurl` value
-  is `NULL` in the database, a value of `None` will be returned
+  retrieved from the ``showurl`` column from the ``ww_shows`` database table. If ``showurl``
+  value is ``NULL`` in the database, a value of ``None`` will be returned
 
 Development Changes
 -------------------
