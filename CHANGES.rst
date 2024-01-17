@@ -14,6 +14,11 @@ Application Changes
   retrieved from the `showurl` column from the `ww_shows` database table. If `showurl` value
   is `NULL` in the database, a value of `None` will be returned
 
+Development Changes
+-------------------
+
+* Upgrade black from 23.12.0 to 23.12.1
+
 2.7.0
 =====
 
