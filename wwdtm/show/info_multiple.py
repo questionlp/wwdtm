@@ -263,6 +263,7 @@ class ShowInfoMultiple:
         query = """
             SELECT s.showid AS show_id, s.showdate AS date,
             s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
+            s.showurl AS show_url,
             l.locationid AS location_id, l.city, l.state,
             l.venue, l.locationslug AS location_slug, h.hostid AS host_id,
             h.host, h.hostslug AS host_slug, hm.guest as host_guest,
@@ -342,6 +343,7 @@ class ShowInfoMultiple:
                 "repeat_show": bool(show.repeat_show_id),
                 "original_show_id": None,
                 "original_show_date": None,
+                "show_url": show.show_url,
                 "description": description,
                 "notes": notes,
                 "location": location_info,
@@ -378,6 +380,7 @@ class ShowInfoMultiple:
         query = """
             SELECT s.showid AS show_id, s.showdate AS date,
             s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
+            s.showurl AS show_url,
             l.locationid AS location_id, l.city, l.state,
             l.venue, l.locationslug AS location_slug, h.hostid AS host_id,
             h.host, h.hostslug AS host_slug, hm.guest as host_guest,
@@ -459,6 +462,7 @@ class ShowInfoMultiple:
                 "repeat_show": bool(show.repeat_show_id),
                 "original_show_id": None,
                 "original_show_date": None,
+                "show_url": show.show_url,
                 "description": description,
                 "notes": notes,
                 "location": location_info,
