@@ -55,11 +55,13 @@ class Show:
         """Retrieves basic show information for all shows.
 
         :return: A list of dictionaries containing show ID, show date,
-            Best Of show flag and repeat show ID (if applicable)
+            Best Of show flag, repeat show ID (if applicable) and show
+            URL at NPR.org
         """
         query = """
             SELECT showid AS id, showdate AS date,
-            bestof AS best_of, repeatshowid AS repeat_show_id
+            bestof AS best_of, repeatshowid AS repeat_show_id,
+            showurl AS show_url
             FROM ww_shows
             ORDER BY showdate ASC;
             """
@@ -78,6 +80,7 @@ class Show:
                 "date": row.date.isoformat(),
                 "best_of": bool(row.best_of),
                 "repeat_show": bool(row.repeat_show_id),
+                "show_url": row.show_url,
             }
 
             if row.repeat_show_id:
@@ -98,8 +101,9 @@ class Show:
         :param include_decimal_scores: A boolean to determine if decimal
             scores should be used and returned instead of integer scores
         :return: A list of dictionaries containing show ID, show date,
-            Best Of show flag, repeat show ID (if applicable), host,
-            scorekeeper, location, panelists and guests
+            Best Of show flag, repeat show ID (if applicable), show URL
+            at NPR.org, host, scorekeeper, location, panelists and
+            guests
         """
         """Returns a list of dictionaries with show information and details for all shows.
 
@@ -234,7 +238,8 @@ class Show:
         :param month: One or two-digit month
         :param day: One or two-digit day
         :return: A dictionary containing show ID, show date, Best Of
-            show flag and repeat show ID (if applicable)
+            show flag, repeat show ID (if applicable) and show URL at
+            NPR.org
         """
         id_ = self.utility.convert_date_to_id(year, month, day)
         if not id_:
@@ -247,7 +252,8 @@ class Show:
 
         :param date_string: Show date in ``YYYY-MM-DD`` format
         :return: A dictionary containing show ID, show date, Best Of
-            show flag and repeat show ID (if applicable)
+            show flag, repeat show ID (if applicable) and show URL at
+            NPR.org
         """
         try:
             parsed_date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
@@ -265,14 +271,16 @@ class Show:
 
         :param show_id: Show ID
         :return: A dictionary containing show ID, show date, Best Of
-            show flag and repeat show ID (if applicable)
+            show flag, repeat show ID (if applicable) and show URL at
+            NPR.org
         """
         if not valid_int_id(show_id):
             return {}
 
         query = """
             SELECT showid AS id, showdate AS date,
-            bestof AS best_of, repeatshowid AS repeat_show_id
+            bestof AS best_of, repeatshowid AS repeat_show_id,
+            showurl AS show_url
             FROM ww_shows
             WHERE showid = %s
             LIMIT 1;
@@ -290,6 +298,7 @@ class Show:
             "date": result.date.isoformat(),
             "best_of": bool(result.best_of),
             "repeat_show": bool(result.repeat_show_id),
+            "show_url": result.show_url,
         }
 
         if result.repeat_show_id:
@@ -306,7 +315,8 @@ class Show:
         :param month: One or two-digit month
         :param day: One or two-digit day
         :return: A list of dictionaries containing show ID, show date,
-            Best Of show flag and repeat show ID (if applicable)
+            Best Of show flag, repeat show ID (if applicable) and show
+            URL at NPR.org
         """
         if not 1 <= month <= 12 or not 1 <= day <= 31:
             return []
@@ -337,7 +347,8 @@ class Show:
 
         :param year: Four-digit year
         :return: A list of dictionaries containing show ID, show date,
-            Best Of show flag and repeat show ID (if applicable)
+            Best Of show flag, repeat show ID (if applicable) and show
+            URL at NPR.org
         """
         try:
             parsed_year = datetime.datetime.strptime(f"{year:04d}", "%Y")
@@ -365,7 +376,8 @@ class Show:
         :param year: Four-digit year
         :param month: One or two-digit month
         :return: A list of dictionaries containing show ID, show date,
-            Best Of show flag and repeat show ID (if applicable)
+            Best Of show flag, repeat show ID (if applicable) and show
+            URL at NPR.org
         """
         try:
             parsed_year_month = datetime.datetime.strptime(
@@ -406,8 +418,8 @@ class Show:
         :param include_decimal_scores: A boolean to determine if decimal
             scores should be included
         :return: A dictionary containing show ID, show date, Best Of
-            show flag, repeat show ID (if applicable), host,
-            scorekeeper, location, panelists and guests
+            show flag, repeat show ID (if applicable), show URL at
+            NPR.org, host, scorekeeper, location, panelists and guests
         """
         id_ = self.utility.convert_date_to_id(year, month, day)
         if not id_:
@@ -426,8 +438,8 @@ class Show:
         :param include_decimal_scores: A boolean to determine if decimal
             scores should be included
         :return: A dictionary containing show ID, show date, Best Of
-            show flag, repeat show ID (if applicable), host,
-            scorekeeper, location, panelists and guests
+            show flag, repeat show ID (if applicable), show URL at
+            NPR.org, host, scorekeeper, location, panelists and guests
         """
         try:
             parsed_date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
@@ -451,8 +463,8 @@ class Show:
         :param include_decimal_scores: A boolean to determine if decimal
             scores should be included
         :return: A dictionary containing show ID, show date, Best Of
-            show flag, repeat show ID (if applicable), host,
-            scorekeeper, location, panelists and guests
+            show flag, repeat show ID (if applicable), show URL at
+            NPR.org, host, scorekeeper, location, panelists and guests
         """
         if not valid_int_id(show_id):
             return {}
@@ -479,8 +491,9 @@ class Show:
         :param include_decimal_scores: A boolean to determine if decimal
             scores should be included
         :return: A list of dictionaries containing show ID, show date,
-            Best Of show flag, repeat show ID (if applicable), host,
-            scorekeeper, location, panelists and guests
+            Best Of show flag, repeat show ID (if applicable), show URL
+            at NPR.org, host, scorekeeper, location, panelists and
+            guests
         """
         if not 1 <= month <= 12 or not 1 <= day <= 31:
             return []
@@ -535,8 +548,9 @@ class Show:
         :param include_decimal_scores: A boolean to determine if decimal
             scores should be included
         :return: A list of dictionaries containing show ID, show date,
-            Best Of show flag, repeat show ID (if applicable), host,
-            scorekeeper, location, panelists and guests
+            Best Of show flag, repeat show ID (if applicable), show URL
+            at NPR.org, host, scorekeeper, location, panelists and
+            guests
         """
         try:
             parsed_year = datetime.datetime.strptime(f"{year:04d}", "%Y")
@@ -588,8 +602,9 @@ class Show:
         :param include_decimal_scores: A boolean to determine if decimal
             scores should be included
         :return: A list of dictionaries containing show ID, show date,
-            Best Of show flag, repeat show ID (if applicable), host,
-            scorekeeper, location, panelists and guests
+            Best Of show flag, repeat show ID (if applicable), show URL
+            at NPR.org, host, scorekeeper, location, panelists and
+            guests
         """
         try:
             parsed_year_month = datetime.datetime.strptime(
