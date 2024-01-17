@@ -38,7 +38,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
-required-version = "23.12.0"
+required-version = "23.12.1"
 target-version = ["py310", "py311", "py312"]
 line-length = 88
 
