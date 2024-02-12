@@ -597,7 +597,7 @@ class ShowInfoMultiple:
                 FROM ww_showpnlmap pm
                 JOIN ww_panelists p ON p.panelistid = pm.panelistid
                 JOIN ww_shows s ON s.showid = pm.showid
-                ORDER by s.showdate ASC, pm.panelistscore DESC,
+                ORDER by s.showdate ASC, pm.panelistscore_decimal DESC,
                 pm.showpnlmapid ASC;
                 """
         else:
@@ -680,7 +680,7 @@ class ShowInfoMultiple:
                 JOIN ww_panelists p ON p.panelistid = pm.panelistid
                 JOIN ww_shows s ON s.showid = pm.showid
                 WHERE pm.showid IN ({ids})
-                ORDER by s.showdate ASC, pm.panelistscore DESC,
+                ORDER by s.showdate ASC, pm.panelistscore_decimal DESC,
                 pm.showpnlmapid ASC;""".format(
                 ids=", ".join(str(v) for v in show_ids)
             )

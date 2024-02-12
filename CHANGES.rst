@@ -2,6 +2,16 @@
 Changes
 *******
 
+2.8.1
+=====
+
+Application Changes
+-------------------
+
+* Correct sorting of panelists when retrieving panelist information for show details with
+  decimal scores. Previously, the sorting was based on integer score, which causes
+  panelists to be ordered incorrectly.
+
 2.8.0
 =====
 

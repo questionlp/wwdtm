@@ -240,7 +240,7 @@ def test_show_retrieve_details_by_date_string(date: str, include_decimal_scores:
     assert "host" in info, f"'host' was not returned for show {date}"
 
 
-@pytest.mark.parametrize("date", ["2018-10-27"])
+@pytest.mark.parametrize("date", ["1999-02-13", "2018-10-27"])
 def test_show_retrieve_details_by_date_string_decimal(date: str):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_details_by_date_string` with decimal scores.
 
