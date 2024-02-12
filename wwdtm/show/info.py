@@ -341,7 +341,8 @@ class ShowInfo:
                 FROM ww_showpnlmap pm
                 JOIN ww_panelists p on p.panelistid = pm.panelistid
                 WHERE pm.showid = %s
-                ORDER by pm.panelistscore DESC, pm.showpnlmapid ASC;
+                ORDER by pm.panelistscore_decimal DESC,
+                pm.showpnlmapid ASC;
                 """
         else:
             query = """
