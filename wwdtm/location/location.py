@@ -81,13 +81,15 @@ class Location:
                     "city": row.city,
                     "state": row.state,
                     "venue": row.venue,
-                    "slug": row.slug
-                    if row.slug
-                    else self.utility.slugify_location(
-                        location_id=row.id,
-                        venue=row.venue,
-                        city=row.city,
-                        state=row.state,
+                    "slug": (
+                        row.slug
+                        if row.slug
+                        else self.utility.slugify_location(
+                            location_id=row.id,
+                            venue=row.venue,
+                            city=row.city,
+                            state=row.state,
+                        )
                     ),
                 }
             )
@@ -128,13 +130,15 @@ class Location:
                     "city": row.city,
                     "state": row.state,
                     "venue": row.venue,
-                    "slug": row.slug
-                    if row.slug
-                    else self.utility.slugify_location(
-                        location_id=row.id,
-                        venue=row.venue,
-                        city=row.city,
-                        state=row.state,
+                    "slug": (
+                        row.slug
+                        if row.slug
+                        else self.utility.slugify_location(
+                            location_id=row.id,
+                            venue=row.venue,
+                            city=row.city,
+                            state=row.state,
+                        )
                     ),
                     "recordings": self.recordings.retrieve_recordings_by_id(row.id),
                 }
@@ -218,13 +222,15 @@ class Location:
             "city": result.city,
             "state": result.state,
             "venue": result.venue,
-            "slug": result.slug
-            if result.slug
-            else self.utility.slugify_location(
-                location_id=result.id,
-                venue=result.venue,
-                city=result.city,
-                state=result.state,
+            "slug": (
+                result.slug
+                if result.slug
+                else self.utility.slugify_location(
+                    location_id=result.id,
+                    venue=result.venue,
+                    city=result.city,
+                    state=result.state,
+                )
             ),
         }
 
