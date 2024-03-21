@@ -116,9 +116,11 @@ class ShowInfoMultiple:
                         "chosen_panelist": {
                             "id": row.chosen_id,
                             "name": self.panelists[row.chosen_id]["name"],
-                            "slug": self.panelists[row.chosen_id]["slug"]
-                            if self.panelists[row.chosen_id]["slug"]
-                            else slugify(self.panelists[row.chosen_id]["name"]),
+                            "slug": (
+                                self.panelists[row.chosen_id]["slug"]
+                                if self.panelists[row.chosen_id]["slug"]
+                                else slugify(self.panelists[row.chosen_id]["name"])
+                            ),
                         },
                         "correct_panelist": None,
                     }
@@ -131,9 +133,11 @@ class ShowInfoMultiple:
                         "correct_panelist": {
                             "id": row.correct_id,
                             "name": self.panelists[row.correct_id]["name"],
-                            "slug": self.panelists[row.correct_id]["slug"]
-                            if self.panelists[row.correct_id]["slug"]
-                            else slugify(self.panelists[row.correct_id]["name"]),
+                            "slug": (
+                                self.panelists[row.correct_id]["slug"]
+                                if self.panelists[row.correct_id]["slug"]
+                                else slugify(self.panelists[row.correct_id]["name"])
+                            ),
                         },
                     }
                 )
@@ -144,16 +148,20 @@ class ShowInfoMultiple:
                         "chosen_panelist": {
                             "id": row.chosen_id,
                             "name": self.panelists[row.chosen_id]["name"],
-                            "slug": self.panelists[row.chosen_id]["slug"]
-                            if self.panelists[row.chosen_id]["slug"]
-                            else slugify(self.panelists[row.chosen_id]["name"]),
+                            "slug": (
+                                self.panelists[row.chosen_id]["slug"]
+                                if self.panelists[row.chosen_id]["slug"]
+                                else slugify(self.panelists[row.chosen_id]["name"])
+                            ),
                         },
                         "correct_panelist": {
                             "id": row.correct_id,
                             "name": self.panelists[row.correct_id]["name"],
-                            "slug": self.panelists[row.correct_id]["slug"]
-                            if self.panelists[row.correct_id]["slug"]
-                            else slugify(self.panelists[row.correct_id]["name"]),
+                            "slug": (
+                                self.panelists[row.correct_id]["slug"]
+                                if self.panelists[row.correct_id]["slug"]
+                                else slugify(self.panelists[row.correct_id]["name"])
+                            ),
                         },
                     }
                 )
@@ -210,9 +218,11 @@ class ShowInfoMultiple:
                         "chosen_panelist": {
                             "id": row.chosen_id,
                             "name": self.panelists[row.chosen_id]["name"],
-                            "slug": self.panelists[row.chosen_id]["slug"]
-                            if self.panelists[row.chosen_id]["slug"]
-                            else slugify(self.panelists[row.chosen_id]["name"]),
+                            "slug": (
+                                self.panelists[row.chosen_id]["slug"]
+                                if self.panelists[row.chosen_id]["slug"]
+                                else slugify(self.panelists[row.chosen_id]["name"])
+                            ),
                         },
                         "correct_panelist": None,
                     }
@@ -225,9 +235,11 @@ class ShowInfoMultiple:
                         "correct_panelist": {
                             "id": row.correct_id,
                             "name": self.panelists[row.correct_id]["name"],
-                            "slug": self.panelists[row.correct_id]["slug"]
-                            if self.panelists[row.correct_id]["slug"]
-                            else slugify(self.panelists[row.correct_id]["name"]),
+                            "slug": (
+                                self.panelists[row.correct_id]["slug"]
+                                if self.panelists[row.correct_id]["slug"]
+                                else slugify(self.panelists[row.correct_id]["name"])
+                            ),
                         },
                     }
                 )
@@ -238,16 +250,20 @@ class ShowInfoMultiple:
                         "chosen_panelist": {
                             "id": row.chosen_id,
                             "name": self.panelists[row.chosen_id]["name"],
-                            "slug": self.panelists[row.chosen_id]["slug"]
-                            if self.panelists[row.chosen_id]["slug"]
-                            else slugify(self.panelists[row.chosen_id]["name"]),
+                            "slug": (
+                                self.panelists[row.chosen_id]["slug"]
+                                if self.panelists[row.chosen_id]["slug"]
+                                else slugify(self.panelists[row.chosen_id]["name"])
+                            ),
                         },
                         "correct_panelist": {
                             "id": row.correct_id,
                             "name": self.panelists[row.correct_id]["name"],
-                            "slug": self.panelists[row.correct_id]["slug"]
-                            if self.panelists[row.correct_id]["slug"]
-                            else slugify(self.panelists[row.correct_id]["name"]),
+                            "slug": (
+                                self.panelists[row.correct_id]["slug"]
+                                if self.panelists[row.correct_id]["slug"]
+                                else slugify(self.panelists[row.correct_id]["name"])
+                            ),
                         },
                     }
                 )
@@ -320,13 +336,17 @@ class ShowInfoMultiple:
             scorekeeper_info = {
                 "id": show.scorekeeper_id,
                 "name": show.scorekeeper,
-                "slug": show.scorekeeper_slug
-                if show.scorekeeper_slug
-                else slugify(show.scorekeeper),
+                "slug": (
+                    show.scorekeeper_slug
+                    if show.scorekeeper_slug
+                    else slugify(show.scorekeeper)
+                ),
                 "guest": bool(show.scorekeeper_guest),
-                "description": show.scorekeeper_description
-                if show.scorekeeper_description
-                else None,
+                "description": (
+                    show.scorekeeper_description
+                    if show.scorekeeper_description
+                    else None
+                ),
             }
 
             if show.show_description:
@@ -439,13 +459,17 @@ class ShowInfoMultiple:
             scorekeeper_info = {
                 "id": show.scorekeeper_id,
                 "name": show.scorekeeper,
-                "slug": show.scorekeeper_slug
-                if show.scorekeeper_slug
-                else slugify(show.scorekeeper),
+                "slug": (
+                    show.scorekeeper_slug
+                    if show.scorekeeper_slug
+                    else slugify(show.scorekeeper)
+                ),
                 "guest": bool(show.scorekeeper_guest),
-                "description": show.scorekeeper_description
-                if show.scorekeeper_description
-                else None,
+                "description": (
+                    show.scorekeeper_description
+                    if show.scorekeeper_description
+                    else None
+                ),
             }
 
             if show.show_description:
@@ -633,17 +657,23 @@ class ShowInfoMultiple:
                     "name": panelist.name,
                     "slug": panelist.slug if panelist.slug else slugify(panelist.name),
                     "lightning_round_start": panelist.start,
-                    "lightning_round_start_decimal": panelist.start_decimal
-                    if "start_decimal" in panelist._fields
-                    else None,
+                    "lightning_round_start_decimal": (
+                        panelist.start_decimal
+                        if "start_decimal" in panelist._fields
+                        else None
+                    ),
                     "lightning_round_correct": panelist.correct,
-                    "lightning_round_correct_decimal": panelist.correct_decimal
-                    if "correct_decimal" in panelist._fields
-                    else None,
+                    "lightning_round_correct_decimal": (
+                        panelist.correct_decimal
+                        if "correct_decimal" in panelist._fields
+                        else None
+                    ),
                     "score": panelist.score,
-                    "score_decimal": panelist.score_decimal
-                    if "score_decimal" in panelist._fields
-                    else None,
+                    "score_decimal": (
+                        panelist.score_decimal
+                        if "score_decimal" in panelist._fields
+                        else None
+                    ),
                     "rank": panelist.pnl_rank if panelist.pnl_rank else None,
                 }
             )
@@ -719,19 +749,25 @@ class ShowInfoMultiple:
                     "name": panelist.name,
                     "slug": panelist.slug if panelist.slug else slugify(panelist.name),
                     "lightning_round_start": panelist.start if panelist.start else None,
-                    "lightning_round_start_decimal": panelist.start_decimal
-                    if "start_decimal" in panelist._fields
-                    else None,
-                    "lightning_round_correct": panelist.correct
-                    if panelist.correct
-                    else None,
-                    "lightning_round_correct_decimal": panelist.correct_decimal
-                    if "correct_decimal" in panelist._fields
-                    else None,
+                    "lightning_round_start_decimal": (
+                        panelist.start_decimal
+                        if "start_decimal" in panelist._fields
+                        else None
+                    ),
+                    "lightning_round_correct": (
+                        panelist.correct if panelist.correct else None
+                    ),
+                    "lightning_round_correct_decimal": (
+                        panelist.correct_decimal
+                        if "correct_decimal" in panelist._fields
+                        else None
+                    ),
                     "score": panelist.score,
-                    "score_decimal": panelist.score_decimal
-                    if "score_decimal" in panelist._fields
-                    else None,
+                    "score_decimal": (
+                        panelist.score_decimal
+                        if "score_decimal" in panelist._fields
+                        else None
+                    ),
                     "rank": panelist.pnl_rank if panelist.pnl_rank else None,
                 }
             )

@@ -116,9 +116,11 @@ class ShowInfo:
                         "chosen_panelist": {
                             "id": row.chosen_id,
                             "name": self.panelists[row.chosen_id]["name"],
-                            "slug": self.panelists[row.chosen_id]["slug"]
-                            if self.panelists[row.chosen_id]["slug"]
-                            else slugify(self.panelists[row.chosen_id]["name"]),
+                            "slug": (
+                                self.panelists[row.chosen_id]["slug"]
+                                if self.panelists[row.chosen_id]["slug"]
+                                else slugify(self.panelists[row.chosen_id]["name"])
+                            ),
                         },
                         "correct_panelist": None,
                     }
@@ -131,9 +133,11 @@ class ShowInfo:
                         "correct_panelist": {
                             "id": row.correct_id,
                             "name": self.panelists[row.correct_id]["name"],
-                            "slug": self.panelists[row.correct_id]["slug"]
-                            if self.panelists[row.correct_id]["slug"]
-                            else slugify(self.panelists[row.correct_id]["name"]),
+                            "slug": (
+                                self.panelists[row.correct_id]["slug"]
+                                if self.panelists[row.correct_id]["slug"]
+                                else slugify(self.panelists[row.correct_id]["name"])
+                            ),
                         },
                     }
                 )
@@ -144,16 +148,20 @@ class ShowInfo:
                         "chosen_panelist": {
                             "id": row.chosen_id,
                             "name": self.panelists[row.chosen_id]["name"],
-                            "slug": self.panelists[row.chosen_id]["slug"]
-                            if self.panelists[row.chosen_id]["slug"]
-                            else slugify(self.panelists[row.chosen_id]["name"]),
+                            "slug": (
+                                self.panelists[row.chosen_id]["slug"]
+                                if self.panelists[row.chosen_id]["slug"]
+                                else slugify(self.panelists[row.chosen_id]["name"])
+                            ),
                         },
                         "correct_panelist": {
                             "id": row.correct_id,
                             "name": self.panelists[row.correct_id]["name"],
-                            "slug": self.panelists[row.correct_id]["slug"]
-                            if self.panelists[row.correct_id]["slug"]
-                            else slugify(self.panelists[row.correct_id]["name"]),
+                            "slug": (
+                                self.panelists[row.correct_id]["slug"]
+                                if self.panelists[row.correct_id]["slug"]
+                                else slugify(self.panelists[row.correct_id]["name"])
+                            ),
                         },
                     }
                 )
@@ -229,13 +237,17 @@ class ShowInfo:
         scorekeeper_info = {
             "id": result.scorekeeper_id,
             "name": result.scorekeeper,
-            "slug": result.scorekeeper_slug
-            if result.scorekeeper_slug
-            else slugify(result.scorekeeper),
+            "slug": (
+                result.scorekeeper_slug
+                if result.scorekeeper_slug
+                else slugify(result.scorekeeper)
+            ),
             "guest": bool(result.scorekeeper_guest),
-            "description": result.scorekeeper_description
-            if result.scorekeeper_description
-            else None,
+            "description": (
+                result.scorekeeper_description
+                if result.scorekeeper_description
+                else None
+            ),
         }
 
         if result.show_description:
@@ -373,17 +385,19 @@ class ShowInfo:
                     "name": row.name,
                     "slug": row.slug if row.slug else slugify(row.name),
                     "lightning_round_start": row.start,
-                    "lightning_round_start_decimal": row.start_decimal
-                    if "start_decimal" in row._fields
-                    else None,
+                    "lightning_round_start_decimal": (
+                        row.start_decimal if "start_decimal" in row._fields else None
+                    ),
                     "lightning_round_correct": row.correct,
-                    "lightning_round_correct_decimal": row.correct_decimal
-                    if "correct_decimal" in row._fields
-                    else None,
+                    "lightning_round_correct_decimal": (
+                        row.correct_decimal
+                        if "correct_decimal" in row._fields
+                        else None
+                    ),
                     "score": row.score,
-                    "score_decimal": row.score_decimal
-                    if "score_decimal" in row._fields
-                    else None,
+                    "score_decimal": (
+                        row.score_decimal if "score_decimal" in row._fields else None
+                    ),
                     "rank": row.pnl_rank if row.pnl_rank else None,
                 }
             )
