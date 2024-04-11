@@ -2,11 +2,35 @@
 Changes
 *******
 
+2.9.0
+=====
+
+Application Changes
+-------------------
+
+* Add `latitude` and `longitude` properties to Locations
+* Add `pronouns` property to Hosts, Panelists and Scorekeepers
+
+Component Changes
+-----------------
+
+* Upgrade numpy from 1.26.3 to 1.26.4
+* Upgrade pytz from 2023.3.post1 to 2024.1
+
+Development Changes
+-------------------
+
+* Upgrade build from 1.0.3 to 1.2.1
+* Upgrade pytest from 7.4.4 to 8.1.1
+* Upgrade ruff from 0.1.13 to 0.3.6
+* Upgrade wheel from 0.42.0 to 0.43.0
+
 2.8.2
 =====
 
 Development Changes
 -------------------
+
 * Upgrade black from 23.12.1 to 24.3.0
 
 2.8.1

@@ -34,6 +34,11 @@ def test_panelist_retrieve_all():
 
     assert panelists, "No panelists could be retrieved"
     assert "id" in panelists[0], "'id' was not returned for the first list item"
+    assert "name" in panelists[0], "'name' was not returned for the first list item"
+    assert "slug" in panelists[0], "'slug' was not returned for the first list item"
+    assert (
+        "pronouns" in panelists[0]
+    ), "'pronouns' was not returned for the first list item"
 
 
 @pytest.mark.parametrize("use_decimal_scores", [True, False])
@@ -48,6 +53,11 @@ def test_panelist_retrieve_all_details(use_decimal_scores: bool):
 
     assert panelists, "No panelists could be retrieved"
     assert "id" in panelists[0], "'id' was not returned for first list item"
+    assert "name" in panelists[0], "'name' was not returned for the first list item"
+    assert "slug" in panelists[0], "'slug' was not returned for the first list item"
+    assert (
+        "pronouns" in panelists[0]
+    ), "'pronouns' was not returned for the first list item"
     assert (
         "appearances" in panelists[0]
     ), "'appearances' was not returned for the first list item"
@@ -81,6 +91,8 @@ def test_panelist_retrieve_by_id(panelist_id: int):
 
     assert info, f"Panelist ID {panelist_id} not found"
     assert "name" in info, f"'name' was not returned for ID {panelist_id}"
+    assert "slug" in info, f"'slug' was not returned for ID {panelist_id}"
+    assert "pronouns" in info, f"'pronouns' was not returned for ID {panelist_id}"
 
 
 @pytest.mark.parametrize("panelist_id, use_decimal_scores", [(14, True), (14, False)])
@@ -98,6 +110,8 @@ def test_panelist_retrieve_details_by_id(panelist_id: int, use_decimal_scores: b
 
     assert info, f"Panelist ID {panelist_id} not found"
     assert "name" in info, f"'name' was not returned for ID {panelist_id}"
+    assert "slug" in info, f"'slug' was not returned for ID {panelist_id}"
+    assert "pronouns" in info, f"'pronouns' was not returned for ID {panelist_id}"
     assert "appearances" in info, f"'appearances' was not returned for ID {panelist_id}"
 
 
@@ -113,6 +127,8 @@ def test_panelist_retrieve_by_slug(panelist_slug: str):
 
     assert info, f"Panelist slug {panelist_slug} not found"
     assert "name" in info, f"'name' was not returned for slug {panelist_slug}"
+    assert "slug" in info, f"'slug' was not returned for ID {panelist_slug}"
+    assert "pronouns" in info, f"'pronouns' was not returned for ID {panelist_slug}"
 
 
 @pytest.mark.parametrize(
@@ -136,6 +152,8 @@ def test_panelist_retrieve_details_by_slug(
 
     assert info, f"Panelist slug {panelist_slug} not found"
     assert "name" in info, f"'name' was not returned for slug {panelist_slug}"
+    assert "slug" in info, f"'slug' was not returned for ID {panelist_slug}"
+    assert "pronouns" in info, f"'pronouns' was not returned for ID {panelist_slug}"
     assert (
         "appearances" in info
     ), f"'appearances' was not returned for slug {panelist_slug}"

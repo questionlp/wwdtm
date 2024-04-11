@@ -281,8 +281,9 @@ class ShowInfoMultiple:
             s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
             s.showurl AS show_url,
             l.locationid AS location_id, l.city, l.state,
-            l.venue, l.locationslug AS location_slug, h.hostid AS host_id,
-            h.host, h.hostslug AS host_slug, hm.guest as host_guest,
+            l.venue, l.latitude, l.longitude, l.locationslug AS location_slug,
+            h.hostid AS host_id, h.host, h.hostslug AS host_slug,
+            hm.guest as host_guest,
             sk.scorekeeperid AS scorekeeper_id, sk.scorekeeper,
             sk.scorekeeperslug AS scorekeeper_slug,
             skm.guest AS scorekeeper_guest,
@@ -316,6 +317,8 @@ class ShowInfoMultiple:
                 "city": show.city,
                 "state": show.state,
                 "venue": show.venue,
+                "latitude": show.latitude if show.latitude else None,
+                "longitude": show.longitude if show.longitude else None,
             }
 
             if not show.location_slug:
@@ -402,8 +405,9 @@ class ShowInfoMultiple:
             s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
             s.showurl AS show_url,
             l.locationid AS location_id, l.city, l.state,
-            l.venue, l.locationslug AS location_slug, h.hostid AS host_id,
-            h.host, h.hostslug AS host_slug, hm.guest as host_guest,
+            l.venue, l.latitude, l.longitude, l.locationslug AS location_slug,
+            h.hostid AS host_id, h.host, h.hostslug AS host_slug,
+            hm.guest as host_guest,
             sk.scorekeeperid AS scorekeeper_id, sk.scorekeeper,
             sk.scorekeeperslug AS scorekeeper_slug,
             skm.guest AS scorekeeper_guest,
@@ -439,6 +443,8 @@ class ShowInfoMultiple:
                 "city": show.city,
                 "state": show.state,
                 "venue": show.venue,
+                "latitude": show.latitude if show.latitude else None,
+                "longitude": show.longitude if show.longitude else None,
             }
 
             if not show.location_slug:
