@@ -58,9 +58,10 @@ class Panelist:
             slug string and gender for each panelist
         """
         query = """
-            SELECT panelistid AS id, panelist AS name, panelistslug AS slug,
-            panelistgender AS gender
-            FROM ww_panelists
+            SELECT p.panelistid AS id, p.panelist AS name, p.panelistslug AS slug,
+            panelistgender AS gender, pn.pronouns
+            FROM ww_panelists p
+            JOIN ww_pronouns pn ON pn.pronounsid = p.panelistpronouns
             WHERE panelistslug != 'multiple'
             ORDER BY panelist ASC;
             """
@@ -80,6 +81,7 @@ class Panelist:
                     "name": row.name,
                     "slug": row.slug if row.slug else slugify(row.name),
                     "gender": row.gender,
+                    "pronouns": row.pronouns,
                 }
             )
 
@@ -97,9 +99,10 @@ class Panelist:
             each panelist
         """
         query = """
-            SELECT panelistid AS id, panelist AS name, panelistslug AS slug,
-            panelistgender AS gender
-            FROM ww_panelists
+            SELECT p.panelistid AS id, p.panelist AS name, p.panelistslug AS slug,
+            p.panelistgender AS gender, pn.pronouns
+            FROM ww_panelists p
+            JOIN ww_pronouns pn ON pn.pronounsid = p.panelistpronouns
             WHERE panelistslug != 'multiple'
             ORDER BY panelist ASC;
             """
@@ -119,6 +122,7 @@ class Panelist:
                     "name": row.name,
                     "slug": row.slug if row.slug else slugify(row.name),
                     "gender": row.gender,
+                    "pronouns": row.pronouns,
                     "statistics": self.statistics.retrieve_statistics_by_id(
                         row.id, include_decimal_scores=use_decimal_scores
                     ),
@@ -182,10 +186,11 @@ class Panelist:
             return {}
 
         query = """
-            SELECT panelistid AS id, panelist AS name, panelistslug AS slug,
-            panelistgender AS gender
-            FROM ww_panelists
-            WHERE panelistid = %s
+            SELECT p.panelistid AS id, p.panelist AS name, p.panelistslug AS slug,
+            p.panelistgender AS gender, pn.pronouns
+            FROM ww_panelists p
+            JOIN ww_pronouns pn ON pn.pronounsid = p.panelistpronouns
+            WHERE p.panelistid = %s
             LIMIT 1;
             """
         cursor = self.database_connection.cursor(named_tuple=True)
@@ -201,6 +206,7 @@ class Panelist:
             "name": result.name,
             "slug": result.slug if result.slug else slugify(result.name),
             "gender": result.gender,
+            "pronouns": result.pronouns,
         }
 
     def retrieve_by_slug(self, panelist_slug: str) -> dict[str, Any]:
