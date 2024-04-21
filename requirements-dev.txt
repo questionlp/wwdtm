@@ -1,10 +1,10 @@
-ruff==0.1.13
+ruff==0.3.6
 black==24.3.0
-pytest==7.4.4
-wheel==0.42.0
-build==1.0.3
+pytest==8.1.1
+wheel==0.43.0
+build==1.2.1
 
 mysql-connector-python==8.2.0
-numpy==1.26.3
+numpy==1.26.4
 python-slugify==8.0.1
-pytz==2023.3.post1
+pytz==2024.1

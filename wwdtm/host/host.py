@@ -52,9 +52,10 @@ class Host:
             string and gender for each host
         """
         query = """
-            SELECT hostid AS id, host AS name, hostslug AS slug,
-            hostgender AS gender
-            FROM ww_hosts
+            SELECT h.hostid AS id, h.host AS name, h.hostslug AS slug,
+            hostgender AS gender, pn.pronouns
+            FROM ww_hosts h
+            JOIN ww_pronouns pn ON pn.pronounsid = h.hostpronouns
             ORDER BY host ASC;
             """
         cursor = self.database_connection.cursor(named_tuple=True)
@@ -73,6 +74,7 @@ class Host:
                     "name": row.name,
                     "slug": row.slug if row.slug else slugify(row.name),
                     "gender": row.gender,
+                    "pronouns": row.pronouns,
                 }
             )
 
@@ -86,9 +88,10 @@ class Host:
             each host
         """
         query = """
-            SELECT hostid AS id, host AS name, hostslug AS slug,
-            hostgender AS gender
-            FROM ww_hosts
+            SELECT h.hostid AS id, h.host AS name, h.hostslug AS slug,
+            h.hostgender AS gender, pn.pronouns
+            FROM ww_hosts h
+            JOIN ww_pronouns pn ON pn.pronounsid = h.hostpronouns
             ORDER BY host ASC;
             """
         cursor = self.database_connection.cursor(named_tuple=True)
@@ -107,6 +110,7 @@ class Host:
                     "name": row.name,
                     "slug": row.slug if row.slug else slugify(row.name),
                     "gender": row.gender,
+                    "pronouns": row.pronouns,
                     "appearances": self.appearances.retrieve_appearances_by_id(row.id),
                 }
             )
@@ -157,10 +161,11 @@ class Host:
             return {}
 
         query = """
-            SELECT hostid AS id, host AS name, hostslug AS slug,
-            hostgender AS gender
-            FROM ww_hosts
-            WHERE hostid = %s
+            SELECT h.hostid AS id, h.host AS name, h.hostslug AS slug,
+            h.hostgender AS gender, pn.pronouns
+            FROM ww_hosts h
+            JOIN ww_pronouns pn on pn.pronounsid = h.hostpronouns
+            WHERE h.hostid = %s
             LIMIT 1;
             """
         cursor = self.database_connection.cursor(named_tuple=True)
@@ -176,6 +181,7 @@ class Host:
             "name": result.name,
             "slug": result.slug if result.slug else slugify(result.name),
             "gender": result.gender,
+            "pronouns": result.pronouns,
         }
 
     def retrieve_by_slug(self, host_slug: str) -> dict[str, Any]:

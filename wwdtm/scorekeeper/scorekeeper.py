@@ -54,9 +54,11 @@ class Scorekeeper:
             gender and slug string for each scorekeeper
         """
         query = """
-            SELECT scorekeeperid AS id, scorekeeper AS name,
-            scorekeeperslug AS slug, scorekeepergender AS gender
-            FROM ww_scorekeepers
+            SELECT sk.scorekeeperid AS id, sk.scorekeeper AS name,
+            sk.scorekeeperslug AS slug, sk.scorekeepergender AS gender,
+            pn.pronouns
+            FROM ww_scorekeepers sk
+            JOIN ww_pronouns pn ON pn.pronounsid = sk.scorekeeperpronouns
             ORDER BY scorekeeper ASC;
             """
         cursor = self.database_connection.cursor(named_tuple=True)
@@ -73,8 +75,9 @@ class Scorekeeper:
                 {
                     "id": row.id,
                     "name": row.name,
-                    "gender": row.gender,
                     "slug": row.slug if row.slug else slugify(row.name),
+                    "gender": row.gender,
+                    "pronouns": row.pronouns,
                 }
             )
 
@@ -88,9 +91,11 @@ class Scorekeeper:
             flags for each scorekeeper
         """
         query = """
-            SELECT scorekeeperid AS id, scorekeeper AS name,
-            scorekeeperslug AS slug, scorekeepergender AS gender
-            FROM ww_scorekeepers
+            SELECT sk.scorekeeperid AS id, sk.scorekeeper AS name,
+            sk.scorekeeperslug AS slug, sk.scorekeepergender AS gender,
+            pn.pronouns
+            FROM ww_scorekeepers sk
+            JOIN ww_pronouns pn ON pn.pronounsid = sk.scorekeeperpronouns
             ORDER BY scorekeeper ASC;
             """
         cursor = self.database_connection.cursor(named_tuple=True)
@@ -109,6 +114,7 @@ class Scorekeeper:
                     "name": row.name,
                     "slug": row.slug if row.slug else slugify(row.name),
                     "gender": row.gender,
+                    "pronouns": row.pronouns,
                     "appearances": self.appearances.retrieve_appearances_by_id(row.id),
                 }
             )
@@ -162,10 +168,12 @@ class Scorekeeper:
             return {}
 
         query = """
-            SELECT scorekeeperid AS id, scorekeeper AS name,
-            scorekeeperslug AS slug, scorekeepergender AS gender
-            FROM ww_scorekeepers
-            WHERE scorekeeperid = %s
+            SELECT sk.scorekeeperid AS id, sk.scorekeeper AS name,
+            sk.scorekeeperslug AS slug, sk.scorekeepergender AS gender,
+            pn.pronouns
+            FROM ww_scorekeepers sk
+            JOIN ww_pronouns pn ON pn.pronounsid = sk.scorekeeperpronouns
+            WHERE sk.scorekeeperid = %s
             LIMIT 1;
             """
         cursor = self.database_connection.cursor(named_tuple=True)
@@ -181,6 +189,7 @@ class Scorekeeper:
             "name": result.name,
             "slug": result.slug if result.slug else slugify(result.name),
             "gender": result.gender,
+            "pronouns": result.pronouns,
         }
 
     def retrieve_by_slug(self, scorekeeper_slug: str) -> dict[str, Any]:

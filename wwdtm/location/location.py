@@ -55,8 +55,8 @@ class Location:
             name, city, state and slug string
         """
         query = """
-            SELECT locationid AS id, city, state, venue,
-            locationslug AS slug
+            SELECT locationid AS id, city, state, venue, latitude,
+            longitude, locationslug AS slug
             FROM ww_locations
             """
 
@@ -81,6 +81,8 @@ class Location:
                     "city": row.city,
                     "state": row.state,
                     "venue": row.venue,
+                    "latitude": row.latitude if row.latitude else None,
+                    "longitude": row.longitude if row.longitude else None,
                     "slug": (
                         row.slug
                         if row.slug
@@ -105,8 +107,8 @@ class Location:
             name, city, state, slug string and a list of recordings
         """
         query = """
-            SELECT locationid AS id, city, state, venue,
-            locationslug AS slug
+            SELECT locationid AS id, city, state, venue, latitude,
+            longitude, locationslug AS slug
             FROM ww_locations
             """
         if sort_by_venue:
@@ -130,6 +132,8 @@ class Location:
                     "city": row.city,
                     "state": row.state,
                     "venue": row.venue,
+                    "latitude": row.latitude if row.latitude else None,
+                    "longitude": row.longitude if row.longitude else None,
                     "slug": (
                         row.slug
                         if row.slug
@@ -203,8 +207,8 @@ class Location:
             return {}
 
         query = """
-            SELECT locationid AS id, city, state, venue,
-            locationslug AS slug
+            SELECT locationid AS id, city, state, venue, latitude,
+            longitude, locationslug AS slug
             FROM ww_locations
             WHERE locationid = %s
             LIMIT 1;
@@ -222,6 +226,8 @@ class Location:
             "city": result.city,
             "state": result.state,
             "venue": result.venue,
+            "latitude": result.latitude if result.latitude else None,
+            "longitude": result.longitude if result.longitude else None,
             "slug": (
                 result.slug
                 if result.slug

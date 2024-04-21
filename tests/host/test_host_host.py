@@ -34,6 +34,9 @@ def test_host_retrieve_all():
 
     assert hosts, "No hosts could be retrieved"
     assert "id" in hosts[0], "'id' was not returned for the first list item"
+    assert "name" in hosts[0], "'name' was not returned for the first list item"
+    assert "slug" in hosts[0], "'slug' was not returned for the first list item"
+    assert "pronouns" in hosts[0], "'pronouns' was not returned for the first list item"
 
 
 def test_host_retrieve_all_details():
@@ -43,6 +46,9 @@ def test_host_retrieve_all_details():
 
     assert hosts, "No hosts could be retrieved"
     assert "id" in hosts[0], "'id' was not returned for first list item"
+    assert "name" in hosts[0], "'name' was not returned for the first list item"
+    assert "slug" in hosts[0], "'slug' was not returned for the first list item"
+    assert "pronouns" in hosts[0], "'pronouns' was not returned for the first list item"
     assert (
         "appearances" in hosts[0]
     ), "'appearances' was not returned for thefirst list item"
@@ -75,6 +81,8 @@ def test_host_retrieve_by_id(host_id: int):
 
     assert info, f"Host ID {host_id} not found"
     assert "name" in info, f"'name' was not returned for ID {host_id}"
+    assert "slug" in info, f"'slug' was not returned for ID {host_id}"
+    assert "pronouns" in info, f"'pronouns' was not returned for ID {host_id}"
 
 
 @pytest.mark.parametrize("host_id", [2])
@@ -88,6 +96,8 @@ def test_host_retrieve_details_by_id(host_id: int):
 
     assert info, f"Host ID {host_id} not found"
     assert "name" in info, f"'name' was not returned for ID {host_id}"
+    assert "slug" in info, f"'slug' was not returned for ID {host_id}"
+    assert "pronouns" in info, f"'pronouns' was not returned for ID {host_id}"
     assert "appearances" in info, f"'appearances' was not returned for ID {host_id}"
 
 
@@ -103,6 +113,8 @@ def test_host_retrieve_by_slug(host_slug: str):
 
     assert info, f"Host slug {host_slug} not found"
     assert "name" in info, f"'name' was not returned for slug {host_slug}"
+    assert "slug" in info, f"'slug' was not returned for ID {host_slug}"
+    assert "pronouns" in info, f"'pronouns' was not returned for ID {host_slug}"
 
 
 @pytest.mark.parametrize("host_slug", ["luke-burbank"])
@@ -116,4 +128,6 @@ def test_host_retrieve_details_by_slug(host_slug: str):
 
     assert info, f"Host slug {host_slug} not found"
     assert "name" in info, f"'name' was not returned for slug {host_slug}"
+    assert "slug" in info, f"'slug' was not returned for ID {host_slug}"
+    assert "pronouns" in info, f"'pronouns' was not returned for ID {host_slug}"
     assert "appearances" in info, f"'appearances' was not returned for slug {host_slug}"
