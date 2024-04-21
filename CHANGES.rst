@@ -2,6 +2,14 @@
 Changes
 *******
 
+2.9.1
+=====
+
+Application Changes
+-------------------
+
+* Encapsulate ``latitude`` and ``longitude`` under the ``coordinates`` property for Locations
+
 2.9.0
 =====
 

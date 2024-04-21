@@ -75,14 +75,21 @@ class Location:
 
         locations = []
         for row in results:
+            if not row.latitude and not row.longitude:
+                coordinates = None
+            else:
+                coordinates = {
+                    "latitude": row.latitude if row.latitude else None,
+                    "longitude": row.longitude if row.longitude else None,
+                }
+
             locations.append(
                 {
                     "id": row.id,
                     "city": row.city,
                     "state": row.state,
                     "venue": row.venue,
-                    "latitude": row.latitude if row.latitude else None,
-                    "longitude": row.longitude if row.longitude else None,
+                    "coordinates": coordinates,
                     "slug": (
                         row.slug
                         if row.slug
@@ -126,14 +133,21 @@ class Location:
 
         locations = []
         for row in results:
+            if not row.latitude and not row.longitude:
+                coordinates = None
+            else:
+                coordinates = {
+                    "latitude": row.latitude if row.latitude else None,
+                    "longitude": row.longitude if row.longitude else None,
+                }
+
             locations.append(
                 {
                     "id": row.id,
                     "city": row.city,
                     "state": row.state,
                     "venue": row.venue,
-                    "latitude": row.latitude if row.latitude else None,
-                    "longitude": row.longitude if row.longitude else None,
+                    "coordinates": coordinates,
                     "slug": (
                         row.slug
                         if row.slug
@@ -221,13 +235,20 @@ class Location:
         if not result:
             return {}
 
+        if not result.latitude and not result.longitude:
+            coordinates = None
+        else:
+            coordinates = {
+                "latitude": result.latitude if result.latitude else None,
+                "longitude": result.longitude if result.longitude else None,
+            }
+
         return {
             "id": result.id,
             "city": result.city,
             "state": result.state,
             "venue": result.venue,
-            "latitude": result.latitude if result.latitude else None,
-            "longitude": result.longitude if result.longitude else None,
+            "coordinates": coordinates,
             "slug": (
                 result.slug
                 if result.slug
