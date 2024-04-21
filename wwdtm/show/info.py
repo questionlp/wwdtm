@@ -211,14 +211,21 @@ class ShowInfo:
         if not result:
             return {}
 
+        if not result.latitude and not result.longitude:
+            coordinates = None
+        else:
+            coordinates = {
+                "latitude": result.latitude if result.latitude else None,
+                "longitude": result.longitude if result.longitude else None,
+            }
+
         location_info = {
             "id": result.location_id,
             "slug": result.location_slug,
             "city": result.city,
             "state": result.state,
             "venue": result.venue,
-            "latitude": result.latitude if result.latitude else None,
-            "longitude": result.longitude if result.longitude else None,
+            "coordinates": coordinates if coordinates else None,
         }
 
         if not result.location_slug:

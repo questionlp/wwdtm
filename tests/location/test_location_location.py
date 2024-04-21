@@ -35,6 +35,16 @@ def test_location_retrieve_all():
     assert locations, "No locations could be retrieved"
     assert "id" in locations[0], "'id' was not returned for the first list item"
     assert "venue" in locations[0], "'venue' was not returned for the first list item"
+    assert (
+        "coordinates" in locations[0]
+    ), "'coordinates' was not returned for the first list item"
+    if locations[0]["coordinates"]:
+        assert (
+            "latitude" in locations[0]["coordinates"]
+        ), "'latitude' was not returned for the first list item"
+        assert (
+            "longitude" in locations[0]["coordinates"]
+        ), "'longitude' was not returned for the first list item"
 
 
 def test_location_retrieve_all_details():
@@ -45,6 +55,16 @@ def test_location_retrieve_all_details():
     assert locations, "No locations could be retrieved"
     assert "id" in locations[0], "'id' was not returned for first list item"
     assert "venue" in locations[0], "'venue' was not returned for the first list item"
+    assert (
+        "coordinates" in locations[0]
+    ), "'coordinates' was not returned for the first list item"
+    if locations[0]["coordinates"]:
+        assert (
+            "latitude" in locations[0]["coordinates"]
+        ), "'latitude' was not returned for the first list item"
+        assert (
+            "longitude" in locations[0]["coordinates"]
+        ), "'longitude' was not returned for the first list item"
     assert (
         "recordings" in locations[0]
     ), "'recordings' was not returned for the first list item"
@@ -78,8 +98,14 @@ def test_location_retrieve_by_id(location_id: int):
 
     assert info, f"Location ID {location_id} not found"
     assert "venue" in info, f"'venue' was not returned for ID {location_id}"
-    assert "latitude" in info, f"'latitude' was not returned for ID {location_id}"
-    assert "longitude" in info, f"'longitude' was not returned for ID {location_id}"
+    assert "coordinates" in info, f"'coordinates' was not returned for ID {location_id}"
+    if info["coordinates"]:
+        assert (
+            "latitude" in info["coordinates"]
+        ), f"'latitude' was not returned for ID {location_id}"
+        assert (
+            "longitude" in info["coordinates"]
+        ), f"'longitude' was not returned for ID {location_id}"
 
 
 @pytest.mark.parametrize("location_id", [95])
@@ -93,8 +119,14 @@ def test_location_retrieve_details_by_id(location_id: int):
 
     assert info, f"Location ID {location_id} not found"
     assert "venue" in info, f"'venue' was not returned for ID {location_id}"
-    assert "latitude" in info, f"'latitude' was not returned for ID {location_id}"
-    assert "longitude" in info, f"'longitude' was not returned for ID {location_id}"
+    assert "coordinates" in info, f"'coordinates' was not returned for ID {location_id}"
+    if info["coordinates"]:
+        assert (
+            "latitude" in info["coordinates"]
+        ), f"'latitude' was not returned for ID {location_id}"
+        assert (
+            "longitude" in info["coordinates"]
+        ), f"'longitude' was not returned for ID {location_id}"
     assert "recordings" in info, f"'recordings' was not returned for ID {location_id}"
 
 
@@ -110,8 +142,16 @@ def test_location_retrieve_by_slug(location_slug: str):
 
     assert info, f"Location slug {location_slug} not found"
     assert "venue" in info, f"'venue' was not returned for slug {location_slug}"
-    assert "latitude" in info, f"'latitude' was not returned for ID {location_slug}"
-    assert "longitude" in info, f"'longitude' was not returned for ID {location_slug}"
+    assert (
+        "coordinates" in info
+    ), f"'coordinates' was not returned for slug {location_slug}"
+    if info["coordinates"]:
+        assert (
+            "latitude" in info["coordinates"]
+        ), f"'latitude' was not returned for slug {location_slug}"
+        assert (
+            "longitude" in info["coordinates"]
+        ), f"'longitude' was not returned for slug {location_slug}"
 
 
 @pytest.mark.parametrize("location_slug", ["the-chicago-theatre-chicago-il"])
@@ -126,8 +166,16 @@ def test_location_retrieve_details_by_slug(location_slug: str):
 
     assert info, f"Location slug {location_slug} not found"
     assert "venue" in info, f"'venue' was not returned for slug {location_slug}"
-    assert "latitude" in info, f"'latitude' was not returned for ID {location_slug}"
-    assert "longitude" in info, f"'longitude' was not returned for ID {location_slug}"
+    assert (
+        "coordinates" in info
+    ), f"'coordinates' was not returned for slug {location_slug}"
+    if info["coordinates"]:
+        assert (
+            "latitude" in info["coordinates"]
+        ), f"'latitude' was not returned for slug {location_slug}"
+        assert (
+            "longitude" in info["coordinates"]
+        ), f"'longitude' was not returned for slug {location_slug}"
     assert (
         "recordings" in info
     ), f"'recordings' was not returned for slug {location_slug}"

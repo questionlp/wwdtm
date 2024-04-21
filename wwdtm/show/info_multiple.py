@@ -311,14 +311,21 @@ class ShowInfoMultiple:
 
         shows = {}
         for show in results:
+            if not show.latitude and not show.longitude:
+                coordinates = None
+            else:
+                coordinates = {
+                    "latitude": show.latitude if show.latitude else None,
+                    "longitude": show.longitude if show.longitude else None,
+                }
+
             location_info = {
                 "id": show.location_id,
                 "slug": show.location_slug,
                 "city": show.city,
                 "state": show.state,
                 "venue": show.venue,
-                "latitude": show.latitude if show.latitude else None,
-                "longitude": show.longitude if show.longitude else None,
+                "coordinates": coordinates,
             }
 
             if not show.location_slug:
@@ -437,14 +444,21 @@ class ShowInfoMultiple:
 
         shows = {}
         for show in results:
+            if not show.latitude and not show.longitude:
+                coordinates = None
+            else:
+                coordinates = {
+                    "latitude": show.latitude if show.latitude else None,
+                    "longitude": show.longitude if show.longitude else None,
+                }
+
             location_info = {
                 "id": show.location_id,
                 "slug": show.location_slug,
                 "city": show.city,
                 "state": show.state,
                 "venue": show.venue,
-                "latitude": show.latitude if show.latitude else None,
-                "longitude": show.longitude if show.longitude else None,
+                "coordinates": coordinates,
             }
 
             if not show.location_slug:
