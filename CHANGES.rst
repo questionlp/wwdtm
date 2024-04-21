@@ -8,8 +8,8 @@ Changes
 Application Changes
 -------------------
 
-* Add `latitude` and `longitude` properties to Locations
-* Add `pronouns` property to Hosts, Panelists and Scorekeepers
+* Add ``latitude`` and ``longitude`` properties to Locations
+* Add ``pronouns`` property to Hosts, Panelists and Scorekeepers
 
 Component Changes
 -----------------
