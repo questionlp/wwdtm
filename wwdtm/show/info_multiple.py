@@ -281,7 +281,8 @@ class ShowInfoMultiple:
             s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
             s.showurl AS show_url,
             l.locationid AS location_id, l.city, l.state,
-            l.venue, l.latitude, l.longitude, l.locationslug AS location_slug,
+            pa.name AS state_name, l.venue, l.latitude, l.longitude,
+            l.locationslug AS location_slug,
             h.hostid AS host_id, h.host, h.hostslug AS host_slug,
             hm.guest as host_guest,
             sk.scorekeeperid AS scorekeeper_id, sk.scorekeeper,
@@ -293,6 +294,7 @@ class ShowInfoMultiple:
             FROM ww_shows s
             JOIN ww_showlocationmap lm ON lm.showid = s.showid
             JOIN ww_locations l ON l.locationid = lm.locationid
+            LEFT JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
             JOIN ww_showhostmap hm ON hm.showid = s.showid
             JOIN ww_hosts h ON h.hostid = hm.hostid
             JOIN ww_showskmap skm ON skm.showid = s.showid
@@ -324,6 +326,7 @@ class ShowInfoMultiple:
                 "slug": show.location_slug,
                 "city": show.city,
                 "state": show.state,
+                "state_name": show.state_name,
                 "venue": show.venue,
                 "coordinates": coordinates,
             }
@@ -412,7 +415,8 @@ class ShowInfoMultiple:
             s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
             s.showurl AS show_url,
             l.locationid AS location_id, l.city, l.state,
-            l.venue, l.latitude, l.longitude, l.locationslug AS location_slug,
+            pa.name AS state_name, l.venue, l.latitude, l.longitude,
+            l.locationslug AS location_slug,
             h.hostid AS host_id, h.host, h.hostslug AS host_slug,
             hm.guest as host_guest,
             sk.scorekeeperid AS scorekeeper_id, sk.scorekeeper,
@@ -424,6 +428,7 @@ class ShowInfoMultiple:
             FROM ww_shows s
             JOIN ww_showlocationmap lm ON lm.showid = s.showid
             JOIN ww_locations l ON l.locationid = lm.locationid
+            LEFT JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
             JOIN ww_showhostmap hm ON hm.showid = s.showid
             JOIN ww_hosts h ON h.hostid = hm.hostid
             JOIN ww_showskmap skm ON skm.showid = s.showid
@@ -457,6 +462,7 @@ class ShowInfoMultiple:
                 "slug": show.location_slug,
                 "city": show.city,
                 "state": show.state,
+                "state_name": show.state_name,
                 "venue": show.venue,
                 "coordinates": coordinates,
             }

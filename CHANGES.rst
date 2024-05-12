@@ -2,6 +2,21 @@
 Changes
 *******
 
+2.10.0
+======
+
+Application Changes
+-------------------
+
+* Starting with version 2.10.0 of this library, the minimum required
+  version of the Wait Wait Stats Database is 4.7
+* Change handling of Host, Panelist and Scorekeeper pronouns to reflect
+  the addition of corresponding pronouns mapping tables introduced with
+  Wait Wait Stats Database version 4.7
+* The ``pronouns`` property for Hosts, Panelists and Scorekeepers is now
+  in the form of a list of pronouns strings
+* Add ``Pronouns`` class that retrieves information from
+
 2.9.1
 =====
 
