@@ -55,15 +55,17 @@ class Location:
             name, city, state and slug string
         """
         query = """
-            SELECT locationid AS id, city, state, venue, latitude,
-            longitude, locationslug AS slug
-            FROM ww_locations
+            SELECT l.locationid AS id, l.city, l.state,
+            pa.name AS state_name, l.venue, l.latitude, l.longitude,
+            l.locationslug AS slug
+            FROM ww_locations l
+            JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state;
             """
 
         if sort_by_venue:
-            query = query + "ORDER BY venue ASC, city ASC, state ASC;"
+            query = query + "ORDER BY l.venue ASC, l.city ASC, pa.name ASC;"
         else:
-            query = query + "ORDER BY state ASC, city ASC, venue ASC;"
+            query = query + "ORDER BY pa.name ASC, l.city ASC, l.venue ASC;"
 
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
@@ -88,6 +90,7 @@ class Location:
                     "id": row.id,
                     "city": row.city,
                     "state": row.state,
+                    "state_name": row.state_name,
                     "venue": row.venue,
                     "coordinates": coordinates,
                     "slug": (
@@ -114,14 +117,16 @@ class Location:
             name, city, state, slug string and a list of recordings
         """
         query = """
-            SELECT locationid AS id, city, state, venue, latitude,
-            longitude, locationslug AS slug
-            FROM ww_locations
+            SELECT l.locationid AS id, l.city, l.state,
+            pa.name AS state_name, l.venue, l.latitude, l.longitude,
+            l.locationslug AS slug
+            FROM ww_locations l
+            JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
             """
         if sort_by_venue:
-            query = query + "ORDER BY venue ASC, city ASC, state ASC;"
+            query = query + " ORDER BY l.venue ASC, l.city ASC, pa.name ASC;"
         else:
-            query = query + "ORDER BY state ASC, city ASC, venue ASC;"
+            query = query + " ORDER BY pa.name ASC, l.city ASC, l.venue ASC;"
 
         cursor = self.database_connection.cursor(named_tuple=True)
         cursor.execute(query)
@@ -146,6 +151,7 @@ class Location:
                     "id": row.id,
                     "city": row.city,
                     "state": row.state,
+                    "state_name": row.state_name,
                     "venue": row.venue,
                     "coordinates": coordinates,
                     "slug": (
@@ -171,11 +177,15 @@ class Location:
             list is sorted by venue first or by state and city first
         :return: A list of location IDs as integers
         """
-        query = "SELECT locationid FROM ww_locations "
+        query = """
+            SELECT l.locationid
+            FROM ww_locations l
+            JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
+            """
         if sort_by_venue:
-            query = query + "ORDER BY venue ASC, city ASC, state ASC;"
+            query = query + " ORDER BY l.venue ASC, l.city ASC, pa.name ASC;"
         else:
-            query = query + "ORDER BY state ASC, city ASC, venue ASC;"
+            query = query + " ORDER BY pa.name ASC, l.city ASC, l.venue ASC;"
 
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
@@ -194,11 +204,15 @@ class Location:
             list is sorted by venue first or by state and city first
         :return: A list of location slug strings
         """
-        query = "SELECT locationslug FROM ww_locations "
+        query = """
+            SELECT l.locationslug
+            FROM ww_locations l
+            JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
+            """
         if sort_by_venue:
-            query = query + "ORDER BY venue ASC, city ASC, state ASC;"
+            query = query + " ORDER BY l.venue ASC, l.city ASC, pa.name ASC;"
         else:
-            query = query + "ORDER BY state ASC, city ASC, venue ASC;"
+            query = query + " ORDER BY pa.name ASC, l.city ASC, l.venue ASC;"
 
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
@@ -221,10 +235,12 @@ class Location:
             return {}
 
         query = """
-            SELECT locationid AS id, city, state, venue, latitude,
-            longitude, locationslug AS slug
-            FROM ww_locations
-            WHERE locationid = %s
+            SELECT l.locationid AS id, l.city, l.state,
+            pa.name AS state_name, l.venue, l.latitude, l.longitude,
+            l.locationslug AS slug
+            FROM ww_locations l
+            JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
+            WHERE l.locationid = %s
             LIMIT 1;
             """
         cursor = self.database_connection.cursor(named_tuple=True)
@@ -247,6 +263,7 @@ class Location:
             "id": result.id,
             "city": result.city,
             "state": result.state,
+            "state_name": result.state_name,
             "venue": result.venue,
             "coordinates": coordinates,
             "slug": (

@@ -182,8 +182,9 @@ class ShowInfo:
             SELECT s.showid AS show_id, s.showdate AS date,
             s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
             s.showurl AS show_url,
-            l.locationid AS location_id, l.city, l.state, l.latitude,
-            l.longitude, l.venue, l.locationslug AS location_slug,
+            l.locationid AS location_id, l.city, l.state,
+            pa.name AS state_name, l.latitude, l.longitude, l.venue,
+            l.locationslug AS location_slug,
             h.hostid AS host_id, h.host, h.hostslug AS host_slug,
             hm.guest as host_guest, sk.scorekeeperid AS scorekeeper_id,
             sk.scorekeeper, sk.scorekeeperslug AS scorekeeper_slug,
@@ -194,6 +195,7 @@ class ShowInfo:
             FROM ww_shows s
             JOIN ww_showlocationmap lm ON lm.showid = s.showid
             JOIN ww_locations l ON l.locationid = lm.locationid
+            LEFT JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
             JOIN ww_showhostmap hm ON hm.showid = s.showid
             JOIN ww_hosts h ON h.hostid = hm.hostid
             JOIN ww_showskmap skm ON skm.showid = s.showid
@@ -224,6 +226,7 @@ class ShowInfo:
             "slug": result.location_slug,
             "city": result.city,
             "state": result.state,
+            "state_name": result.state_name,
             "venue": result.venue,
             "coordinates": coordinates if coordinates else None,
         }

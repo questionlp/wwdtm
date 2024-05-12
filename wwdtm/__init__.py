@@ -4,6 +4,11 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Explicitly listing all modules in this package."""
+from typing import Any
+
+from mysql.connector import connect
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
 
 from wwdtm import validation
 from wwdtm.guest import Guest, GuestAppearances, GuestUtility
@@ -20,4 +25,47 @@ from wwdtm.panelist import (
 from wwdtm.scorekeeper import Scorekeeper, ScorekeeperAppearances, ScorekeeperUtility
 from wwdtm.show import Show, ShowInfo, ShowInfoMultiple, ShowUtility
 
-VERSION = "2.9.1"
+VERSION = "2.10.0"
+
+
+def database_version(
+    connect_dict: dict[str, Any] = None,
+    database_connection: MySQLConnection | PooledMySQLConnection = None,
+) -> tuple[int] | None:
+    """Returns Stats Database version, if available.
+
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
+    :return: A tuple containg major, minor and revision numbers if
+        available. If a version number is not available, None is
+        returned.
+    """
+    if connect_dict:
+        connect_dict = connect_dict
+        _database_connection = connect(**connect_dict)
+    elif database_connection:
+        _database_connection = database_connection
+        if not _database_connection.is_connected():
+            _database_connection.reconnect()
+
+    cursor = _database_connection.cursor(named_tuple=True)
+    query = """
+            SELECT keyname, value
+            FROM __metadata
+            WHERE keyname = 'database_version'
+            ORDER BY id DESC LIMIT 1;
+            """
+    cursor.execute(query)
+    result = cursor.fetchone()
+
+    if not result:
+        return None
+
+    version_info = str(result.value).split(".")
+    if len(version_info) == 3:
+        return int(version_info[0]), int(version_info[1]), int(version_info[2])
+    elif len(version_info) == 2:
+        return int(version_info[0]), int(version_info[1]), 0
+    else:
+        return None

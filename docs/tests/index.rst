@@ -14,6 +14,7 @@ each of the :py:mod:`wwdtm` library modules:
     host
     location
     panelist
+    pronoun
     scorekeeper
     show
     validation
