@@ -17,6 +17,7 @@ The following is a list of modules provided in the library:
     host
     location
     panelist
+    pronoun
     scorekeeper
     show
     validation
