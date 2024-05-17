@@ -4,4 +4,4 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Wait Wait Stats: Pronouns module."""
-from .pronouns import Pronouns
+from wwdtm.pronoun.pronouns import Pronouns

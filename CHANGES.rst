@@ -2,6 +2,20 @@
 Changes
 *******
 
+2.10.1
+======
+
+Application Changes
+-------------------
+
+* Use absolute imports in each of the module's respective ``__init__.py``
+
+Documentation Changes
+---------------------
+
+* Correct header formatting for ``wwdtm.pronoun.Pronouns``
+
+
 2.10.0
 ======
 

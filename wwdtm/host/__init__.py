@@ -4,6 +4,6 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Wait Wait Stats: Host module."""
-from .appearances import HostAppearances
-from .host import Host
-from .utility import HostUtility
+from wwdtm.host.appearances import HostAppearances
+from wwdtm.host.host import Host
+from wwdtm.host.utility import HostUtility
