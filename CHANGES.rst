@@ -5,16 +5,16 @@ Changes
 2.10.1
 ======
 
-Application Changes
+Development Changes
 -------------------
 
+* Add Python 3.11 and 3.12 version classifiers in ``pyproject.toml``
 * Use absolute imports in each of the module's respective ``__init__.py``
 
 Documentation Changes
 ---------------------
 
 * Correct header formatting for ``wwdtm.pronoun.Pronouns``
-
 
 2.10.0
 ======
