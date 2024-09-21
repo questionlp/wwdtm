@@ -2,9 +2,9 @@ name: docs
 channels:
   - defaults
 dependencies:
-  - Sphinx==7.2.6
-  - sphinx-autobuild==2021.3.14
-  - sphinx-autodoc-typehints==1.25.2
+  - Sphinx==8.0.2
+  - sphinx-autobuild==2024.9.19
+  - sphinx-autodoc-typehints==2.4.4
   - sphinx-copybutton==0.5.2
-  - sphinx-toolbox==3.5.0
-  - Pallets-Sphinx-Themes==2.1.1
+  - sphinx-toolbox==3.8.0
+  - Pallets-Sphinx-Themes==2.1.3
