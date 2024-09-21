@@ -26,6 +26,8 @@ def get_connect_dict() -> dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
+    return None
+
 
 def test_show_retrieve_all():
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_all`."""

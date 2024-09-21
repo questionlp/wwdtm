@@ -2,6 +2,39 @@
 Changes
 *******
 
+2.11.0
+======
+
+Development Changes
+-------------------
+
+* Replace deprecated ``perf_test.py`` file with a basic ``conftest.py`` file for pytest
+* Update ``MANIFEST.in`` to remove ``pytest.ini`` and include ``conftest.py``
+* Upgrade black from 24.3.0 to 24.4.2
+* Upgrade build from 1.2.1 to 1.2.2
+* Upgrade pytest from 8.1.1 to 8.1.2
+* Upgrade ruff from 0.3.6 to 0.6.7
+* Upgrade wheel from 0.43.0 to 0.44.0
+
+Application Changes
+-------------------
+
+* Fix issues or add exceptions to Pylint errors and warnings
+* Remove an errant semicolon in ``wwdtm.location.location.retrieve_all``
+* Replace "Wait Wait Don't Tell Me! Stats" with "Wait Wait Stats" in docstrings
+
+Documentation Changes
+---------------------
+
+* Upgrade Sphinx from 7.2.6 to 8.0.2
+* Upgrade sphinx-autobuild from 2021.3.14 to 2024.9.19
+* Upgrade sphinx-autodoc-typehints from 1.25.2 to 2.4.4
+* Upgrade sphinx-toolbox from 3.5.0 to 3.8.0
+* Upgrade Pallets-Sphinx-Themes from 2.1.1 to 2.1.3
+* Upgrade pytest from 8.1.1 to 8.1.2
+* Upgrade black from 24.3.0 to 24.4.2
+* Update ``build.os`` in ``.readtheedocs.yaml`` from ``ubuntu-22.04`` to ``ubuntu-24.04``
+
 2.10.1
 ======
 

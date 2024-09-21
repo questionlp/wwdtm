@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # vim: set noai syntax=python ts=4 sw=4:
-"""Wait Wait Don't Tell Me! Stats Show Information Retrieval Functions."""
+# pylint: disable=C0206
+"""Wait Wait Stats Show Information Retrieval Functions."""
 import datetime
 from decimal import Decimal
 from typing import Any
@@ -96,15 +97,6 @@ class Show:
     def retrieve_all_details(
         self, include_decimal_scores: bool = False
     ) -> list[dict[str, Any]]:
-        """Retrieves detailed show information for all shows.
-
-        :param include_decimal_scores: A boolean to determine if decimal
-            scores should be used and returned instead of integer scores
-        :return: A list of dictionaries containing show ID, show date,
-            Best Of show flag, repeat show ID (if applicable), show URL
-            at NPR.org, host, scorekeeper, location, panelists and
-            guests
-        """
         """Returns a list of dictionaries with show information and details for all shows.
 
         :param include_decimal_scores: Flag set to include panelist decimal

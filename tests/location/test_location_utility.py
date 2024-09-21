@@ -26,6 +26,8 @@ def get_connect_dict() -> dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
+    return None
+
 
 @pytest.mark.parametrize("location_id", [95])
 def test_location_utility_convert_id_to_slug(location_id: int):

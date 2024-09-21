@@ -1,8 +1,8 @@
-ruff==0.3.6
-black==24.3.0
-pytest==8.1.1
-wheel==0.43.0
-build==1.2.1
+ruff==0.6.7
+black==24.4.2
+pytest==8.1.2
+wheel==0.44.0
+build==1.2.2
 
 mysql-connector-python==8.2.0
 numpy==1.26.4

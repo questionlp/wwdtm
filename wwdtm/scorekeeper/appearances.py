@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # vim: set noai syntax=python ts=4 sw=4:
-"""Wait Wait Don't Tell Me! Stats Scorekeeper Appearance Retrieval Functions."""
+"""Wait Wait Stats Scorekeeper Appearance Retrieval Functions."""
 from typing import Any
 
 from mysql.connector import connect

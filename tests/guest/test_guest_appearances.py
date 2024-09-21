@@ -26,6 +26,8 @@ def get_connect_dict() -> dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
+    return None
+
 
 @pytest.mark.parametrize("guest_id", [976])
 def test_guest_appearances_retrieve_appearances_by_id(guest_id: int):

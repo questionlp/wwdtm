@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # vim: set noai syntax=python ts=4 sw=4:
-"""Wait Wait Don't Tell Me! Stats Location Data Retrieval Functions."""
+"""Wait Wait Stats Location Data Retrieval Functions."""
 from typing import Any
 
 from mysql.connector import connect
@@ -59,7 +59,7 @@ class Location:
             pa.name AS state_name, l.venue, l.latitude, l.longitude,
             l.locationslug AS slug
             FROM ww_locations l
-            JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state;
+            JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
             """
 
         if sort_by_venue:
