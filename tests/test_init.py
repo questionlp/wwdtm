@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from numpy import isin
 
 from wwdtm import database_version
 
@@ -26,6 +25,8 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+    return None
 
 
 def test_database_version():

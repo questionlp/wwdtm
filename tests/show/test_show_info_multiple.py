@@ -26,6 +26,8 @@ def get_connect_dict() -> dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
+    return None
+
 
 @pytest.mark.parametrize("show_id", [319, 1083, 1162])
 def test_show_info_retrieve_bluff_info_all(show_id: int):

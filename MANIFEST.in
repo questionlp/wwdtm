@@ -1,9 +1,6 @@
 # Include example configuration file
 include config.json.dist
 
-# Include pytest configuration file
-include pytest.ini
-
 # Include documentation
 graft docs
 global-exclude *.py[cod]
@@ -12,4 +9,5 @@ prune docs/venv
 
 # Include tests
 graft tests
+include conftest.py
 global-exclude *.py[cod]

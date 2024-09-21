@@ -26,6 +26,8 @@ def get_connect_dict() -> dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
+    return None
+
 
 @pytest.mark.parametrize("year, month, day", [(2018, 10, 27)])
 def test_show_utility_convert_date_to_id(year: int, month: int, day: int):

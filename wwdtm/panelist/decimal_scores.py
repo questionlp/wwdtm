@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # vim: set noai syntax=python ts=4 sw=4:
-"""Wait Wait Don't Tell Me! Stats Panelist Decimal Scores Retrieval Functions."""
+"""Wait Wait Stats Panelist Decimal Scores Retrieval Functions."""
 from decimal import Decimal
 from math import floor
 from typing import Any

@@ -25,7 +25,7 @@ from wwdtm.panelist import (
 from wwdtm.scorekeeper import Scorekeeper, ScorekeeperAppearances, ScorekeeperUtility
 from wwdtm.show import Show, ShowInfo, ShowInfoMultiple, ShowUtility
 
-VERSION = "2.10.1"
+VERSION = "2.11.0"
 
 
 def database_version(
@@ -42,8 +42,8 @@ def database_version(
         returned.
     """
     if connect_dict:
-        connect_dict = connect_dict
-        _database_connection = connect(**connect_dict)
+        _connect_dict = connect_dict
+        _database_connection = connect(**_connect_dict)
     elif database_connection:
         _database_connection = database_connection
         if not _database_connection.is_connected():
@@ -67,5 +67,5 @@ def database_version(
         return int(version_info[0]), int(version_info[1]), int(version_info[2])
     elif len(version_info) == 2:
         return int(version_info[0]), int(version_info[1]), 0
-    else:
-        return None
+
+    return None
