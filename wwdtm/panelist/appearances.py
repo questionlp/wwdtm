@@ -72,7 +72,7 @@ class PanelistAppearances:
             AND pm.panelistscore IS NOT NULL )
             AS shows_with_scores;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(
             query,
             (
@@ -85,9 +85,9 @@ class PanelistAppearances:
 
         if result:
             appearance_counts = {
-                "regular_shows": result.regular_shows,
-                "all_shows": result.all_shows,
-                "shows_with_scores": result.shows_with_scores,
+                "regular_shows": result["regular_shows"],
+                "all_shows": result["all_shows"],
+                "shows_with_scores": result["shows_with_scores"],
             }
         else:
             appearance_counts = {
@@ -108,15 +108,15 @@ class PanelistAppearances:
         cursor.execute(query, (panelist_id,))
         result = cursor.fetchone()
 
-        if result and result.first_id:
+        if result and result["first_id"]:
             first = {
-                "show_id": result.first_id,
-                "show_date": result.first.isoformat(),
+                "show_id": result["first_id"],
+                "show_date": result["first"].isoformat(),
             }
 
             most_recent = {
-                "show_id": result.most_recent_id,
-                "show_date": result.most_recent.isoformat(),
+                "show_id": result["most_recent_id"],
+                "show_date": result["most_recent"].isoformat(),
             }
 
             milestones = {
@@ -170,31 +170,21 @@ class PanelistAppearances:
             appearances = []
             for appearance in results:
                 info = {
-                    "show_id": appearance.show_id,
-                    "date": appearance.date.isoformat(),
-                    "best_of": bool(appearance.best_of),
-                    "repeat_show": bool(appearance.repeat_show_id),
-                    "lightning_round_start": appearance.start,
-                    "lightning_round_start_decimal": (
-                        appearance.start_decimal
-                        if "start_decimal" in appearance._fields
-                        else None
+                    "show_id": appearance["show_id"],
+                    "date": appearance["date"].isoformat(),
+                    "best_of": bool(appearance["best_of"]),
+                    "repeat_show": bool(appearance["repeat_show_id"]),
+                    "lightning_round_start": appearance["start"],
+                    "lightning_round_start_decimal": appearance.get(
+                        "start_decimal", None
                     ),
-                    "lightning_round_correct": appearance.correct,
-                    "lightning_round_correct_decimal": (
-                        appearance.correct_decimal
-                        if "correct_decimal" in appearance._fields
-                        else None
+                    "lightning_round_correct": appearance["correct"],
+                    "lightning_round_correct_decimal": appearance.get(
+                        "correct_decimal", None
                     ),
-                    "score": appearance.score,
-                    "score_decimal": (
-                        appearance.score_decimal
-                        if "score_decimal" in appearance._fields
-                        else None
-                    ),
-                    "rank": (
-                        appearance.pnl_rank if appearance.pnl_rank is not None else None
-                    ),
+                    "score": appearance["score"],
+                    "score_decimal": appearance.get("score_decimal", None),
+                    "rank": appearance.get("pnl_rank", None),
                 }
                 appearances.append(info)
 
@@ -240,7 +230,7 @@ class PanelistAppearances:
             FROM ww_shows s
             ORDER BY YEAR(s.showdate) ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
 
@@ -249,7 +239,7 @@ class PanelistAppearances:
 
         years = {}
         for row in results:
-            years[row.year] = 0
+            years[row["year"]] = 0
 
         query = """
             SELECT YEAR(s.showdate) AS year,
@@ -270,7 +260,7 @@ class PanelistAppearances:
             return {}
 
         for row in results:
-            years[row.year] = row.count
+            years[row["year"]] = row["count"]
 
         return years
 

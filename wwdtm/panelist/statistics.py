@@ -69,7 +69,7 @@ class PanelistStatistics:
             WHERE s.repeatshowid IS NULL AND blm.correctbluffpnlid = %s
             ) AS correct;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(
             query,
             (
@@ -84,8 +84,8 @@ class PanelistStatistics:
             return {}
 
         return {
-            "chosen": result.chosen,
-            "correct": result.correct,
+            "chosen": result["chosen"],
+            "correct": result["correct"],
         }
 
     def retrieve_bluffs_by_slug(self, panelist_slug: str) -> dict[str, int]:
@@ -136,7 +136,7 @@ class PanelistStatistics:
             s.bestof = 0 and s.repeatshowid IS NULL
             ) as 'third';
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(
             query,
             (
@@ -154,11 +154,11 @@ class PanelistStatistics:
             return {}
 
         return {
-            "first": result.first,
-            "first_tied": result.first_tied,
-            "second": result.second,
-            "second_tied": result.second_tied,
-            "third": result.third,
+            "first": result["first"],
+            "first_tied": result["first_tied"],
+            "second": result["second"],
+            "second_tied": result["second_tied"],
+            "third": result["third"],
         }
 
     def retrieve_rank_info_by_slug(self, panelist_slug: str) -> dict[str, int]:

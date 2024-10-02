@@ -64,7 +64,7 @@ class Panelist:
             WHERE panelistslug != 'multiple'
             ORDER BY panelist ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -74,7 +74,7 @@ class Panelist:
 
         panelists = []
 
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         for row in results:
             query = """
                 SELECT pn.pronouns
@@ -83,17 +83,19 @@ class Panelist:
                 WHERE ppm.panelistid = %s
                 ORDER BY ppm.panelistpronounsmapid ASC;
                 """
-            cursor.execute(query, (row.id,))
+            cursor.execute(query, (row["id"],))
             pn_results = cursor.fetchall()
 
             panelists.append(
                 {
-                    "id": row.id,
-                    "name": row.name,
-                    "slug": row.slug if row.slug else slugify(row.name),
-                    "gender": row.gender,
+                    "id": row["id"],
+                    "name": row["name"],
+                    "slug": row["slug"] if row["slug"] else slugify(row["name"]),
+                    "gender": row["gender"],
                     "pronouns": (
-                        [result.pronouns for result in pn_results] if pn_results else []
+                        [result["pronouns"] for result in pn_results]
+                        if pn_results
+                        else []
                     ),
                 }
             )
@@ -118,7 +120,7 @@ class Panelist:
             WHERE panelistslug != 'multiple'
             ORDER BY panelist ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -128,7 +130,7 @@ class Panelist:
 
         panelists = []
 
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         for row in results:
             query = """
                 SELECT pn.pronouns
@@ -137,23 +139,25 @@ class Panelist:
                 WHERE ppm.panelistid = %s
                 ORDER BY ppm.panelistpronounsmapid ASC;
                 """
-            cursor.execute(query, (row.id,))
+            cursor.execute(query, (row["id"],))
             pn_results = cursor.fetchall()
             panelists.append(
                 {
-                    "id": row.id,
-                    "name": row.name,
-                    "slug": row.slug if row.slug else slugify(row.name),
-                    "gender": row.gender,
+                    "id": row["id"],
+                    "name": row["name"],
+                    "slug": row["slug"] if row["slug"] else slugify(row["name"]),
+                    "gender": row["gender"],
                     "pronouns": (
-                        [result.pronouns for result in pn_results] if pn_results else []
+                        [result["pronouns"] for result in pn_results]
+                        if pn_results
+                        else []
                     ),
                     "statistics": self.statistics.retrieve_statistics_by_id(
-                        row.id, include_decimal_scores=use_decimal_scores
+                        row["id"], include_decimal_scores=use_decimal_scores
                     ),
-                    "bluffs": self.statistics.retrieve_bluffs_by_id(row.id),
+                    "bluffs": self.statistics.retrieve_bluffs_by_id(row["id"]),
                     "appearances": self.appearances.retrieve_appearances_by_id(
-                        row.id, use_decimal_scores=use_decimal_scores
+                        row["id"], use_decimal_scores=use_decimal_scores
                     ),
                 }
             )
@@ -217,7 +221,7 @@ class Panelist:
             WHERE p.panelistid = %s
             LIMIT 1;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (panelist_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -232,17 +236,17 @@ class Panelist:
             WHERE ppm.panelistid = %s
             ORDER BY ppm.panelistpronounsmapid ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
 
         return {
-            "id": result.id,
-            "name": result.name,
-            "slug": result.slug if result.slug else slugify(result.name),
-            "gender": result.gender,
-            "pronouns": [result.pronouns for result in results] if results else [],
+            "id": result["id"],
+            "name": result["name"],
+            "slug": result["slug"] if result["slug"] else slugify(result["name"]),
+            "gender": result["gender"],
+            "pronouns": [result["pronouns"] for result in results] if results else [],
         }
 
     def retrieve_by_slug(self, panelist_slug: str) -> dict[str, Any]:

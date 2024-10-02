@@ -59,7 +59,7 @@ class PanelistScores:
             AND s.bestof = 0 and s.repeatshowid IS NULL
             ORDER BY s.showdate ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (panelist_id,))
         result = cursor.fetchall()
         cursor.close()
@@ -69,8 +69,8 @@ class PanelistScores:
 
         scores = []
         for appearance in result:
-            if appearance.score:
-                scores.append(appearance.score)
+            if appearance["score"]:
+                scores.append(appearance["score"])
 
         return scores
 
@@ -104,15 +104,15 @@ class PanelistScores:
             FROM ww_showpnlmap pm
             LIMIT 1;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         result = cursor.fetchone()
 
         if not result:
             return {}
 
-        min_score = result.min
-        max_score = result.max
+        min_score = result["min"]
+        max_score = result["max"]
 
         scores = {}
         for score in range(min_score, max_score + 1):
@@ -137,7 +137,7 @@ class PanelistScores:
             return {}
 
         for row in results:
-            scores[row.score] = row.score_count
+            scores[row["score"]] = row["score_count"]
 
         return {
             "score": list(scores.keys()),
@@ -175,15 +175,15 @@ class PanelistScores:
             MAX(pm.panelistscore) AS max
             FROM ww_showpnlmap pm;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         result = cursor.fetchone()
 
         if not result:
             return []
 
-        min_score = result.min
-        max_score = result.max
+        min_score = result["min"]
+        max_score = result["max"]
 
         scores = {}
         for score in range(min_score, max_score + 1):
@@ -208,7 +208,7 @@ class PanelistScores:
             return []
 
         for row in results:
-            scores[row.score] = row.score_count
+            scores[row["score"]] = row["score_count"]
 
         return list(scores.items())
 
@@ -249,7 +249,7 @@ class PanelistScores:
             AND pm.panelistscore IS NOT NULL
             ORDER BY s.showdate ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
@@ -260,8 +260,8 @@ class PanelistScores:
         show_list = []
         score_list = []
         for shows in results:
-            show_list.append(shows.date.isoformat())
-            score_list.append(shows.score)
+            show_list.append(shows["date"].isoformat())
+            score_list.append(shows["score"])
 
         return {
             "shows": show_list,
@@ -304,7 +304,7 @@ class PanelistScores:
             AND pm.panelistscore IS NOT NULL
             ORDER BY s.showdate ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
         cursor.close()
@@ -314,8 +314,8 @@ class PanelistScores:
 
         scores = []
         for show in results:
-            show_date = show.date.isoformat()
-            score = show.score
+            show_date = show["date"].isoformat()
+            score = show["score"]
             scores.append((show_date, score))
 
         return scores

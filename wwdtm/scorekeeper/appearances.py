@@ -62,7 +62,7 @@ class ScorekeeperAppearances:
             JOIN ww_shows s ON s.showid = skm.showid
             WHERE skm.scorekeeperid = %s ) AS all_shows;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(
             query,
             (
@@ -74,8 +74,8 @@ class ScorekeeperAppearances:
 
         if result:
             appearance_counts = {
-                "regular_shows": result.regular_shows,
-                "all_shows": result.all_shows,
+                "regular_shows": result["regular_shows"],
+                "all_shows": result["all_shows"],
             }
         else:
             appearance_counts = {
@@ -101,12 +101,12 @@ class ScorekeeperAppearances:
             appearances = []
             for appearance in results:
                 info = {
-                    "show_id": appearance.show_id,
-                    "date": appearance.date.isoformat(),
-                    "best_of": bool(appearance.best_of),
-                    "repeat_show": bool(appearance.repeat_show_id),
-                    "guest": bool(appearance.guest),
-                    "description": appearance.description,
+                    "show_id": appearance["show_id"],
+                    "date": appearance["date"].isoformat(),
+                    "best_of": bool(appearance["best_of"]),
+                    "repeat_show": bool(appearance["repeat_show_id"]),
+                    "guest": bool(appearance["guest"]),
+                    "description": appearance["description"],
                 }
                 appearances.append(info)
 

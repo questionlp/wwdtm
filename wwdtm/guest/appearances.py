@@ -63,7 +63,7 @@ class GuestAppearances:
             JOIN ww_shows s ON s.showid = gm.showid
             WHERE gm.guestid = %s ) AS all_shows;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(
             query,
             (
@@ -75,8 +75,8 @@ class GuestAppearances:
 
         if result:
             appearance_counts = {
-                "regular_shows": result.regular_shows,
-                "all_shows": result.all_shows,
+                "regular_shows": result["regular_shows"],
+                "all_shows": ["result.all_shows"],
             }
         else:
             appearance_counts = {
@@ -94,7 +94,7 @@ class GuestAppearances:
             WHERE gm.guestid = %s
             ORDER BY s.showdate ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (guest_id,))
         results = cursor.fetchall()
         cursor.close()
@@ -103,12 +103,12 @@ class GuestAppearances:
             appearances = []
             for appearance in results:
                 info = {
-                    "show_id": appearance.show_id,
-                    "date": appearance.date.isoformat(),
-                    "best_of": bool(appearance.best_of),
-                    "repeat_show": bool(appearance.repeat_show_id),
-                    "score": appearance.score,
-                    "score_exception": bool(appearance.score_exception),
+                    "show_id": appearance["show_id"],
+                    "date": appearance["date"].isoformat(),
+                    "best_of": bool(appearance["best_of"]),
+                    "repeat_show": bool(appearance["repeat_show_id"]),
+                    "score": appearance["score"],
+                    "score_exception": bool(appearance["score_exception"]),
                 }
                 appearances.append(info)
 
