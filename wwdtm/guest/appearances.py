@@ -76,7 +76,7 @@ class GuestAppearances:
         if result:
             appearance_counts = {
                 "regular_shows": result["regular_shows"],
-                "all_shows": ["result.all_shows"],
+                "all_shows": result["all_shows"],
             }
         else:
             appearance_counts = {
