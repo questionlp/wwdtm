@@ -57,7 +57,7 @@ class ShowInfo:
             FROM ww_panelists
             ORDER BY panelistid ASC;
         """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -67,9 +67,9 @@ class ShowInfo:
 
         panelists = {}
         for row in results:
-            panelists[row.panelistid] = {
-                "name": row.panelist,
-                "slug": row.panelistslug,
+            panelists[row["panelistid"]] = {
+                "name": row["panelist"],
+                "slug": row["panelistslug"],
             }
 
         return panelists
@@ -92,7 +92,7 @@ class ShowInfo:
             WHERE showid = %s
             ORDER BY segment ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (show_id,))
         result = cursor.fetchall()
 
@@ -101,42 +101,42 @@ class ShowInfo:
 
         bluffs = []
         for row in result:
-            if not row.chosen_id and not row.correct_id:
+            if not row["chosen_id"] and not row["correct_id"]:
                 bluffs.append(
                     {
-                        "segment": row.segment,
+                        "segment": row["segment"],
                         "chosen_panelist": None,
                         "correct_panelist": None,
                     }
                 )
-            elif row.chosen_id and not row.correct_id:
+            elif row["chosen_id"] and not row["correct_id"]:
                 bluffs.append(
                     {
-                        "segment": row.segment,
+                        "segment": row["segment"],
                         "chosen_panelist": {
-                            "id": row.chosen_id,
-                            "name": self.panelists[row.chosen_id]["name"],
+                            "id": row["chosen_id"],
+                            "name": self.panelists[row["chosen_id"]]["name"],
                             "slug": (
-                                self.panelists[row.chosen_id]["slug"]
-                                if self.panelists[row.chosen_id]["slug"]
-                                else slugify(self.panelists[row.chosen_id]["name"])
+                                self.panelists[row["chosen_id"]]["slug"]
+                                if self.panelists[row["chosen_id"]]["slug"]
+                                else slugify(self.panelists[row["chosen_id"]]["name"])
                             ),
                         },
                         "correct_panelist": None,
                     }
                 )
-            elif row.correct_id and not row.chosen_id:
+            elif row["correct_id"] and not row["chosen_id"]:
                 bluffs.append(
                     {
-                        "segment": row.segment,
+                        "segment": row["segment"],
                         "chosen_panelist": None,
                         "correct_panelist": {
-                            "id": row.correct_id,
-                            "name": self.panelists[row.correct_id]["name"],
+                            "id": row["correct_id"],
+                            "name": self.panelists[row["correct_id"]]["name"],
                             "slug": (
-                                self.panelists[row.correct_id]["slug"]
-                                if self.panelists[row.correct_id]["slug"]
-                                else slugify(self.panelists[row.correct_id]["name"])
+                                self.panelists[row["correct_id"]]["slug"]
+                                if self.panelists[row["correct_id"]]["slug"]
+                                else slugify(self.panelists[row["correct_id"]]["name"])
                             ),
                         },
                     }
@@ -144,23 +144,23 @@ class ShowInfo:
             else:
                 bluffs.append(
                     {
-                        "segment": row.segment,
+                        "segment": row["segment"],
                         "chosen_panelist": {
-                            "id": row.chosen_id,
-                            "name": self.panelists[row.chosen_id]["name"],
+                            "id": row["chosen_id"],
+                            "name": self.panelists[row["chosen_id"]]["name"],
                             "slug": (
-                                self.panelists[row.chosen_id]["slug"]
-                                if self.panelists[row.chosen_id]["slug"]
-                                else slugify(self.panelists[row.chosen_id]["name"])
+                                self.panelists[row["chosen_id"]]["slug"]
+                                if self.panelists[row["chosen_id"]]["slug"]
+                                else slugify(self.panelists[row["chosen_id"]]["name"])
                             ),
                         },
                         "correct_panelist": {
-                            "id": row.correct_id,
-                            "name": self.panelists[row.correct_id]["name"],
+                            "id": row["correct_id"],
+                            "name": self.panelists[row["correct_id"]]["name"],
                             "slug": (
-                                self.panelists[row.correct_id]["slug"]
-                                if self.panelists[row.correct_id]["slug"]
-                                else slugify(self.panelists[row.correct_id]["name"])
+                                self.panelists[row["correct_id"]]["slug"]
+                                if self.panelists[row["correct_id"]]["slug"]
+                                else slugify(self.panelists[row["correct_id"]]["name"])
                             ),
                         },
                     }
@@ -205,7 +205,7 @@ class ShowInfo:
             WHERE s.showid = %s
             ORDER BY s.showdate ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (show_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -213,70 +213,72 @@ class ShowInfo:
         if not result:
             return {}
 
-        if not result.latitude and not result.longitude:
+        if not result["latitude"] and not result["longitude"]:
             coordinates = None
         else:
             coordinates = {
-                "latitude": result.latitude if result.latitude else None,
-                "longitude": result.longitude if result.longitude else None,
+                "latitude": result["latitude"] if result["latitude"] else None,
+                "longitude": result["longitude"] if result["longitude"] else None,
             }
 
         location_info = {
-            "id": result.location_id,
-            "slug": result.location_slug,
-            "city": result.city,
-            "state": result.state,
-            "state_name": result.state_name,
-            "venue": result.venue,
+            "id": result["location_id"],
+            "slug": result["location_slug"],
+            "city": result["city"],
+            "state": result["state"],
+            "state_name": result["state_name"],
+            "venue": result["venue"],
             "coordinates": coordinates if coordinates else None,
         }
 
-        if not result.location_slug:
+        if not result["location_slug"]:
             location_info["slug"] = self.loc_util.slugify_location(
-                location_id=result.location_id,
-                venue=result.venue,
-                city=result.city,
-                state=result.state,
+                location_id=result["location_id"],
+                venue=result["venue"],
+                city=result["city"],
+                state=result["state"],
             )
 
         host_info = {
-            "id": result.host_id,
-            "name": result.host,
-            "slug": result.host_slug if result.host_slug else slugify(result.host),
-            "guest": bool(result.host_guest),
+            "id": result["host_id"],
+            "name": result["host"],
+            "slug": (
+                result["host_slug"] if result["host_slug"] else slugify(result["host"])
+            ),
+            "guest": bool(result["host_guest"]),
         }
 
         scorekeeper_info = {
-            "id": result.scorekeeper_id,
-            "name": result.scorekeeper,
+            "id": result["scorekeeper_id"],
+            "name": result["scorekeeper"],
             "slug": (
-                result.scorekeeper_slug
-                if result.scorekeeper_slug
-                else slugify(result.scorekeeper)
+                result["scorekeeper_slug"]
+                if result["scorekeeper_slug"]
+                else slugify(result["scorekeeper"])
             ),
-            "guest": bool(result.scorekeeper_guest),
+            "guest": bool(result["scorekeeper_guest"]),
             "description": (
-                result.scorekeeper_description
-                if result.scorekeeper_description
+                result["scorekeeper_description"]
+                if result["scorekeeper_description"]
                 else None
             ),
         }
 
-        if result.show_description:
-            description = str(result.show_description).strip()
+        if result["show_description"]:
+            description = str(result["show_description"]).strip()
         else:
             description = None
 
-        notes = str(result.show_notes).strip() if result.show_notes else None
+        notes = str(result["show_notes"]).strip() if result["show_notes"] else None
 
         show_info = {
-            "id": result.show_id,
-            "date": result.date.isoformat(),
-            "best_of": bool(result.best_of),
-            "repeat_show": bool(result.repeat_show_id),
+            "id": result["show_id"],
+            "date": result["date"].isoformat(),
+            "best_of": bool(result["best_of"]),
+            "repeat_show": bool(result["repeat_show_id"]),
             "original_show_id": None,
             "original_show_date": None,
-            "show_url": result.show_url,
+            "show_url": result["show_url"],
             "description": description,
             "notes": notes,
             "location": location_info,
@@ -284,7 +286,7 @@ class ShowInfo:
             "scorekeeper": scorekeeper_info,
         }
 
-        repeat_show_id = result.repeat_show_id
+        repeat_show_id = result["repeat_show_id"]
         if repeat_show_id:
             original_date = self.utility.convert_id_to_date(repeat_show_id)
             show_info["original_show_id"] = repeat_show_id
@@ -315,7 +317,7 @@ class ShowInfo:
             WHERE gm.showid = %s
             ORDER by gm.showguestmapid ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (show_id,))
         results = cursor.fetchall()
         cursor.close()
@@ -327,11 +329,11 @@ class ShowInfo:
         for guest in results:
             guests.append(
                 {
-                    "id": guest.id,
-                    "name": guest.name,
-                    "slug": guest.slug if guest.slug else slugify(guest.name),
-                    "score": guest.score,
-                    "score_exception": bool(guest.score_exception),
+                    "id": guest["id"],
+                    "name": guest["name"],
+                    "slug": guest["slug"] if guest["slug"] else slugify(guest["name"]),
+                    "score": guest["score"],
+                    "score_exception": bool(guest["score_exception"]),
                 }
             )
 
@@ -381,7 +383,7 @@ class ShowInfo:
                 ORDER by pm.panelistscore DESC, pm.showpnlmapid ASC;
                 """
 
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (show_id,))
         results = cursor.fetchall()
         cursor.close()
@@ -393,24 +395,16 @@ class ShowInfo:
         for row in results:
             panelists.append(
                 {
-                    "id": row.id,
-                    "name": row.name,
-                    "slug": row.slug if row.slug else slugify(row.name),
-                    "lightning_round_start": row.start,
-                    "lightning_round_start_decimal": (
-                        row.start_decimal if "start_decimal" in row._fields else None
-                    ),
-                    "lightning_round_correct": row.correct,
-                    "lightning_round_correct_decimal": (
-                        row.correct_decimal
-                        if "correct_decimal" in row._fields
-                        else None
-                    ),
-                    "score": row.score,
-                    "score_decimal": (
-                        row.score_decimal if "score_decimal" in row._fields else None
-                    ),
-                    "rank": row.pnl_rank if row.pnl_rank else None,
+                    "id": row["id"],
+                    "name": row["name"],
+                    "slug": row["slug"] if row["slug"] else slugify(row["name"]),
+                    "lightning_round_start": row["start"],
+                    "lightning_round_start_decimal": row.get("start_decimal", None),
+                    "lightning_round_correct": row["correct"],
+                    "lightning_round_correct_decimal": row.get("correct_decimal", None),
+                    "score": row["score"],
+                    "score_decimal": row.get("score_decimal", None),
+                    "rank": row["pnl_rank"] if row["pnl_rank"] else None,
                 }
             )
 

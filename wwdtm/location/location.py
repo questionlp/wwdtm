@@ -67,7 +67,7 @@ class Location:
         else:
             query = query + "ORDER BY pa.name ASC, l.city ASC, l.venue ASC;"
 
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -77,30 +77,30 @@ class Location:
 
         locations = []
         for row in results:
-            if not row.latitude and not row.longitude:
+            if not row["latitude"] and not row["longitude"]:
                 coordinates = None
             else:
                 coordinates = {
-                    "latitude": row.latitude if row.latitude else None,
-                    "longitude": row.longitude if row.longitude else None,
+                    "latitude": row["latitude"] if row["latitude"] else None,
+                    "longitude": row["longitude"] if row["longitude"] else None,
                 }
 
             locations.append(
                 {
-                    "id": row.id,
-                    "city": row.city,
-                    "state": row.state,
-                    "state_name": row.state_name,
-                    "venue": row.venue,
+                    "id": row["id"],
+                    "city": row["city"],
+                    "state": row["state"],
+                    "state_name": row["state_name"],
+                    "venue": row["venue"],
                     "coordinates": coordinates,
                     "slug": (
-                        row.slug
-                        if row.slug
+                        row["slug"]
+                        if row["slug"]
                         else self.utility.slugify_location(
-                            location_id=row.id,
-                            venue=row.venue,
-                            city=row.city,
-                            state=row.state,
+                            location_id=row["id"],
+                            venue=row["venue"],
+                            city=row["city"],
+                            state=row["state"],
                         )
                     ),
                 }
@@ -128,7 +128,7 @@ class Location:
         else:
             query = query + " ORDER BY pa.name ASC, l.city ASC, l.venue ASC;"
 
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -138,33 +138,33 @@ class Location:
 
         locations = []
         for row in results:
-            if not row.latitude and not row.longitude:
+            if not row["latitude"] and not row["longitude"]:
                 coordinates = None
             else:
                 coordinates = {
-                    "latitude": row.latitude if row.latitude else None,
-                    "longitude": row.longitude if row.longitude else None,
+                    "latitude": row["latitude"] if row["latitude"] else None,
+                    "longitude": row["longitude"] if row["longitude"] else None,
                 }
 
             locations.append(
                 {
-                    "id": row.id,
-                    "city": row.city,
-                    "state": row.state,
-                    "state_name": row.state_name,
-                    "venue": row.venue,
+                    "id": row["id"],
+                    "city": row["city"],
+                    "state": row["state"],
+                    "state_name": row["state_name"],
+                    "venue": row["venue"],
                     "coordinates": coordinates,
                     "slug": (
-                        row.slug
-                        if row.slug
+                        row["slug"]
+                        if row["slug"]
                         else self.utility.slugify_location(
-                            location_id=row.id,
-                            venue=row.venue,
-                            city=row.city,
-                            state=row.state,
+                            location_id=row["id"],
+                            venue=row["venue"],
+                            city=row["city"],
+                            state=row["state"],
                         )
                     ),
-                    "recordings": self.recordings.retrieve_recordings_by_id(row.id),
+                    "recordings": self.recordings.retrieve_recordings_by_id(row["id"]),
                 }
             )
 
@@ -243,7 +243,7 @@ class Location:
             WHERE l.locationid = %s
             LIMIT 1;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (location_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -251,29 +251,29 @@ class Location:
         if not result:
             return {}
 
-        if not result.latitude and not result.longitude:
+        if not result["latitude"] and not result["longitude"]:
             coordinates = None
         else:
             coordinates = {
-                "latitude": result.latitude if result.latitude else None,
-                "longitude": result.longitude if result.longitude else None,
+                "latitude": result["latitude"] if result["latitude"] else None,
+                "longitude": result["longitude"] if result["longitude"] else None,
             }
 
         return {
-            "id": result.id,
-            "city": result.city,
-            "state": result.state,
-            "state_name": result.state_name,
-            "venue": result.venue,
+            "id": result["id"],
+            "city": result["city"],
+            "state": result["state"],
+            "state_name": result["state_name"],
+            "venue": result["venue"],
             "coordinates": coordinates,
             "slug": (
-                result.slug
-                if result.slug
+                result["slug"]
+                if result["slug"]
                 else self.utility.slugify_location(
-                    location_id=result.id,
-                    venue=result.venue,
-                    city=result.city,
-                    state=result.state,
+                    location_id=result["id"],
+                    venue=result["venue"],
+                    city=result["city"],
+                    state=result["state"],
                 )
             ),
         }

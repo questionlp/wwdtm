@@ -65,7 +65,7 @@ class LocationRecordings:
             JOIN ww_shows s ON s.showid = lm.showid
             WHERE lm.locationid = %s ) AS all_shows;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(
             query,
             (
@@ -76,8 +76,8 @@ class LocationRecordings:
         result = cursor.fetchone()
 
         recording_counts = {
-            "regular_shows": result.regular_shows,
-            "all_shows": result.all_shows,
+            "regular_shows": result["regular_shows"],
+            "all_shows": result["all_shows"],
         }
 
         query = """
@@ -96,10 +96,10 @@ class LocationRecordings:
             recordings = []
             for recording in results:
                 info = {
-                    "show_id": recording.show_id,
-                    "date": recording.date.isoformat(),
-                    "best_of": bool(recording.best_of),
-                    "repeat_show": bool(recording.repeat_show_id),
+                    "show_id": recording["show_id"],
+                    "date": recording["date"].isoformat(),
+                    "best_of": bool(recording["best_of"]),
+                    "repeat_show": bool(recording["repeat_show_id"]),
                 }
                 recordings.append(info)
 

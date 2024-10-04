@@ -57,7 +57,7 @@ class Host:
             FROM ww_hosts h
             ORDER BY host ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -67,7 +67,7 @@ class Host:
 
         hosts = []
 
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         for row in results:
             query = """
                 SELECT pn.pronouns
@@ -76,17 +76,19 @@ class Host:
                 WHERE hpm.hostid = %s
                 ORDER BY hpm.hostpronounsmapid ASC;
                 """
-            cursor.execute(query, (row.id,))
+            cursor.execute(query, (row["id"],))
             pn_results = cursor.fetchall()
 
             hosts.append(
                 {
-                    "id": row.id,
-                    "name": row.name,
-                    "slug": row.slug if row.slug else slugify(row.name),
-                    "gender": row.gender,
+                    "id": row["id"],
+                    "name": row["name"],
+                    "slug": row["slug"] if row["slug"] else slugify(row["name"]),
+                    "gender": row["gender"],
                     "pronouns": (
-                        [result.pronouns for result in pn_results] if pn_results else []
+                        [result["pronouns"] for result in pn_results]
+                        if pn_results
+                        else []
                     ),
                 }
             )
@@ -108,7 +110,7 @@ class Host:
             FROM ww_hosts h
             ORDER BY host ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -118,7 +120,7 @@ class Host:
 
         hosts = []
 
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         for row in results:
             query = """
                 SELECT pn.pronouns
@@ -127,19 +129,23 @@ class Host:
                 WHERE hpm.hostid = %s
                 ORDER BY hpm.hostpronounsmapid ASC;
                 """
-            cursor.execute(query, (row.id,))
+            cursor.execute(query, (row["id"],))
             pn_results = cursor.fetchall()
 
             hosts.append(
                 {
-                    "id": row.id,
-                    "name": row.name,
-                    "slug": row.slug if row.slug else slugify(row.name),
-                    "gender": row.gender,
+                    "id": row["id"],
+                    "name": row["name"],
+                    "slug": row["slug"] if row["slug"] else slugify(row["name"]),
+                    "gender": row["gender"],
                     "pronouns": (
-                        [result.pronouns for result in pn_results] if pn_results else []
+                        [result["pronouns"] for result in pn_results]
+                        if pn_results
+                        else []
                     ),
-                    "appearances": self.appearances.retrieve_appearances_by_id(row.id),
+                    "appearances": self.appearances.retrieve_appearances_by_id(
+                        row["id"]
+                    ),
                 }
             )
 
@@ -197,7 +203,7 @@ class Host:
             WHERE h.hostid = %s
             LIMIT 1;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (host_id,))
         result = cursor.fetchone()
 
@@ -211,17 +217,17 @@ class Host:
             WHERE hpm.hostid = %s
             ORDER BY hpm.hostpronounsmapid ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (host_id,))
         results = cursor.fetchall()
         cursor.close()
 
         return {
-            "id": result.id,
-            "name": result.name,
-            "slug": result.slug if result.slug else slugify(result.name),
-            "gender": result.gender,
-            "pronouns": [result.pronouns for result in results] if results else [],
+            "id": result["id"],
+            "name": result["name"],
+            "slug": result["slug"] if result["slug"] else slugify(result["name"]),
+            "gender": result["gender"],
+            "pronouns": [result["pronouns"] for result in results] if results else [],
         }
 
     def retrieve_by_slug(self, host_slug: str) -> dict[str, Any]:

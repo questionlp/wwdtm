@@ -54,7 +54,7 @@ class PanelistDecimalScores:
             return []
 
         scores = []
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         query = """
             SELECT pm.panelistscore_decimal AS score
             FROM ww_showpnlmap pm
@@ -71,8 +71,8 @@ class PanelistDecimalScores:
             return []
 
         for appearance in result:
-            if appearance.score:
-                scores.append(appearance.score)
+            if appearance["score"]:
+                scores.append(appearance["score"])
 
         return scores
 
@@ -100,7 +100,7 @@ class PanelistDecimalScores:
         if not valid_int_id(panelist_id):
             return {}
 
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         query = """
             SELECT MIN(pm.panelistscore_decimal) AS min,
             MAX(pm.panelistscore_decimal) AS max
@@ -113,8 +113,8 @@ class PanelistDecimalScores:
         if not result:
             return {}
 
-        min_score = result.min
-        max_score = result.max
+        min_score = result["min"]
+        max_score = result["max"]
 
         scores = {}
         for score in range(floor(min_score), floor(max_score) + 1):
@@ -142,7 +142,7 @@ class PanelistDecimalScores:
             return {}
 
         for row in results:
-            scores[f"{Decimal(row.score).normalize():f}"] = row.score_count
+            scores[f"{Decimal(row["score"]).normalize():f}"] = row["score_count"]
 
         return {
             "score": list(scores.keys()),
@@ -176,7 +176,7 @@ class PanelistDecimalScores:
         if not valid_int_id(panelist_id):
             return []
 
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         query = """
             SELECT MIN(pm.panelistscore_decimal) AS min,
             MAX(pm.panelistscore_decimal) AS max
@@ -188,8 +188,8 @@ class PanelistDecimalScores:
         if not result:
             return []
 
-        min_score = result.min
-        max_score = result.max
+        min_score = result["min"]
+        max_score = result["max"]
 
         scores = {}
         for score in range(floor(min_score), floor(max_score) + 1):
@@ -217,7 +217,7 @@ class PanelistDecimalScores:
             return []
 
         for row in results:
-            scores[f"{Decimal(row.score).normalize():f}"] = row.score_count
+            scores[f"{Decimal(row["score"]).normalize():f}"] = row["score_count"]
 
         return list(scores.items())
 
@@ -250,7 +250,7 @@ class PanelistDecimalScores:
         if not valid_int_id(panelist_id):
             return {}
 
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         query = """
             SELECT s.showdate AS date, pm.panelistscore_decimal AS score
             FROM ww_showpnlmap pm
@@ -270,8 +270,8 @@ class PanelistDecimalScores:
         show_list = []
         score_list = []
         for shows in results:
-            show_list.append(shows.date.isoformat())
-            score_list.append(shows.score)
+            show_list.append(shows["date"].isoformat())
+            score_list.append(shows["score"])
 
         return {
             "shows": show_list,
@@ -306,7 +306,7 @@ class PanelistDecimalScores:
         if not valid_int_id(panelist_id):
             return []
 
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         query = """
             SELECT s.showdate AS date, pm.panelistscore_decimal AS score
             FROM ww_showpnlmap pm
@@ -325,8 +325,8 @@ class PanelistDecimalScores:
 
         scores = []
         for show in results:
-            show_date = show.date.isoformat()
-            score = show.score
+            show_date = show["date"].isoformat()
+            score = show["score"]
             scores.append((show_date, score))
 
         return scores

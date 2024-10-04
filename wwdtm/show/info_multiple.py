@@ -58,7 +58,7 @@ class ShowInfoMultiple:
             FROM ww_panelists
             ORDER BY panelistid ASC;
         """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -68,9 +68,9 @@ class ShowInfoMultiple:
 
         panelists = {}
         for row in results:
-            panelists[row.panelistid] = {
-                "name": row.panelist,
-                "slug": row.panelistslug,
+            panelists[row["panelistid"]] = {
+                "name": row["panelist"],
+                "slug": row["panelistslug"],
             }
 
         return panelists
@@ -89,7 +89,7 @@ class ShowInfoMultiple:
             JOIN ww_shows s on s.showid = blm.showid
             ORDER BY s.showid ASC, blm.segment ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -99,69 +99,69 @@ class ShowInfoMultiple:
 
         bluff_info = {}
         for row in results:
-            if row.showid not in bluff_info:
-                bluff_info[row.showid] = []
+            if row["showid"] not in bluff_info:
+                bluff_info[row["showid"]] = []
 
-            if not row.chosen_id and not row.correct_id:
-                bluff_info[row.showid].append(
+            if not row["chosen_id"] and not row["correct_id"]:
+                bluff_info[row["showid"]].append(
                     {
-                        "segment": row.segment,
+                        "segment": row["segment"],
                         "chosen_panelist": None,
                         "correct_panelist": None,
                     }
                 )
-            elif row.chosen_id and not row.correct_id:
-                bluff_info[row.showid].append(
+            elif row["chosen_id"] and not row["correct_id"]:
+                bluff_info[row["showid"]].append(
                     {
-                        "segment": row.segment,
+                        "segment": row["segment"],
                         "chosen_panelist": {
-                            "id": row.chosen_id,
-                            "name": self.panelists[row.chosen_id]["name"],
+                            "id": row["chosen_id"],
+                            "name": self.panelists[row["chosen_id"]]["name"],
                             "slug": (
-                                self.panelists[row.chosen_id]["slug"]
-                                if self.panelists[row.chosen_id]["slug"]
-                                else slugify(self.panelists[row.chosen_id]["name"])
+                                self.panelists[row["chosen_id"]]["slug"]
+                                if self.panelists[row["chosen_id"]]["slug"]
+                                else slugify(self.panelists[row["chosen_id"]]["name"])
                             ),
                         },
                         "correct_panelist": None,
                     }
                 )
-            elif row.correct_id and not row.chosen_id:
-                bluff_info[row.showid].append(
+            elif row["correct_id"] and not row["chosen_id"]:
+                bluff_info[row["showid"]].append(
                     {
-                        "segment": row.segment,
+                        "segment": row["segment"],
                         "chosen_panelist": None,
                         "correct_panelist": {
-                            "id": row.correct_id,
-                            "name": self.panelists[row.correct_id]["name"],
+                            "id": row["correct_id"],
+                            "name": self.panelists[row["correct_id"]]["name"],
                             "slug": (
-                                self.panelists[row.correct_id]["slug"]
-                                if self.panelists[row.correct_id]["slug"]
-                                else slugify(self.panelists[row.correct_id]["name"])
+                                self.panelists[row["correct_id"]]["slug"]
+                                if self.panelists[row["correct_id"]]["slug"]
+                                else slugify(self.panelists[row["correct_id"]]["name"])
                             ),
                         },
                     }
                 )
             else:
-                bluff_info[row.showid].append(
+                bluff_info[row["showid"]].append(
                     {
-                        "segment": row.segment,
+                        "segment": row["segment"],
                         "chosen_panelist": {
-                            "id": row.chosen_id,
-                            "name": self.panelists[row.chosen_id]["name"],
+                            "id": row["chosen_id"],
+                            "name": self.panelists[row["chosen_id"]]["name"],
                             "slug": (
-                                self.panelists[row.chosen_id]["slug"]
-                                if self.panelists[row.chosen_id]["slug"]
-                                else slugify(self.panelists[row.chosen_id]["name"])
+                                self.panelists[row["chosen_id"]]["slug"]
+                                if self.panelists[row["chosen_id"]]["slug"]
+                                else slugify(self.panelists[row["chosen_id"]]["name"])
                             ),
                         },
                         "correct_panelist": {
-                            "id": row.correct_id,
-                            "name": self.panelists[row.correct_id]["name"],
+                            "id": row["correct_id"],
+                            "name": self.panelists[row["correct_id"]]["name"],
                             "slug": (
-                                self.panelists[row.correct_id]["slug"]
-                                if self.panelists[row.correct_id]["slug"]
-                                else slugify(self.panelists[row.correct_id]["name"])
+                                self.panelists[row["correct_id"]]["slug"]
+                                if self.panelists[row["correct_id"]]["slug"]
+                                else slugify(self.panelists[row["correct_id"]]["name"])
                             ),
                         },
                     }
@@ -191,7 +191,7 @@ class ShowInfoMultiple:
             ORDER BY showid ASC, segment ASC;""".format(
             ids=", ".join(str(v) for v in show_ids)
         )
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -201,69 +201,69 @@ class ShowInfoMultiple:
 
         bluff_info = {}
         for row in results:
-            if row.showid not in bluff_info:
-                bluff_info[row.showid] = []
+            if row["showid"] not in bluff_info:
+                bluff_info[row["showid"]] = []
 
-            if not row.chosen_id and not row.correct_id:
-                bluff_info[row.showid].append(
+            if not row["chosen_id"] and not row["correct_id"]:
+                bluff_info[row["showid"]].append(
                     {
-                        "segment": row.segment,
+                        "segment": row["segment"],
                         "chosen_panelist": None,
                         "correct_panelist": None,
                     }
                 )
-            elif row.chosen_id and not row.correct_id:
-                bluff_info[row.showid].append(
+            elif row["chosen_id"] and not row["correct_id"]:
+                bluff_info[row["showid"]].append(
                     {
-                        "segment": row.segment,
+                        "segment": row["segment"],
                         "chosen_panelist": {
-                            "id": row.chosen_id,
-                            "name": self.panelists[row.chosen_id]["name"],
+                            "id": row["chosen_id"],
+                            "name": self.panelists[row["chosen_id"]]["name"],
                             "slug": (
-                                self.panelists[row.chosen_id]["slug"]
-                                if self.panelists[row.chosen_id]["slug"]
-                                else slugify(self.panelists[row.chosen_id]["name"])
+                                self.panelists[row["chosen_id"]]["slug"]
+                                if self.panelists[row["chosen_id"]]["slug"]
+                                else slugify(self.panelists[row["chosen_id"]]["name"])
                             ),
                         },
                         "correct_panelist": None,
                     }
                 )
-            elif row.correct_id and not row.chosen_id:
-                bluff_info[row.showid].append(
+            elif row["correct_id"] and not row["chosen_id"]:
+                bluff_info[row["showid"]].append(
                     {
-                        "segment": row.segment,
+                        "segment": row["segment"],
                         "chosen_panelist": None,
                         "correct_panelist": {
-                            "id": row.correct_id,
-                            "name": self.panelists[row.correct_id]["name"],
+                            "id": row["correct_id"],
+                            "name": self.panelists[row["correct_id"]]["name"],
                             "slug": (
-                                self.panelists[row.correct_id]["slug"]
-                                if self.panelists[row.correct_id]["slug"]
-                                else slugify(self.panelists[row.correct_id]["name"])
+                                self.panelists[row["correct_id"]]["slug"]
+                                if self.panelists[row["correct_id"]]["slug"]
+                                else slugify(self.panelists[row["correct_id"]]["name"])
                             ),
                         },
                     }
                 )
             else:
-                bluff_info[row.showid].append(
+                bluff_info[row["showid"]].append(
                     {
-                        "segment": row.segment,
+                        "segment": row["segment"],
                         "chosen_panelist": {
-                            "id": row.chosen_id,
-                            "name": self.panelists[row.chosen_id]["name"],
+                            "id": row["chosen_id"],
+                            "name": self.panelists[row["chosen_id"]]["name"],
                             "slug": (
-                                self.panelists[row.chosen_id]["slug"]
-                                if self.panelists[row.chosen_id]["slug"]
-                                else slugify(self.panelists[row.chosen_id]["name"])
+                                self.panelists[row["chosen_id"]]["slug"]
+                                if self.panelists[row["chosen_id"]]["slug"]
+                                else slugify(self.panelists[row["chosen_id"]]["name"])
                             ),
                         },
                         "correct_panelist": {
-                            "id": row.correct_id,
-                            "name": self.panelists[row.correct_id]["name"],
+                            "id": row["correct_id"],
+                            "name": self.panelists[row["correct_id"]]["name"],
                             "slug": (
-                                self.panelists[row.correct_id]["slug"]
-                                if self.panelists[row.correct_id]["slug"]
-                                else slugify(self.panelists[row.correct_id]["name"])
+                                self.panelists[row["correct_id"]]["slug"]
+                                if self.panelists[row["correct_id"]]["slug"]
+                                else slugify(self.panelists[row["correct_id"]]["name"])
                             ),
                         },
                     }
@@ -304,7 +304,7 @@ class ShowInfoMultiple:
             JOIN ww_shownotes sn ON sn.showid = s.showid
             ORDER BY s.showdate ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -314,70 +314,72 @@ class ShowInfoMultiple:
 
         shows = {}
         for show in results:
-            if not show.latitude and not show.longitude:
+            if not show["latitude"] and not show["longitude"]:
                 coordinates = None
             else:
                 coordinates = {
-                    "latitude": show.latitude if show.latitude else None,
-                    "longitude": show.longitude if show.longitude else None,
+                    "latitude": show["latitude"] if show["latitude"] else None,
+                    "longitude": show["longitude"] if show["longitude"] else None,
                 }
 
             location_info = {
-                "id": show.location_id,
-                "slug": show.location_slug,
-                "city": show.city,
-                "state": show.state,
-                "state_name": show.state_name,
-                "venue": show.venue,
+                "id": show["location_id"],
+                "slug": show["location_slug"],
+                "city": show["city"],
+                "state": show["state"],
+                "state_name": show["state_name"],
+                "venue": show["venue"],
                 "coordinates": coordinates,
             }
 
-            if not show.location_slug:
+            if not show["location_slug"]:
                 location_info["slug"] = self.loc_util.slugify_location(
-                    location_id=show.location_id,
-                    venue=show.venue,
-                    city=show.city,
-                    state=show.state,
+                    location_id=show["location_id"],
+                    venue=show["venue"],
+                    city=show["city"],
+                    state=show["state"],
                 )
 
             host_info = {
-                "id": show.host_id,
-                "name": show.host,
-                "slug": show.host_slug if show.host_slug else slugify(show.host),
-                "guest": bool(show.host_guest),
+                "id": show["host_id"],
+                "name": show["host"],
+                "slug": (
+                    show["host_slug"] if show["host_slug"] else slugify(show["host"])
+                ),
+                "guest": bool(show["host_guest"]),
             }
 
             scorekeeper_info = {
-                "id": show.scorekeeper_id,
-                "name": show.scorekeeper,
+                "id": show["scorekeeper_id"],
+                "name": show["scorekeeper"],
                 "slug": (
-                    show.scorekeeper_slug
-                    if show.scorekeeper_slug
-                    else slugify(show.scorekeeper)
+                    show["scorekeeper_slug"]
+                    if show["scorekeeper_slug"]
+                    else slugify(show["scorekeeper"])
                 ),
-                "guest": bool(show.scorekeeper_guest),
+                "guest": bool(show["scorekeeper_guest"]),
                 "description": (
-                    show.scorekeeper_description
-                    if show.scorekeeper_description
+                    show["scorekeeper_description"]
+                    if show["scorekeeper_description"]
                     else None
                 ),
             }
 
-            if show.show_description:
-                description = str(show.show_description).strip()
+            if show["show_description"]:
+                description = str(show["show_description"]).strip()
             else:
                 description = None
 
-            notes = str(show.show_notes).strip() if show.show_notes else None
+            notes = str(show["show_notes"]).strip() if show["show_notes"] else None
 
             show_info = {
-                "id": show.show_id,
-                "date": show.date.isoformat(),
-                "best_of": bool(show.best_of),
-                "repeat_show": bool(show.repeat_show_id),
+                "id": show["show_id"],
+                "date": show["date"].isoformat(),
+                "best_of": bool(show["best_of"]),
+                "repeat_show": bool(show["repeat_show_id"]),
                 "original_show_id": None,
                 "original_show_date": None,
-                "show_url": show.show_url,
+                "show_url": show["show_url"],
                 "description": description,
                 "notes": notes,
                 "location": location_info,
@@ -385,7 +387,7 @@ class ShowInfoMultiple:
                 "scorekeeper": scorekeeper_info,
             }
 
-            repeat_show_id = show.repeat_show_id
+            repeat_show_id = show["repeat_show_id"]
             if repeat_show_id:
                 original_date = self.utility.convert_id_to_date(repeat_show_id)
                 show_info["original_show_id"] = repeat_show_id
@@ -394,7 +396,7 @@ class ShowInfoMultiple:
                 show_info.pop("original_show_id", None)
                 show_info.pop("original_show_date", None)
 
-            shows[show.show_id] = show_info
+            shows[show["show_id"]] = show_info
 
         return shows
 
@@ -440,7 +442,7 @@ class ShowInfoMultiple:
             ORDER BY s.showdate ASC;""".format(
             ids=", ".join(str(v) for v in show_ids)
         )
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -450,70 +452,72 @@ class ShowInfoMultiple:
 
         shows = {}
         for show in results:
-            if not show.latitude and not show.longitude:
+            if not show["latitude"] and not show["longitude"]:
                 coordinates = None
             else:
                 coordinates = {
-                    "latitude": show.latitude if show.latitude else None,
-                    "longitude": show.longitude if show.longitude else None,
+                    "latitude": show["latitude"] if show["latitude"] else None,
+                    "longitude": show["longitude"] if show["longitude"] else None,
                 }
 
             location_info = {
-                "id": show.location_id,
-                "slug": show.location_slug,
-                "city": show.city,
-                "state": show.state,
-                "state_name": show.state_name,
-                "venue": show.venue,
+                "id": show["location_id"],
+                "slug": show["location_slug"],
+                "city": show["city"],
+                "state": show["state"],
+                "state_name": show["state_name"],
+                "venue": show["venue"],
                 "coordinates": coordinates,
             }
 
-            if not show.location_slug:
+            if not show["location_slug"]:
                 location_info["slug"] = self.loc_util.slugify_location(
-                    location_id=show.location_id,
-                    venue=show.venue,
-                    city=show.city,
-                    state=show.state,
+                    location_id=show["location_id"],
+                    venue=show["venue"],
+                    city=show["city"],
+                    state=show["state"],
                 )
 
             host_info = {
-                "id": show.host_id,
-                "name": show.host,
-                "slug": show.host_slug if show.host_slug else slugify(show.host),
-                "guest": bool(show.host_guest),
+                "id": show["host_id"],
+                "name": show["host"],
+                "slug": (
+                    show["host_slug"] if show["host_slug"] else slugify(show["host"])
+                ),
+                "guest": bool(show["host_guest"]),
             }
 
             scorekeeper_info = {
-                "id": show.scorekeeper_id,
-                "name": show.scorekeeper,
+                "id": show["scorekeeper_id"],
+                "name": show["scorekeeper"],
                 "slug": (
-                    show.scorekeeper_slug
-                    if show.scorekeeper_slug
-                    else slugify(show.scorekeeper)
+                    show["scorekeeper_slug"]
+                    if show["scorekeeper_slug"]
+                    else slugify(show["scorekeeper"])
                 ),
-                "guest": bool(show.scorekeeper_guest),
+                "guest": bool(show["scorekeeper_guest"]),
                 "description": (
-                    show.scorekeeper_description
-                    if show.scorekeeper_description
+                    show["scorekeeper_description"]
+                    if show["scorekeeper_description"]
                     else None
                 ),
             }
 
-            if show.show_description:
-                description = str(show.show_description).strip()
+            if show["show_description"]:
+                description = str(show["show_description"]).strip()
             else:
                 description = None
 
-            notes = str(show.show_notes).strip() if show.show_notes else None
+            notes = str(show["show_notes"]).strip() if show["show_notes"] else None
 
             show_info = {
-                "id": show.show_id,
-                "date": show.date.isoformat(),
-                "best_of": bool(show.best_of),
-                "repeat_show": bool(show.repeat_show_id),
+                "id": show["show_id"],
+                "date": show["date"].isoformat(),
+                "best_of": bool(show["best_of"]),
+                "repeat_show": bool(show["repeat_show_id"]),
                 "original_show_id": None,
                 "original_show_date": None,
-                "show_url": show.show_url,
+                "show_url": show["show_url"],
                 "description": description,
                 "notes": notes,
                 "location": location_info,
@@ -521,7 +525,7 @@ class ShowInfoMultiple:
                 "scorekeeper": scorekeeper_info,
             }
 
-            repeat_show_id = show.repeat_show_id
+            repeat_show_id = show["repeat_show_id"]
             if repeat_show_id:
                 original_date = self.utility.convert_id_to_date(repeat_show_id)
                 show_info["original_show_id"] = repeat_show_id
@@ -530,7 +534,7 @@ class ShowInfoMultiple:
                 show_info.pop("original_show_id", None)
                 show_info.pop("original_show_date", None)
 
-            shows[show.show_id] = show_info
+            shows[show["show_id"]] = show_info
 
         return shows
 
@@ -549,7 +553,7 @@ class ShowInfoMultiple:
             JOIN ww_shows s ON s.showid = gm.showid
             ORDER BY s.showdate ASC, gm.showguestmapid ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -559,16 +563,16 @@ class ShowInfoMultiple:
 
         shows = {}
         for guest in results:
-            if guest.show_id not in shows:
-                shows[guest.show_id] = []
+            if guest["show_id"] not in shows:
+                shows[guest["show_id"]] = []
 
-            shows[guest.show_id].append(
+            shows[guest["show_id"]].append(
                 {
-                    "id": guest.guest_id,
-                    "name": guest.name,
-                    "slug": guest.slug if guest.slug else slugify(guest.name),
-                    "score": guest.score,
-                    "score_exception": bool(guest.score_exception),
+                    "id": guest["guest_id"],
+                    "name": guest["name"],
+                    "slug": guest["slug"] if guest["slug"] else slugify(guest["name"]),
+                    "score": guest["score"],
+                    "score_exception": bool(guest["score_exception"]),
                 }
             )
 
@@ -599,7 +603,7 @@ class ShowInfoMultiple:
             gm.showguestmapid ASC;""".format(
             ids=", ".join(str(v) for v in show_ids)
         )
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -609,16 +613,16 @@ class ShowInfoMultiple:
 
         shows = {}
         for guest in results:
-            if guest.show_id not in shows:
-                shows[guest.show_id] = []
+            if guest["show_id"] not in shows:
+                shows[guest["show_id"]] = []
 
-            shows[guest.show_id].append(
+            shows[guest["show_id"]].append(
                 {
-                    "id": guest.guest_id,
-                    "name": guest.name,
-                    "slug": guest.slug if guest.slug else slugify(guest.name),
-                    "score": guest.score,
-                    "score_exception": bool(guest.score_exception),
+                    "id": guest["guest_id"],
+                    "name": guest["name"],
+                    "slug": guest["slug"] if guest["slug"] else slugify(guest["name"]),
+                    "score": guest["score"],
+                    "score_exception": bool(guest["score_exception"]),
                 }
             )
 
@@ -665,7 +669,7 @@ class ShowInfoMultiple:
                 ORDER by s.showdate ASC, pm.panelistscore DESC,
                 pm.showpnlmapid ASC;
                 """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -675,33 +679,29 @@ class ShowInfoMultiple:
 
         panelists = {}
         for panelist in results:
-            if panelist.show_id not in panelists:
-                panelists[panelist.show_id] = []
+            if panelist["show_id"] not in panelists:
+                panelists[panelist["show_id"]] = []
 
-            panelists[panelist.show_id].append(
+            panelists[panelist["show_id"]].append(
                 {
-                    "id": panelist.panelist_id,
-                    "name": panelist.name,
-                    "slug": panelist.slug if panelist.slug else slugify(panelist.name),
-                    "lightning_round_start": panelist.start,
-                    "lightning_round_start_decimal": (
-                        panelist.start_decimal
-                        if "start_decimal" in panelist._fields
-                        else None
+                    "id": panelist["panelist_id"],
+                    "name": panelist["name"],
+                    "slug": (
+                        panelist["slug"]
+                        if panelist["slug"]
+                        else slugify(panelist["name"])
                     ),
-                    "lightning_round_correct": panelist.correct,
-                    "lightning_round_correct_decimal": (
-                        panelist.correct_decimal
-                        if "correct_decimal" in panelist._fields
-                        else None
+                    "lightning_round_start": panelist["start"],
+                    "lightning_round_start_decimal": panelist.get(
+                        "start_decimal", None
                     ),
-                    "score": panelist.score,
-                    "score_decimal": (
-                        panelist.score_decimal
-                        if "score_decimal" in panelist._fields
-                        else None
+                    "lightning_round_correct": panelist["correct"],
+                    "lightning_round_correct_decimal": panelist.get(
+                        "correct_decimal", None
                     ),
-                    "rank": panelist.pnl_rank if panelist.pnl_rank else None,
+                    "score": panelist["score"],
+                    "score_decimal": panelist.get("score_decimal", None),
+                    "rank": panelist["pnl_rank"] if panelist["pnl_rank"] else None,
                 }
             )
 
@@ -757,7 +757,7 @@ class ShowInfoMultiple:
                 ids=", ".join(str(v) for v in show_ids)
             )
 
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -767,35 +767,33 @@ class ShowInfoMultiple:
 
         panelists = {}
         for panelist in results:
-            if panelist.show_id not in panelists:
-                panelists[panelist.show_id] = []
+            if panelist["show_id"] not in panelists:
+                panelists[panelist["show_id"]] = []
 
-            panelists[panelist.show_id].append(
+            panelists[panelist["show_id"]].append(
                 {
-                    "id": panelist.panelist_id,
-                    "name": panelist.name,
-                    "slug": panelist.slug if panelist.slug else slugify(panelist.name),
-                    "lightning_round_start": panelist.start if panelist.start else None,
-                    "lightning_round_start_decimal": (
-                        panelist.start_decimal
-                        if "start_decimal" in panelist._fields
-                        else None
+                    "id": panelist["panelist_id"],
+                    "name": panelist["name"],
+                    "slug": (
+                        panelist["slug"]
+                        if panelist["slug"]
+                        else slugify(panelist["name"])
+                    ),
+                    "lightning_round_start": (
+                        panelist["start"] if panelist["start"] else None
+                    ),
+                    "lightning_round_start_decimal": panelist.get(
+                        "start_decimal", None
                     ),
                     "lightning_round_correct": (
-                        panelist.correct if panelist.correct else None
+                        panelist["correct"] if panelist["correct"] else None
                     ),
-                    "lightning_round_correct_decimal": (
-                        panelist.correct_decimal
-                        if "correct_decimal" in panelist._fields
-                        else None
+                    "lightning_round_correct_decimal": panelist.get(
+                        "correct_decimal", None
                     ),
-                    "score": panelist.score,
-                    "score_decimal": (
-                        panelist.score_decimal
-                        if "score_decimal" in panelist._fields
-                        else None
-                    ),
-                    "rank": panelist.pnl_rank if panelist.pnl_rank else None,
+                    "score": panelist["score"],
+                    "score_decimal": panelist.get("score_decimal", None),
+                    "rank": panelist["pnl_rank"] if panelist["pnl_rank"] else None,
                 }
             )
 

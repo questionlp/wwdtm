@@ -66,7 +66,7 @@ class Show:
             FROM ww_shows
             ORDER BY showdate ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -77,17 +77,17 @@ class Show:
         shows = []
         for row in results:
             show = {
-                "id": row.id,
-                "date": row.date.isoformat(),
-                "best_of": bool(row.best_of),
-                "repeat_show": bool(row.repeat_show_id),
-                "show_url": row.show_url,
+                "id": row["id"],
+                "date": row["date"].isoformat(),
+                "best_of": bool(row["best_of"]),
+                "repeat_show": bool(row["repeat_show_id"]),
+                "show_url": row["show_url"],
             }
 
-            if row.repeat_show_id:
-                show["original_show_id"] = row.repeat_show_id
+            if row["repeat_show_id"]:
+                show["original_show_id"] = row["repeat_show_id"]
                 show["original_show_date"] = self.utility.convert_id_to_date(
-                    row.repeat_show_id
+                    row["repeat_show_id"]
                 )
 
             shows.append(show)
@@ -277,7 +277,7 @@ class Show:
             WHERE showid = %s
             LIMIT 1;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (show_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -286,17 +286,17 @@ class Show:
             return {}
 
         info = {
-            "id": result.id,
-            "date": result.date.isoformat(),
-            "best_of": bool(result.best_of),
-            "repeat_show": bool(result.repeat_show_id),
-            "show_url": result.show_url,
+            "id": result["id"],
+            "date": result["date"].isoformat(),
+            "best_of": bool(result["best_of"]),
+            "repeat_show": bool(result["repeat_show_id"]),
+            "show_url": result["show_url"],
         }
 
-        if result.repeat_show_id:
-            info["original_show_id"] = result.repeat_show_id
+        if result["repeat_show_id"]:
+            info["original_show_id"] = result["repeat_show_id"]
             info["original_show_date"] = self.utility.convert_id_to_date(
-                result.repeat_show_id
+                result["repeat_show_id"]
             )
 
         return info
@@ -823,7 +823,7 @@ class Show:
                 AND YEAR(s.showdate) = %s
                 ORDER BY s.showdate ASC, pm.panelistscore ASC;
                 """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (year,))
         results = cursor.fetchall()
         cursor.close()
@@ -833,11 +833,11 @@ class Show:
 
         shows = {}
         for row in results:
-            date = row.date.isoformat()
+            date = row["date"].isoformat()
             if date not in shows:
                 shows[date] = []
 
-            shows[date].append(row.score)
+            shows[date].append(row["score"])
 
         show_scores = []
         for show in shows:

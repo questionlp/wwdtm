@@ -25,7 +25,7 @@ from wwdtm.panelist import (
 from wwdtm.scorekeeper import Scorekeeper, ScorekeeperAppearances, ScorekeeperUtility
 from wwdtm.show import Show, ShowInfo, ShowInfoMultiple, ShowUtility
 
-VERSION = "2.11.0"
+VERSION = "2.12.0-beta"
 
 
 def database_version(
@@ -49,7 +49,7 @@ def database_version(
         if not _database_connection.is_connected():
             _database_connection.reconnect()
 
-    cursor = _database_connection.cursor(named_tuple=True)
+    cursor = _database_connection.cursor(dictionary=True)
     query = """
             SELECT keyname, value
             FROM __metadata
@@ -62,7 +62,7 @@ def database_version(
     if not result:
         return None
 
-    version_info = str(result.value).split(".")
+    version_info = str(result["value"]).split(".")
     if len(version_info) == 3:
         return int(version_info[0]), int(version_info[1]), int(version_info[2])
     elif len(version_info) == 2:
