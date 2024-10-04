@@ -26,8 +26,6 @@ def get_connect_dict() -> dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
-    return None
-
 
 @pytest.mark.parametrize("panelist_id", [14])
 def test_panelist_statistics_retrieve_bluffs_by_id(panelist_id: int):

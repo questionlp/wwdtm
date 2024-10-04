@@ -26,8 +26,6 @@ def get_connect_dict() -> dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
-    return None
-
 
 @pytest.mark.parametrize(
     "panelist_id, use_decimal_scores",

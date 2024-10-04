@@ -26,8 +26,6 @@ def get_connect_dict() -> dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
-    return None
-
 
 @pytest.mark.parametrize("location_id", [95])
 def test_location_utility_convert_id_to_slug(location_id: int):
@@ -133,31 +131,33 @@ def test_location_utility_slug_not_exists(location_slug: str):
 
 @pytest.mark.parametrize("city", ["Chicago"])
 def test_location_utility_slugify_location_city(city: str):
-    """Negative testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location` with city name.
+    """Negative testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`.
+
+    Testing with city name.
 
     :param city: City to include in the slug string
     """
-    with pytest.raises(ValueError):
-        utility = LocationUtility(connect_dict=get_connect_dict())
-        slug = utility.slugify_location(city=city)
+    utility = LocationUtility(connect_dict=get_connect_dict())
+    with pytest.raises(ValueError) as exception_info:
+        _ = utility.slugify_location(city=city)
 
-        assert slug, "Unable to convert into a slug string"
-        assert isinstance(slug, str), "Value returned is not a string"
+    assert str(exception_info.value) == "Invalid location information provided"
 
 
 @pytest.mark.parametrize("city, state", [("Chicago", "IL")])
 def test_location_utility_slugify_location_city_state(city: str, state: str):
-    """Negative testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location` with city and state names.
+    """Negative testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`.
+
+    Testing with city and state names.
 
     :param city: City to include in the slug string
     :param state: State to include in the slug string
     """
-    with pytest.raises(ValueError):
-        utility = LocationUtility(connect_dict=get_connect_dict())
-        slug = utility.slugify_location(city=city, state=state)
+    utility = LocationUtility(connect_dict=get_connect_dict())
+    with pytest.raises(ValueError) as exception_info:
+        _ = utility.slugify_location(city=city, state=state)
 
-        assert slug, "Unable to convert into a slug string"
-        assert isinstance(slug, str), "Value returned is not a string"
+    assert str(exception_info.value) == "Invalid location information provided"
 
 
 @pytest.mark.parametrize(
@@ -166,7 +166,9 @@ def test_location_utility_slugify_location_city_state(city: str, state: str):
 def test_location_utility_slugify_location_full(
     location_id: int, venue: str, city: str, state: str
 ):
-    """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location` with location ID, venue, city and state names.
+    """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`.
+
+    Testing with location ID, venue, city and state names.
 
     :param location_id: Location ID to include in the slug string
     :param venue: Venue name to include in the slug string

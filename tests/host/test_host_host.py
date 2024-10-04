@@ -26,8 +26,6 @@ def get_connect_dict() -> dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
-    return None
-
 
 def test_host_retrieve_all():
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_all`."""
