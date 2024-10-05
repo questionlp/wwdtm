@@ -59,7 +59,7 @@ class Scorekeeper:
             FROM ww_scorekeepers sk
             ORDER BY scorekeeper ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -69,7 +69,7 @@ class Scorekeeper:
 
         scorekeepers = []
 
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         for row in results:
             query = """
                 SELECT pn.pronouns
@@ -78,17 +78,19 @@ class Scorekeeper:
                 WHERE spm.scorekeeperid = %s
                 ORDER BY spm.skpronounsmapid ASC;
                 """
-            cursor.execute(query, (row.id,))
+            cursor.execute(query, (row["id"],))
             pn_results = cursor.fetchall()
 
             scorekeepers.append(
                 {
-                    "id": row.id,
-                    "name": row.name,
-                    "slug": row.slug if row.slug else slugify(row.name),
-                    "gender": row.gender,
+                    "id": row["id"],
+                    "name": row["name"],
+                    "slug": row["slug"] if row["slug"] else slugify(row["name"]),
+                    "gender": row["gender"],
                     "pronouns": (
-                        [result.pronouns for result in pn_results] if pn_results else []
+                        [result["pronouns"] for result in pn_results]
+                        if pn_results
+                        else []
                     ),
                 }
             )
@@ -108,7 +110,7 @@ class Scorekeeper:
             FROM ww_scorekeepers sk
             ORDER BY scorekeeper ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -118,7 +120,7 @@ class Scorekeeper:
 
         scorekeepers = []
 
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         for row in results:
             query = """
                 SELECT pn.pronouns
@@ -127,19 +129,23 @@ class Scorekeeper:
                 WHERE spm.scorekeeperid = %s
                 ORDER BY spm.skpronounsmapid ASC;
                 """
-            cursor.execute(query, (row.id,))
+            cursor.execute(query, (row["id"],))
             pn_results = cursor.fetchall()
 
             scorekeepers.append(
                 {
-                    "id": row.id,
-                    "name": row.name,
-                    "slug": row.slug if row.slug else slugify(row.name),
-                    "gender": row.gender,
+                    "id": row["id"],
+                    "name": row["name"],
+                    "slug": row["slug"] if row["slug"] else slugify(row["name"]),
+                    "gender": row["gender"],
                     "pronouns": (
-                        [result.pronouns for result in pn_results] if pn_results else []
+                        [result["pronouns"] for result in pn_results]
+                        if pn_results
+                        else []
                     ),
-                    "appearances": self.appearances.retrieve_appearances_by_id(row.id),
+                    "appearances": self.appearances.retrieve_appearances_by_id(
+                        row["id"]
+                    ),
                 }
             )
 
@@ -198,7 +204,7 @@ class Scorekeeper:
             WHERE sk.scorekeeperid = %s
             LIMIT 1;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (scorekeeper_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -213,17 +219,17 @@ class Scorekeeper:
             WHERE spm.scorekeeperid = %s
             ORDER BY spm.skpronounsmapid ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (scorekeeper_id,))
         results = cursor.fetchall()
         cursor.close()
 
         return {
-            "id": result.id,
-            "name": result.name,
-            "slug": result.slug if result.slug else slugify(result.name),
-            "gender": result.gender,
-            "pronouns": [result.pronouns for result in results] if results else [],
+            "id": result["id"],
+            "name": result["name"],
+            "slug": result["slug"] if result["slug"] else slugify(result["name"]),
+            "gender": result["gender"],
+            "pronouns": [result["pronouns"] for result in results] if results else [],
         }
 
     def retrieve_by_slug(self, scorekeeper_slug: str) -> dict[str, Any]:

@@ -26,8 +26,6 @@ def get_connect_dict() -> dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
-    return None
-
 
 def test_scorekeeper_retrieve_all():
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all`."""

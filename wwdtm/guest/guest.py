@@ -59,7 +59,7 @@ class Guest:
             WHERE guestslug != 'none'
             ORDER BY guest ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -71,9 +71,9 @@ class Guest:
         for row in results:
             guests.append(
                 {
-                    "id": row.id,
-                    "name": row.name,
-                    "slug": row.slug if row.slug else slugify(row.name),
+                    "id": row["id"],
+                    "name": row["name"],
+                    "slug": row["slug"] if row["slug"] else slugify(row["name"]),
                 }
             )
 
@@ -92,7 +92,7 @@ class Guest:
             WHERE guestslug != 'none'
             ORDER BY guest ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -104,10 +104,12 @@ class Guest:
         for row in results:
             guests.append(
                 {
-                    "id": row.id,
-                    "name": row.name,
-                    "slug": row.slug if row.slug else slugify(row.name),
-                    "appearances": self.appearances.retrieve_appearances_by_id(row.id),
+                    "id": row["id"],
+                    "name": row["name"],
+                    "slug": row["slug"] if row["slug"] else slugify(row["name"]),
+                    "appearances": self.appearances.retrieve_appearances_by_id(
+                        row["id"]
+                    ),
                 }
             )
 
@@ -168,7 +170,7 @@ class Guest:
             WHERE guestid = %s
             LIMIT 1;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (guest_id,))
         result = cursor.fetchone()
         cursor.close()
@@ -177,9 +179,9 @@ class Guest:
             return {}
 
         return {
-            "id": result.id,
-            "name": result.name,
-            "slug": result.slug if result.slug else slugify(result.name),
+            "id": result["id"],
+            "name": result["name"],
+            "slug": result["slug"] if result["slug"] else slugify(result["name"]),
         }
 
     def retrieve_by_slug(self, guest_slug: str) -> dict[str, int | str]:

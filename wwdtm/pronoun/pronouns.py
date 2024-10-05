@@ -47,7 +47,7 @@ class Pronouns:
             FROM ww_pronouns
             ORDER BY pronounsid ASC;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -57,7 +57,12 @@ class Pronouns:
 
         pronouns = []
         for row in results:
-            pronouns.append({"id": row.pronounsid, "pronouns": row.pronouns})
+            pronouns.append(
+                {
+                    "id": row["pronounsid"],
+                    "pronouns": row["pronouns"],
+                }
+            )
 
         return pronouns
 
@@ -66,7 +71,7 @@ class Pronouns:
 
         :return: A list of pronouns IDs as integers
         """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=False)
         query = """
             SELECT pronounsid
             FROM ww_pronouns
@@ -79,7 +84,7 @@ class Pronouns:
         if not results:
             return []
 
-        return [row.pronounsid for row in results]
+        return [row[0] for row in results]
 
     def retrieve_all_as_dict(self) -> dict[int, str]:
         """Retrieves all pronouns as a dictionary.
@@ -92,7 +97,7 @@ class Pronouns:
             FROM ww_pronouns
             ORDER BY pronounsid ASC;
         """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -100,7 +105,7 @@ class Pronouns:
         if not results:
             return {}
 
-        return {row.pronounsid: row.pronouns for row in results}
+        return {row["pronounsid"]: row["pronouns"] for row in results}
 
     def retrieve_all_pronouns(self) -> list[str]:
         """Retrieves all pronouns names.
@@ -112,7 +117,7 @@ class Pronouns:
             FROM ww_pronouns
             ORDER BY pronounsid ASC;
         """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -120,7 +125,7 @@ class Pronouns:
         if not results:
             return []
 
-        return [row.pronouns for row in results]
+        return [row[0] for row in results]
 
     def retrieve_by_id(self, pronouns_id: int) -> dict[int, str]:
         """Retrieves pronouns information.
@@ -135,7 +140,7 @@ class Pronouns:
             WHERE pronounsid = %s
             LIMIT 1;
             """
-        cursor = self.database_connection.cursor(named_tuple=True)
+        cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (pronouns_id,))
         result = cursor.fetchone()
 
@@ -143,6 +148,6 @@ class Pronouns:
             return {}
 
         return {
-            "id": result.pronounsid,
-            "pronouns": result.pronouns,
+            "id": result["pronounsid"],
+            "pronouns": result["pronouns"],
         }

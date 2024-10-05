@@ -26,8 +26,6 @@ def get_connect_dict() -> dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
-    return None
-
 
 @pytest.mark.parametrize("scorekeeper_id", [13])
 def test_scorekeeper_appearance_retrieve_appearances_by_id(scorekeeper_id: int):

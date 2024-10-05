@@ -26,8 +26,6 @@ def get_connect_dict() -> dict[str, Any]:
         if "database" in config_dict:
             return config_dict["database"]
 
-    return None
-
 
 @pytest.mark.parametrize("location_id", [95])
 def test_location_recordings_retrieve_recordings_by_id(location_id: int):
