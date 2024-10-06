@@ -142,7 +142,7 @@ class PanelistDecimalScores:
             return {}
 
         for row in results:
-            scores[f"{Decimal(row["score"]).normalize():f}"] = row["score_count"]
+            scores[f"{Decimal(row['score']).normalize():f}"] = row["score_count"]
 
         return {
             "score": list(scores.keys()),
@@ -217,7 +217,7 @@ class PanelistDecimalScores:
             return []
 
         for row in results:
-            scores[f"{Decimal(row["score"]).normalize():f}"] = row["score_count"]
+            scores[f"{Decimal(row['score']).normalize():f}"] = row["score_count"]
 
         return list(scores.items())
 
