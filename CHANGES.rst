@@ -2,6 +2,14 @@
 Changes
 *******
 
+2.12.1
+======
+
+Application Changes
+-------------------
+
+* Fix error with two f-strings in the ``panelist.decimal_scores`` module
+
 2.12.0
 ======
 
