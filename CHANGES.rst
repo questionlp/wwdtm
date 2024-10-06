@@ -2,6 +2,14 @@
 Changes
 *******
 
+2.12.1-post0
+============
+
+Documentation Changes
+---------------------
+
+* Fix typo in CHANGES
+
 2.12.1
 ======
 
@@ -20,7 +28,7 @@ Application Changes
 * Update code that is impacted by the database cursor type change from ``NamedTuple`` to ``dict``
 * Additional code cleanup
 
-Compoennt Changes
+Component Changes
 -----------------
 
 * Upgrade mysql-connector-python from 8.2.0 to 8.4.0
