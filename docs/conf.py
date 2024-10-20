@@ -4,9 +4,8 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 import sys
+from email.mime import base
 from pathlib import Path
-
-from pallets_sphinx_themes import ProjectLink  # type: ignore[report-missing-imports]
 
 current_path = Path.cwd()
 sys.path.insert(0, str(current_path.parent))
@@ -16,11 +15,11 @@ copyright = "2018-2024 Linh Pham. All Rights Reserved"
 author = "Linh Pham"
 
 extensions = [
-    "pallets_sphinx_themes",
     "sphinx.ext.napoleon",
     "sphinx_copybutton",
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
+    "sphinxext.opengraph",
 ]
 
 templates_path = [
@@ -35,33 +34,9 @@ exclude_patterns = [
     "venv",
 ]
 
-html_theme = "flask"
+html_theme = "furo"
 
-html_context = {
-    "project_links": [
-        ProjectLink("Source Code", "https://github.com/questionlp/wwdtm"),
-        ProjectLink("PyPI", "https://pypi.org/project/wwdtm/"),
-        ProjectLink("Stats API", "https://api.wwdt.me/"),
-        ProjectLink("Stats Page", "https://stats.wwdt.me/"),
-        ProjectLink("Graphs Site", "https://graphs.wwdt.me/"),
-        ProjectLink("Reports Site", "https://reports.wwdt.me/"),
-    ]
-}
-
-html_sidebars = {
-    "index": [
-        "globaltoc.html",
-        "project.html",
-        "searchbox.html",
-    ],
-    "**": [
-        "globaltoc.html",
-        # "localtoc.html",
-        "relations.html",
-        "project.html",
-        "searchbox.html",
-    ],
-}
+html_title = "Wait Wait Stats Library"
 
 html_static_path = [
     "_static",
@@ -72,6 +47,58 @@ html_css_files = [
 ]
 
 html_show_sourcelink = False
+smartquotes = False
+
+base_fonts = '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";'
+monospace_fonts = '"IBM Plex Mono", Menlo, Consolas, Monaco, "Liberation Mono", "Lucida Console", monospace;'
+
+html_theme_options = {
+    "light_css_variables": {
+        "font-stack": base_fonts,
+        "font-stack--monospace": monospace_fonts,
+        "color-foreground-primary": "#000000",
+        "color-foreground-secondary": "#161616",
+        "color-foreground-muted": "#21272a",
+        "color-brand-content": "#0043ce",
+        "color-background-primary": "#ffffff",
+        "color-sidebar-background": "#f2f4f8",
+        "color-sidebar-link-text--top-level": "#0043ce",
+        "color-api-name": "#520408",
+        "color-api-pre-name": "#da1e28",
+        "color-highlight-on-target": "#f2f4f8",
+        "color-sidebar-search-foreground": "#000000",
+        "sidebar-item-font-size": "1rem",
+        "toc-font-size": "0.95rem",
+        "toc-title-font-size": "1rem",
+        "color-toc-item-text": "var(--color-foreground-primary);",
+        "color-toc-title-text": "var(--color-foreground-primary);",
+        "code-font-size": "1rem",
+    },
+    "dark_css_variables": {
+        "font-stack": base_fonts,
+        "font-stack--monospace": monospace_fonts,
+        "color-foreground-primary": "#ffffff",
+        "color-foreground-secondary": "#f4f4f4",
+        "color-foreground-muted": "#dde1e6",
+        "color-brand-content": "#78a9ff",
+        "color-background-primary": "#161616",
+        "color-sidebar-background": "#21272a",
+        "color-sidebar-link-text--top-level": "#78a9ff",
+        "color-api-name": "#fa4d56",
+        "color-api-pre-name": "#ffb3b8",
+        "color-highlight-on-target": "#21272a",
+        "color-sidebar-search-foreground": "#ffffff",
+        "sidebar-item-font-size": "1rem",
+        "toc-font-size": "0.95rem",
+        "toc-title-font-size": "1rem",
+        "color-toc-item-text": "var(--color-foreground-primary);",
+        "color-toc-title-text": "var(--color-foreground-primary);",
+        "code-font-size": "1rem",
+    },
+}
+
+pygments_style = "sas"
+pygments_dark_style = "rrt"
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),

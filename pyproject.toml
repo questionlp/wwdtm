@@ -16,12 +16,13 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Libraries",
 ]
 
 dependencies = [
-    "mysql-connector-python==8.4.0",
-    "numpy==2.1.0",
+    "mysql-connector-python==9.1.0",
+    "numpy==2.1.2",
     "python-slugify==8.0.4",
     "pytz==2024.2",
 ]
@@ -41,12 +42,12 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
-required-version = "24.8.0"
-target-version = ["py310", "py311", "py312"]
+required-version = "24.10.0"
+target-version = ["py310", "py311", "py312", "py313"]
 line-length = 88
 
 [tool.pytest.ini_options]
-minversion = "8.0"
+minversion = "8.3"
 filterwarnings = [
     "ignore::DeprecationWarning:mysql.*:",
 ]

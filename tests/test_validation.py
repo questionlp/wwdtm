@@ -17,10 +17,15 @@ def test_validation_valid_int_id(test_id: int):
     assert valid_int_id(test_id), f"Provided ID {test_id} was not valid"
 
 
-@pytest.mark.parametrize("test_id", [-54, 2**32])
+@pytest.mark.parametrize("test_id", [-54, 2**32, "hello", False])
 def test_validation_invalid_int_id(test_id: int):
     """Negative testing for :py:meth:`wwdtm.validation.valid_int_id`.
 
     :param test_id: ID to test failing ID validation
     """
     assert not valid_int_id(test_id), f"Provided ID {test_id} was valid"
+
+
+def test_validation_no_id():
+    """Negative testing for :py:meth:`wwdtm.validation.valid_int_id`."""
+    assert not valid_int_id(None), "Provided ID 'None' was valid"
