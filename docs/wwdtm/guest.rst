@@ -7,11 +7,6 @@ Module: guest
 This module provides objects used to retrieve guests, guest information and
 guest details from a copy of the Wait Wait Don't Tell Me! Stats database.
 
-.. contents:: Contents
-    :depth: 1
-    :local:
-    :backlinks: none
-
 Guest
 =====
 

@@ -7,11 +7,6 @@ Module: host
 This module provides objects used to retrieve hosts, host information and host
 details from a copy of the Wait Wait Don't Tell Me! Stats database.
 
-.. contents:: Contents
-    :depth: 1
-    :local:
-    :backlinks: none
-
 Host
 ====
 

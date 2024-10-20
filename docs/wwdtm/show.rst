@@ -8,11 +8,6 @@ This module provides objects used to retrieve shows, show information,
 and show details from a copy of the Wait Wait Don't Tell Me! Stats
 database.
 
-.. contents:: Contents
-    :depth: 1
-    :local:
-    :backlinks: none
-
 Show
 ====
 
