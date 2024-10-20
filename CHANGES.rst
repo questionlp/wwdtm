@@ -2,6 +2,22 @@
 Changes
 *******
 
+2.14.0
+======
+
+Application Changes
+-------------------
+
+* Rename two show class methods to reflect more accurate phrasing:
+
+  * :py:meth:`wwdtm.show.Show.retrieve_all_best_of_repeats` → :py:meth:`wwdtm.show.Show.retrieve_all_repeat_best_ofs`
+  * :py:meth:`wwdtm.show.Show.retrieve_all_best_of_repeats_details` → :py:meth:`wwdtm.show.Show.retrieve_all_repeat_best_ofs_details`
+
+* Create an aliases for the renamed class methods:
+
+  * :py:meth:`wwdtm.show.Show.retrieve_all_best_of_repeats` → :py:meth:`wwdtm.show.Show.retrieve_all_repeat_best_ofs`
+  * :py:meth:`wwdtm.show.Show.retrieve_all_best_of_repeats_details` → :py:meth:`wwdtm.show.Show.retrieve_all_repeat_best_ofs_details`
+
 2.13.0
 ======
 

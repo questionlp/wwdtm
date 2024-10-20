@@ -185,8 +185,8 @@ class Show:
 
         return shows
 
-    def retrieve_all_best_of_repeats(self) -> list[dict[str, Any]]:
-        """Retrieves basic show information for all Best Of Repeat shows.
+    def retrieve_all_repeat_best_ofs(self) -> list[dict[str, Any]]:
+        """Retrieves basic show information for all Repeat Best Of shows.
 
         :return: A list of dictionaries containing show ID, show date,
             Best Of show flag, repeat show ID (if applicable) and show
@@ -228,10 +228,19 @@ class Show:
 
         return shows
 
-    def retrieve_all_best_of_repeats_details(
+    def retrieve_all_best_of_repeats(self) -> list[dict[str, Any]]:
+        """Alias for :py:meth:`wwdtm.show.Show.retrieve_all_repeat_best_ofs`.
+
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag, repeat show ID (if applicable) and show
+            URL at NPR.org
+        """
+        return self.retrieve_all_repeat_best_ofs()
+
+    def retrieve_all_repeat_best_ofs_details(
         self, include_decimal_scores: bool = False
     ) -> list[dict[str, Any]]:
-        """Retrieves detailed show information for all Best Of Repeat shows.
+        """Retrieves detailed show information for all Repeat Best Of shows.
 
         :param include_decimal_scores: A boolean to determine if decimal
             scores should be included
@@ -275,6 +284,22 @@ class Show:
                 shows.append(info[show])
 
         return shows
+
+    def retrieve_all_best_of_repeats_details(
+        self, include_decimal_scores: bool = False
+    ) -> list[dict[str, Any]]:
+        """Alias for :py:meth:`wwdtm.show.Show.retrieve_all_repeat_best_ofs_details`.
+
+        :param include_decimal_scores: A boolean to determine if decimal
+            scores should be included
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag, repeat show ID (if applicable), show URL
+            at NPR.org, host, scorekeeper, location, panelists and
+            guests
+        """
+        return self.retrieve_all_repeat_best_ofs_details(
+            include_decimal_scores=include_decimal_scores
+        )
 
     def retrieve_all_repeats(self) -> list[dict[str, Any]]:
         """Retrieves basic show information for all repeat shows.
