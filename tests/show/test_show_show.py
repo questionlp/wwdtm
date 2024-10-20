@@ -88,6 +88,32 @@ def test_show_retrieve_all_repeat_details(include_decimal_scores: bool):
     assert "host" in shows[0], "'host' was not returned for first list item"
 
 
+def test_show_retrieve_all_repeat_best_ofs():
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_repeat_best_ofs`."""
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_all_repeat_best_ofs()
+
+    assert shows, "No shows could be retrieved"
+    assert "id" in shows[0], "No Show ID returned for the first list item"
+
+
+@pytest.mark.parametrize("include_decimal_scores", [True, False])
+def test_show_retrieve_all_repeat_best_ofs_details(include_decimal_scores: bool):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_repeat_best_ofs_details`.
+
+    :param include_decimal_scores: Flag set to include decimal score columns
+        and values
+    """
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_all_repeat_best_ofs_details(
+        include_decimal_scores=include_decimal_scores
+    )
+
+    assert shows, "No shows could be retrieved"
+    assert "date" in shows[0], "'date' was not returned for the first list item"
+    assert "host" in shows[0], "'host' was not returned for first list item"
+
+
 def test_show_retrieve_all_best_of_repeats():
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_best_of_repeats`."""
     show = Show(connect_dict=get_connect_dict())
