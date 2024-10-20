@@ -94,6 +94,279 @@ class Show:
 
         return shows
 
+    def retrieve_all_best_ofs(self) -> list[dict[str, Any]]:
+        """Retrieves basic show information for all Best Of shows.
+
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag, repeat show ID (if applicable) and show
+            URL at NPR.org
+        """
+        query = """
+            SELECT showid AS id, showdate AS date,
+            bestof AS best_of, repeatshowid AS repeat_show_id,
+            showurl AS show_url
+            FROM ww_shows
+            WHERE bestof = 1
+            ORDER BY showdate ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=True)
+        cursor.execute(query)
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        shows = []
+        for row in results:
+            show = {
+                "id": row["id"],
+                "date": row["date"].isoformat(),
+                "best_of": bool(row["best_of"]),
+                "repeat_show": bool(row["repeat_show_id"]),
+                "show_url": row["show_url"],
+            }
+
+            if row["repeat_show_id"]:
+                show["original_show_id"] = row["repeat_show_id"]
+                show["original_show_date"] = self.utility.convert_id_to_date(
+                    row["repeat_show_id"]
+                )
+
+            shows.append(show)
+
+        return shows
+
+    def retrieve_all_best_ofs_details(
+        self, include_decimal_scores: bool = False
+    ) -> list[dict[str, Any]]:
+        """Retrieves detailed show information for all Best Of shows.
+
+        :param include_decimal_scores: A boolean to determine if decimal
+            scores should be included
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag, repeat show ID (if applicable), show URL
+            at NPR.org, host, scorekeeper, location, panelists and
+            guests
+        """
+        query = """
+            SELECT showid
+            FROM ww_shows
+            WHERE bestof = 1
+            ORDER BY showdate ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        show_ids = [v[0] for v in results]
+        info = self.info_multiple.retrieve_core_info_by_ids(show_ids)
+
+        if not info:
+            return []
+
+        shows = []
+        for show in info:
+            if info[show]:
+                info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
+                    info[show]["id"], include_decimal_scores=include_decimal_scores
+                )
+                info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(
+                    info[show]["id"]
+                )
+                info[show]["guests"] = self.info.retrieve_guest_info_by_id(
+                    info[show]["id"]
+                )
+                shows.append(info[show])
+
+        return shows
+
+    def retrieve_all_best_of_repeats(self) -> list[dict[str, Any]]:
+        """Retrieves basic show information for all Best Of Repeat shows.
+
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag, repeat show ID (if applicable) and show
+            URL at NPR.org
+        """
+        query = """
+            SELECT showid AS id, showdate AS date,
+            bestof AS best_of, repeatshowid AS repeat_show_id,
+            showurl AS show_url
+            FROM ww_shows
+            WHERE bestof = 1 AND repeatshowid IS NOT NULL
+            ORDER BY showdate ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=True)
+        cursor.execute(query)
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        shows = []
+        for row in results:
+            show = {
+                "id": row["id"],
+                "date": row["date"].isoformat(),
+                "best_of": bool(row["best_of"]),
+                "repeat_show": bool(row["repeat_show_id"]),
+                "show_url": row["show_url"],
+            }
+
+            if row["repeat_show_id"]:
+                show["original_show_id"] = row["repeat_show_id"]
+                show["original_show_date"] = self.utility.convert_id_to_date(
+                    row["repeat_show_id"]
+                )
+
+            shows.append(show)
+
+        return shows
+
+    def retrieve_all_best_of_repeats_details(
+        self, include_decimal_scores: bool = False
+    ) -> list[dict[str, Any]]:
+        """Retrieves detailed show information for all Best Of Repeat shows.
+
+        :param include_decimal_scores: A boolean to determine if decimal
+            scores should be included
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag, repeat show ID (if applicable), show URL
+            at NPR.org, host, scorekeeper, location, panelists and
+            guests
+        """
+        query = """
+            SELECT showid
+            FROM ww_shows
+            WHERE bestof = 1 AND repeatshowid IS NOT NULL
+            ORDER BY showdate ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        show_ids = [v[0] for v in results]
+        info = self.info_multiple.retrieve_core_info_by_ids(show_ids)
+
+        if not info:
+            return []
+
+        shows = []
+        for show in info:
+            if info[show]:
+                info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
+                    info[show]["id"], include_decimal_scores=include_decimal_scores
+                )
+                info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(
+                    info[show]["id"]
+                )
+                info[show]["guests"] = self.info.retrieve_guest_info_by_id(
+                    info[show]["id"]
+                )
+                shows.append(info[show])
+
+        return shows
+
+    def retrieve_all_repeats(self) -> list[dict[str, Any]]:
+        """Retrieves basic show information for all repeat shows.
+
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag, repeat show ID (if applicable) and show
+            URL at NPR.org
+        """
+        query = """
+            SELECT showid AS id, showdate AS date,
+            bestof AS best_of, repeatshowid AS repeat_show_id,
+            showurl AS show_url
+            FROM ww_shows
+            WHERE repeatshowid IS NOT NULL
+            ORDER BY showdate ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=True)
+        cursor.execute(query)
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        shows = []
+        for row in results:
+            show = {
+                "id": row["id"],
+                "date": row["date"].isoformat(),
+                "best_of": bool(row["best_of"]),
+                "repeat_show": bool(row["repeat_show_id"]),
+                "show_url": row["show_url"],
+            }
+
+            if row["repeat_show_id"]:
+                show["original_show_id"] = row["repeat_show_id"]
+                show["original_show_date"] = self.utility.convert_id_to_date(
+                    row["repeat_show_id"]
+                )
+
+            shows.append(show)
+
+        return shows
+
+    def retrieve_all_repeats_details(
+        self, include_decimal_scores: bool = False
+    ) -> list[dict[str, Any]]:
+        """Retrieves detailed show information for all repeat shows.
+
+        :param include_decimal_scores: A boolean to determine if decimal
+            scores should be included
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag, repeat show ID (if applicable), show URL
+            at NPR.org, host, scorekeeper, location, panelists and
+            guests
+        """
+        query = """
+            SELECT showid
+            FROM ww_shows
+            WHERE repeatshowid IS NOT NULL
+            ORDER BY showdate ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        show_ids = [v[0] for v in results]
+        info = self.info_multiple.retrieve_core_info_by_ids(show_ids)
+
+        if not info:
+            return []
+
+        shows = []
+        for show in info:
+            if info[show]:
+                info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
+                    info[show]["id"], include_decimal_scores=include_decimal_scores
+                )
+                info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(
+                    info[show]["id"]
+                )
+                info[show]["guests"] = self.info.retrieve_guest_info_by_id(
+                    info[show]["id"]
+                )
+                shows.append(info[show])
+
+        return shows
+
     def retrieve_all_details(
         self, include_decimal_scores: bool = False
     ) -> list[dict[str, Any]]:

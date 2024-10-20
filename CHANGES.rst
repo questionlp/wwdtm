@@ -2,6 +2,45 @@
 Changes
 *******
 
+2.13.0
+======
+
+Application Changes
+-------------------
+
+* Add methods to ``show.show`` to retrieve information and details for Best Of, Repeat and Repeat Best Of shows
+* Initial Python 3.13 support
+
+Component Changes
+-----------------
+
+* Upgrade mysql-connector from 8.4.0 to 9.1.0
+* Upgrade numpy from 2.1.0 to 2.1.2
+
+Development Changes
+-------------------
+
+* Upgrade black from 24.8.0 to 24.10.0
+* Upgrade ruff from 0.6.9 to 0.7.0
+* Upgrade build from 1.2.2 to 1.2.2.post1
+* Increase minimum pytest version from 8.0 to 8.3 in ``pyproject.toml``
+* Add ``py313`` to ``tool.black.target-version``
+
+Documentation Changes
+---------------------
+
+* Theme Updates
+
+  * Replace Pallets-Sphinx-Themes/Flask theme with Furo version 2024.8.6
+  * Change body text from IBM Plex Serif to IBM Plex Sans
+
+* Sync required package versions with main package requirements
+* Upgrade Sphinx from 8.0.2 to 8.1.3
+* Upgrade sphinx-autobuild from 2024.9.19 to 2024.10.3
+* Upgrade sphinx-autodoc-typehints from 2.4.4 to 2.5.0
+* Upgrade sphinx-toolbox from 3.8.0 to 3.8.1
+* Adding sphinxext-opengraph version 0.9.1
+
 2.12.1-post0
 ============
 
