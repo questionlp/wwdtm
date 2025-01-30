@@ -5,6 +5,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 # pylint: disable=C0206
 """Wait Wait Stats Show Information Retrieval Functions."""
+
 import datetime
 from decimal import Decimal
 from typing import Any

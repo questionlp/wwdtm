@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Testing for object: :py:class:`wwdtm.location.Location`."""
+
 import json
 from pathlib import Path
 from typing import Any
@@ -86,7 +87,7 @@ def test_location_retrieve_all_slugs():
     assert slugs, "No location slug strings could be retrieved"
 
 
-@pytest.mark.parametrize("location_id", [95])
+@pytest.mark.parametrize("location_id", [95, 148])
 def test_location_retrieve_by_id(location_id: int):
     """Testing for :py:meth:`wwdtm.location.Location.retrieve_by_id`.
 
@@ -108,7 +109,7 @@ def test_location_retrieve_by_id(location_id: int):
         ), f"'longitude' was not returned for ID {location_id}"
 
 
-@pytest.mark.parametrize("location_id", [95])
+@pytest.mark.parametrize("location_id", [95, 148])
 def test_location_retrieve_details_by_id(location_id: int):
     """Testing for :py:meth:`wwdtm.location.location.retrieve_details_by_id`.
 
@@ -179,3 +180,15 @@ def test_location_retrieve_details_by_slug(location_slug: str):
     assert (
         "recordings" in info
     ), f"'recordings' was not returned for slug {location_slug}"
+
+
+def test_location_retrieve_postal_abbreviations():
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_postal_abbreviations`."""
+    location = Location(connect_dict=get_connect_dict())
+    abbreviations = location.retrieve_postal_abbreviations()
+
+    assert abbreviations, "Postal abbreviations not returned"
+    assert "OR" in abbreviations, "Postal abbreviation 'OR' not found"
+    assert (
+        "name" in abbreviations["OR"]
+    ), "Postal abbreviation 'OR' does not contain a valid name"

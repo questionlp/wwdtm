@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Deprecated: Package setup file."""
+
 from setuptools import setup
 
 setup()

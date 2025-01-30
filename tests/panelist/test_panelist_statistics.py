@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Testing for object: :py:class:`wwdtm.panelist.PanelistStatistics`."""
+
 import json
 from pathlib import Path
 from typing import Any
@@ -101,9 +102,9 @@ def test_panelist_statistics_retrieve_statistics_by_id(
 
     assert "scoring" in stats, f"'scoring' was not returned for ID {panelist_id}"
     if include_decimal_scores:
-        assert (
-            "scoring_decimal" in stats
-        ), f"'scoring' was not returned for ID {panelist_id}"
+        assert "scoring_decimal" in stats, (
+            f"'scoring' was not returned for ID {panelist_id}"
+        )
     assert "ranking" in stats, f"'ranking' was not returned for ID {panelist_id}"
 
 
@@ -128,7 +129,7 @@ def test_panelist_statistics_retrieve_statistics_by_slug(
 
     assert "scoring" in stats, f"'scoring' was not returned for slug {panelist_slug}"
     if include_decimal_scores:
-        assert (
-            "scoring_decimal" in stats
-        ), f"'scoring' was not returned for ID {panelist_slug}"
+        assert "scoring_decimal" in stats, (
+            f"'scoring' was not returned for ID {panelist_slug}"
+        )
     assert "ranking" in stats, f"'ranking' was not returned for slug {panelist_slug}"

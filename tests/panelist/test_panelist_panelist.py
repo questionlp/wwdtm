@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Testing for object: :py:class:`wwdtm.panelist.Panelist`."""
+
 import json
 from pathlib import Path
 from typing import Any
@@ -36,9 +37,9 @@ def test_panelist_retrieve_all():
     assert "id" in panelists[0], "'id' was not returned for the first list item"
     assert "name" in panelists[0], "'name' was not returned for the first list item"
     assert "slug" in panelists[0], "'slug' was not returned for the first list item"
-    assert (
-        "pronouns" in panelists[0]
-    ), "'pronouns' was not returned for the first list item"
+    assert "pronouns" in panelists[0], (
+        "'pronouns' was not returned for the first list item"
+    )
 
 
 @pytest.mark.parametrize("use_decimal_scores", [True, False])
@@ -55,12 +56,12 @@ def test_panelist_retrieve_all_details(use_decimal_scores: bool):
     assert "id" in panelists[0], "'id' was not returned for first list item"
     assert "name" in panelists[0], "'name' was not returned for the first list item"
     assert "slug" in panelists[0], "'slug' was not returned for the first list item"
-    assert (
-        "pronouns" in panelists[0]
-    ), "'pronouns' was not returned for the first list item"
-    assert (
-        "appearances" in panelists[0]
-    ), "'appearances' was not returned for the first list item"
+    assert "pronouns" in panelists[0], (
+        "'pronouns' was not returned for the first list item"
+    )
+    assert "appearances" in panelists[0], (
+        "'appearances' was not returned for the first list item"
+    )
 
 
 def test_panelist_retrieve_all_ids():
@@ -154,6 +155,6 @@ def test_panelist_retrieve_details_by_slug(
     assert "name" in info, f"'name' was not returned for slug {panelist_slug}"
     assert "slug" in info, f"'slug' was not returned for ID {panelist_slug}"
     assert "pronouns" in info, f"'pronouns' was not returned for ID {panelist_slug}"
-    assert (
-        "appearances" in info
-    ), f"'appearances' was not returned for slug {panelist_slug}"
+    assert "appearances" in info, (
+        f"'appearances' was not returned for slug {panelist_slug}"
+    )

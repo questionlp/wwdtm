@@ -41,11 +41,6 @@ version = {attr = "wwdtm.VERSION"}
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.black]
-required-version = "24.10.0"
-target-version = ["py310", "py311", "py312", "py313"]
-line-length = 88
-
 [tool.pytest.ini_options]
 minversion = "8.3"
 filterwarnings = [
@@ -60,6 +55,7 @@ norecursedirs = [
 ]
 
 [tool.ruff]
+required-version = ">= 0.9.0"
 target-version = "py310"
 
 exclude = [
@@ -73,7 +69,7 @@ exclude = [
     ".venv",
 ]
 
-line-length = 88 # Must agree with Black
+line-length = 88
 
 [tool.ruff.lint]
 ignore = [
@@ -93,6 +89,7 @@ ignore = [
     "F401",
     "TRY003", # Avoid specifying messages outside exception class; overly strict, especially for ValueError
     "S608",
+    "ISC001",
 ]
 
 select = [

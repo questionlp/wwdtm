@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Testing for object :py:class:`wwdtm.show.Show`."""
+
 import json
 from pathlib import Path
 from typing import Any
@@ -212,9 +213,9 @@ def test_show_retrieve_by_date(year: int, month: int, day: int):
     info = show.retrieve_by_date(year, month, day)
 
     assert info, f"Show for date {year:04d}-{month:02d}-{day:02d} not found"
-    assert (
-        "date" in info
-    ), f"'date' was not returned for show {year:04d}-{month:02d}-{day:02d}"
+    assert "date" in info, (
+        f"'date' was not returned for show {year:04d}-{month:02d}-{day:02d}"
+    )
 
 
 @pytest.mark.parametrize("date", ["2018-10-27"])
@@ -271,9 +272,9 @@ def test_show_retrieve_by_year(year: int):
     shows = show.retrieve_by_year(year)
 
     assert shows, f"No shows could be retrieved for year {year:04d}"
-    assert (
-        "id" in shows[0]
-    ), f"'id' was not returned for the first list item for year {year:04d}"
+    assert "id" in shows[0], (
+        f"'id' was not returned for the first list item for year {year:04d}"
+    )
 
 
 @pytest.mark.parametrize("year, month", [(1998, 1), (2018, 10)])
@@ -315,12 +316,12 @@ def test_show_retrieve_details_by_date(
     )
 
     assert info, f"Show for date {year:04d}-{month:02d}-{day:02d} not found"
-    assert (
-        "date" in info
-    ), f"'date' was not returned for show {year:04d}-{month:02d}-{day:02d}"
-    assert (
-        "host" in info
-    ), f"'host' was not returned for show {year:04d}-{month:02d}-{day:02d}"
+    assert "date" in info, (
+        f"'date' was not returned for show {year:04d}-{month:02d}-{day:02d}"
+    )
+    assert "host" in info, (
+        f"'host' was not returned for show {year:04d}-{month:02d}-{day:02d}"
+    )
 
 
 @pytest.mark.parametrize(
@@ -420,12 +421,12 @@ def test_show_retrieve_details_by_year(year: int, include_decimal_scores: bool):
     )
 
     assert info, f"No shows could be retrieved for year {year:04d}"
-    assert (
-        "date" in info[0]
-    ), f"'date' was not returned for first list item for year {year:04d}"
-    assert (
-        "host" in info[0]
-    ), f"'host' was not returned for first list item for year {year:04d}"
+    assert "date" in info[0], (
+        f"'date' was not returned for first list item for year {year:04d}"
+    )
+    assert "host" in info[0], (
+        f"'host' was not returned for first list item for year {year:04d}"
+    )
 
 
 @pytest.mark.parametrize(

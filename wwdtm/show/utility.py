@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Wait Wait Stats Show Data Utility Functions."""
+
 import datetime
 from typing import Any
 

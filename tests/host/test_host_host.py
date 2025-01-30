@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Testing for object: :py:class:`wwdtm.host.Host`."""
+
 import json
 from pathlib import Path
 from typing import Any
@@ -49,9 +50,9 @@ def test_host_retrieve_all_details():
     assert "name" in hosts[0], "'name' was not returned for the first list item"
     assert "slug" in hosts[0], "'slug' was not returned for the first list item"
     assert "pronouns" in hosts[0], "'pronouns' was not returned for the first list item"
-    assert (
-        "appearances" in hosts[0]
-    ), "'appearances' was not returned for thefirst list item"
+    assert "appearances" in hosts[0], (
+        "'appearances' was not returned for thefirst list item"
+    )
 
 
 def test_host_retrieve_all_ids():

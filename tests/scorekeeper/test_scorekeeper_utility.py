@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Testing for object: :py:class:`wwdtm.scorekeeper.ScorekeeperUtility`."""
+
 import json
 from pathlib import Path
 from typing import Any

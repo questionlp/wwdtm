@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Explicitly listing all modules in this package."""
+
 from typing import Any
 
 from mysql.connector import connect
@@ -25,7 +26,7 @@ from wwdtm.panelist import (
 from wwdtm.scorekeeper import Scorekeeper, ScorekeeperAppearances, ScorekeeperUtility
 from wwdtm.show import Show, ShowInfo, ShowInfoMultiple, ShowUtility
 
-VERSION = "2.14.0"
+VERSION = "2.15.0"
 
 
 def database_version(

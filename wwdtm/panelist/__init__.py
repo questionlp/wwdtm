@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Wait Wait Stats: Panelist module."""
+
 from wwdtm.panelist.appearances import PanelistAppearances
 from wwdtm.panelist.decimal_scores import PanelistDecimalScores
 from wwdtm.panelist.panelist import Panelist

@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Testing for object: :py:class:`wwdtm.scorekeeper.Scorekeeper`."""
+
 import json
 from pathlib import Path
 from typing import Any
@@ -36,9 +37,9 @@ def test_scorekeeper_retrieve_all():
     assert "id" in scorekeepers[0], "'id' was not returned for the first list item"
     assert "name" in scorekeepers[0], "'name' was not returned for the first list item"
     assert "slug" in scorekeepers[0], "'slug' was not returned for the first list item"
-    assert (
-        "pronouns" in scorekeepers[0]
-    ), "'pronouns' was not returned for the first list item"
+    assert "pronouns" in scorekeepers[0], (
+        "'pronouns' was not returned for the first list item"
+    )
 
 
 def test_scorekeeper_retrieve_all_details():
@@ -50,12 +51,12 @@ def test_scorekeeper_retrieve_all_details():
     assert "id" in scorekeepers[0], "'id' was not returned for first list item"
     assert "name" in scorekeepers[0], "'name' was not returned for the first list item"
     assert "slug" in scorekeepers[0], "'slug' was not returned for the first list item"
-    assert (
-        "pronouns" in scorekeepers[0]
-    ), "'pronouns' was not returned for the first list item"
-    assert (
-        "appearances" in scorekeepers[0]
-    ), "'appearances' was not returned for the first list item"
+    assert "pronouns" in scorekeepers[0], (
+        "'pronouns' was not returned for the first list item"
+    )
+    assert "appearances" in scorekeepers[0], (
+        "'appearances' was not returned for the first list item"
+    )
 
 
 def test_scorekeeper_retrieve_all_ids():
@@ -104,9 +105,9 @@ def test_scorekeeper_retrieve_details_by_id(scorekeeper_id: int):
     assert "name" in info, f"'name' was not returned for ID {scorekeeper_id}"
     assert "slug" in info, f"'slug' was not returned for ID {scorekeeper_id}"
     assert "pronouns" in info, f"'pronouns' was not returned for ID {scorekeeper_id}"
-    assert (
-        "appearances" in info
-    ), f"'appearances' was not returned for ID {scorekeeper_id}"
+    assert "appearances" in info, (
+        f"'appearances' was not returned for ID {scorekeeper_id}"
+    )
 
 
 @pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson"])
@@ -139,6 +140,6 @@ def test_scorekeeper_retrieve_details_by_slug(scorekeeper_slug: str):
     assert "name" in info, f"'name' was not returned for slug {scorekeeper_slug}"
     assert "slug" in info, f"'slug' was not returned for ID {scorekeeper_slug}"
     assert "pronouns" in info, f"'pronouns' was not returned for ID {scorekeeper_slug}"
-    assert (
-        "appearances" in info
-    ), f"'appearances' was not returned for slug {scorekeeper_slug}"
+    assert "appearances" in info, (
+        f"'appearances' was not returned for slug {scorekeeper_slug}"
+    )

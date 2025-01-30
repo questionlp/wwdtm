@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Testing for object :py:class:`wwdtm.show.ShowUtility`."""
+
 import json
 from pathlib import Path
 from typing import Any
@@ -39,9 +40,9 @@ def test_show_utility_convert_date_to_id(year: int, month: int, day: int):
     id_ = utility.convert_date_to_id(year, month, day)
 
     assert id_, f"Show ID for date {year:04d}-{month:02d}-{day:02d} not found"
-    assert isinstance(
-        id_, int
-    ), f"Invalid value returned for date {year:04d}-{month:02d}-{day:02d}"
+    assert isinstance(id_, int), (
+        f"Invalid value returned for date {year:04d}-{month:02d}-{day:02d}"
+    )
 
 
 @pytest.mark.parametrize("year, month, day", [(2018, 10, 26)])

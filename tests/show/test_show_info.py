@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Testing for object :py:class:`wwdtm.show.ShowInfo`."""
+
 import json
 from pathlib import Path
 from typing import Any
@@ -37,9 +38,9 @@ def test_show_info_retrieve_bluff_info_by_id(show_id: int):
     info = ShowInfo(connect_dict=get_connect_dict())
     bluff = info.retrieve_bluff_info_by_id(show_id)
 
-    assert (
-        isinstance(bluff, list) and bluff
-    ), f"Bluff the Listener information for the show ID {show_id} could not be retrieved"
+    assert isinstance(bluff, list) and bluff, (
+        f"Bluff the Listener information for the show ID {show_id} could not be retrieved"
+    )
 
     assert "chosen_panelist" in bluff[0], (
         "'chosen_panelist' was not returned with panelist information for show ID "
@@ -62,12 +63,12 @@ def test_show_info_retrieve_core_info_by_id(show_id: int):
 
     assert show, f"Core information for show ID {show_id} could not be retrieved"
 
-    assert (
-        "id" in show
-    ), f"'id' was not returned with core information for show ID {show_id}"
-    assert (
-        "description" in show
-    ), f"'description' was not returned with show information for show ID {show_id}"
+    assert "id" in show, (
+        f"'id' was not returned with core information for show ID {show_id}"
+    )
+    assert "description" in show, (
+        f"'description' was not returned with show information for show ID {show_id}"
+    )
 
 
 @pytest.mark.parametrize("show_id", [1162])
@@ -80,12 +81,12 @@ def test_show_info_retrieve_guest_info_by_id(show_id: int):
     guests = info.retrieve_guest_info_by_id(show_id)
 
     assert guests, f"Guest information for show ID {show_id} could not be retrieved"
-    assert (
-        "id" in guests[0]
-    ), f"'id' was not returned for the first guest for show ID {show_id}"
-    assert (
-        "score" in guests[0]
-    ), f"'score' was not returned for the first guest for show ID {show_id}"
+    assert "id" in guests[0], (
+        f"'id' was not returned for the first guest for show ID {show_id}"
+    )
+    assert "score" in guests[0], (
+        f"'score' was not returned for the first guest for show ID {show_id}"
+    )
 
 
 @pytest.mark.parametrize(
@@ -105,16 +106,16 @@ def test_show_info_retrieve_panelist_info_by_id(
         show_id, include_decimal_scores=include_decimal_scores
     )
 
-    assert (
-        panelists
-    ), f"Panelist information for show ID {show_id} could not be retrieved"
-    assert (
-        "id" in panelists[0]
-    ), f"'id' was not returned for the first panelist for show ID {show_id}"
-    assert (
-        "score" in panelists[0]
-    ), f"'score' was not returned for the first panelist for show ID {show_id}"
+    assert panelists, (
+        f"Panelist information for show ID {show_id} could not be retrieved"
+    )
+    assert "id" in panelists[0], (
+        f"'id' was not returned for the first panelist for show ID {show_id}"
+    )
+    assert "score" in panelists[0], (
+        f"'score' was not returned for the first panelist for show ID {show_id}"
+    )
     if include_decimal_scores:
-        assert (
-            "score_decimal" in panelists[0]
-        ), f"'score_decimal' was not returned for the first panelist for show ID {show_id}"
+        assert "score_decimal" in panelists[0], (
+            f"'score_decimal' was not returned for the first panelist for show ID {show_id}"
+        )

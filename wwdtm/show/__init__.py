@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Wait Wait Stats: Show module."""
+
 from wwdtm.show.info import ShowInfo
 from wwdtm.show.info_multiple import ShowInfoMultiple
 from wwdtm.show.show import Show

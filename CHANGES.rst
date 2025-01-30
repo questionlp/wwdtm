@@ -2,6 +2,22 @@
 Changes
 *******
 
+2.15.0
+======
+
+Application Changes
+-------------------
+
+* Change SQL joins from ``JOIN`` to ``LEFT JOIN`` in :py:class:`wwdtm.location.Location` to properly handle ``NULL`` values in the ``state`` column
+* Add :py:meth:`wwdtm.location.Location.retrieve_postal_abbreviations` that returns postal abbreviations and their corresponding names and countries
+
+Development Changes
+-------------------
+
+* Upgrade ruff from 0.7.0 to 0.9.3
+* Remove black from required development packages as part of migrating entirely to Ruff
+* Ran ```ruff format``` to format Python code files using the Ruff 2025 Style Guide
+
 2.14.0
 ======
 

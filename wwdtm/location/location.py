@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Wait Wait Stats Location Data Retrieval Functions."""
+
 from typing import Any
 
 from mysql.connector import connect
@@ -59,7 +60,7 @@ class Location:
             pa.name AS state_name, l.venue, l.latitude, l.longitude,
             l.locationslug AS slug
             FROM ww_locations l
-            JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
+            LEFT JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
             """
 
         if sort_by_venue:
@@ -121,7 +122,7 @@ class Location:
             pa.name AS state_name, l.venue, l.latitude, l.longitude,
             l.locationslug AS slug
             FROM ww_locations l
-            JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
+            LEFT JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
             """
         if sort_by_venue:
             query = query + " ORDER BY l.venue ASC, l.city ASC, pa.name ASC;"
@@ -180,7 +181,7 @@ class Location:
         query = """
             SELECT l.locationid
             FROM ww_locations l
-            JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
+            LEFT JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
             """
         if sort_by_venue:
             query = query + " ORDER BY l.venue ASC, l.city ASC, pa.name ASC;"
@@ -207,7 +208,7 @@ class Location:
         query = """
             SELECT l.locationslug
             FROM ww_locations l
-            JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
+            LEFT JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
             """
         if sort_by_venue:
             query = query + " ORDER BY l.venue ASC, l.city ASC, pa.name ASC;"
@@ -239,7 +240,7 @@ class Location:
             pa.name AS state_name, l.venue, l.latitude, l.longitude,
             l.locationslug AS slug
             FROM ww_locations l
-            JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
+            LEFT JOIN ww_postal_abbreviations pa ON pa.postal_abbreviation = l.state
             WHERE l.locationid = %s
             LIMIT 1;
             """
@@ -335,3 +336,30 @@ class Location:
             return {}
 
         return self.retrieve_details_by_id(id_)
+
+    def retrieve_postal_abbreviations(self) -> dict[str, dict[str, str]]:
+        """Retrieves postal abbreviations and corresponding values.
+
+        :return: A dictionary containing postal abbreviation as keys
+            and corresponding name and country as values.
+        """
+        query = """
+            SELECT postal_abbreviation, name, country
+            FROM ww_postal_abbreviations
+            ORDER BY postal_abbreviation ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=True)
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        if not results:
+            return None
+
+        abbreviations = {}
+        for row in results:
+            abbreviations[row["postal_abbreviation"]] = {
+                "name": row["name"],
+                "country": row["country"],
+            }
+
+        return abbreviations

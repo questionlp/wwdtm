@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Testing for object: :py:class:`wwdtm.guest.Guest`."""
+
 import json
 from pathlib import Path
 from typing import Any
@@ -43,9 +44,9 @@ def test_guest_retrieve_all_details():
 
     assert guests, "No guests could be retrieved"
     assert "id" in guests[0], "'id' was not returned for first list item"
-    assert (
-        "appearances" in guests[0]
-    ), "'appearances' was not returned for the first list item"
+    assert "appearances" in guests[0], (
+        "'appearances' was not returned for the first list item"
+    )
 
 
 def test_guest_retrieve_all_ids():
@@ -116,6 +117,6 @@ def test_guest_guest_retrieve_details_by_slug(guest_slug: str):
 
     assert info, f"Guest slug {guest_slug} not found"
     assert "name" in info, f"'name' was not returned for slug {guest_slug}"
-    assert (
-        "appearances" in info
-    ), f"'appearances' was not returned for slug {guest_slug}"
+    assert "appearances" in info, (
+        f"'appearances' was not returned for slug {guest_slug}"
+    )

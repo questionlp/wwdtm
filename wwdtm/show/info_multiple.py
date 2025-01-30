@@ -5,6 +5,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 # pylint: disable=C0209
 """Wait Wait Stats Show Detailed Information Retrieval Functions for Multiple Shows."""
+
 from typing import Any
 
 from mysql.connector import connect
@@ -439,9 +440,7 @@ class ShowInfoMultiple:
             JOIN ww_showdescriptions sd ON sd.showid = s.showid
             JOIN ww_shownotes sn ON sn.showid = s.showid
             WHERE s.showid IN ({ids})
-            ORDER BY s.showdate ASC;""".format(
-            ids=", ".join(str(v) for v in show_ids)
-        )
+            ORDER BY s.showdate ASC;""".format(ids=", ".join(str(v) for v in show_ids))
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -600,9 +599,7 @@ class ShowInfoMultiple:
             JOIN ww_shows s ON s.showid = gm.showid
             WHERE gm.showid IN ({ids})
             ORDER BY s.showdate ASC,
-            gm.showguestmapid ASC;""".format(
-            ids=", ".join(str(v) for v in show_ids)
-        )
+            gm.showguestmapid ASC;""".format(ids=", ".join(str(v) for v in show_ids))
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -738,9 +735,7 @@ class ShowInfoMultiple:
                 JOIN ww_shows s ON s.showid = pm.showid
                 WHERE pm.showid IN ({ids})
                 ORDER by s.showdate ASC, pm.panelistscore_decimal DESC,
-                pm.showpnlmapid ASC;""".format(
-                ids=", ".join(str(v) for v in show_ids)
-            )
+                pm.showpnlmapid ASC;""".format(ids=", ".join(str(v) for v in show_ids))
         else:
             query = """
                 SELECT s.showid AS show_id, pm.panelistid AS panelist_id,
@@ -753,9 +748,7 @@ class ShowInfoMultiple:
                 JOIN ww_shows s ON s.showid = pm.showid
                 WHERE pm.showid IN ({ids})
                 ORDER by s.showdate ASC, pm.panelistscore DESC,
-                pm.showpnlmapid ASC;""".format(
-                ids=", ".join(str(v) for v in show_ids)
-            )
+                pm.showpnlmapid ASC;""".format(ids=", ".join(str(v) for v in show_ids))
 
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
