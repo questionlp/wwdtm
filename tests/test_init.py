@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Testing for object: :py:module:`wwdtm`."""
+
 import json
 from pathlib import Path
 from typing import Any
@@ -33,11 +34,11 @@ def test_database_version():
     """Testing for :py:func:`wwdtm.database_version`."""
     _database_version = database_version(connect_dict=get_connect_dict())
 
-    assert isinstance(
-        _database_version, tuple
-    ), "Invalid database version value type returned"
+    assert isinstance(_database_version, tuple), (
+        "Invalid database version value type returned"
+    )
 
     if isinstance(_database_version, tuple):
-        assert (
-            len(_database_version) == 2 or len(_database_version) == 3
-        ), "Invalid database version value returned"
+        assert len(_database_version) == 2 or len(_database_version) == 3, (
+            "Invalid database version value returned"
+        )

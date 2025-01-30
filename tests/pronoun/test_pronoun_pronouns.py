@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Testing for object: :py:class:`wwdtm.pronoun.Pronouns`."""
+
 import json
 from pathlib import Path
 from typing import Any
@@ -34,9 +35,9 @@ def test_pronouns_retrieve_all():
 
     assert all_pronouns, "No pronouns could be retrieved"
     assert "id" in all_pronouns[0], "'id' was not returned for the first list item"
-    assert (
-        "pronouns" in all_pronouns[0]
-    ), "'pronouns' was not returned for the first list item"
+    assert "pronouns" in all_pronouns[0], (
+        "'pronouns' was not returned for the first list item"
+    )
 
 
 def test_pronouns_retrieve_all_ids():

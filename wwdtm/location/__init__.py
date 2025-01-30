@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Wait Wait Stats: Location module."""
+
 from wwdtm.location.location import Location
 from wwdtm.location.recordings import LocationRecordings
 from wwdtm.location.utility import LocationUtility

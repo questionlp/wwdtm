@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Testing for object: :py:class:`wwdtm.scorekeeper.ScorekeeperAppearances`."""
+
 import json
 from pathlib import Path
 from typing import Any
@@ -51,9 +52,9 @@ def test_scorekeeper_appearance_retrieve_appearances_by_slug(scorekeeper_slug: s
     appearances = ScorekeeperAppearances(connect_dict=get_connect_dict())
     appearance = appearances.retrieve_appearances_by_slug(scorekeeper_slug)
 
-    assert (
-        "count" in appearance
-    ), f"'count' was not returned for slug {scorekeeper_slug}"
-    assert (
-        "shows" in appearance
-    ), f"'shows' was not returned for slug {scorekeeper_slug}"
+    assert "count" in appearance, (
+        f"'count' was not returned for slug {scorekeeper_slug}"
+    )
+    assert "shows" in appearance, (
+        f"'shows' was not returned for slug {scorekeeper_slug}"
+    )

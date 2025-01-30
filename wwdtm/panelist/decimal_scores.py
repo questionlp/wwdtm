@@ -4,6 +4,7 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 """Wait Wait Stats Panelist Decimal Scores Retrieval Functions."""
+
 from decimal import Decimal
 from math import floor
 from typing import Any
