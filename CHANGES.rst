@@ -10,12 +10,12 @@ Application Changes
 
 * Add ``retrieve_random()``, ``retrieve_random_id()``, ``retrieve_random_slug()``, ``retrieve_random_date()`` and ``retrieve_random_details()`` to the following classes that mirror the corresponding feature in the `Wait Wait Stats Page`_
 
-  * :py:class`wwdtm.guest.Guest`
-  * :py:class`wwdtm.host.Host`
-  * :py:class`wwdtm.location.Location`
-  * :py:class`wwdtm.panelist.Panelist`
-  * :py:class`wwdtm.scorekeeper.Scorekeeper`
-  * :py:class`wwdtm.show.Show`
+  * :py:class:`wwdtm.guest.Guest`
+  * :py:class:`wwdtm.host.Host`
+  * :py:class:`wwdtm.location.Location`
+  * :py:class:`wwdtm.panelist.Panelist`
+  * :py:class:`wwdtm.scorekeeper.Scorekeeper`
+  * :py:class:`wwdtm.show.Show`
 
 Development Changes
 -------------------
