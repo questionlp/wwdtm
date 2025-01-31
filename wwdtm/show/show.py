@@ -972,6 +972,76 @@ class Show:
 
         return [v[0] for v in results]
 
+    def retrieve_random_id(self) -> int:
+        """Retrieves an ID for a random show.
+
+        :return: ID for a random show.
+        """
+        query = """
+            SELECT showid FROM ww_shows
+            WHERE showdate <= NOW()
+            ORDER BY RAND()
+            LIMIT 1;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        return result[0]
+
+    def retrieve_random_date(self) -> str:
+        """Retrieves a date for a random show.
+
+        :return: show date string for a random show, in YYYY-MM-DD format.
+        """
+        query = """
+            SELECT showdate FROM ww_shows
+            WHERE showdate <= NOW()
+            ORDER BY RAND()
+            LIMIT 1;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        return result[0].isoformat()
+
+    def retrieve_random(self) -> dict[str, Any]:
+        """Retrieves information for a random show.
+
+        :return: A dictionary containing show ID, show date, Best Of
+            show flag, repeat show ID (if applicable) and show URL at
+            NPR.org
+        """
+        _id = self.retrieve_random_id()
+
+        if not _id:
+            return None
+
+        return self.retrieve_by_id(show_id=_id)
+
+    def retrieve_random_details(self) -> dict[str, Any]:
+        """Retrieves information and appearances for a random show.
+
+        :return: A dictionary containing show ID, show date, Best Of
+            show flag, repeat show ID (if applicable), show URL at
+            NPR.org, host, scorekeeper, location, panelists and guests
+        """
+        _id = self.retrieve_random_id()
+
+        if not _id:
+            return None
+
+        return self.retrieve_details_by_id(show_id=_id)
+
     def retrieve_recent(
         self,
         include_days_ahead: int = 7,

@@ -192,8 +192,8 @@ class Scorekeeper:
         """Retrieves scorekeeper information.
 
         :param scorekeeper_id: Scorekeeper ID
-        :return: A dictionary containing host ID, name, slug string and
-            gender
+        :return: A dictionary containing scorekeeper ID, name, slug
+            string and gender
         """
         if not valid_int_id(scorekeeper_id):
             return {}
@@ -237,8 +237,8 @@ class Scorekeeper:
         """Retrieves scorekeeper information.
 
         :param scorekeeper_slug: Scorekeeper slug string
-        :return: A dictionary containing host ID, name, slug string and
-            gender
+        :return: A dictionary containing scorekeeper ID, name, slug
+            string and gender
         """
         try:
             slug = scorekeeper_slug.strip()
@@ -292,3 +292,71 @@ class Scorekeeper:
             return {}
 
         return self.retrieve_details_by_id(id_)
+
+    def retrieve_random_id(self) -> int:
+        """Retrieves an ID for a random scorekeeper.
+
+        :return: ID for a random scorekeeper.
+        """
+        query = """
+            SELECT scorekeeperid FROM ww_scorekeepers
+            WHERE scorekeeperslug <> 'tbd'
+            ORDER BY RAND()
+            LIMIT 1;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        return result[0]
+
+    def retrieve_random_slug(self) -> str:
+        """Retrieves an slug string for a random scorekeeper.
+
+        :return: Slug string for a random scorekeeper.
+        """
+        query = """
+            SELECT scorekeeperslug FROM ww_scorekeepers
+            WHERE scorekeeperslug <> 'tbd'
+            ORDER BY RAND()
+            LIMIT 1;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        return result[0]
+
+    def retrieve_random(self) -> dict[str, Any]:
+        """Retrieves information for a random scorekeeper.
+
+        :return: A dictionary containing scorekeeper ID, name, slug
+            string and gender
+        """
+        _id = self.retrieve_random_id()
+
+        if not _id:
+            return None
+
+        return self.retrieve_by_id(scorekeeper_id=_id)
+
+    def retrieve_random_details(self) -> dict[str, Any]:
+        """Retrieves information and appearances for a random scorekeeper.
+
+        :return: A dictionaries containing scorekeeper ID, name, slug
+            string, gender and a list of appearances with show flags
+        """
+        _id = self.retrieve_random_id()
+
+        if not _id:
+            return None
+
+        return self.retrieve_details_by_id(scorekeeper_id=_id)

@@ -321,3 +321,71 @@ class Panelist:
             return {}
 
         return self.retrieve_details_by_id(id_, use_decimal_scores=use_decimal_scores)
+
+    def retrieve_random_id(self) -> int:
+        """Retrieves an ID for a random panelist.
+
+        :return: ID for a random panelist.
+        """
+        query = """
+            SELECT panelistid FROM ww_panelists
+            WHERE panelistslug <> 'multiple'
+            ORDER BY RAND()
+            LIMIT 1;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        return result[0]
+
+    def retrieve_random_slug(self) -> str:
+        """Retrieves an slug string for a random panelist.
+
+        :return: Slug string for a random panelist.
+        """
+        query = """
+            SELECT panelistslug FROM ww_panelists
+            WHERE panelistslug <> 'multiple'
+            ORDER BY RAND()
+            LIMIT 1;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        return result[0]
+
+    def retrieve_random(self) -> dict[str, Any]:
+        """Retrieves information for a random panelist.
+
+        :return: A dictionary containing panelist ID, name, slug string
+            and gender
+        """
+        _id = self.retrieve_random_id()
+
+        if not _id:
+            return None
+
+        return self.retrieve_by_id(panelist_id=_id)
+
+    def retrieve_random_details(self) -> dict[str, Any]:
+        """Retrieves information and appearances for a random panelist.
+
+        :return: A dictionary containing panelist ID, name, slug string,
+            gender, scoring statistics and appearances
+        """
+        _id = self.retrieve_random_id()
+
+        if not _id:
+            return None
+
+        return self.retrieve_details_by_id(panelist_id=_id)

@@ -338,7 +338,7 @@ class Location:
         return self.retrieve_details_by_id(id_)
 
     def retrieve_postal_abbreviations(self) -> dict[str, dict[str, str]]:
-        """Retrieves postal abbreviations and corresponding values.
+        """Retrieves postal abbreviations, corresponding names and countries.
 
         :return: A dictionary containing postal abbreviation as keys
             and corresponding name and country as values.
@@ -351,6 +351,7 @@ class Location:
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
+        cursor.close()
 
         if not results:
             return None
@@ -363,3 +364,129 @@ class Location:
             }
 
         return abbreviations
+
+    def retrieve_postal_abbreviations_list(self) -> list[dict[str, str]]:
+        """Retrieves postal abbreviations, corresponding name and countries as a list.
+
+        :return: A list of dictionaries, each containing postal abbreviation,
+            corresponding name and country.
+        """
+        _postal_abbreviations = self.retrieve_postal_abbreviations()
+
+        if not _postal_abbreviations:
+            return None
+
+        abbreviations = []
+        for abbreviation in _postal_abbreviations:
+            abbreviations.append(
+                {
+                    "postal_abbreviation": abbreviation,
+                    "name": _postal_abbreviations[abbreviation]["name"],
+                    "country": _postal_abbreviations[abbreviation]["country"],
+                }
+            )
+
+        return abbreviations
+
+    def retrieve_postal_details_by_abbreviation(
+        self,
+        abbreviation: str,
+    ) -> dict[str, str]:
+        """Retrieves postal abbreviation information for a given abbreviation.
+
+        :param abbreviation: Postal Abbreviation
+        :return: A dictionary containing postal abbreviation,
+            corresponding name, and country.
+        """
+        if not abbreviation:
+            return None
+
+        query = """
+            SELECT postal_abbreviation, name, country
+            FROM ww_postal_abbreviations
+            WHERE postal_abbreviation = %s
+            ORDER BY postal_abbreviation ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=True)
+        cursor.execute(query, (abbreviation,))
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        return {
+            "postal_abbreviation": result[
+                "postal_abbreviation",
+                "name" : result["name"],
+                "country" : result["country"],
+            ]
+        }
+
+    def retrieve_random_id(self) -> int:
+        """Retrieves an ID for a random location.
+
+        :return: ID for a random location.
+        """
+        query = """
+            SELECT locationid FROM ww_locations
+            WHERE locationslug <> 'tbd'
+            ORDER BY RAND()
+            LIMIT 1;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        return result[0]
+
+    def retrieve_random_slug(self) -> str:
+        """Retrieves a slug string for a random location.
+
+        :return: Slug string for a random location.
+        """
+        query = """
+            SELECT locationslug FROM ww_locations
+            WHERE locationslug <> 'tbd'
+            ORDER BY RAND()
+            LIMIT 1;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        return result[0]
+
+    def retrieve_random(self) -> dict[str, int | str]:
+        """Retrieves information for a random location.
+
+        :return: A dictionary containing location ID, venue, city, state
+            and slug string
+        """
+        _id = self.retrieve_random_id()
+
+        if not _id:
+            return None
+
+        return self.retrieve_by_id(location_id=_id)
+
+    def retrieve_random_details(self) -> dict[str, Any]:
+        """Retrieves information and recordings for a random location.
+
+        :return: A dictionary containing location ID, venue name, city,
+            state, slug string and a list of recordings
+        """
+        _id = self.retrieve_random_id()
+
+        if not _id:
+            return None
+
+        return self.retrieve_details_by_id(location_id=_id)

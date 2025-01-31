@@ -158,3 +158,46 @@ def test_panelist_retrieve_details_by_slug(
     assert "appearances" in info, (
         f"'appearances' was not returned for slug {panelist_slug}"
     )
+
+
+def test_panelist_retrieve_random_id() -> None:
+    """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_random_id`."""
+    panelist = Panelist(connect_dict=get_connect_dict())
+    _id = panelist.retrieve_random_id()
+
+    assert _id, "Returned random panelist ID is not valid"
+    assert isinstance(_id, int), "Returned random panelist ID is not an integer"
+
+
+def test_panelist_retrieve_random_slug() -> None:
+    """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_random_slug`."""
+    panelist = Panelist(connect_dict=get_connect_dict())
+    _slug = panelist.retrieve_random_slug()
+
+    assert _slug, "Returned random panelist slug string is not valid"
+    assert isinstance(_slug, str), (
+        "Returned random panelist slug string is not a string"
+    )
+
+
+def test_panelist_retrieve_random() -> None:
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_random`."""
+    panelist = Panelist(connect_dict=get_connect_dict())
+    info = panelist.retrieve_random()
+
+    assert info, "Random panelist not found"
+    assert "name" in info, "'name' attribute was not returned for a random panelist"
+    assert "slug" in info, "'slug' was not returned for a random panelist"
+    assert "pronouns" in info, "'pronouns' was not returned for a random panelist"
+
+
+def test_panelist_retrieve_random_details() -> None:
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_random_details`."""
+    panelist = Panelist(connect_dict=get_connect_dict())
+    info = panelist.retrieve_random_details()
+
+    assert info, "Random panelist not found"
+    assert "name" in info, "'name' attribute was not returned for a random panelist"
+    assert "slug" in info, "'slug' was not returned for a random panelist"
+    assert "pronouns" in info, "'pronouns' was not returned for a random panelist"
+    assert "appearances" in info, "'appearances' was not returned for a random panelist"
