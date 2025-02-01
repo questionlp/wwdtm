@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from numpy import isin
 
 from wwdtm.location import Location
 
@@ -192,6 +193,32 @@ def test_location_retrieve_postal_abbreviations():
     assert "name" in abbreviations["OR"], (
         "Postal abbreviation 'OR' does not contain a valid name"
     )
+
+
+def test_location_retrieve_postal_abbreviations_list():
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_postal_abbreviations_list`."""
+    location = Location(connect_dict=get_connect_dict())
+    abbreviations = location.retrieve_postal_abbreviations_list()
+
+    assert abbreviations, "Postal abbreviations not returned"
+    assert isinstance(abbreviations, list), "Returned data is not a list"
+    assert "name" in abbreviations[0], "First item in the list does not include 'name'"
+
+
+@pytest.mark.parametrize("abbreviation", ["OR", "DC"])
+def test_location_retrieve_postal_details_by_abbreviation(abbreviation: str):
+    """Testing for :py:meth:`wwdtm.location.Location.retrieve_postal_details_by_abbreviation`."""
+    location = Location(connect_dict=get_connect_dict())
+    details = location.retrieve_postal_details_by_abbreviation(
+        abbreviation=abbreviation
+    )
+
+    assert details, f"Postal abbreviation {abbreviation} was not found"
+    assert "postal_abbreviation" in details, (
+        f"'postal_abbreviation' was not returned for {abbreviation}"
+    )
+    assert "name" in details, f"'name' was not returned for {abbreviation}"
+    assert "country" in details, f"'country' was not returned for {abbreviation}"
 
 
 def test_location_retrieve_random_id() -> None:

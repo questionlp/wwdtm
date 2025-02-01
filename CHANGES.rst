@@ -2,6 +2,20 @@
 Changes
 *******
 
+2.16.1
+======
+
+Application Changes
+-------------------
+
+* Fix coding issue within :py:meth:`wwdtm.location.location.retrieve_postal_details_by_abbreviation`
+
+Development Changes
+-------------------
+
+* Added missing tests for postal abbreviation methods in :py:class:`wwdtm.location.Location`
+
+
 2.16.0
 ======
 

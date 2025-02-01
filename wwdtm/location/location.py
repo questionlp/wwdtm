@@ -416,11 +416,9 @@ class Location:
             return None
 
         return {
-            "postal_abbreviation": result[
-                "postal_abbreviation",
-                "name" : result["name"],
-                "country" : result["country"],
-            ]
+            "postal_abbreviation": result["postal_abbreviation"],
+            "name": result["name"],
+            "country": result["country"],
         }
 
     def retrieve_random_id(self) -> int:
