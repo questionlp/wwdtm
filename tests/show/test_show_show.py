@@ -511,3 +511,40 @@ def test_show_retrieve_years():
 
     assert years, "No years could be retrieved"
     assert isinstance(years[0], int), "First list item is not a number"
+
+
+def test_show_retrieve_random_id() -> None:
+    """Testing for :py:meth`wwdtm.show.Show.retrieve_random_id`."""
+    show = Show(connect_dict=get_connect_dict())
+    _id = show.retrieve_random_id()
+
+    assert _id, "Returned random show ID is not valid"
+    assert isinstance(_id, int), "Returned random show ID is not an integer"
+
+
+def test_show_retrieve_random_date() -> None:
+    """Testing for :py:meth`wwdtm.show.Show.retrieve_random_date`."""
+    show = Show(connect_dict=get_connect_dict())
+    _date = show.retrieve_random_date()
+
+    assert _date, "Returned random show date string is not valid"
+    assert isinstance(_date, str), "Returned random show date string is not a string"
+
+
+def test_show_retrieve_random() -> None:
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_random`."""
+    show = Show(connect_dict=get_connect_dict())
+    info = show.retrieve_random()
+
+    assert info, "Random show not found"
+    assert "date" in info, "'date' was not returned for a random show"
+
+
+def test_show_retrieve_random_details() -> None:
+    """Testing for :py:meth:`wwdtm.panelist.Show.retrieve_random_details`."""
+    show = Show(connect_dict=get_connect_dict())
+    info = show.retrieve_random_details()
+
+    assert info, "Random show not found"
+    assert "date" in info, "'date' was not returned for a random show"
+    assert "host" in info, "'host' was not returned for a random show"

@@ -288,3 +288,71 @@ class Host:
             return {}
 
         return self.retrieve_details_by_id(id_)
+
+    def retrieve_random_id(self) -> int:
+        """Retrieves an ID for a random host.
+
+        :return: ID for a random host.
+        """
+        query = """
+            SELECT hostid FROM ww_hosts
+            WHERE hostslug <> 'tbd'
+            ORDER BY RAND()
+            LIMIT 1;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        return result[0]
+
+    def retrieve_random_slug(self) -> str:
+        """Retrieves an slug string for a random host.
+
+        :return: Slug string for a random host.
+        """
+        query = """
+            SELECT hostslug FROM ww_hosts
+            WHERE hostslug <> 'tbd'
+            ORDER BY RAND()
+            LIMIT 1;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        return result[0]
+
+    def retrieve_random(self) -> dict[str, Any]:
+        """Retrieves information for a random host.
+
+        :return: A dictionary containing host ID, name, gender and slug
+            string
+        """
+        _id = self.retrieve_random_id()
+
+        if not _id:
+            return None
+
+        return self.retrieve_by_id(host_id=_id)
+
+    def retrieve_random_details(self) -> dict[str, Any]:
+        """Retrieves information and appearances for a random host.
+
+        :return: A dictionary containing host ID, name, gender, slug
+            string and a list of appearances with show flags
+        """
+        _id = self.retrieve_random_id()
+
+        if not _id:
+            return None
+
+        return self.retrieve_details_by_id(host_id=_id)

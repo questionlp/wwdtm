@@ -132,3 +132,44 @@ def test_host_retrieve_details_by_slug(host_slug: str):
     assert "slug" in info, f"'slug' was not returned for ID {host_slug}"
     assert "pronouns" in info, f"'pronouns' was not returned for ID {host_slug}"
     assert "appearances" in info, f"'appearances' was not returned for slug {host_slug}"
+
+
+def test_host_retrieve_random_id() -> None:
+    """Testing for :py:meth`wwdtm.host.Host.retrieve_random_id`."""
+    host = Host(connect_dict=get_connect_dict())
+    _id = host.retrieve_random_id()
+
+    assert _id, "Returned random host ID is not valid"
+    assert isinstance(_id, int), "Returned random host ID is not an integer"
+
+
+def test_host_retrieve_random_slug() -> None:
+    """Testing for :py:meth`wwdtm.host.Host.retrieve_random_slug`."""
+    host = Host(connect_dict=get_connect_dict())
+    _slug = host.retrieve_random_slug()
+
+    assert _slug, "Returned random host slug string is not valid"
+    assert isinstance(_slug, str), "Returned random host slug string is not a string"
+
+
+def test_host_retrieve_random() -> None:
+    """Testing for :py:meth:`wwdtm.host.Host.retrieve_random`."""
+    host = Host(connect_dict=get_connect_dict())
+    info = host.retrieve_random()
+
+    assert info, "Random host not found"
+    assert "name" in info, "'name' attribute was not returned for a random host"
+    assert "slug" in info, "'slug' was not returned for a random host"
+    assert "pronouns" in info, "'pronouns' was not returned for a random host"
+
+
+def test_host_retrieve_random_details() -> None:
+    """Testing for :py:meth:`wwdtm.host.Host.retrieve_random_details`."""
+    host = Host(connect_dict=get_connect_dict())
+    info = host.retrieve_random_details()
+
+    assert info, "Random host not found"
+    assert "name" in info, "'name' attribute was not returned for a random host"
+    assert "slug" in info, "'slug' was not returned for a random host"
+    assert "pronouns" in info, "'pronouns' was not returned for a random host"
+    assert "appearances" in info, "'appearances' was not returned for a random host"

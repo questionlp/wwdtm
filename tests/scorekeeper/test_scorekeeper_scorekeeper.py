@@ -143,3 +143,48 @@ def test_scorekeeper_retrieve_details_by_slug(scorekeeper_slug: str):
     assert "appearances" in info, (
         f"'appearances' was not returned for slug {scorekeeper_slug}"
     )
+
+
+def test_scorekeeper_retrieve_random_id() -> None:
+    """Testing for :py:meth`wwdtm.scorekeeper.Scorekeeper.retrieve_random_id`."""
+    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
+    _id = scorekeeper.retrieve_random_id()
+
+    assert _id, "Returned random scorekeeper ID is not valid"
+    assert isinstance(_id, int), "Returned random scorekeeper ID is not an integer"
+
+
+def test_scorekeeper_retrieve_random_slug() -> None:
+    """Testing for :py:meth`wwdtm.scorekeeper.Scorekeeper.retrieve_random_slug`."""
+    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
+    _slug = scorekeeper.retrieve_random_slug()
+
+    assert _slug, "Returned random scorekeeper slug string is not valid"
+    assert isinstance(_slug, str), (
+        "Returned random scorekeeper slug string is not a string"
+    )
+
+
+def test_scorekeeper_retrieve_random() -> None:
+    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_random`."""
+    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
+    info = scorekeeper.retrieve_random()
+
+    assert info, "Random scorekeeper not found"
+    assert "name" in info, "'name' attribute was not returned for a random scorekeeper"
+    assert "slug" in info, "'slug' was not returned for a random scorekeeper"
+    assert "pronouns" in info, "'pronouns' was not returned for a random scorekeeper"
+
+
+def test_scorekeeper_retrieve_random_details() -> None:
+    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_random_details`."""
+    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
+    info = scorekeeper.retrieve_random_details()
+
+    assert info, "Random scorekeeper not found"
+    assert "name" in info, "'name' attribute was not returned for a random scorekeeper"
+    assert "slug" in info, "'slug' was not returned for a random scorekeeper"
+    assert "pronouns" in info, "'pronouns' was not returned for a random scorekeeper"
+    assert "appearances" in info, (
+        "'appearances' was not returned for a random scorekeeper"
+    )

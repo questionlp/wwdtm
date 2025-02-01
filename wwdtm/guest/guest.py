@@ -243,3 +243,71 @@ class Guest:
             return {}
 
         return self.retrieve_details_by_id(id_)
+
+    def retrieve_random_id(self) -> int:
+        """Retrieves an ID for a random guest.
+
+        :return: ID for a random guest.
+        """
+        query = """
+            SELECT guestid FROM ww_guests
+            WHERE guestslug <> 'none'
+            ORDER BY RAND()
+            LIMIT 1;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        return result[0]
+
+    def retrieve_random_slug(self) -> str:
+        """Retrieves an slug string for a random guest.
+
+        :return: Slug string for a random guest.
+        """
+        query = """
+            SELECT guestslug FROM ww_guests
+            WHERE guestslug <> 'none'
+            ORDER BY RAND()
+            LIMIT 1;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        return result[0]
+
+    def retrieve_random(self) -> dict[str, int | str]:
+        """Retrieves information for a random guest.
+
+        :return: A dictionary containing guest ID, name and slug string
+        """
+        _id = self.retrieve_random_id()
+
+        if not _id:
+            return None
+
+        return self.retrieve_by_id(guest_id=_id)
+
+    def retrieve_random_details(self) -> dict[str, Any]:
+        """Retrieves information and appearances for a random guest.
+
+        :return: A dictionary containing guest ID, name, slug string,
+            list of appearances with show flags, scores and scoring
+            exceptions
+        """
+        _id = self.retrieve_random_id()
+
+        if not _id:
+            return None
+
+        return self.retrieve_details_by_id(guest_id=_id)

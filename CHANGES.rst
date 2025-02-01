@@ -2,6 +2,27 @@
 Changes
 *******
 
+2.16.0
+======
+
+Application Changes
+-------------------
+
+* Add ``retrieve_random()``, ``retrieve_random_id()``, ``retrieve_random_slug()``, ``retrieve_random_date()`` and ``retrieve_random_details()`` to the following classes that mirror the corresponding feature in the `Wait Wait Stats Page`_
+
+  * :py:class:`wwdtm.guest.Guest`
+  * :py:class:`wwdtm.host.Host`
+  * :py:class:`wwdtm.location.Location`
+  * :py:class:`wwdtm.panelist.Panelist`
+  * :py:class:`wwdtm.scorekeeper.Scorekeeper`
+  * :py:class:`wwdtm.show.Show`
+
+Development Changes
+-------------------
+
+* Add corresponding tests for the new series of retrieve random items
+* Fixed typos in docstrings or testing assertion messages
+
 2.15.0
 ======
 
@@ -588,3 +609,6 @@ Application Changes
 * More detailed documentation, including changes from the previous library to
   ``wwdtm`` version 2, is available under ``docs/`` and is published at:
   https://docs.wwdt.me/en/latest/migrating/index.html
+
+
+.. _Wait Wait Stats Page: https://stats.wwdt.me/

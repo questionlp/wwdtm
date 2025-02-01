@@ -102,7 +102,7 @@ def test_guest_retrieve_details_by_id(guest_id: int):
     info = guest.retrieve_details_by_id(guest_id)
 
     assert info, f"Guest ID {guest_id} not found"
-    assert "name" in info, f"'name' attribute was returned for ID {guest_id}"
+    assert "name" in info, f"'name' attribute was not returned for ID {guest_id}"
     assert "appearances" in info, f"'appearances' was not returned for ID {guest_id}"
 
 
@@ -120,3 +120,40 @@ def test_guest_guest_retrieve_details_by_slug(guest_slug: str):
     assert "appearances" in info, (
         f"'appearances' was not returned for slug {guest_slug}"
     )
+
+
+def test_guest_retrieve_random_id() -> None:
+    """Testing for :py:meth`wwdtm.guest.Guest.retrieve_random_id`."""
+    guest = Guest(connect_dict=get_connect_dict())
+    _id = guest.retrieve_random_id()
+
+    assert _id, "Returned random guest ID is not valid"
+    assert isinstance(_id, int), "Returned random guest ID is not an integer"
+
+
+def test_guest_retrieve_random_slug() -> None:
+    """Testing for :py:meth`wwdtm.guest.Guest.retrieve_random_slug`."""
+    guest = Guest(connect_dict=get_connect_dict())
+    _slug = guest.retrieve_random_slug()
+
+    assert _slug, "Returned random guest slug string is not valid"
+    assert isinstance(_slug, str), "Returned random guest slug string is not a string"
+
+
+def test_guest_retrieve_random() -> None:
+    """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_random`."""
+    guest = Guest(connect_dict=get_connect_dict())
+    info = guest.retrieve_random()
+
+    assert info, "Random guest not found"
+    assert "name" in info, "'name' attribute was not returned for a random guest"
+
+
+def test_guest_retrieve_random_details() -> None:
+    """Testing for :py:meth:`wwdtm.guest.Guest.retrieve_random_details`."""
+    guest = Guest(connect_dict=get_connect_dict())
+    info = guest.retrieve_random_details()
+
+    assert info, "Random guest not found"
+    assert "name" in info, "'name' attribute was not returned for a random guest"
+    assert "appearances" in info, "'appearances' was not returned for a random guest"
