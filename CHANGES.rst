@@ -8,7 +8,7 @@ Changes
 Application Changes
 -------------------
 
-* Fix coding issue within :py:meth:`wwdtm.location.location.retrieve_postal_details_by_abbreviation`
+* Fix coding issue within :py:meth:`wwdtm.location.Location.retrieve_postal_details_by_abbreviation`
 
 Development Changes
 -------------------
