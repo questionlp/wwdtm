@@ -8,7 +8,7 @@ Changes
 Application Changes
 -------------------
 
-* Added the following methods to :py:class`wwdtm.show.Show` to extend the random show feature
+* Added the following methods to :py:class:`wwdtm.show.Show` to extend the random show feature
 
   * :py:meth:`wwdtm.show.Show.retrieve_random_id_by_year`
   * :py:meth:`wwdtm.show.Show.retrieve_random_date_by_year`
