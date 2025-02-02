@@ -377,7 +377,9 @@ class Panelist:
 
         return self.retrieve_by_id(panelist_id=_id)
 
-    def retrieve_random_details(self) -> dict[str, Any]:
+    def retrieve_random_details(
+        self, use_decimal_scores: bool = False
+    ) -> dict[str, Any]:
         """Retrieves information and appearances for a random panelist.
 
         :return: A dictionary containing panelist ID, name, slug string,
@@ -388,4 +390,6 @@ class Panelist:
         if not _id:
             return None
 
-        return self.retrieve_details_by_id(panelist_id=_id)
+        return self.retrieve_details_by_id(
+            panelist_id=_id, use_decimal_scores=use_decimal_scores
+        )
