@@ -514,7 +514,7 @@ def test_show_retrieve_years():
 
 
 def test_show_retrieve_random_id() -> None:
-    """Testing for :py:meth`wwdtm.show.Show.retrieve_random_id`."""
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_random_id`."""
     show = Show(connect_dict=get_connect_dict())
     _id = show.retrieve_random_id()
 
@@ -522,13 +522,43 @@ def test_show_retrieve_random_id() -> None:
     assert isinstance(_id, int), "Returned random show ID is not an integer"
 
 
+@pytest.mark.parametrize("year", [1998, 2020])
+def test_show_retrieve_random_id_by_year(year: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_random_id_by_year`."""
+    show = Show(connect_dict=get_connect_dict())
+    _id = show.retrieve_random_id_by_year(year=year)
+
+    assert _id, "Returned random show ID is not valid"
+    assert isinstance(_id, int), "Returned random show ID is not an integer"
+
+    _show = show.retrieve_by_id(show_id=_id)
+
+    assert _show, f"Returned random show data for {_id} is not valid"
+    assert str(year) in _show["date"], f"Show date for {_id} is not from {year}"
+
+
 def test_show_retrieve_random_date() -> None:
-    """Testing for :py:meth`wwdtm.show.Show.retrieve_random_date`."""
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_random_date`."""
     show = Show(connect_dict=get_connect_dict())
     _date = show.retrieve_random_date()
 
     assert _date, "Returned random show date string is not valid"
     assert isinstance(_date, str), "Returned random show date string is not a string"
+
+
+@pytest.mark.parametrize("year", [1998, 2020])
+def test_show_retrieve_random_date_by_year(year: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_random_date_by_year`."""
+    show = Show(connect_dict=get_connect_dict())
+    _date = show.retrieve_random_date_by_year(year=year)
+
+    assert _date, "Returned random show ID is not valid"
+    assert isinstance(_date, str), "Returned random show ID is not an integer"
+    assert str(year) in _date, f"Returned random show date is not from {year}"
+
+    _show = show.retrieve_by_date_string(date_string=_date)
+
+    assert _show, f"Returned random show data for {_date} is not valid"
 
 
 def test_show_retrieve_random() -> None:
@@ -540,6 +570,17 @@ def test_show_retrieve_random() -> None:
     assert "date" in info, "'date' was not returned for a random show"
 
 
+@pytest.mark.parametrize("year", [1998, 2020])
+def test_show_retrieve_random_by_year(year: int) -> None:
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_random_by_year`."""
+    show = Show(connect_dict=get_connect_dict())
+    info = show.retrieve_random_by_year(year=year)
+
+    assert info, "Random show not found"
+    assert "date" in info, "'date' was not returned for a random show"
+    assert str(year) in info["date"], f"Returned random show data is not from {year}"
+
+
 def test_show_retrieve_random_details() -> None:
     """Testing for :py:meth:`wwdtm.panelist.Show.retrieve_random_details`."""
     show = Show(connect_dict=get_connect_dict())
@@ -547,4 +588,16 @@ def test_show_retrieve_random_details() -> None:
 
     assert info, "Random show not found"
     assert "date" in info, "'date' was not returned for a random show"
+    assert "host" in info, "'host' was not returned for a random show"
+
+
+@pytest.mark.parametrize("year", [1998, 2020])
+def test_show_retrieve_random_details_by_year(year: int) -> None:
+    """Testing for :py:meth:`wwdtm.panelist.Show.retrieve_random_details_by_year`."""
+    show = Show(connect_dict=get_connect_dict())
+    info = show.retrieve_random_details_by_year(year=year)
+
+    assert info, "Random show not found"
+    assert "date" in info, "'date' was not returned for a random show"
+    assert str(year) in info["date"], f"Returned random show data is not from {year}"
     assert "host" in info, "'host' was not returned for a random show"
