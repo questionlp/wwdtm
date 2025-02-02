@@ -191,10 +191,11 @@ def test_panelist_retrieve_random() -> None:
     assert "pronouns" in info, "'pronouns' was not returned for a random panelist"
 
 
-def test_panelist_retrieve_random_details() -> None:
+@pytest.mark.parametrize("use_decimal_scores", [True, False])
+def test_panelist_retrieve_random_details(use_decimal_scores: bool) -> None:
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_random_details`."""
     panelist = Panelist(connect_dict=get_connect_dict())
-    info = panelist.retrieve_random_details()
+    info = panelist.retrieve_random_details(use_decimal_scores=use_decimal_scores)
 
     assert info, "Random panelist not found"
     assert "name" in info, "'name' attribute was not returned for a random panelist"

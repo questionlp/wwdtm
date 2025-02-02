@@ -2,6 +2,18 @@
 Changes
 *******
 
+2.17.2
+
+Application Changes
+-------------------
+
+* Added missing ``use_decimal_scores`` method parameter to :py:meth:`wwdtm.panelist.Panelist.retrieve_random_details`
+
+Development Changes
+-------------------
+
+* Updated test for :py:meth:`wwdtm.panelist.Panelist.retrieve_random_details` to including passing in values for ``use_decimal_scores``
+
 2.17.1
 ======
 
