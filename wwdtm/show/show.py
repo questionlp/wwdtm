@@ -1086,7 +1086,9 @@ class Show:
 
         return self.retrieve_by_id(show_id=_id)
 
-    def retrieve_random_details(self) -> dict[str, Any]:
+    def retrieve_random_details(
+        self, include_decimal_scores: bool = False
+    ) -> dict[str, Any]:
         """Retrieves information and appearances for a random show.
 
         :return: A dictionary containing show ID, show date, Best Of
@@ -1098,9 +1100,13 @@ class Show:
         if not _id:
             return None
 
-        return self.retrieve_details_by_id(show_id=_id)
+        return self.retrieve_details_by_id(
+            show_id=_id, include_decimal_scores=include_decimal_scores
+        )
 
-    def retrieve_random_details_by_year(self, year: int) -> dict[str, Any]:
+    def retrieve_random_details_by_year(
+        self, year: int, include_decimal_scores: bool = False
+    ) -> dict[str, Any]:
         """Retrieves information and appearances for a random show for a given year.
 
         :return: A dictionary containing show ID, show date, Best Of
@@ -1112,7 +1118,9 @@ class Show:
         if not _id:
             return None
 
-        return self.retrieve_details_by_id(show_id=_id)
+        return self.retrieve_details_by_id(
+            show_id=_id, include_decimal_scores=include_decimal_scores
+        )
 
     def retrieve_recent(
         self,

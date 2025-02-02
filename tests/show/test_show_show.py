@@ -581,21 +581,29 @@ def test_show_retrieve_random_by_year(year: int) -> None:
     assert str(year) in info["date"], f"Returned random show data is not from {year}"
 
 
-def test_show_retrieve_random_details() -> None:
+@pytest.mark.parametrize("include_decimal_scores", [True, False])
+def test_show_retrieve_random_details(include_decimal_scores: bool) -> None:
     """Testing for :py:meth:`wwdtm.panelist.Show.retrieve_random_details`."""
     show = Show(connect_dict=get_connect_dict())
-    info = show.retrieve_random_details()
+    info = show.retrieve_random_details(include_decimal_scores=include_decimal_scores)
 
     assert info, "Random show not found"
     assert "date" in info, "'date' was not returned for a random show"
     assert "host" in info, "'host' was not returned for a random show"
 
 
-@pytest.mark.parametrize("year", [1998, 2020])
-def test_show_retrieve_random_details_by_year(year: int) -> None:
+@pytest.mark.parametrize(
+    "year, include_decimal_scores",
+    ([1998, True], [1998, False], [2020, True], [2020, False]),
+)
+def test_show_retrieve_random_details_by_year(
+    year: int, include_decimal_scores: bool
+) -> None:
     """Testing for :py:meth:`wwdtm.panelist.Show.retrieve_random_details_by_year`."""
     show = Show(connect_dict=get_connect_dict())
-    info = show.retrieve_random_details_by_year(year=year)
+    info = show.retrieve_random_details_by_year(
+        year=year, include_decimal_scores=include_decimal_scores
+    )
 
     assert info, "Random show not found"
     assert "date" in info, "'date' was not returned for a random show"

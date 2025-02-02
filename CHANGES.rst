@@ -2,6 +2,19 @@
 Changes
 *******
 
+2.17.1
+======
+
+Application Changes
+-------------------
+
+* Added missing ``include_decimal_scores`` method parameter to :py:meth:`wwdtm.show.Show.retrieve_random_details` and :py:meth:`wwdtm.show.Show.retrieve_random_details_by_year` and passthrough to :py:meth:`wwdtm.show.Show.retrieve_details_by_id`
+
+Development Changes
+-------------------
+
+* Updated tests for :py:meth:`wwdtm.show.Show.retrieve_random_details` and :py:meth:`wwdtm.show.Show.retrieve_random_details_by_year` to including passing in values for the corresponding ``include_decimal_scores`` parameters
+
 2.17.0
 ======
 
