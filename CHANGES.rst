@@ -9,6 +9,7 @@ Application Changes
 -------------------
 
 * Adding :py:meth:`wwdtm.show.Show.retrieve_counts_by_year` to retrieve a count of regular, Best Of, repeat, repeat Best Of and a total count of shows
+* Adding :py:meth:`wwdtm.show.Show.retrieve_all_counts_by_year` to retrieve a count of regular, Best Of, repeat, repeat Best Of and a total count of shows for all years, grouped by year
 
 Component Changes
 -----------------
