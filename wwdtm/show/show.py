@@ -698,6 +698,84 @@ class Show:
 
         return [self.retrieve_by_id(v[0]) for v in results]
 
+    def retrieve_counts_by_year(self, year: int) -> dict[str, int]:
+        """Retrieves show counts by year.
+
+        :param year: Four-digit year
+        :return: A dictionary containing counts for all shows, Best Of
+            shows, repeat shows, and repeat Best Of shows
+        """
+        try:
+            parsed_year = datetime.datetime.strptime(f"{year:04d}", "%Y")
+        except ValueError:
+            return {}
+
+        query = """
+            SELECT
+            (SELECT COUNT(showid) FROM ww_shows
+                WHERE YEAR(showdate) = %s AND showdate <= NOW()
+                AND bestof = 0 AND repeatshowid IS NULL) AS 'regular',
+            (SELECT COUNT(showid) FROM ww_shows
+                WHERE YEAR(showdate) = %s AND showdate <= NOW()
+                AND bestof = 1 AND repeatshowid IS NULL) AS 'bestof',
+            (SELECT COUNT(showid) FROM ww_shows
+                WHERE YEAR(showdate) = %s AND showdate <= NOW()
+                AND bestof = 0 AND repeatshowid IS NOT NULL) AS 'repeat',
+            (SELECT COUNT(showid) FROM ww_shows
+                WHERE YEAR(showdate) = %s AND showdate <= NOW()
+                AND bestof = 1 AND repeatshowid IS NOT NULL) AS 'repeat_bestof';
+        """
+        cursor = self.database_connection.cursor(dictionary=True)
+        cursor.execute(
+            query,
+            (
+                parsed_year,
+                parsed_year,
+                parsed_year,
+                parsed_year,
+            ),
+        )
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return {}
+
+        return {
+            "regular": result["regular"],
+            "best_of": result["bestof"],
+            "repeat": result["repeat"],
+            "repeat_best_of": result["repeat_bestof"],
+            "total": (
+                result["regular"]
+                + result["bestof"]
+                + result["repeat"]
+                + result["repeat_bestof"]
+            ),
+        }
+
+    def retrieve_all_counts_by_year(self) -> dict[int, dict[str, int]]:
+        """Retrieves show counts for all years, grouped by year.
+
+        :return: A dictionary with year as keys with corresponding
+            counts for all shows, Best Of shows, repeat shows, and
+            repeat Best Of shows as values
+        """
+        years = self.retrieve_years()
+        if not years:
+            return {}
+
+        all_counts = {}
+        for year in years:
+            year_counts = self.retrieve_counts_by_year(year=year)
+
+            if year_counts:
+                all_counts[year] = year_counts
+            else:
+                all_counts[year] = {}
+
+        return all_counts
+
     def retrieve_details_by_date(
         self, year: int, month: int, day: int, include_decimal_scores: bool = False
     ) -> dict[str, Any]:

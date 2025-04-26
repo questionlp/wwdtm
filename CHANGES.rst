@@ -2,7 +2,22 @@
 Changes
 *******
 
+2.18.0
+======
+
+Application Changes
+-------------------
+
+* Adding :py:meth:`wwdtm.show.Show.retrieve_counts_by_year` to retrieve a count of regular, Best Of, repeat, repeat Best Of and a total count of shows
+* Adding :py:meth:`wwdtm.show.Show.retrieve_all_counts_by_year` to retrieve a count of regular, Best Of, repeat, repeat Best Of and a total count of shows for all years, grouped by year
+
+Component Changes
+-----------------
+
+* Upgrade pytz from 2024.2 to 2025.2
+
 2.17.2
+======
 
 Application Changes
 -------------------
