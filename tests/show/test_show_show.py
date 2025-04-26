@@ -304,25 +304,26 @@ def test_show_retrieve_counts_by_year(year: int):
     show = Show(connect_dict=get_connect_dict())
     counts = show.retrieve_counts_by_year(year)
 
-    assert "regular" in counts, f"No regular show count retrieved for year {year:04d}"
+    assert counts, f"No show counts were returned for year {year:04d}"
+    assert "regular" in counts, f"No regular show count returned for year {year:04d}"
     assert counts["regular"] is not None, (
         f"Invalid regular show count for year {year:04d}"
     )
-    assert "best_of" in counts, f"No Best Of show count retrieved for year {year:04d}"
+    assert "best_of" in counts, f"No Best Of show count returned for year {year:04d}"
     assert counts["best_of"] is not None, (
         f"Invalid Best Of show count for year {year:04d}"
     )
-    assert "repeat" in counts, f"No repeat show count retrieved for year {year:04d}"
+    assert "repeat" in counts, f"No repeat show count returned for year {year:04d}"
     assert counts["repeat"] is not None, (
         f"Invalid repeat show count for year {year:04d}"
     )
     assert "repeat_best_of" in counts, (
-        f"No repeat Best Of show count retrieved for year {year:04d}"
+        f"No repeat Best Of show count returned for year {year:04d}"
     )
     assert counts["repeat_best_of"] is not None, (
         f"Invalid repeat Best Of show count for year {year:04d}"
     )
-    assert "total" in counts, f"No total show count retrieved for year {year:04d}"
+    assert "total" in counts, f"No total show count returned for year {year:04d}"
     assert counts["total"] is not None, (
         f"Incorrect total show count for year {year:04d}"
     )
@@ -333,6 +334,33 @@ def test_show_retrieve_counts_by_year(year: int):
         + counts["repeat"]
         + counts["repeat_best_of"]
     ), f"Total show count does not match actual total show count for year {year:04d}"
+
+
+def test_show_retrieve_all_counts_by_year():
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_counts_by_year`."""
+    show = Show(connect_dict=get_connect_dict())
+    counts = show.retrieve_all_counts_by_year()
+
+    assert counts, "No show counts were returned"
+    assert 1998 in counts, "No show count information returned for year 1998"
+    assert "regular" in counts[1998], "No regular show count returned for year 1998"
+    assert counts[1998]["regular"] is not None, (
+        "Invalid regular show count returned for 1998"
+    )
+    assert "best_of" in counts[1998], "No Best Of show count returned for year 1998"
+    assert counts[1998]["best_of"] is not None, (
+        "Invalid Best Of show count returned for 1998"
+    )
+    assert "repeat" in counts[1998], "No repeat show count returned for year 1998"
+    assert counts[1998]["repeat"] is not None, (
+        "Invalid repeat show count returned for 1998"
+    )
+    assert "repeat_best_of" in counts[1998], (
+        "No repeat Best Of show count returned for year 1998"
+    )
+    assert counts[1998]["repeat_best_of"] is not None, (
+        "Invalid repeat Best Of show count returned for 1998"
+    )
 
 
 @pytest.mark.parametrize(

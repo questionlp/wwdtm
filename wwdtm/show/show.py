@@ -754,6 +754,28 @@ class Show:
             ),
         }
 
+    def retrieve_all_counts_by_year(self) -> dict[int, dict[str, int]]:
+        """Retrieves show counts for all years, grouped by year.
+
+        :return: A dictionary with year as keys with corresponding
+            counts for all shows, Best Of shows, repeat shows, and
+            repeat Best Of shows as values
+        """
+        years = self.retrieve_years()
+        if not years:
+            return {}
+
+        all_counts = {}
+        for year in years:
+            year_counts = self.retrieve_counts_by_year(year=year)
+
+            if year_counts:
+                all_counts[year] = year_counts
+            else:
+                all_counts[year] = {}
+
+        return all_counts
+
     def retrieve_details_by_date(
         self, year: int, month: int, day: int, include_decimal_scores: bool = False
     ) -> dict[str, Any]:
