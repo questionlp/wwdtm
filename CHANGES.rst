@@ -17,6 +17,8 @@ Application Changes
   * :py:meth:`wwdtm.show.Show.retrieve_repeats_by_year`
   * :py:meth:`wwdtm.show.Show.retrieve_repeats_details_by_year`
 
+* Adding ```inclusive``` parameter to :py:meth:`wwdtm.show.Show.retrieve_counts_by_year` to flag whether or not Best Of shows are included in repeat show counts (default: ``False``)
+
 2.18.0
 ======
 

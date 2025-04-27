@@ -781,12 +781,15 @@ class Show:
 
         return [self.retrieve_by_id(v[0]) for v in results]
 
-    def retrieve_counts_by_year(self, year: int) -> dict[str, int]:
+    def retrieve_counts_by_year(
+        self, year: int, inclusive: bool = False
+    ) -> dict[str, int]:
         """Retrieves show counts by year.
 
         Counts of Best Of shows includes repeat Best Of shows.
 
         :param year: Four-digit year
+        :param inclusive: Include Best Of shows in repeat show counts
         :return: A dictionary containing counts for all shows, Best Of
             shows, repeat shows, and repeat Best Of shows
         """
@@ -795,21 +798,39 @@ class Show:
         except ValueError:
             return {}
 
-        query = """
-            SELECT
-            (SELECT COUNT(showid) FROM ww_shows
-                WHERE YEAR(showdate) = %s AND showdate <= NOW()
-                AND bestof = 0 AND repeatshowid IS NULL) AS 'regular',
-            (SELECT COUNT(showid) FROM ww_shows
-                WHERE YEAR(showdate) = %s AND showdate <= NOW()
-                AND bestof = 1) AS 'bestof',
-            (SELECT COUNT(showid) FROM ww_shows
-                WHERE YEAR(showdate) = %s AND showdate <= NOW()
-                AND bestof = 0 AND repeatshowid IS NOT NULL) AS 'repeat',
-            (SELECT COUNT(showid) FROM ww_shows
-                WHERE YEAR(showdate) = %s AND showdate <= NOW()
-                AND bestof = 1 AND repeatshowid IS NOT NULL) AS 'repeat_bestof';
-        """
+        if inclusive:
+            query = """
+                SELECT
+                (SELECT COUNT(showid) FROM ww_shows
+                    WHERE YEAR(showdate) = %s AND showdate <= NOW()
+                    AND bestof = 0 AND repeatshowid IS NULL) AS 'regular',
+                (SELECT COUNT(showid) FROM ww_shows
+                    WHERE YEAR(showdate) = %s AND showdate <= NOW()
+                    AND bestof = 1) AS 'bestof',
+                (SELECT COUNT(showid) FROM ww_shows
+                    WHERE YEAR(showdate) = %s AND showdate <= NOW()
+                    AND repeatshowid IS NOT NULL) AS 'repeat',
+                (SELECT COUNT(showid) FROM ww_shows
+                    WHERE YEAR(showdate) = %s AND showdate <= NOW()
+                    AND bestof = 1 AND repeatshowid IS NOT NULL) AS 'repeat_bestof';
+            """
+        else:
+            query = """
+                SELECT
+                (SELECT COUNT(showid) FROM ww_shows
+                    WHERE YEAR(showdate) = %s AND showdate <= NOW()
+                    AND bestof = 0 AND repeatshowid IS NULL) AS 'regular',
+                (SELECT COUNT(showid) FROM ww_shows
+                    WHERE YEAR(showdate) = %s AND showdate <= NOW()
+                    AND bestof = 1) AS 'bestof',
+                (SELECT COUNT(showid) FROM ww_shows
+                    WHERE YEAR(showdate) = %s AND showdate <= NOW()
+                    AND bestof = 0 AND repeatshowid IS NOT NULL) AS 'repeat',
+                (SELECT COUNT(showid) FROM ww_shows
+                    WHERE YEAR(showdate) = %s AND showdate <= NOW()
+                    AND bestof = 1 AND repeatshowid IS NOT NULL) AS 'repeat_bestof';
+            """
+
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(
             query,
@@ -839,7 +860,9 @@ class Show:
             ),
         }
 
-    def retrieve_all_counts_by_year(self) -> dict[int, dict[str, int]]:
+    def retrieve_all_counts_by_year(
+        self, inclusive: bool = False
+    ) -> dict[int, dict[str, int]]:
         """Retrieves show counts for all years, grouped by year.
 
         :return: A dictionary with year as keys with corresponding
@@ -852,7 +875,7 @@ class Show:
 
         all_counts = {}
         for year in years:
-            year_counts = self.retrieve_counts_by_year(year=year)
+            year_counts = self.retrieve_counts_by_year(year=year, inclusive=inclusive)
 
             if year_counts:
                 all_counts[year] = year_counts

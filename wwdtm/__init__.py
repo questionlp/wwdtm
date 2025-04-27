@@ -26,7 +26,7 @@ from wwdtm.panelist import (
 from wwdtm.scorekeeper import Scorekeeper, ScorekeeperAppearances, ScorekeeperUtility
 from wwdtm.show import Show, ShowInfo, ShowInfoMultiple, ShowUtility
 
-VERSION = "2.18.1-beta"
+VERSION = "2.18.1-beta.1"
 
 
 def database_version(

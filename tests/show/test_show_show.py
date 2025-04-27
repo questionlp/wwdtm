@@ -330,14 +330,16 @@ def test_show_retrieve_by_year_month(year: int, month: int):
     )
 
 
-@pytest.mark.parametrize("year", [1998, 2010])
-def test_show_retrieve_counts_by_year(year: int):
+@pytest.mark.parametrize(
+    "year, inclusive", [(1998, True), (1998, False), (2010, True), (2010, False)]
+)
+def test_show_retrieve_counts_by_year(year: int, inclusive: bool):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_counts_by_year`.
 
     :param year: Four digit year to test retrieving show counts
     """
     show = Show(connect_dict=get_connect_dict())
-    counts = show.retrieve_counts_by_year(year)
+    counts = show.retrieve_counts_by_year(year=year, inclusive=inclusive)
 
     assert counts, f"No show counts were returned for year {year:04d}"
     assert "regular" in counts, f"No regular show count returned for year {year:04d}"
