@@ -2,6 +2,21 @@
 Changes
 *******
 
+2.18.1
+======
+
+Application Changes
+-------------------
+
+* Adding the following methods to be used in an upcoming version of the Wait Wait Stats page:
+
+  * :py:meth:`wwdtm.show.Show.retrieve_best_ofs_by_year`
+  * :py:meth:`wwdtm.show.Show.retrieve_best_ofs_details_by_year`
+  * :py:meth:`wwdtm.show.Show.retrieve_repeat_best_ofs_by_year`
+  * :py:meth:`wwdtm.show.Show.retrieve_repeat_best_ofs_details_by_year`
+  * :py:meth:`wwdtm.show.Show.retrieve_repeats_by_year`
+  * :py:meth:`wwdtm.show.Show.retrieve_repeats_details_by_year`
+
 2.18.0
 ======
 

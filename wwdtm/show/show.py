@@ -98,6 +98,8 @@ class Show:
     def retrieve_all_best_ofs(self) -> list[dict[str, Any]]:
         """Retrieves basic show information for all Best Of shows.
 
+        The list of Best Of shows includes repeat Best Of shows.
+
         :return: A list of dictionaries containing show ID, show date,
             Best Of show flag, repeat show ID (if applicable) and show
             URL at NPR.org
@@ -142,6 +144,8 @@ class Show:
         self, include_decimal_scores: bool = False
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for all Best Of shows.
+
+        The list of Best Of shows includes repeat Best Of shows.
 
         :param include_decimal_scores: A boolean to determine if decimal
             scores should be included
@@ -522,6 +526,85 @@ class Show:
 
         return [tuple(v) for v in results]
 
+    def retrieve_best_ofs_by_year(self, year: int) -> list[dict[str, Any]]:
+        """Retrieves basic show information for Best Of shows by year.
+
+        The list of Best Of shows includes repeat Best Of shows.
+
+        :param year: Four-digit year
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag, repeat show ID (if applicable) and show
+            URL at NPR.org
+        """
+        try:
+            parsed_year = datetime.datetime.strptime(f"{year:04d}", "%Y")
+        except ValueError:
+            return []
+
+        query = """
+            SELECT showid FROM ww_shows
+            WHERE YEAR(showdate) = %s AND bestof = 1
+            ORDER BY showdate ASC;
+        """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query, (parsed_year.year,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return None
+
+        return [self.retrieve_by_id(v[0]) for v in results]
+
+    def retrieve_best_ofs_details_by_year(
+        self,
+        year: int,
+        include_decimal_scores: bool = False,
+    ) -> list[dict[str, Any]]:
+        """Retrieves detailed show information for Best Of shows by year.
+
+        :param year: Four-digit year
+        :param include_decimal_scores: A boolean to determine if decimal
+            scores should be included
+        :return: List of recent shows and corresponding details. If show
+            information could not be retrieved, an empty list will be
+            returned.
+        """
+        try:
+            parsed_year = datetime.datetime.strptime(f"{year:04d}", "%Y")
+        except ValueError:
+            return []
+
+        query = """
+            SELECT showid FROM ww_shows
+            WHERE YEAR(showdate) = %s AND bestof = 1
+            ORDER BY showdate ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query, (parsed_year.year,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        show_ids = [v[0] for v in results]
+        info = self.info_multiple.retrieve_core_info_by_ids(show_ids)
+
+        if not info:
+            return []
+
+        shows = []
+        for show in info:
+            info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
+                show, include_decimal_scores=include_decimal_scores
+            )
+            info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(show)
+            info[show]["guests"] = self.info.retrieve_guest_info_by_id(show)
+            shows.append(info[show])
+
+        return shows
+
     def retrieve_by_date(self, year: int, month: int, day: int) -> dict[str, Any]:
         """Retrieves basic show information.
 
@@ -701,6 +784,8 @@ class Show:
     def retrieve_counts_by_year(self, year: int) -> dict[str, int]:
         """Retrieves show counts by year.
 
+        Counts of Best Of shows includes repeat Best Of shows.
+
         :param year: Four-digit year
         :return: A dictionary containing counts for all shows, Best Of
             shows, repeat shows, and repeat Best Of shows
@@ -717,7 +802,7 @@ class Show:
                 AND bestof = 0 AND repeatshowid IS NULL) AS 'regular',
             (SELECT COUNT(showid) FROM ww_shows
                 WHERE YEAR(showdate) = %s AND showdate <= NOW()
-                AND bestof = 1 AND repeatshowid IS NULL) AS 'bestof',
+                AND bestof = 1) AS 'bestof',
             (SELECT COUNT(showid) FROM ww_shows
                 WHERE YEAR(showdate) = %s AND showdate <= NOW()
                 AND bestof = 0 AND repeatshowid IS NOT NULL) AS 'repeat',
@@ -729,10 +814,10 @@ class Show:
         cursor.execute(
             query,
             (
-                parsed_year,
-                parsed_year,
-                parsed_year,
-                parsed_year,
+                parsed_year.year,
+                parsed_year.year,
+                parsed_year.year,
+                parsed_year.year,
             ),
         )
         result = cursor.fetchone()
@@ -1291,6 +1376,166 @@ class Show:
                 future_date.isoformat(),
             ),
         )
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        show_ids = [v[0] for v in results]
+        info = self.info_multiple.retrieve_core_info_by_ids(show_ids)
+
+        if not info:
+            return []
+
+        shows = []
+        for show in info:
+            info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
+                show, include_decimal_scores=include_decimal_scores
+            )
+            info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(show)
+            info[show]["guests"] = self.info.retrieve_guest_info_by_id(show)
+            shows.append(info[show])
+
+        return shows
+
+    def retrieve_repeat_best_ofs_by_year(self, year: int) -> list[dict[str, Any]]:
+        """Retrieves basic show information for repeat Best Of shows by year.
+
+        :param year: Four-digit year
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag, repeat show ID (if applicable) and show
+            URL at NPR.org
+        """
+        try:
+            parsed_year = datetime.datetime.strptime(f"{year:04d}", "%Y")
+        except ValueError:
+            return []
+
+        query = """
+            SELECT showid FROM ww_shows
+            WHERE YEAR(showdate) = %s AND bestof = 1
+            AND repeatshowid IS NOT NULL
+            ORDER BY showdate ASC;
+        """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query, (parsed_year.year,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return None
+
+        return [self.retrieve_by_id(v[0]) for v in results]
+
+    def retrieve_repeat_best_ofs_details_by_year(
+        self,
+        year: int,
+        include_decimal_scores: bool = False,
+    ) -> list[dict[str, Any]]:
+        """Retrieves detailed show information for repeat Best Of shows by year.
+
+        :param year: Four-digit year
+        :param include_decimal_scores: A boolean to determine if decimal
+            scores should be included
+        :return: List of recent shows and corresponding details. If show
+            information could not be retrieved, an empty list will be
+            returned.
+        """
+        try:
+            parsed_year = datetime.datetime.strptime(f"{year:04d}", "%Y")
+        except ValueError:
+            return []
+
+        query = """
+            SELECT showid FROM ww_shows
+            WHERE YEAR(showdate) = %s AND bestof = 1
+            AND repeatshowid IS NOT NULL
+            ORDER BY showdate ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query, (parsed_year.year,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        show_ids = [v[0] for v in results]
+        info = self.info_multiple.retrieve_core_info_by_ids(show_ids)
+
+        if not info:
+            return []
+
+        shows = []
+        for show in info:
+            info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
+                show, include_decimal_scores=include_decimal_scores
+            )
+            info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(show)
+            info[show]["guests"] = self.info.retrieve_guest_info_by_id(show)
+            shows.append(info[show])
+
+        return shows
+
+    def retrieve_repeats_by_year(self, year: int) -> list[dict[str, Any]]:
+        """Retrieves basic show information for repeat shows by year.
+
+        The list of repeat Best Of shows includes repeat Best Of shows.
+
+        :param year: Four-digit year
+        :return: A list of dictionaries containing show ID, show date,
+            Best Of show flag, repeat show ID (if applicable) and show
+            URL at NPR.org
+        """
+        try:
+            parsed_year = datetime.datetime.strptime(f"{year:04d}", "%Y")
+        except ValueError:
+            return []
+
+        query = """
+            SELECT showid FROM ww_shows
+            WHERE YEAR(showdate) = %s AND repeatshowid IS NOT NULL
+            ORDER BY showdate ASC;
+        """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query, (parsed_year.year,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return None
+
+        return [self.retrieve_by_id(v[0]) for v in results]
+
+    def retrieve_repeats_details_by_year(
+        self,
+        year: int,
+        include_decimal_scores: bool = False,
+    ) -> list[dict[str, Any]]:
+        """Retrieves detailed show information for repeat shows by year.
+
+        The list of repeat Best Of shows includes repeat Best Of shows.
+
+        :param year: Four-digit year
+        :param include_decimal_scores: A boolean to determine if decimal
+            scores should be included
+        :return: List of recent shows and corresponding details. If show
+            information could not be retrieved, an empty list will be
+            returned.
+        """
+        try:
+            parsed_year = datetime.datetime.strptime(f"{year:04d}", "%Y")
+        except ValueError:
+            return []
+
+        query = """
+            SELECT showid FROM ww_shows
+            WHERE YEAR(showdate) = %s AND repeatshowid IS NOT NULL
+            ORDER BY showdate ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query, (parsed_year.year,))
         results = cursor.fetchall()
         cursor.close()
 
