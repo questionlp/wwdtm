@@ -95,22 +95,34 @@ class Show:
 
         return shows
 
-    def retrieve_all_best_ofs(self) -> list[dict[str, Any]]:
+    def retrieve_all_best_ofs(self, inclusive: bool = True) -> list[dict[str, Any]]:
         """Retrieves basic show information for all Best Of shows.
 
         The list of Best Of shows includes repeat Best Of shows.
 
+        :param inclusive: Include repeat shows in the list of Best Of
+            shows
         :return: A list of dictionaries containing show ID, show date,
             Best Of show flag, repeat show ID (if applicable) and show
             URL at NPR.org
         """
-        query = """
-            SELECT showid AS id, showdate AS date,
-            bestof AS best_of, repeatshowid AS repeat_show_id,
-            showurl AS show_url
-            FROM ww_shows
-            WHERE bestof = 1
-            ORDER BY showdate ASC;
+        if inclusive:
+            query = """
+                SELECT showid AS id, showdate AS date,
+                bestof AS best_of, repeatshowid AS repeat_show_id,
+                showurl AS show_url
+                FROM ww_shows
+                WHERE bestof = 1
+                ORDER BY showdate ASC;
+            """
+        else:
+            query = """
+                SELECT showid AS id, showdate AS date,
+                bestof AS best_of, repeatshowid AS repeat_show_id,
+                showurl AS show_url
+                FROM ww_shows
+                WHERE bestof = 1 AND repeatshowid IS NULL
+                ORDER BY showdate ASC;
             """
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
@@ -141,12 +153,14 @@ class Show:
         return shows
 
     def retrieve_all_best_ofs_details(
-        self, include_decimal_scores: bool = False
+        self, inclusive: bool = True, include_decimal_scores: bool = False
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for all Best Of shows.
 
         The list of Best Of shows includes repeat Best Of shows.
 
+        :param inclusive: Include repeat shows in the list of Best Of
+            shows
         :param include_decimal_scores: A boolean to determine if decimal
             scores should be included
         :return: A list of dictionaries containing show ID, show date,
@@ -154,11 +168,19 @@ class Show:
             at NPR.org, host, scorekeeper, location, panelists and
             guests
         """
-        query = """
-            SELECT showid
-            FROM ww_shows
-            WHERE bestof = 1
-            ORDER BY showdate ASC;
+        if inclusive:
+            query = """
+                SELECT showid
+                FROM ww_shows
+                WHERE bestof = 1
+                ORDER BY showdate ASC;
+            """
+        else:
+            query = """
+                SELECT showid
+                FROM ww_shows
+                WHERE bestof = 1 AND repeatshowid IS NULL
+                ORDER BY showdate ASC;
             """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
@@ -306,20 +328,31 @@ class Show:
             include_decimal_scores=include_decimal_scores
         )
 
-    def retrieve_all_repeats(self) -> list[dict[str, Any]]:
+    def retrieve_all_repeats(self, inclusive: bool = True) -> list[dict[str, Any]]:
         """Retrieves basic show information for all repeat shows.
 
+        :param inclusive: Include Best Of shows in repeat show counts
         :return: A list of dictionaries containing show ID, show date,
             Best Of show flag, repeat show ID (if applicable) and show
             URL at NPR.org
         """
-        query = """
-            SELECT showid AS id, showdate AS date,
-            bestof AS best_of, repeatshowid AS repeat_show_id,
-            showurl AS show_url
-            FROM ww_shows
-            WHERE repeatshowid IS NOT NULL
-            ORDER BY showdate ASC;
+        if inclusive:
+            query = """
+                SELECT showid AS id, showdate AS date,
+                bestof AS best_of, repeatshowid AS repeat_show_id,
+                showurl AS show_url
+                FROM ww_shows
+                WHERE repeatshowid IS NOT NULL
+                ORDER BY showdate ASC;
+            """
+        else:
+            query = """
+                SELECT showid AS id, showdate AS date,
+                bestof AS best_of, repeatshowid AS repeat_show_id,
+                showurl AS show_url
+                FROM ww_shows
+                WHERE repeatshowid IS NOT NULL AND bestof = 0
+                ORDER BY showdate ASC;
             """
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
@@ -350,10 +383,11 @@ class Show:
         return shows
 
     def retrieve_all_repeats_details(
-        self, include_decimal_scores: bool = False
+        self, inclusive: bool = True, include_decimal_scores: bool = False
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for all repeat shows.
 
+        :param inclusive: Include Best Of shows in repeat show counts
         :param include_decimal_scores: A boolean to determine if decimal
             scores should be included
         :return: A list of dictionaries containing show ID, show date,
@@ -361,11 +395,19 @@ class Show:
             at NPR.org, host, scorekeeper, location, panelists and
             guests
         """
-        query = """
-            SELECT showid
-            FROM ww_shows
-            WHERE repeatshowid IS NOT NULL
-            ORDER BY showdate ASC;
+        if inclusive:
+            query = """
+                SELECT showid
+                FROM ww_shows
+                WHERE repeatshowid IS NOT NULL
+                ORDER BY showdate ASC;
+            """
+        else:
+            query = """
+                SELECT showid
+                FROM ww_shows
+                WHERE repeatshowid IS NOT NULL AND bestof = 0
+                ORDER BY showdate ASC;
             """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
@@ -526,12 +568,16 @@ class Show:
 
         return [tuple(v) for v in results]
 
-    def retrieve_best_ofs_by_year(self, year: int) -> list[dict[str, Any]]:
+    def retrieve_best_ofs_by_year(
+        self, year: int, inclusive: bool = True
+    ) -> list[dict[str, Any]]:
         """Retrieves basic show information for Best Of shows by year.
 
         The list of Best Of shows includes repeat Best Of shows.
 
         :param year: Four-digit year
+        :param inclusive: Include repeat shows in the list of Best Of
+            shows
         :return: A list of dictionaries containing show ID, show date,
             Best Of show flag, repeat show ID (if applicable) and show
             URL at NPR.org
@@ -541,11 +587,19 @@ class Show:
         except ValueError:
             return []
 
-        query = """
-            SELECT showid FROM ww_shows
-            WHERE YEAR(showdate) = %s AND bestof = 1
-            ORDER BY showdate ASC;
-        """
+        if inclusive:
+            query = """
+                SELECT showid FROM ww_shows
+                WHERE YEAR(showdate) = %s AND bestof = 1
+                ORDER BY showdate ASC;
+            """
+        else:
+            query = """
+                SELECT showid FROM ww_shows
+                WHERE YEAR(showdate) = %s AND bestof = 1
+                AND repeatshowid IS NULL
+                ORDER BY showdate ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query, (parsed_year.year,))
         results = cursor.fetchall()
@@ -559,11 +613,14 @@ class Show:
     def retrieve_best_ofs_details_by_year(
         self,
         year: int,
+        inclusive: bool = True,
         include_decimal_scores: bool = False,
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for Best Of shows by year.
 
         :param year: Four-digit year
+        :param inclusive: Include repeat shows in the list of Best Of
+            shows
         :param include_decimal_scores: A boolean to determine if decimal
             scores should be included
         :return: List of recent shows and corresponding details. If show
@@ -575,10 +632,18 @@ class Show:
         except ValueError:
             return []
 
-        query = """
-            SELECT showid FROM ww_shows
-            WHERE YEAR(showdate) = %s AND bestof = 1
-            ORDER BY showdate ASC;
+        if inclusive:
+            query = """
+                SELECT showid FROM ww_shows
+                WHERE YEAR(showdate) = %s AND bestof = 1
+                ORDER BY showdate ASC;
+            """
+        else:
+            query = """
+                SELECT showid FROM ww_shows
+                WHERE YEAR(showdate) = %s AND bestof = 1
+                AND repeatshowid IS NULL
+                ORDER BY showdate ASC;
             """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query, (parsed_year.year,))
@@ -1501,12 +1566,16 @@ class Show:
 
         return shows
 
-    def retrieve_repeats_by_year(self, year: int) -> list[dict[str, Any]]:
+    def retrieve_repeats_by_year(
+        self, year: int, inclusive: bool = True
+    ) -> list[dict[str, Any]]:
         """Retrieves basic show information for repeat shows by year.
 
         The list of repeat Best Of shows includes repeat Best Of shows.
 
         :param year: Four-digit year
+        :param inclusive: Include Best Of shows in the list of repeat
+            shows
         :return: A list of dictionaries containing show ID, show date,
             Best Of show flag, repeat show ID (if applicable) and show
             URL at NPR.org
@@ -1516,9 +1585,17 @@ class Show:
         except ValueError:
             return []
 
-        query = """
+        if inclusive:
+            query = """
+                SELECT showid FROM ww_shows
+                WHERE YEAR(showdate) = %s AND repeatshowid IS NOT NULL
+                ORDER BY showdate ASC;
+            """
+        else:
+            query = """
             SELECT showid FROM ww_shows
             WHERE YEAR(showdate) = %s AND repeatshowid IS NOT NULL
+            AND bestof = 0
             ORDER BY showdate ASC;
         """
         cursor = self.database_connection.cursor(dictionary=False)
@@ -1534,6 +1611,7 @@ class Show:
     def retrieve_repeats_details_by_year(
         self,
         year: int,
+        inclusive: bool = True,
         include_decimal_scores: bool = False,
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for repeat shows by year.
@@ -1541,6 +1619,8 @@ class Show:
         The list of repeat Best Of shows includes repeat Best Of shows.
 
         :param year: Four-digit year
+        :param inclusive: Include Best Of shows in the list of repeat
+            shows
         :param include_decimal_scores: A boolean to determine if decimal
             scores should be included
         :return: List of recent shows and corresponding details. If show
@@ -1552,10 +1632,18 @@ class Show:
         except ValueError:
             return []
 
-        query = """
-            SELECT showid FROM ww_shows
-            WHERE YEAR(showdate) = %s AND repeatshowid IS NOT NULL
-            ORDER BY showdate ASC;
+        if inclusive:
+            query = """
+                SELECT showid FROM ww_shows
+                WHERE YEAR(showdate) = %s AND repeatshowid IS NOT NULL
+                ORDER BY showdate ASC;
+            """
+        else:
+            query = """
+                SELECT showid FROM ww_shows
+                WHERE YEAR(showdate) = %s AND repeatshowid IS NOT NULL
+                AND bestof = 0
+                ORDER BY showdate ASC;
             """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query, (parsed_year.year,))

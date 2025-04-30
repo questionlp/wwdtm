@@ -2,6 +2,23 @@
 Changes
 *******
 
+2.18.2
+======
+
+Application Changes
+-------------------
+
+* Add `inclusive` named parameter to the following methods to determine whether repeat shows are included with Best Of shows, or whether Best Of shows included with repeat shows. Default value in all cases is ``True``.
+
+  * :py:meth:`wwdtm.show.Show.retrieve_all_best_ofs`
+  * :py:meth:`wwdtm.show.Show.retrieve_all_best_ofs_details`
+  * :py:meth:`wwdtm.show.Show.retrieve_all_repeats`
+  * :py:meth:`wwdtm.show.Show.retrieve_all_repeats_details`
+  * :py:meth:`wwdtm.show.Show.retrieve_best_ofs_by_year`
+  * :py:meth:`wwdtm.show.Show.retrieve_best_ofs_details_by_year`
+  * :py:meth:`wwdtm.show.Show.retrieve_repeats_by_year`
+  * :py:meth:`wwdtm.show.Show.retrieve_repeats_details_by_year`
+
 2.18.1
 ======
 
