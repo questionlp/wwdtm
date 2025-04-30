@@ -63,58 +63,6 @@ def test_show_retrieve_all_best_ofs_details(include_decimal_scores: bool):
     assert "host" in shows[0], "'host' was not returned for first list item"
 
 
-def test_show_retrieve_all_repeats():
-    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_repeats`."""
-    show = Show(connect_dict=get_connect_dict())
-    shows = show.retrieve_all_repeats()
-
-    assert shows, "No shows could be retrieved"
-    assert "id" in shows[0], "No Show ID returned for the first list item"
-
-
-@pytest.mark.parametrize("include_decimal_scores", [True, False])
-def test_show_retrieve_all_repeat_details(include_decimal_scores: bool):
-    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_repeat_details`.
-
-    :param include_decimal_scores: Flag set to include decimal score columns
-        and values
-    """
-    show = Show(connect_dict=get_connect_dict())
-    shows = show.retrieve_all_repeats_details(
-        include_decimal_scores=include_decimal_scores
-    )
-
-    assert shows, "No shows could be retrieved"
-    assert "date" in shows[0], "'date' was not returned for the first list item"
-    assert "host" in shows[0], "'host' was not returned for first list item"
-
-
-def test_show_retrieve_all_repeat_best_ofs():
-    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_repeat_best_ofs`."""
-    show = Show(connect_dict=get_connect_dict())
-    shows = show.retrieve_all_repeat_best_ofs()
-
-    assert shows, "No shows could be retrieved"
-    assert "id" in shows[0], "No Show ID returned for the first list item"
-
-
-@pytest.mark.parametrize("include_decimal_scores", [True, False])
-def test_show_retrieve_all_repeat_best_ofs_details(include_decimal_scores: bool):
-    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_repeat_best_ofs_details`.
-
-    :param include_decimal_scores: Flag set to include decimal score columns
-        and values
-    """
-    show = Show(connect_dict=get_connect_dict())
-    shows = show.retrieve_all_repeat_best_ofs_details(
-        include_decimal_scores=include_decimal_scores
-    )
-
-    assert shows, "No shows could be retrieved"
-    assert "date" in shows[0], "'date' was not returned for the first list item"
-    assert "host" in shows[0], "'host' was not returned for first list item"
-
-
 def test_show_retrieve_all_best_of_repeats():
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_best_of_repeats`."""
     show = Show(connect_dict=get_connect_dict())
@@ -181,6 +129,58 @@ def test_show_retrieve_all_dates_tuple():
     assert isinstance(dates[0], tuple), "First list item is not a tuple"
 
 
+def test_show_retrieve_all_repeats():
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_repeats`."""
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_all_repeats()
+
+    assert shows, "No shows could be retrieved"
+    assert "id" in shows[0], "No Show ID returned for the first list item"
+
+
+@pytest.mark.parametrize("include_decimal_scores", [True, False])
+def test_show_retrieve_all_repeat_details(include_decimal_scores: bool):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_repeat_details`.
+
+    :param include_decimal_scores: Flag set to include decimal score columns
+        and values
+    """
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_all_repeats_details(
+        include_decimal_scores=include_decimal_scores
+    )
+
+    assert shows, "No shows could be retrieved"
+    assert "date" in shows[0], "'date' was not returned for the first list item"
+    assert "host" in shows[0], "'host' was not returned for first list item"
+
+
+def test_show_retrieve_all_repeat_best_ofs():
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_repeat_best_ofs`."""
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_all_repeat_best_ofs()
+
+    assert shows, "No shows could be retrieved"
+    assert "id" in shows[0], "No Show ID returned for the first list item"
+
+
+@pytest.mark.parametrize("include_decimal_scores", [True, False])
+def test_show_retrieve_all_repeat_best_ofs_details(include_decimal_scores: bool):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_repeat_best_ofs_details`.
+
+    :param include_decimal_scores: Flag set to include decimal score columns
+        and values
+    """
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_all_repeat_best_ofs_details(
+        include_decimal_scores=include_decimal_scores
+    )
+
+    assert shows, "No shows could be retrieved"
+    assert "date" in shows[0], "'date' was not returned for the first list item"
+    assert "host" in shows[0], "'host' was not returned for first list item"
+
+
 def test_show_retrieve_all_show_years_months():
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_all_show_years_months`."""
     show = Show(connect_dict=get_connect_dict())
@@ -197,6 +197,41 @@ def test_show_retrieve_all_show_years_months_tuple():
 
     assert dates, "No dates could be retrieved"
     assert isinstance(dates[0], tuple), "First list item is not a tuple"
+
+
+@pytest.mark.parametrize("year", [1998, 2008])
+def test_show_retrieve_best_ofs_by_year(year: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_best_ofs_by_year`.
+
+    :param year: Four digit year to test retrieving show information
+    """
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_best_ofs_by_year(year=year)
+
+    assert shows, f"Information for Best Of Shows for year {year:04d} not found"
+    assert "id" in shows[0], "'id' was not returned for the first list item"
+    assert "date" in shows[0], "'date' was not returned for the first list item"
+    assert "best_of" in shows[0], "'best_of' was not returned for the first list item"
+    assert shows[0]["best_of"], "'best_of' value for the first list item is not valid"
+
+
+@pytest.mark.parametrize("year", [1998, 2008])
+def test_show_retrieve_best_ofs_details_by_year(year: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_best_ofs_details_by_year`.
+
+    :param year: Four digit year to test retrieving show information
+    """
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_best_ofs_details_by_year(year=year)
+
+    assert shows, f"Information for Best Of Shows for year {year:04d} not found"
+    assert "id" in shows[0], "'id' was not returned for the first list item"
+    assert "date" in shows[0], "'date' was not returned for the first list item"
+    assert "best_of" in shows[0], "'best_of' was not returned for the first list item"
+    assert shows[0]["best_of"], "'best_of' value for the first list item is not valid"
+    assert "panelists" in shows[0], (
+        "'panelists' was not returned for the first list item"
+    )
 
 
 @pytest.mark.parametrize("year, month, day", [(2020, 4, 25)])
@@ -295,14 +330,16 @@ def test_show_retrieve_by_year_month(year: int, month: int):
     )
 
 
-@pytest.mark.parametrize("year", [1998, 2010])
-def test_show_retrieve_counts_by_year(year: int):
+@pytest.mark.parametrize(
+    "year, inclusive", [(1998, True), (1998, False), (2010, True), (2010, False)]
+)
+def test_show_retrieve_counts_by_year(year: int, inclusive: bool):
     """Testing for :py:meth:`wwdtm.show.Show.retrieve_counts_by_year`.
 
     :param year: Four digit year to test retrieving show counts
     """
     show = Show(connect_dict=get_connect_dict())
-    counts = show.retrieve_counts_by_year(year)
+    counts = show.retrieve_counts_by_year(year=year, inclusive=inclusive)
 
     assert counts, f"No show counts were returned for year {year:04d}"
     assert "regular" in counts, f"No regular show count returned for year {year:04d}"
@@ -554,6 +591,96 @@ def test_show_retrieve_recent_details(include_decimal_scores: bool):
     assert shows, "No shows could be retrieved"
     assert "date" in shows[0], "'date' was not returned for the first list item"
     assert "host" in shows[0], "'host' was not returned for first list item"
+
+
+@pytest.mark.parametrize("year", [2008, 2012])
+def test_show_retrieve_repeat_best_ofs_by_year(year: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_repeat_best_ofs_by_year`.
+
+    :param year: Four digit year to test retrieving show information
+    """
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_repeat_best_ofs_by_year(year=year)
+
+    assert shows, f"Information for Best Of Shows for year {year:04d} not found"
+    assert "id" in shows[0], "'id' was not returned for the first list item"
+    assert "date" in shows[0], "'date' was not returned for the first list item"
+    assert "best_of" in shows[0], "'best_of' was not returned for the first list item"
+    assert shows[0]["best_of"], "'best_of' value for the first list item is not valid"
+    assert "repeat_show" in shows[0], (
+        "'repeat_show' was not returned for the first list item"
+    )
+    assert shows[0]["repeat_show"], (
+        "'repeat_show' value for the first list item is not valid"
+    )
+
+
+@pytest.mark.parametrize("year", [2008, 2012])
+def test_show_retrieve_repeat_best_ofs_details_by_year(year: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_repeat_best_ofs_details_by_year`.
+
+    :param year: Four digit year to test retrieving show information
+    """
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_repeat_best_ofs_details_by_year(year=year)
+
+    assert shows, f"Information for Best Of Shows for year {year:04d} not found"
+    assert "id" in shows[0], "'id' was not returned for the first list item"
+    assert "date" in shows[0], "'date' was not returned for the first list item"
+    assert "best_of" in shows[0], "'best_of' was not returned for the first list item"
+    assert shows[0]["best_of"], "'best_of' value for the first list item is not valid"
+    assert "repeat_show" in shows[0], (
+        "'repeat_show' was not returned for the first list item"
+    )
+    assert shows[0]["repeat_show"], (
+        "'repeat_show' value for the first list item is not valid"
+    )
+    assert "panelists" in shows[0], (
+        "'panelists' was not returned for the first list item"
+    )
+
+
+@pytest.mark.parametrize("year", [2000, 2010])
+def test_show_retrieve_repeats_by_year(year: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_best_ofs_by_year`.
+
+    :param year: Four digit year to test retrieving show information
+    """
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_repeats_by_year(year=year)
+
+    assert shows, f"Information for Best Of Shows for year {year:04d} not found"
+    assert "id" in shows[0], "'id' was not returned for the first list item"
+    assert "date" in shows[0], "'date' was not returned for the first list item"
+    assert "repeat_show" in shows[0], (
+        "'repeat_show' was not returned for the first list item"
+    )
+    assert shows[0]["repeat_show"], (
+        "'repeat_show' value for the first list item is not valid"
+    )
+
+
+@pytest.mark.parametrize("year", [2000, 2010])
+def test_show_retrieve_repeats_details_by_year(year: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_best_ofs_details_by_year`.
+
+    :param year: Four digit year to test retrieving show information
+    """
+    show = Show(connect_dict=get_connect_dict())
+    shows = show.retrieve_repeats_details_by_year(year=year)
+
+    assert shows, f"Information for Best Of Shows for year {year:04d} not found"
+    assert "id" in shows[0], "'id' was not returned for the first list item"
+    assert "date" in shows[0], "'date' was not returned for the first list item"
+    assert "repeat_show" in shows[0], (
+        "'repeat_show' was not returned for the first list item"
+    )
+    assert shows[0]["repeat_show"], (
+        "'repeat_show' value for the first list item is not valid"
+    )
+    assert "panelists" in shows[0], (
+        "'panelists' was not returned for the first list item"
+    )
 
 
 @pytest.mark.parametrize("year, use_decimal_scores", [(2018, True), (2018, False)])
