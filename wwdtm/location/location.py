@@ -392,7 +392,7 @@ class Location:
         self,
         abbreviation: str,
     ) -> dict[str, str]:
-        """Retrieves postal abbreviation information for a given abbreviation.
+        """Retrieves postal abbreviation information for a specific abbreviation.
 
         :param abbreviation: Postal Abbreviation
         :return: A dictionary containing postal abbreviation,

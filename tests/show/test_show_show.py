@@ -5,6 +5,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 """Testing for object :py:class:`wwdtm.show.Show`."""
 
+import datetime
 import json
 from pathlib import Path
 from typing import Any
@@ -816,8 +817,22 @@ def test_show_retrieve_random_date() -> None:
     show = Show(connect_dict=get_connect_dict())
     _date = show.retrieve_random_date()
 
-    assert _date, "Returned random show date string is not valid"
+    assert _date, "No random show date string returned"
     assert isinstance(_date, str), "Returned random show date string is not a string"
+
+
+def test_show_retrieve_random_date_object() -> None:
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_random_date_object`."""
+    show = Show(connect_dict=get_connect_dict())
+    _date = show.retrieve_random_date_object()
+
+    assert _date, "No random show date returned"
+    assert isinstance(_date, datetime.date), (
+        "Returned random show date is not a valid date object"
+    )
+    assert _date.year, "Random show date year is not valid"
+    assert _date.month, "Random show date month is not valid"
+    assert _date.day, "Random show date day is not valid"
 
 
 @pytest.mark.parametrize("year", [1998, 2020])
@@ -833,6 +848,21 @@ def test_show_retrieve_random_date_by_year(year: int):
     _show = show.retrieve_by_date_string(date_string=_date)
 
     assert _show, f"Returned random show data for {_date} is not valid"
+
+
+@pytest.mark.parametrize("year", [1998, 2020])
+def test_show_retrieve_random_date_object_by_year(year: int):
+    """Testing for :py:meth:`wwdtm.show.Show.retrieve_random_date_object_by_year`."""
+    show = Show(connect_dict=get_connect_dict())
+    _date = show.retrieve_random_date_object_by_year(year=year)
+
+    assert _date, "No random show date returned"
+    assert isinstance(_date, datetime.date), (
+        "Returned random show date is not a valid date object"
+    )
+    assert _date.year, "Random show date year is not valid"
+    assert _date.month, "Random show date month is not valid"
+    assert _date.day, "Random show date day is not valid"
 
 
 def test_show_retrieve_random() -> None:

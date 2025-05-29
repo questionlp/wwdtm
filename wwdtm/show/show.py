@@ -1245,7 +1245,7 @@ class Show:
         return result[0]
 
     def retrieve_random_id_by_year(self, year: int) -> int:
-        """Retrieves an ID for a random show for a given year.
+        """Retrieves an ID for a random show for a specific year.
 
         :return: ID for a random show.
         """
@@ -1287,8 +1287,29 @@ class Show:
 
         return result[0].isoformat()
 
+    def retrieve_random_date_object(self) -> datetime.date:
+        """Retrieves a date object for a random show.
+
+        :return: Date object for a random show.
+        """
+        query = """
+            SELECT showdate FROM ww_shows
+            WHERE showdate <= NOW()
+            ORDER BY RAND()
+            LIMIT 1;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        return result[0]
+
     def retrieve_random_date_by_year(self, year: int) -> str:
-        """Retrieves a date for a random show for a given year.
+        """Retrieves a date for a random show for a specific year.
 
         :return: show date string for a random show, in YYYY-MM-DD format.
         """
@@ -1309,6 +1330,28 @@ class Show:
 
         return result[0].isoformat()
 
+    def retrieve_random_date_object_by_year(self, year: int) -> datetime.date:
+        """Retrieves a date object for a random show for a specific year.
+
+        :return: Date object for a random show.
+        """
+        query = """
+            SELECT showdate FROM ww_shows
+            WHERE showdate <= NOW()
+            AND YEAR(showdate) = %s
+            ORDER BY RAND()
+            LIMIT 1;
+            """
+        cursor = self.database_connection.cursor(dictionary=False)
+        cursor.execute(query, (year,))
+        result = cursor.fetchone()
+        cursor.close()
+
+        if not result:
+            return None
+
+        return result[0]
+
     def retrieve_random(self) -> dict[str, Any]:
         """Retrieves information for a random show.
 
@@ -1324,7 +1367,7 @@ class Show:
         return self.retrieve_by_id(show_id=_id)
 
     def retrieve_random_by_year(self, year: int) -> dict[str, Any]:
-        """Retrieves information for a random show for a given year.
+        """Retrieves information for a random show for a specific year.
 
         :return: A dictionary containing show ID, show date, Best Of
             show flag, repeat show ID (if applicable) and show URL at
@@ -1358,7 +1401,7 @@ class Show:
     def retrieve_random_details_by_year(
         self, year: int, include_decimal_scores: bool = False
     ) -> dict[str, Any]:
-        """Retrieves information and appearances for a random show for a given year.
+        """Retrieves information and appearances for a random show for a specific year.
 
         :return: A dictionary containing show ID, show date, Best Of
             show flag, repeat show ID (if applicable), show URL at

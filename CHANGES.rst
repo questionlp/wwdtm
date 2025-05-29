@@ -2,6 +2,33 @@
 Changes
 *******
 
+2.19.0
+======
+
+Application Changes
+-------------------
+
+* Add :py:meth:`wwdtm.show.Show.retrieve_random_date_object` to retrieve a random show date as a :py:class:`datetime.time` object
+* Add :py:meth:`wwdtm.show.Show.retrieve_random_date_object_by_year` to retrieve a random show date as a :py:class:`datetime.time` object for a specific year
+* Add tests for both new methods
+
+Development Changes
+-------------------
+
+* Upgrade ruff from 0.9.3 to 0.11.9
+* Upgrade pytest from 8.3.3 to 8.3.5
+* Upgrade pytest-cov from 5.0.0 to 6.1.1
+* Upgrade wheel from 0.44.0 to 0.45.1
+
+Documentation Changes
+---------------------
+
+* Upgrade pytest from 8.3.3 to 8.3.5
+* Remove black from dependencies
+* Update ``environment.yaml`` file to match library dependencies
+* Replace the word "given" with "specific" in method docstrings
+* Reduce the search ranking for documentation for testing methods
+
 2.18.2
 ======
 

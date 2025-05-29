@@ -16,3 +16,7 @@ python:
 sphinx:
   configuration: docs/conf.py
   fail_on_warning: false
+
+search:
+  ranking:
+    tests/*: -5
