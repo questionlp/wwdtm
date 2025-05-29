@@ -19,4 +19,6 @@ sphinx:
 
 search:
   ranking:
-    tests/*: -5
+    '*.html': 2
+    wwdtm/*: 5
+    tests/*: -10
