@@ -27,7 +27,6 @@ Documentation Changes
 * Remove black from dependencies
 * Update ``environment.yaml`` file to match library dependencies
 * Replace the word "given" with "specific" in method docstrings
-* Reduce the search ranking for documentation for testing methods
 
 2.18.2
 ======

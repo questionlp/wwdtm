@@ -16,9 +16,3 @@ python:
 sphinx:
   configuration: docs/conf.py
   fail_on_warning: false
-
-search:
-  ranking:
-    '*.html': 2
-    wwdtm/*: 5
-    tests/*: -10
