@@ -87,11 +87,10 @@ For documentation on known issues with this project, check out the
 Code of Conduct
 ===============
 
-This projects follows version 2.1 of the `Contributor Covenant's`_ Code of
-Conduct. A copy of the `Code of Conduct`_ document is included in this
-repository.
+The Code of Conduct for this project is adapted from the Contributor Covenant, version 3.0, permanently available at: https://www.contributor-covenant.org/version/3/0/.
 
-.. _Contributor Covenant's: https://www.contributor-covenant.org/
+The adapted version with instructions on how to report possible violations are available in the `Code of Conduct`_ file in this repository.
+
 .. _Code of Conduct: https://github.com/questionlp/wwdtm/blob/main/CODE_OF_CONDUCT.md
 
 License
