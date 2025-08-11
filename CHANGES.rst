@@ -8,10 +8,10 @@ Changes
 Application Changes
 -------------------
 
-* Added `is_host`, `is_panelist` and `is_scorekeeper` keys for all returned guest details with boolean values whether a Not My Job guest has also been a host, panelist or scorekeeper
-* Added `is_guest`, `is_panelist` and `is_scorekeeper` keys for all returned host details with boolean values whether a host has also been a Not My Job guest, panelist or scorekeeper
-* Added `is_guest`, `is_host` and `is_scorekeeper` keys for all returned panelist details with boolean values whether a panelist has also been a guest, host or scorekeeper
-* Added `is_guest`, `is_host` and `is_panelist` keys for all returned scorekeeper details with boolean values whether a scorekeeper has also been a guest, host or panelist
+* Added ``is_host``, ``is_panelist`` and ``is_scorekeeper`` keys for all returned guest details with boolean values whether a Not My Job guest has also been a host, panelist or scorekeeper
+* Added ``is_guest``, ``is_panelist`` and ``is_scorekeeper`` keys for all returned host details with boolean values whether a host has also been a Not My Job guest, panelist or scorekeeper
+* Added ``is_guest``, ``is_host`` and ``is_scorekeeper`` keys for all returned panelist details with boolean values whether a panelist has also been a guest, host or scorekeeper
+* Added ``is_guest``, ``is_host`` and ``is_panelist`` keys for all returned scorekeeper details with boolean values whether a scorekeeper has also been a guest, host or panelist
 * Added tests for one of the three newly added keys for guests, hosts, panelists and scorekeeper
 * Changed incorrect references to ID to slug string in test assertion messages
 
