@@ -21,7 +21,7 @@ classifiers = [
 
 dependencies = [
     "mysql-connector-python==9.1.0",
-    "numpy==2.1.2",
+    "numpy==2.2.6",
     "python-slugify==8.0.4",
     "pytz==2025.2",
 ]

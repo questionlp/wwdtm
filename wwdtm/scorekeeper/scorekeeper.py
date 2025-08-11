@@ -12,6 +12,9 @@ from mysql.connector.connection import MySQLConnection
 from mysql.connector.pooling import PooledMySQLConnection
 from slugify import slugify
 
+from wwdtm.guest.utility import GuestUtility
+from wwdtm.host.utility import HostUtility
+from wwdtm.panelist.utility import PanelistUtility
 from wwdtm.scorekeeper.appearances import ScorekeeperAppearances
 from wwdtm.scorekeeper.utility import ScorekeeperUtility
 from wwdtm.validation import valid_int_id
@@ -52,7 +55,7 @@ class Scorekeeper:
         """Retrieves scorekeeper information for all scorekeepers.
 
         :return: A list of dictionaries containing scorekeeper ID, name,
-            gender and slug string for each scorekeeper
+            gender, pronouns and slug string for each scorekeeper
         """
         query = """
             SELECT sk.scorekeeperid AS id, sk.scorekeeper AS name,
@@ -102,7 +105,8 @@ class Scorekeeper:
         """Retrieves scorekeeper information and appearances for all scorekeepers.
 
         :return: A list of dictionaries containing scorekeeper ID, name,
-            slug string, gender and a list of appearances with show
+            slug string, gender, pronouns, whether the scorekeeper is also
+            a guest, host or panelist, and a list of appearances with show
             flags for each scorekeeper
         """
         query = """
@@ -120,9 +124,15 @@ class Scorekeeper:
             return []
 
         scorekeepers = []
+        _guest_utility = GuestUtility(database_connection=self.database_connection)
+        _host_utility = HostUtility(database_connection=self.database_connection)
+        _panelist_utility = PanelistUtility(
+            database_connection=self.database_connection
+        )
 
         cursor = self.database_connection.cursor(dictionary=True)
         for row in results:
+            _slug = row["slug"] if row["slug"] else slugify(row["name"])
             query = """
                 SELECT pn.pronouns
                 FROM ww_skpronounsmap spm
@@ -137,12 +147,17 @@ class Scorekeeper:
                 {
                     "id": row["id"],
                     "name": row["name"],
-                    "slug": row["slug"] if row["slug"] else slugify(row["name"]),
+                    "slug": _slug,
                     "gender": row["gender"],
                     "pronouns": (
                         [result["pronouns"] for result in pn_results]
                         if pn_results
                         else []
+                    ),
+                    "is_guest": bool(_guest_utility.slug_exists(guest_slug=_slug)),
+                    "is_host": bool(_host_utility.slug_exists(host_slug=_slug)),
+                    "is_panelist": bool(
+                        _panelist_utility.slug_exists(panelist_slug=_slug)
                     ),
                     "appearances": self.appearances.retrieve_appearances_by_id(
                         row["id"]
@@ -193,7 +208,7 @@ class Scorekeeper:
 
         :param scorekeeper_id: Scorekeeper ID
         :return: A dictionary containing scorekeeper ID, name, slug
-            string and gender
+            string, gender and pronouns
         """
         if not valid_int_id(scorekeeper_id):
             return {}
@@ -238,7 +253,7 @@ class Scorekeeper:
 
         :param scorekeeper_slug: Scorekeeper slug string
         :return: A dictionary containing scorekeeper ID, name, slug
-            string and gender
+            string, gender and pronouns
         """
         try:
             slug = scorekeeper_slug.strip()
@@ -258,7 +273,9 @@ class Scorekeeper:
 
         :param scorekeeper_id: Scorekeeper ID
         :return: A dictionaries containing scorekeeper ID, name, slug
-            string, gender and a list of appearances with show flags
+            string, gender, pronouns, whether the scorekeeper is also
+            a guest, host or panelist, and a list of appearances with
+            show flags
         """
         if not valid_int_id(scorekeeper_id):
             return {}
@@ -267,6 +284,17 @@ class Scorekeeper:
         if not info:
             return {}
 
+        _guest_utility = GuestUtility(database_connection=self.database_connection)
+        _host_utility = HostUtility(database_connection=self.database_connection)
+        _panelist_utility = PanelistUtility(
+            database_connection=self.database_connection
+        )
+
+        info["is_guest"] = bool(_guest_utility.slug_exists(info["slug"]))
+        info["is_host"] = bool(_host_utility.slug_exists(host_slug=info["slug"]))
+        info["is_panelist"] = bool(
+            _panelist_utility.slug_exists(panelist_slug=info["slug"])
+        )
         info["appearances"] = self.appearances.retrieve_appearances_by_id(
             scorekeeper_id
         )
@@ -278,7 +306,9 @@ class Scorekeeper:
 
         :param scorekeeper_slug: Scorekeeper slug string
         :return: A dictionaries containing scorekeeper ID, name, slug
-            string, gender and a list of appearances with show flags
+            string, gender, pronouns, whether the scorekeeper is also
+            a guest, host or panelist, and a list of appearances with
+            show flags
         """
         try:
             slug = scorekeeper_slug.strip()
@@ -339,7 +369,7 @@ class Scorekeeper:
         """Retrieves information for a random scorekeeper.
 
         :return: A dictionary containing scorekeeper ID, name, slug
-            string and gender
+            string, gender and pronouns
         """
         _id = self.retrieve_random_id()
 
@@ -352,7 +382,9 @@ class Scorekeeper:
         """Retrieves information and appearances for a random scorekeeper.
 
         :return: A dictionaries containing scorekeeper ID, name, slug
-            string, gender and a list of appearances with show flags
+            string, gender, pronouns, whether the scorekeeper is also
+            a guest, host or panelist, and a list of appearances with
+            show flags
         """
         _id = self.retrieve_random_id()
 

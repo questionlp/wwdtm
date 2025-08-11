@@ -54,6 +54,9 @@ def test_scorekeeper_retrieve_all_details():
     assert "pronouns" in scorekeepers[0], (
         "'pronouns' was not returned for the first list item"
     )
+    assert "is_panelist" in scorekeepers[0], (
+        "'is_panelist' was not returned for the first list item"
+    )
     assert "appearances" in scorekeepers[0], (
         "'appearances' was not returned for the first list item"
     )
@@ -91,25 +94,6 @@ def test_scorekeeper_retrieve_by_id(scorekeeper_id: int):
     assert "pronouns" in info, f"'pronouns' was not returned for ID {scorekeeper_id}"
 
 
-@pytest.mark.parametrize("scorekeeper_id", [13])
-def test_scorekeeper_retrieve_details_by_id(scorekeeper_id: int):
-    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_details_by_id`.
-
-    :param scorekeeper_id: Scorekeeper ID to test retrieving scorekeeper
-        details
-    """
-    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
-    info = scorekeeper.retrieve_details_by_id(scorekeeper_id)
-
-    assert info, f"Scorekeeper ID {scorekeeper_id} not found"
-    assert "name" in info, f"'name' was not returned for ID {scorekeeper_id}"
-    assert "slug" in info, f"'slug' was not returned for ID {scorekeeper_id}"
-    assert "pronouns" in info, f"'pronouns' was not returned for ID {scorekeeper_id}"
-    assert "appearances" in info, (
-        f"'appearances' was not returned for ID {scorekeeper_id}"
-    )
-
-
 @pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson"])
 def test_scorekeeper_retrieve_by_slug(scorekeeper_slug: str):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_by_slug`.
@@ -126,6 +110,28 @@ def test_scorekeeper_retrieve_by_slug(scorekeeper_slug: str):
     assert "pronouns" in info, f"'pronouns' was not returned for ID {scorekeeper_slug}"
 
 
+@pytest.mark.parametrize("scorekeeper_id", [13])
+def test_scorekeeper_retrieve_details_by_id(scorekeeper_id: int):
+    """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_details_by_id`.
+
+    :param scorekeeper_id: Scorekeeper ID to test retrieving scorekeeper
+        details
+    """
+    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
+    info = scorekeeper.retrieve_details_by_id(scorekeeper_id)
+
+    assert info, f"Scorekeeper ID {scorekeeper_id} not found"
+    assert "name" in info, f"'name' was not returned for ID {scorekeeper_id}"
+    assert "slug" in info, f"'slug' was not returned for ID {scorekeeper_id}"
+    assert "pronouns" in info, f"'pronouns' was not returned for ID {scorekeeper_id}"
+    assert "is_panelist" in info, (
+        f"'is_panelist' was not returned for ID {scorekeeper_id}"
+    )
+    assert "appearances" in info, (
+        f"'appearances' was not returned for ID {scorekeeper_id}"
+    )
+
+
 @pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson"])
 def test_scorekeeper_retrieve_details_by_slug(scorekeeper_slug: str):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_details_by_slug`.
@@ -138,8 +144,13 @@ def test_scorekeeper_retrieve_details_by_slug(scorekeeper_slug: str):
 
     assert info, f"Scorekeeper slug {scorekeeper_slug} not found"
     assert "name" in info, f"'name' was not returned for slug {scorekeeper_slug}"
-    assert "slug" in info, f"'slug' was not returned for ID {scorekeeper_slug}"
-    assert "pronouns" in info, f"'pronouns' was not returned for ID {scorekeeper_slug}"
+    assert "slug" in info, f"'slug' was not returned for slug {scorekeeper_slug}"
+    assert "pronouns" in info, (
+        f"'pronouns' was not returned for slug {scorekeeper_slug}"
+    )
+    assert "is_panelist" in info, (
+        f"'is_panelist' was not returned for slug {scorekeeper_slug}"
+    )
     assert "appearances" in info, (
         f"'appearances' was not returned for slug {scorekeeper_slug}"
     )
