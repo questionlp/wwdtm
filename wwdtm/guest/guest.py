@@ -14,6 +14,9 @@ from slugify import slugify
 
 from wwdtm.guest.appearances import GuestAppearances
 from wwdtm.guest.utility import GuestUtility
+from wwdtm.host.utility import HostUtility
+from wwdtm.panelist.utility import PanelistUtility
+from wwdtm.scorekeeper.utility import ScorekeeperUtility
 from wwdtm.validation import valid_int_id
 
 
@@ -84,8 +87,9 @@ class Guest:
         """Retrieves guest information and appearances for all guests.
 
         :return: A list of dictionaries containing guest ID, name, slug
-            string, and a list of appearances with show flags, scores
-            and scoring exceptions
+            string, whether the guest is also a host, panelist or
+            scorekeeper, and a list of appearances with show flags,
+            scores and scoring exceptions
         """
         query = """
             SELECT guestid AS id, guest AS name, guestslug AS slug
@@ -102,12 +106,27 @@ class Guest:
             return []
 
         guests = []
+        _host_utility = HostUtility(database_connection=self.database_connection)
+        _panelist_utility = PanelistUtility(
+            database_connection=self.database_connection
+        )
+        _scorekeeper_utility = ScorekeeperUtility(
+            database_connection=self.database_connection
+        )
         for row in results:
+            _slug = row["slug"] if row["slug"] else slugify(row["name"])
             guests.append(
                 {
                     "id": row["id"],
                     "name": row["name"],
-                    "slug": row["slug"] if row["slug"] else slugify(row["name"]),
+                    "slug": _slug,
+                    "is_host": bool(_host_utility.slug_exists(host_slug=_slug)),
+                    "is_panelist": bool(
+                        _panelist_utility.slug_exists(panelist_slug=_slug)
+                    ),
+                    "is_scorekeeper": bool(
+                        _scorekeeper_utility.slug_exists(scorekeeper_slug=_slug)
+                    ),
                     "appearances": self.appearances.retrieve_appearances_by_id(
                         row["id"]
                     ),
@@ -209,7 +228,8 @@ class Guest:
 
         :param guest_id: Guest ID
         :return: A dictionary containing guest ID, name, slug string,
-            list of appearances with show flags, scores and scoring
+            whether the guest is also a host, panelist or scorekeeper,
+            and list of appearances with show flags, scores and scoring
             exceptions
         """
         if not valid_int_id(guest_id):
@@ -219,6 +239,21 @@ class Guest:
         if not info:
             return {}
 
+        _host_utility = HostUtility(database_connection=self.database_connection)
+        _panelist_utility = PanelistUtility(
+            database_connection=self.database_connection
+        )
+        _scorekeeper_utility = ScorekeeperUtility(
+            database_connection=self.database_connection
+        )
+
+        info["is_host"] = bool(_host_utility.slug_exists(host_slug=info["slug"]))
+        info["is_panelist"] = bool(
+            _panelist_utility.slug_exists(panelist_slug=info["slug"])
+        )
+        info["is_scorekeeper"] = bool(
+            _scorekeeper_utility.slug_exists(scorekeeper_slug=info["slug"])
+        )
         info["appearances"] = self.appearances.retrieve_appearances_by_id(guest_id)
 
         return info
@@ -228,7 +263,8 @@ class Guest:
 
         :param guest_slug: Guest slug string
         :return: A dictionary containing guest ID, name, slug string,
-            list of appearances with show flags, scores and scoring
+            whether the guest is also a host, panelist or scorekeeper,
+            and list of appearances with show flags, scores and scoring
             exceptions
         """
         try:
@@ -302,7 +338,8 @@ class Guest:
         """Retrieves information and appearances for a random guest.
 
         :return: A dictionary containing guest ID, name, slug string,
-            list of appearances with show flags, scores and scoring
+            whether the guest is also a host, panelist or scorekeeper,
+            and list of appearances with show flags, scores and scoring
             exceptions
         """
         _id = self.retrieve_random_id()

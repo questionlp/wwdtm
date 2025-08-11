@@ -12,8 +12,11 @@ from mysql.connector.connection import MySQLConnection
 from mysql.connector.pooling import PooledMySQLConnection
 from slugify import slugify
 
+from wwdtm.guest.utility import GuestUtility
 from wwdtm.host.appearances import HostAppearances
 from wwdtm.host.utility import HostUtility
+from wwdtm.panelist.utility import PanelistUtility
+from wwdtm.scorekeeper.utility import ScorekeeperUtility
 from wwdtm.validation import valid_int_id
 
 
@@ -50,7 +53,7 @@ class Host:
         """Retrieves host information for all hosts.
 
         :return: A list of dictionaries containing host ID, name, slug
-            string and gender for each host
+            string, gender and pronouns for each host
         """
         query = """
             SELECT h.hostid AS id, h.host AS name, h.hostslug AS slug,
@@ -102,8 +105,9 @@ class Host:
         """Retrieves host information and appearances for all hosts.
 
         :return: A list of dictionaries containing host ID, name, slug
-            string, gender and a list of appearances with show flags for
-            each host
+            string, gender, pronouns, whether the host is also a guest,
+            host or scorekeeper, and a list of appearances with show
+            flags for each host
         """
         query = """
             SELECT h.hostid AS id, h.host AS name, h.hostslug AS slug,
@@ -120,9 +124,17 @@ class Host:
             return []
 
         hosts = []
+        _guest_utility = GuestUtility(database_connection=self.database_connection)
+        _panelist_utility = PanelistUtility(
+            database_connection=self.database_connection
+        )
+        _scorekeeper_utility = ScorekeeperUtility(
+            database_connection=self.database_connection
+        )
 
         cursor = self.database_connection.cursor(dictionary=True)
         for row in results:
+            _slug = row["slug"] if row["slug"] else slugify(row["name"])
             query = """
                 SELECT pn.pronouns
                 FROM ww_hostpronounsmap hpm
@@ -137,12 +149,19 @@ class Host:
                 {
                     "id": row["id"],
                     "name": row["name"],
-                    "slug": row["slug"] if row["slug"] else slugify(row["name"]),
+                    "slug": _slug,
                     "gender": row["gender"],
                     "pronouns": (
                         [result["pronouns"] for result in pn_results]
                         if pn_results
                         else []
+                    ),
+                    "is_guest": bool(_guest_utility.slug_exists(guest_slug=_slug)),
+                    "is_panelist": bool(
+                        _panelist_utility.slug_exists(panelist_slug=_slug)
+                    ),
+                    "is_scorekeeper": bool(
+                        _scorekeeper_utility.slug_exists(scorekeeper_slug=_slug)
                     ),
                     "appearances": self.appearances.retrieve_appearances_by_id(
                         row["id"]
@@ -255,8 +274,9 @@ class Host:
         """Retrieves host information and appearances.
 
         :param host_id: Host ID
-        :return: A dictionary containing host ID, name, gender, slug
-            string and a list of appearances with show flags
+        :return: A dictionary containing host ID, name, slug string,
+            gender, pronouns, whether the host is also a guest, host or
+            scorekeeper, and a list of appearances with show flags
         """
         if not valid_int_id(host_id):
             return {}
@@ -265,6 +285,21 @@ class Host:
         if not info:
             return {}
 
+        _guest_utility = GuestUtility(database_connection=self.database_connection)
+        _panelist_utility = PanelistUtility(
+            database_connection=self.database_connection
+        )
+        _scorekeeper_utility = ScorekeeperUtility(
+            database_connection=self.database_connection
+        )
+
+        info["is_guest"] = bool(_guest_utility.slug_exists(guest_slug=info["slug"]))
+        info["is_panelist"] = bool(
+            _panelist_utility.slug_exists(panelist_slug=info["slug"])
+        )
+        info["is_scorekeeper"] = bool(
+            _scorekeeper_utility.slug_exists(scorekeeper_slug=info["slug"])
+        )
         info["appearances"] = self.appearances.retrieve_appearances_by_id(host_id)
 
         return info
@@ -273,8 +308,9 @@ class Host:
         """Retrieves host information and appearances.
 
         :param host_slug: Host slug string
-        :return: A dictionary containing host ID, name, slug string and
-            a list of appearances with show flags
+        :return: A dictionary containing host ID, name, slug string,
+            gender, pronouns, whether the host is also a guest, host or
+            scorekeeper, and a list of appearances with show flags
         """
         try:
             slug = host_slug.strip()
@@ -347,8 +383,9 @@ class Host:
     def retrieve_random_details(self) -> dict[str, Any]:
         """Retrieves information and appearances for a random host.
 
-        :return: A dictionary containing host ID, name, gender, slug
-            string and a list of appearances with show flags
+        :return: A dictionary containing host ID, name, slug string,
+            gender, pronouns, whether the host is also a guest, host or
+            scorekeeper, and a list of appearances with show flags
         """
         _id = self.retrieve_random_id()
 

@@ -2,6 +2,32 @@
 Changes
 *******
 
+2.20.0
+======
+
+Application Changes
+-------------------
+
+* Added ``is_host``, ``is_panelist`` and ``is_scorekeeper`` keys for all returned guest details with boolean values whether a Not My Job guest has also been a host, panelist or scorekeeper
+* Added ``is_guest``, ``is_panelist`` and ``is_scorekeeper`` keys for all returned host details with boolean values whether a host has also been a Not My Job guest, panelist or scorekeeper
+* Added ``is_guest``, ``is_host`` and ``is_scorekeeper`` keys for all returned panelist details with boolean values whether a panelist has also been a guest, host or scorekeeper
+* Added ``is_guest``, ``is_host`` and ``is_panelist`` keys for all returned scorekeeper details with boolean values whether a scorekeeper has also been a guest, host or panelist
+* Added tests for one of the three newly added keys for guests, hosts, panelists and scorekeeper
+* Changed incorrect references to ID to slug string in test assertion messages
+
+Component Changes
+-----------------
+
+* Upgrade NumPy from 2.1.2 to 2.2.6
+
+Development Changes
+-------------------
+
+* Upgrade Ruff from 0.11.9 to 0.12.8
+* Upgrade pytest from 8.3.5 to 8.4.1
+* Upgrade pytest-cov from 6.1.1 to 6.2.1
+* Upgrade build from 1.2.2.post1 to 1.3.0
+
 2.19.0
 ======
 

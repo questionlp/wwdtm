@@ -12,9 +12,12 @@ from mysql.connector.connection import MySQLConnection
 from mysql.connector.pooling import PooledMySQLConnection
 from slugify import slugify
 
+from wwdtm.guest.utility import GuestUtility
+from wwdtm.host.utility import HostUtility
 from wwdtm.panelist.appearances import PanelistAppearances
 from wwdtm.panelist.statistics import PanelistStatistics
 from wwdtm.panelist.utility import PanelistUtility
+from wwdtm.scorekeeper.utility import ScorekeeperUtility
 from wwdtm.validation import valid_int_id
 
 
@@ -56,7 +59,7 @@ class Panelist:
         """Retrieve panelist information for all panelists.
 
         :return: A list of dictionaries containing panelist ID, name,
-            slug string and gender for each panelist
+            slug string, gender and pronouns for each panelist
         """
         query = """
             SELECT p.panelistid AS id, p.panelist AS name, p.panelistslug AS slug,
@@ -111,8 +114,9 @@ class Panelist:
         :param use_decimal_scores: A boolean to determine if decimal
             scores should be used and returned instead of integer scores
         :return: A list of dictionaries containing panelist ID, name,
-            slug string, gender, scoring statistics and appearances for
-            each panelist
+            slug string, gender, pronouns, whether the panelist is
+            also a guest, host or scorekeeper, scoring statistics and
+            appearances for each panelist
         """
         query = """
             SELECT p.panelistid AS id, p.panelist AS name, p.panelistslug AS slug,
@@ -130,9 +134,15 @@ class Panelist:
             return []
 
         panelists = []
+        _guest_utility = GuestUtility(database_connection=self.database_connection)
+        _host_utility = HostUtility(database_connection=self.database_connection)
+        _scorekeeper_utility = ScorekeeperUtility(
+            database_connection=self.database_connection
+        )
 
         cursor = self.database_connection.cursor(dictionary=True)
         for row in results:
+            _slug = row["slug"] if row["slug"] else slugify(row["name"])
             query = """
                 SELECT pn.pronouns
                 FROM ww_panelistpronounsmap ppm
@@ -146,12 +156,17 @@ class Panelist:
                 {
                     "id": row["id"],
                     "name": row["name"],
-                    "slug": row["slug"] if row["slug"] else slugify(row["name"]),
+                    "slug": _slug,
                     "gender": row["gender"],
                     "pronouns": (
                         [result["pronouns"] for result in pn_results]
                         if pn_results
                         else []
+                    ),
+                    "is_guest": bool(_guest_utility.slug_exists(guest_slug=_slug)),
+                    "is_host": bool(_host_utility.slug_exists(host_slug=_slug)),
+                    "is_scorekeeper": bool(
+                        _scorekeeper_utility.slug_exists(scorekeeper_slug=_slug)
                     ),
                     "statistics": self.statistics.retrieve_statistics_by_id(
                         row["id"], include_decimal_scores=use_decimal_scores
@@ -209,8 +224,8 @@ class Panelist:
         """Retrieves panelist information.
 
         :param panelist_id: Panelist ID
-        :return: A dictionary containing panelist ID, name, slug string
-            and gender
+        :return: A dictionary containing panelist ID, name, slug string,
+            gender and pronouns
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -254,8 +269,8 @@ class Panelist:
         """Retrieves panelist information.
 
         :param panelist_slug: Panelist slug string
-        :return: A dictionary containing panelist ID, name, slug string
-            and gender
+        :return: A dictionary containing panelist ID, name, slug string,
+            gender and pronouns
         """
         try:
             slug = panelist_slug.strip()
@@ -279,7 +294,8 @@ class Panelist:
         :param use_decimal_scores: A boolean to determine if decimal
             scores should be used and returned instead of integer scores
         :return: A dictionary containing panelist ID, name, slug string,
-            gender, scoring statistics and appearances
+            gender, pronouns, whether the panelist is also a guest, host
+            or scorekeeper, scoring statistics and appearances
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -287,6 +303,18 @@ class Panelist:
         info = self.retrieve_by_id(panelist_id)
         if not info:
             return {}
+
+        _guest_utility = GuestUtility(database_connection=self.database_connection)
+        _host_utility = HostUtility(database_connection=self.database_connection)
+        _scorekeeper_utility = ScorekeeperUtility(
+            database_connection=self.database_connection
+        )
+
+        info["is_guest"] = bool(_guest_utility.slug_exists(guest_slug=info["slug"]))
+        info["is_host"] = bool(_host_utility.slug_exists(host_slug=info["slug"]))
+        info["is_scorekeeper"] = bool(
+            _scorekeeper_utility.slug_exists(scorekeeper_slug=info["slug"])
+        )
 
         info["statistics"] = self.statistics.retrieve_statistics_by_id(
             panelist_id, include_decimal_scores=use_decimal_scores
@@ -307,7 +335,8 @@ class Panelist:
         :param use_decimal_scores: A boolean to determine if decimal
             scores should be used and returned instead of integer scores
         :return: A dictionary containing panelist ID, name, slug string,
-            gender, scoring statistics and appearances
+            gender, pronouns, whether the panelist is also a guest, host
+            or scorekeeper, scoring statistics and appearances
         """
         try:
             slug = panelist_slug.strip()
@@ -383,7 +412,8 @@ class Panelist:
         """Retrieves information and appearances for a random panelist.
 
         :return: A dictionary containing panelist ID, name, slug string,
-            gender, scoring statistics and appearances
+            gender, pronouns, whether the panelist is also a guest, host
+            or scorekeeper, scoring statistics and appearances
         """
         _id = self.retrieve_random_id()
 

@@ -50,6 +50,9 @@ def test_host_retrieve_all_details():
     assert "name" in hosts[0], "'name' was not returned for the first list item"
     assert "slug" in hosts[0], "'slug' was not returned for the first list item"
     assert "pronouns" in hosts[0], "'pronouns' was not returned for the first list item"
+    assert "is_panelist" in hosts[0], (
+        "'is_panelist' was not returned for first list item"
+    )
     assert "appearances" in hosts[0], (
         "'appearances' was not returned for thefirst list item"
     )
@@ -86,22 +89,6 @@ def test_host_retrieve_by_id(host_id: int):
     assert "pronouns" in info, f"'pronouns' was not returned for ID {host_id}"
 
 
-@pytest.mark.parametrize("host_id", [2])
-def test_host_retrieve_details_by_id(host_id: int):
-    """Testing for :py:meth:`wwdtm.host.Host.retrieve_details_by_id`.
-
-    :param host_id: Host ID to test retrieving host details
-    """
-    host = Host(connect_dict=get_connect_dict())
-    info = host.retrieve_details_by_id(host_id)
-
-    assert info, f"Host ID {host_id} not found"
-    assert "name" in info, f"'name' was not returned for ID {host_id}"
-    assert "slug" in info, f"'slug' was not returned for ID {host_id}"
-    assert "pronouns" in info, f"'pronouns' was not returned for ID {host_id}"
-    assert "appearances" in info, f"'appearances' was not returned for ID {host_id}"
-
-
 @pytest.mark.parametrize("host_slug", ["luke-burbank"])
 def test_host_retrieve_by_slug(host_slug: str):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_by_slug`.
@@ -118,6 +105,23 @@ def test_host_retrieve_by_slug(host_slug: str):
     assert "pronouns" in info, f"'pronouns' was not returned for ID {host_slug}"
 
 
+@pytest.mark.parametrize("host_id", [2])
+def test_host_retrieve_details_by_id(host_id: int):
+    """Testing for :py:meth:`wwdtm.host.Host.retrieve_details_by_id`.
+
+    :param host_id: Host ID to test retrieving host details
+    """
+    host = Host(connect_dict=get_connect_dict())
+    info = host.retrieve_details_by_id(host_id)
+
+    assert info, f"Host ID {host_id} not found"
+    assert "name" in info, f"'name' was not returned for ID {host_id}"
+    assert "slug" in info, f"'slug' was not returned for ID {host_id}"
+    assert "pronouns" in info, f"'pronouns' was not returned for ID {host_id}"
+    assert "is_panelist" in info, f"'is_panelist' was not returned for ID {host_id}"
+    assert "appearances" in info, f"'appearances' was not returned for ID {host_id}"
+
+
 @pytest.mark.parametrize("host_slug", ["luke-burbank"])
 def test_host_retrieve_details_by_slug(host_slug: str):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_details_by_slug`.
@@ -129,8 +133,9 @@ def test_host_retrieve_details_by_slug(host_slug: str):
 
     assert info, f"Host slug {host_slug} not found"
     assert "name" in info, f"'name' was not returned for slug {host_slug}"
-    assert "slug" in info, f"'slug' was not returned for ID {host_slug}"
-    assert "pronouns" in info, f"'pronouns' was not returned for ID {host_slug}"
+    assert "slug" in info, f"'slug' was not returned for slug {host_slug}"
+    assert "pronouns" in info, f"'pronouns' was not returned for slug {host_slug}"
+    assert "is_panelist" in info, f"'is_panelist' was not returned for slug {host_slug}"
     assert "appearances" in info, f"'appearances' was not returned for slug {host_slug}"
 
 

@@ -44,6 +44,9 @@ def test_guest_retrieve_all_details():
 
     assert guests, "No guests could be retrieved"
     assert "id" in guests[0], "'id' was not returned for first list item"
+    assert "is_panelist" in guests[0], (
+        "'is_panelist' was not returned for first list item"
+    )
     assert "appearances" in guests[0], (
         "'appearances' was not returned for the first list item"
     )
@@ -103,6 +106,9 @@ def test_guest_retrieve_details_by_id(guest_id: int):
 
     assert info, f"Guest ID {guest_id} not found"
     assert "name" in info, f"'name' attribute was not returned for ID {guest_id}"
+    assert "is_panelist" in info, (
+        f"'is_panelist' attribute was not returned for ID {guest_id}"
+    )
     assert "appearances" in info, f"'appearances' was not returned for ID {guest_id}"
 
 
@@ -117,6 +123,9 @@ def test_guest_guest_retrieve_details_by_slug(guest_slug: str):
 
     assert info, f"Guest slug {guest_slug} not found"
     assert "name" in info, f"'name' was not returned for slug {guest_slug}"
+    assert "is_panelist" in info, (
+        f"'is_panelist' attribute was not returned for slug {guest_slug}"
+    )
     assert "appearances" in info, (
         f"'appearances' was not returned for slug {guest_slug}"
     )
