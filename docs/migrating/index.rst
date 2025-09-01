@@ -22,11 +22,11 @@ modules:
 Python Version
 ==============
 
-Starting with version 2.5.0, ``wwdtm`` has deprecated all versions of Python
-prior to 3.10.
+Starting with version 2.21.0, ``wwdtm`` has deprecated all versions of Python
+prior to 3.12.
 
-All development and testing of ``wwdtm`` is done using Python 3.10 and
-3.12.
+All development and testing of ``wwdtm`` is done using Python 3.12, with
+preliminary support for 3.13.
 
 Handling Database Connections
 =============================

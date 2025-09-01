@@ -2,6 +2,45 @@
 Changes
 *******
 
+2.21.0-alpha.1
+==============
+
+Application Changes
+-------------------
+
+* Raised the minimum supported version of Python from 3.10 to 3.12
+
+  * Updated ``project.requires-python`` from ``>=3.10`` to ``>=3.12``
+  * Updated ``tools.ruff.target-version`` from ``py310`` to ``py312`` in ``pyproject.toml``
+  * Removed Python 3.10 and 3.11 and added Python 3.13 from ``project.classifiers``
+
+Component Changes
+-----------------
+
+* Upgraded MySQL Connector/Python from 9.1.0 to 9.4.0
+* Upgraded NumPy from 2.2.6 to 2.3.2
+
+Development Changes
+-------------------
+
+* Added twine version 6.1.0
+* Upgraded Ruff from 0.12.8 to 0.12.10
+
+
+Documentation Changes
+---------------------
+
+* Matched the same upgrades as listed in Component Changes and Development Changes
+* Added Matplotlib version 3.10.5
+* Upgraded furo from 2024.8.6 to 2025.7.19
+* Upgraded pytest from 8.3.6 to 8.4.1
+* Upgraded Sphinx from 8.1.3 to 8.2.3
+* Upgraded sphinx-autodoc-typehint from 2.5.0 to 3.2.0
+* Upgraded sphinx-toolbox from 3.8.1 to 4.0.0
+* Upgraded sphinxext-opengraph from 0.9.1 to 0.12.0
+* Added a "Versioning" section to index page
+
+
 2.20.0
 ======
 

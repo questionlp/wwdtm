@@ -1,14 +1,15 @@
-pytest==8.3.5
+pytest==8.4.1
 
-mysql-connector-python==9.1.0
-numpy==2.2.6
+mysql-connector-python==9.4.0
+numpy==2.3.2
 python-slugify==8.0.4
 pytz==2025.2
 
-Sphinx==8.1.3
+Sphinx==8.2.3
 sphinx-autobuild==2024.10.3
-sphinx-autodoc-typehints==2.5.0
+sphinx-autodoc-typehints==3.2.0
 sphinx-copybutton==0.5.2
-sphinx-toolbox==3.8.1
-sphinxext-opengraph==0.9.1
-furo==2024.8.6
+sphinx-toolbox==4.0.0
+sphinxext-opengraph==0.12.0
+furo==2025.7.19
+matplotlib==3.10.5
