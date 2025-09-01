@@ -28,6 +28,15 @@ Known Issues
 
 A list of known issues is documented in the ":doc:`/known_issues`" page.
 
+Versioning
+==========
+
+This project does its best to follow `Semantic Versioning 2.0.0`_ starting with
+version 2.0 of the library. There have been some semantic versioning errors made
+since the initial release of version 2.0.
+
+.. _Semantic Versioning 2.0.0: https://semver.org/spec/v2.0.0.html
+
 Table of Contents
 =================
 

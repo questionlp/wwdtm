@@ -14,11 +14,12 @@ library is available at `PyPI`_.
 Requirements
 ============
 
-Starting with version 2.5.0, the minimum supported version of Python has been
-changed from Python 3.8 to 3.10. All versions prior to 3.10 will no longer
+Starting with version 2.21.0, the minimum supported version of Python has been
+changed from Python 3.10 to 3.12. All versions prior to 3.12 will no longer
 be supported.
 
-Testing for this library has been done using Python 3.10 and 3.12.
+Testing for this library has been done using Python 3.12 and preliminary testing
+has been started for Python 3.13.
 
 In addition to the Python version requirement, the library depends on a copy
 of the `Wait Wait Stats Database`_ running on a MySQL Server (or a distribution
@@ -83,6 +84,15 @@ For documentation on known issues with this project, check out the
 .. _Python Developer's Guide: https://devguide.python.org/documenting/#style-guide
 .. _docs.wwdt.me: https://docs.wwdt.me/
 .. _Known Issues: https://docs.wwdt.me/known_issues.html
+
+Versioning
+==========
+
+This project does its best to follow `Semantic Versioning 2.0.0`_ starting with
+version 2.0 of the library. There have been some semantic versioning errors made
+since the initial release of version 2.0.
+
+.. _Semantic Versioning 2.0.0: https://semver.org/spec/v2.0.0.html
 
 Code of Conduct
 ===============
