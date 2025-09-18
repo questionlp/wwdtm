@@ -25,6 +25,11 @@ In addition to the Python version requirement, the library depends on a copy
 of the `Wait Wait Stats Database`_ running on a MySQL Server (or a distribution
 of MySQL Server like Percona) running version 8.0 or higher.
 
+Support for MariaDB is highly experimental and not a guarantee. Initial tests
+have successfully been run a Debian 13 server with MariaDB 11.8 installed. Other
+versions have not been tested and data validation of the results have also not
+been completed at this time.
+
 Running Tests
 =============
 

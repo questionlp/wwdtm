@@ -2,7 +2,7 @@
 Changes
 *******
 
-2.21.0-alpha.1
+2.21.0-beta
 ==============
 
 Application Changes
@@ -13,6 +13,8 @@ Application Changes
   * Updated ``project.requires-python`` from ``>=3.10`` to ``>=3.12``
   * Updated ``tools.ruff.target-version`` from ``py310`` to ``py312`` in ``pyproject.toml``
   * Removed Python 3.10 and 3.11 and added Python 3.13 from ``project.classifiers``
+
+* Add experimental support for MariaDB Server 11.8
 
 Component Changes
 -----------------
