@@ -3,6 +3,11 @@
 If you would like to contribute to this projects, there are a few guidelines
 that you'll want to review below.
 
+## AI Generated Code
+
+This project does not accept pull requests or bugfixes that include code that
+has been partially or wholly generated using AI.
+
 ## Code of Conduct
 
 The Code of Conduct for this project is adapted from the Contributor Covenant,
