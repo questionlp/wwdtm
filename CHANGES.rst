@@ -23,13 +23,13 @@ Component Changes
 -----------------
 
 * Upgraded MySQL Connector/Python from 9.1.0 to 9.4.0
-* Upgraded NumPy from 2.2.6 to 2.3.2
+* Upgraded NumPy from 2.2.6 to 2.3.3
 
 Development Changes
 -------------------
 
-* Added twine version 6.1.0
-* Upgraded Ruff from 0.12.8 to 0.12.10
+* Added twine version 6.2.0
+* Upgraded Ruff from 0.12.8 to 0.13.3
 
 
 Documentation Changes
