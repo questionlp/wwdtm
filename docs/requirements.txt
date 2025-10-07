@@ -1,7 +1,7 @@
 pytest==8.4.1
 
 mysql-connector-python==9.4.0
-numpy==2.3.2
+numpy==2.3.3
 python-slugify==8.0.4
 pytz==2025.2
 
@@ -11,5 +11,5 @@ sphinx-autodoc-typehints==3.2.0
 sphinx-copybutton==0.5.2
 sphinx-toolbox==4.0.0
 sphinxext-opengraph==0.12.0
-furo==2025.7.19
+furo==2025.9.25
 matplotlib==3.10.5

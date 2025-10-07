@@ -37,7 +37,7 @@ Documentation Changes
 
 * Matched the same upgrades as listed in Component Changes and Development Changes
 * Added Matplotlib version 3.10.5
-* Upgraded furo from 2024.8.6 to 2025.7.19
+* Upgraded furo from 2024.8.6 to 2025.9.25
 * Upgraded pytest from 8.3.6 to 8.4.1
 * Upgraded Sphinx from 8.1.3 to 8.2.3
 * Upgraded sphinx-autodoc-typehint from 2.5.0 to 3.2.0
