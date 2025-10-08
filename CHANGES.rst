@@ -12,7 +12,7 @@ Application Changes
 
   * Updated ``project.requires-python`` from ``>=3.10`` to ``>=3.12``
   * Updated ``tools.ruff.target-version`` from ``py310`` to ``py312`` in ``pyproject.toml``
-  * Removed Python 3.10 and 3.11 and added Python 3.13 from ``project.classifiers``
+  * Replaced Python 3.10 and 3.11 with Python 3.13 and 3.14 in ``project.classifiers``
 
 * Added provisional support for MariaDB Server 11.8 (LTS) and 12 (rolling release)
 
