@@ -1,4 +1,4 @@
-# Copyright (c) 2018-2024 Linh Pham
+# Copyright (c) 2018-2025 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -26,7 +26,7 @@ from wwdtm.panelist import (
 from wwdtm.scorekeeper import Scorekeeper, ScorekeeperAppearances, ScorekeeperUtility
 from wwdtm.show import Show, ShowInfo, ShowInfoMultiple, ShowUtility
 
-VERSION = "2.20.0"
+VERSION = "2.21.0"
 
 
 def database_version(

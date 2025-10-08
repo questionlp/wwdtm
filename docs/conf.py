@@ -1,4 +1,4 @@
-# Copyright (c) 2018-2024 Linh Pham
+# Copyright (c) 2018-2025 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -31,7 +31,17 @@ exclude_patterns = [
     "Thumbs.db",
     ".DS_Store",
     ".git",
+    ".venv",
+    ".venv*",
     "venv",
+    "venv*",
+    "LICENSE",
+    "DESCRIPTION",
+]
+
+source_suffix = [
+    ".rst",
+    ".md",
 ]
 
 html_theme = "furo"

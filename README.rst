@@ -14,15 +14,26 @@ library is available at `PyPI`_.
 Requirements
 ============
 
-Starting with version 2.5.0, the minimum supported version of Python has been
-changed from Python 3.8 to 3.10. All versions prior to 3.10 will no longer
+Starting with version 2.21.0, the minimum supported version of Python has been
+changed from Python 3.10 to 3.12. All versions prior to 3.12 will no longer
 be supported.
 
-Testing for this library has been done using Python 3.10 and 3.12.
+Testing for this library has been done using Python 3.12 and preliminary testing
+has been started for Python 3.13.
 
 In addition to the Python version requirement, the library depends on a copy
 of the `Wait Wait Stats Database`_ running on a MySQL Server (or a distribution
 of MySQL Server like Percona) running version 8.0 or higher.
+
+Starting with version 2.21.0, experimental support has been added for MariaDB
+versions 11.8 and 12.0. Test runs have been run successfully against a MariaDB
+Server 11.8 and 12.0 running on Debian 13. Versions prior to 11.8 have not and
+will not be tested.
+
+If you are planning to use MariaDB instead of MySQL, it is recommended that
+version 11.8 is used over 12 due to the former being on a stable release train
+while the latter is on a rolling release train. Rolling releases can introduce
+regressions or breaking changes that are generally avoided with stable releases.
 
 Running Tests
 =============
@@ -84,12 +95,37 @@ For documentation on known issues with this project, check out the
 .. _docs.wwdt.me: https://docs.wwdt.me/
 .. _Known Issues: https://docs.wwdt.me/known_issues.html
 
+Versioning
+==========
+
+This project does its best to follow `Semantic Versioning 2.0.0`_ starting with
+version 2.0 of the library. There have been some semantic versioning errors made
+since the initial release of version 2.0.
+
+.. _Semantic Versioning 2.0.0: https://semver.org/spec/v2.0.0.html
+
+Contributing
+============
+
+If you would like to contribute to this project, please refer to the
+`Contributing Guidelines`_ file in this repository.
+
+AI Generated Code
+-----------------
+
+Please note that this project does not accept pull requests or bugfixes that
+include code that has been partially or wholly generated using AI.
+
+.. _Contributing Guidelines: https://github.com/questionlp/wwdtm/blob/main/CONTRIBUTING.md
+
 Code of Conduct
 ===============
 
-The Code of Conduct for this project is adapted from the Contributor Covenant, version 3.0, permanently available at: https://www.contributor-covenant.org/version/3/0/.
+The Code of Conduct for this project is adapted from the Contributor Covenant,
+version 3.0, permanently available at: https://www.contributor-covenant.org/version/3/0/.
 
-The adapted version with instructions on how to report possible violations are available in the `Code of Conduct`_ file in this repository.
+The adapted version with instructions on how to report possible violations are
+available in the `Code of Conduct`_ file in this repository.
 
 .. _Code of Conduct: https://github.com/questionlp/wwdtm/blob/main/CODE_OF_CONDUCT.md
 
