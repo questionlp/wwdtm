@@ -2,6 +2,17 @@
 Changes
 *******
 
+2.21.1
+======
+
+Application Changes
+-------------------
+
+* Add ``score_exception`` to panelist appearance details across the board
+
+  * The ``score_exception`` is a boolean flag that is set to ``True`` if the total score does not equal the sum of the starting score and the number of correct answers doubled
+  * Exceptions can happen due to bonus points available in shows from 1998, an incorrect calculation or statement when the scorekeeper announces a panelist's score
+
 2.21.0
 ======
 

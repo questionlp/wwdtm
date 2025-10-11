@@ -170,6 +170,20 @@ class PanelistAppearances:
         if result:
             appearances = []
             for appearance in results:
+                _score_exception = False
+                if use_decimal_scores:
+                    start = appearance.get("start_decimal")
+                    correct = appearance.get("correct_decimal")
+                    score = appearance.get("score_decimal")
+                    if start and correct and score and score != (start + (correct * 2)):
+                        _score_exception = True
+                else:
+                    start = appearance.get("start")
+                    correct = appearance.get("correct")
+                    score = appearance.get("score")
+                    if start and correct and score and score != (start + (correct * 2)):
+                        _score_exception = True
+
                 info = {
                     "show_id": appearance["show_id"],
                     "date": appearance["date"].isoformat(),
@@ -185,6 +199,7 @@ class PanelistAppearances:
                     ),
                     "score": appearance["score"],
                     "score_decimal": appearance.get("score_decimal", None),
+                    "score_exception": _score_exception,
                     "rank": appearance.get("pnl_rank", None),
                 }
                 appearances.append(info)
