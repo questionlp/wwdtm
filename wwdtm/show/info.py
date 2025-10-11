@@ -394,6 +394,20 @@ class ShowInfo:
 
         panelists = []
         for row in results:
+            _score_exception = False
+            if include_decimal_scores:
+                start = row.get("start_decimal")
+                correct = row.get("correct_decimal")
+                score = row.get("score_decimal")
+                if start and correct and score and score != (start + (correct * 2)):
+                    _score_exception = True
+            else:
+                start = row.get("start")
+                correct = row.get("correct")
+                score = row.get("score")
+                if start and correct and score and score != (start + (correct * 2)):
+                    _score_exception = True
+
             panelists.append(
                 {
                     "id": row["id"],
@@ -405,6 +419,7 @@ class ShowInfo:
                     "lightning_round_correct_decimal": row.get("correct_decimal", None),
                     "score": row["score"],
                     "score_decimal": row.get("score_decimal", None),
+                    "score_exception": _score_exception,
                     "rank": row["pnl_rank"] if row["pnl_rank"] else None,
                 }
             )

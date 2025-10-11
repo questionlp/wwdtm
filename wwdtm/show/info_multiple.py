@@ -679,6 +679,20 @@ class ShowInfoMultiple:
             if panelist["show_id"] not in panelists:
                 panelists[panelist["show_id"]] = []
 
+            _score_exception = False
+            if include_decimal_scores:
+                start = panelist.get("start_decimal")
+                correct = panelist.get("correct_decimal")
+                score = panelist.get("score_decimal")
+                if start and correct and score and score != (start + (correct * 2)):
+                    _score_exception = True
+            else:
+                start = panelist.get("start")
+                correct = panelist.get("correct")
+                score = panelist.get("score")
+                if start and correct and score and score != (start + (correct * 2)):
+                    _score_exception = True
+
             panelists[panelist["show_id"]].append(
                 {
                     "id": panelist["panelist_id"],
@@ -698,6 +712,7 @@ class ShowInfoMultiple:
                     ),
                     "score": panelist["score"],
                     "score_decimal": panelist.get("score_decimal", None),
+                    "score_exception": _score_exception,
                     "rank": panelist["pnl_rank"] if panelist["pnl_rank"] else None,
                 }
             )
@@ -763,6 +778,20 @@ class ShowInfoMultiple:
             if panelist["show_id"] not in panelists:
                 panelists[panelist["show_id"]] = []
 
+            _score_exception = False
+            if include_decimal_scores:
+                start = panelist.get("start_decimal")
+                correct = panelist.get("correct_decimal")
+                score = panelist.get("score_decimal")
+                if start and correct and score and score != (start + (correct * 2)):
+                    _score_exception = True
+            else:
+                start = panelist.get("start")
+                correct = panelist.get("correct")
+                score = panelist.get("score")
+                if start and correct and score and score != (start + (correct * 2)):
+                    _score_exception = True
+
             panelists[panelist["show_id"]].append(
                 {
                     "id": panelist["panelist_id"],
@@ -786,6 +815,7 @@ class ShowInfoMultiple:
                     ),
                     "score": panelist["score"],
                     "score_decimal": panelist.get("score_decimal", None),
+                    "score_exception": _score_exception,
                     "rank": panelist["pnl_rank"] if panelist["pnl_rank"] else None,
                 }
             )

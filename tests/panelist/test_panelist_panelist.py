@@ -65,6 +65,15 @@ def test_panelist_retrieve_all_details(use_decimal_scores: bool):
     assert "appearances" in panelists[0], (
         "'appearances' was not returned for the first list item"
     )
+    assert panelists[0]["appearances"], (
+        "'appearances' does not contain data for the first list item"
+    )
+    assert "shows" in panelists[0]["appearances"], (
+        "'shows' was not included in 'appearances' for ID the first list item"
+    )
+    assert "score_exception" in panelists[0]["appearances"]["shows"][0], (
+        "'score_exception' was not included in first appearance for ID the first list item"
+    )
 
 
 def test_panelist_retrieve_all_ids():
@@ -83,7 +92,7 @@ def test_panelist_retrieve_all_slugs():
     assert slugs, "No panelist slug strings could be retrieved"
 
 
-@pytest.mark.parametrize("panelist_id", [14])
+@pytest.mark.parametrize("panelist_id", [13, 14])
 def test_panelist_retrieve_by_id(panelist_id: int):
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_by_id`.
 
@@ -99,7 +108,10 @@ def test_panelist_retrieve_by_id(panelist_id: int):
     assert "pronouns" in info, f"'pronouns' was not returned for ID {panelist_id}"
 
 
-@pytest.mark.parametrize("panelist_slug", ["luke-burbank", "drew-carey"])
+@pytest.mark.parametrize(
+    "panelist_slug",
+    ["drew-carey", "luke-burbank", "roxanne-roberts"],
+)
 def test_panelist_retrieve_by_slug(panelist_slug: str):
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_by_slug`.
 
@@ -115,7 +127,10 @@ def test_panelist_retrieve_by_slug(panelist_slug: str):
     assert "pronouns" in info, f"'pronouns' was not returned for slug {panelist_slug}"
 
 
-@pytest.mark.parametrize("panelist_id, use_decimal_scores", [(14, True), (14, False)])
+@pytest.mark.parametrize(
+    "panelist_id, use_decimal_scores",
+    [(13, True), (13, False), (14, True), (14, False)],
+)
 def test_panelist_retrieve_details_by_id(panelist_id: int, use_decimal_scores: bool):
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_details_by_id`.
 
@@ -134,11 +149,25 @@ def test_panelist_retrieve_details_by_id(panelist_id: int, use_decimal_scores: b
     assert "pronouns" in info, f"'pronouns' was not returned for ID {panelist_id}"
     assert "is_host" in info, f"'is_host' was not returned for ID {panelist_id}"
     assert "appearances" in info, f"'appearances' was not returned for ID {panelist_id}"
+    assert info["appearances"], (
+        f"'appearances' does not contain data for ID {panelist_id}"
+    )
+    assert "shows" in info["appearances"], (
+        f"'shows' was not included in 'appearances' for ID {panelist_id}"
+    )
+    assert "score_exception" in info["appearances"]["shows"][0], (
+        f"'score_exception' was not included in first appearance for ID {panelist_id}"
+    )
 
 
 @pytest.mark.parametrize(
     "panelist_slug, use_decimal_scores",
-    [("luke-burbank", True), ("luke-burbank", False)],
+    [
+        ("luke-burbank", True),
+        ("luke-burbank", False),
+        ("roxanne-roberts", True),
+        ("roxanne-roberts", False),
+    ],
 )
 def test_panelist_retrieve_details_by_slug(
     panelist_slug: str, use_decimal_scores: bool
@@ -162,6 +191,15 @@ def test_panelist_retrieve_details_by_slug(
     assert "is_host" in info, f"'is_host' was not returned for slug {panelist_slug}"
     assert "appearances" in info, (
         f"'appearances' was not returned for slug {panelist_slug}"
+    )
+    assert info["appearances"], (
+        f"'appearances' does not contain data for slug {panelist_slug}"
+    )
+    assert "shows" in info["appearances"], (
+        f"'shows' was not included in 'appearances' for slug {panelist_slug}"
+    )
+    assert "score_exception" in info["appearances"]["shows"][0], (
+        f"'score_exception' was not included in first appearance for slug {panelist_slug}"
     )
 
 

@@ -218,6 +218,9 @@ def test_show_info_retrieve_panelist_info_all(
         assert "score_decimal" in panelists[0], (
             f"'score_decimal' was not returned for the first panelist for show ID {show_id}"
         )
+    assert "score_exception" in panelists[0], (
+        f"'score_exception' was not returned for the first panelist for show ID {show_id}"
+    )
 
 
 @pytest.mark.parametrize(
@@ -258,3 +261,6 @@ def test_show_info_retrieve_panelist_info_by_ids(
                 assert "score_decimal" in panelists[0], (
                     f"'score_decimal' was not returned for the first panelist for show ID {show_id}"
                 )
+            assert "score_exception" in panelists[0], (
+                f"'score_exception' was not returned for the first panelist for show ID {show_id}"
+            )
