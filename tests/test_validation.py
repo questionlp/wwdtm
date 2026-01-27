@@ -1,6 +1,6 @@
 # vim: set noai syntax=python ts=4 sw=4:
 #
-# Copyright (c) 2018-2025 Linh Pham
+# Copyright (c) 2018-2026 Linh Pham
 # wwdtm is released under the terms of the Apache License 2.0
 """Testing for object: :py:class:`wwdtm.validation`."""
 

@@ -2,6 +2,50 @@
 Changes
 *******
 
+2.22.0
+======
+
+Application Changes
+-------------------
+
+* No changes to application code
+* Updated copyright end year from 2025 to 2026
+
+Component Changes
+-----------------
+
+* Upgraded MySQL Connector/Python from 9.4.0 to 9.5.0
+* Upgraded NumPy from 2.3.3 to 2.4.1
+
+Development Changes
+-------------------
+
+* Upgraded pytest from 8.4.1 to 9.0.2
+* Upgraded pytest-cov from 6.2.1 to 7.0.0
+* Upgraded Ruff from 0.13.3 to 0.14.14
+* Upgraded wheel from 0.45.1 to 0.46.3
+
+Documentation Changes
+---------------------
+
+* Upgraded application component changes
+
+  * Upgraded MySQL Connector/Python from 9.4.0 to 9.5.0
+  * Upgraded NumPy from 2.3.3 to 2.4.1
+
+* Upgraded development component changes
+
+  * Upgraded pytest from 8.4.1 to 9.0.2
+
+* Upgraded NumPy from 2.3.3 to 2.4.1
+* Upgraded Sphinx from 8.2.3 to 9.1.0
+* Upgraded sphinx-autobuild from 2024.10.3 to 2025.8.25
+* Upgraded sphinx-autodoc-typehints from 3.2.0 to 3.6.2
+* Upgraded sphinx-toolbox from 4.0.0 to 4.1.2
+* Upgraded sphinx-opengraph from 0.12.0 to 0.13.0
+* Upgraded furo from 2025.9.25 to 2025.12.19
+* Upgraded matplotlib from 3.10.5 to 3.10.8
+
 2.21.1
 ======
 
