@@ -2,6 +2,14 @@
 Changes
 *******
 
+2.22.1
+======
+
+Development Changes
+-------------------
+
+* Updated dependency versions in ``pyproject.toml`` to reflect newer versions
+
 2.22.0
 ======
 
