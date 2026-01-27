@@ -11,7 +11,7 @@ current_path = Path.cwd()
 sys.path.insert(0, str(current_path.parent))
 
 project = "wwdtm"
-copyright = "2018–2025 Linh Pham. All Rights Reserved"
+copyright = "2018–2026 Linh Pham. All Rights Reserved"
 author = "Linh Pham"
 
 extensions = [
