@@ -209,7 +209,7 @@ class PanelistStatistics:
             "mean": round(numpy.mean(score_data), 5),
             "median": int(numpy.median(score_data)),
             "mode": score_mode if score_mode is not None else None,
-            "mode_multiple": score_multimode,
+            "mode_multiple": sorted(score_multimode),
             "standard_deviation": round(numpy.std(score_data), 5),
             "total": int(numpy.sum(score_data)),
         }
@@ -223,7 +223,7 @@ class PanelistStatistics:
                 "mean": round(Decimal(numpy.mean(score_data_decimal)), 5),
                 "median": Decimal(numpy.median(score_data_decimal)),
                 "mode": score_mode_decimal if score_mode_decimal is not None else None,
-                "mode_multiple": score_multimode_decimal,
+                "mode_multiple": sorted(score_multimode_decimal),
                 "standard_deviation": round(Decimal(numpy.std(score_data_decimal)), 5),
                 "total": Decimal(numpy.sum(score_data_decimal)),
             }
