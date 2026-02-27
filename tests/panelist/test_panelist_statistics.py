@@ -101,9 +101,15 @@ def test_panelist_statistics_retrieve_statistics_by_id(
     )
 
     assert "scoring" in stats, f"'scoring' was not returned for ID {panelist_id}"
+    assert "total" in stats["scoring"], (
+        f"'total' was not returned in 'scoring' for ID {panelist_id}"
+    )
     if include_decimal_scores:
         assert "scoring_decimal" in stats, (
-            f"'scoring' was not returned for ID {panelist_id}"
+            f"'scoring_decimal' was not returned for ID {panelist_id}"
+        )
+        assert "total" in stats["scoring_decimal"], (
+            f"'total' was not returned in 'scoring_decimal' for ID {panelist_id}"
         )
     assert "ranking" in stats, f"'ranking' was not returned for ID {panelist_id}"
 
@@ -128,8 +134,14 @@ def test_panelist_statistics_retrieve_statistics_by_slug(
     )
 
     assert "scoring" in stats, f"'scoring' was not returned for slug {panelist_slug}"
+    assert "total" in stats["scoring"], (
+        f"'total' was not returned in 'scoring' for slug {panelist_slug}"
+    )
     if include_decimal_scores:
         assert "scoring_decimal" in stats, (
             f"'scoring' was not returned for ID {panelist_slug}"
+        )
+        assert "total" in stats["scoring_decimal"], (
+            f"'total' was not returned in 'scoring_decimal' for slug {panelist_slug}"
         )
     assert "ranking" in stats, f"'ranking' was not returned for slug {panelist_slug}"

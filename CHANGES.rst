@@ -2,6 +2,17 @@
 Changes
 *******
 
+2.23.0
+======
+
+Application Changes
+-------------------
+
+* Added ``mode`` and ``mode_multi`` to the ``scoring`` and ``scoring_decimal`` dictionary returned in :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_id` and :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_slug`
+
+  * ``mode`` returns a single integer or Decimal value if the mode is calculated, otherwise ``None`` is returned
+  * ``mode_multi`` returns a list of integer or Decimal values if multiple mode values are calculated, otherwise an empty list is returned
+
 2.22.1
 ======
 

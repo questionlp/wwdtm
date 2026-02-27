@@ -5,6 +5,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 """Wait Wait Stats Panelist Statistics Retrieval Functions."""
 
+import statistics
 from decimal import Decimal
 from typing import Any
 
@@ -200,21 +201,29 @@ class PanelistStatistics:
                 return {}
 
         appearance_count = len(score_data)
+        score_mode = statistics.mode(score_data)
+        score_multimode = statistics.multimode(score_data)
         scoring = {
             "minimum": int(numpy.amin(score_data)),
             "maximum": int(numpy.amax(score_data)),
             "mean": round(numpy.mean(score_data), 5),
             "median": int(numpy.median(score_data)),
+            "mode": score_mode if score_mode is not None else None,
+            "mode_multiple": score_multimode,
             "standard_deviation": round(numpy.std(score_data), 5),
             "total": int(numpy.sum(score_data)),
         }
 
         if include_decimal_scores:
+            score_mode_decimal = statistics.mode(score_data_decimal)
+            score_multimode_decimal = statistics.multimode(score_data_decimal)
             scoring_decimal = {
                 "minimum": Decimal(numpy.amin(score_data_decimal)),
                 "maximum": Decimal(numpy.amax(score_data_decimal)),
                 "mean": round(Decimal(numpy.mean(score_data_decimal)), 5),
                 "median": Decimal(numpy.median(score_data_decimal)),
+                "mode": score_mode_decimal if score_mode_decimal is not None else None,
+                "mode_multiple": score_multimode_decimal,
                 "standard_deviation": round(Decimal(numpy.std(score_data_decimal)), 5),
                 "total": Decimal(numpy.sum(score_data_decimal)),
             }
