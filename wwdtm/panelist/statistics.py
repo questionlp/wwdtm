@@ -201,8 +201,9 @@ class PanelistStatistics:
                 return {}
 
         appearance_count = len(score_data)
-        score_mode = statistics.mode(score_data)
-        score_multimode = statistics.multimode(score_data)
+        sorted_data = sorted(score_data)
+        score_mode = statistics.mode(sorted_data)
+        score_multimode = statistics.multimode(sorted_data)
         scoring = {
             "minimum": int(numpy.amin(score_data)),
             "maximum": int(numpy.amax(score_data)),
@@ -215,8 +216,9 @@ class PanelistStatistics:
         }
 
         if include_decimal_scores:
-            score_mode_decimal = statistics.mode(score_data_decimal)
-            score_multimode_decimal = statistics.multimode(score_data_decimal)
+            sorted_data_decimal = sorted(score_data_decimal)
+            score_mode_decimal = statistics.mode(sorted_data_decimal)
+            score_multimode_decimal = statistics.multimode(sorted_data_decimal)
             scoring_decimal = {
                 "minimum": Decimal(numpy.amin(score_data_decimal)),
                 "maximum": Decimal(numpy.amax(score_data_decimal)),

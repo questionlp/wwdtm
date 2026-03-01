@@ -2,6 +2,14 @@
 Changes
 *******
 
+2.23.1
+======
+
+Application Changes
+-------------------
+
+* Corrected the returned values for ``mode`` and ``mode_multiple`` by sorting the Panelist scoring data before calculating the mode(s).
+
 2.23.0
 ======
 
