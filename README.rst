@@ -137,8 +137,8 @@ This library is licensed under the terms of the `Apache License 2.0`_.
 Although this library interfaces with `MySQL Connector/Python`_, licensed under version
 2 of the GNU General Public License (GPLv2) and is also subject to the terms included in
 `Universal FOSS Exception, version 1.0`_. The exception permits this library to be
-licensed under an OSI-approved or a license categorized as "free" by the Freedom
-Software Foundation (FSF), such as Apache License 2.0.
+licensed under an OSI-approved or a license categorized as "free" by the Free Software
+Foundation (FSF), such as Apache License 2.0.
 
 .. _Wait Wait Stats Database: https://github.com/questionlp/wwdtm_database
 .. _Apache License 2.0: https://github.com/questionlp/wwdtm/blob/main/LICENSE
