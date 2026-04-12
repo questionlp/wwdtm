@@ -2,6 +2,19 @@
 Changes
 *******
 
+.. ATTENTION::
+    The next major release of the Wait Wait Stats Library will require panelist decimal score columns in the Wait Wait Stats Database. Any ``include_decimal_scores`` or ``use_decimal_scores`` parameters will be removed as decimal scores will always be returned.
+
+2.24.0
+======
+
+Application Changes
+-------------------
+
+* Added ``standard_deviation_nnan`` to panelist statistics that calculates the standard deviation of panelist's complete set of total scores that excludes any ``NaN`` values
+* Added ``variance`` to panelist statistics that calculates the variance of a panelist's complete set of total scores
+* Added ``variance_nnan`` to panelist statistics that calculates the variance of a panelist's complete set of total scores that exclude any ``NaN`` values
+
 2.23.1
 ======
 

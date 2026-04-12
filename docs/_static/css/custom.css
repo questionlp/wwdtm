@@ -43,6 +43,10 @@
         margin-top: 0;
     }
 
+    .admonition, p.admonition-title {
+        font-size: unset !important;
+    }
+
     footer, .page-info .context, .bottom-of-page .left-details, .bottom-of-page .right-details {
         font-size: unset;
     }
