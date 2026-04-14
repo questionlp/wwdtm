@@ -5,7 +5,7 @@ Changes
 .. ATTENTION::
     The next major release of the Wait Wait Stats Library will require panelist decimal score columns in the Wait Wait Stats Database. Any ``include_decimal_scores`` or ``use_decimal_scores`` parameters will be removed as decimal scores will always be returned.
 
-2.24.0
+2.23.1
 ======
 
 Application Changes

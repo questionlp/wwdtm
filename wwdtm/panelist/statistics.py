@@ -181,9 +181,9 @@ class PanelistStatistics:
     ) -> dict[str, Any]:
         """Retrieves and calculates panelist statistics.
 
-        Note: Population standard deviation calculation is used since
-        it is calculated based on a set of all available total scores
-        for the requested panelist.
+        The returned statistics includes estimated population variance
+        and standard deviation based on the full set of total scores for
+        the requested panelist.
 
         :param panelist_id: Panelist ID
         :param use_decimal_scores: A boolean to determine if decimal
@@ -271,6 +271,10 @@ class PanelistStatistics:
         self, panelist_slug: str, include_decimal_scores: bool = False
     ) -> dict[str, Any]:
         """Retrieves and calculates panelist statistics.
+
+        The returned statistics includes estimated population variance
+        and standard deviation based on the full set of total scores for
+        the requested panelist.
 
         :param panelist_slug: Panelist slug string
         :param use_decimal_scores: A boolean to determine if decimal
