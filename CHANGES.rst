@@ -11,9 +11,7 @@ Changes
 Application Changes
 -------------------
 
-* Added ``standard_deviation_nnan`` to panelist statistics that calculates the standard deviation of panelist's complete set of total scores that excludes any ``NaN`` values
 * Added ``variance`` to panelist statistics that calculates the variance of a panelist's complete set of total scores
-* Added ``variance_nnan`` to panelist statistics that calculates the variance of a panelist's complete set of total scores that exclude any ``NaN`` values
 
 2.23.1
 ======
