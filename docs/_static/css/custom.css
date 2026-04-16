@@ -47,6 +47,10 @@
         font-size: unset !important;
     }
 
+    p.admonition-title {
+        text-transform: uppercase;
+    }
+
     footer, .page-info .context, .bottom-of-page .left-details, .bottom-of-page .right-details {
         font-size: unset;
     }
