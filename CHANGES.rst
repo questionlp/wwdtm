@@ -18,6 +18,13 @@ Development Changes
 
 * Upgraded pytest from 9.0.2 to 9.0.3
 
+Documentation Changes
+---------------------
+
+* Upgraded development component changes
+
+  * Upgraded pytest from 8.4.1 to 9.0.2
+
 2.23.1
 ======
 
