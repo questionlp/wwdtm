@@ -5,7 +5,7 @@ Changes
 .. important::
     The next minor release of the Wait Wait Stats Library will change the default value of the ``include_decimal_scores`` and ``use_decimal_scores`` parameters will switch from ``False`` to ``True``.
 
-2.23.1
+2.23.2
 ======
 
 Application Changes
