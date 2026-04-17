@@ -13,6 +13,11 @@ Application Changes
 
 * Added ``variance`` to panelist statistics that calculates the variance of a panelist's complete set of total scores
 
+Development Changes
+-------------------
+
+* Upgraded pytest from 9.0.2 to 9.0.3
+
 2.23.1
 ======
 
