@@ -181,6 +181,10 @@ class PanelistStatistics:
     ) -> dict[str, Any]:
         """Retrieves and calculates panelist statistics.
 
+        The returned statistics includes estimated population variance
+        and standard deviation based on the full set of total scores for
+        the requested panelist.
+
         :param panelist_id: Panelist ID
         :param use_decimal_scores: A boolean to determine if decimal
             scores should be used and returned instead of integer scores
@@ -212,6 +216,7 @@ class PanelistStatistics:
             "mode": score_mode if score_mode is not None else None,
             "mode_multiple": sorted(score_multimode),
             "standard_deviation": round(numpy.std(score_data), 5),
+            "variance": round(numpy.var(score_data), 5),
             "total": int(numpy.sum(score_data)),
         }
 
@@ -227,6 +232,7 @@ class PanelistStatistics:
                 "mode": score_mode_decimal if score_mode_decimal is not None else None,
                 "mode_multiple": sorted(score_multimode_decimal),
                 "standard_deviation": round(Decimal(numpy.std(score_data_decimal)), 5),
+                "variance": round(Decimal(numpy.var(score_data_decimal)), 5),
                 "total": Decimal(numpy.sum(score_data_decimal)),
             }
 
@@ -265,6 +271,10 @@ class PanelistStatistics:
         self, panelist_slug: str, include_decimal_scores: bool = False
     ) -> dict[str, Any]:
         """Retrieves and calculates panelist statistics.
+
+        The returned statistics includes estimated population variance
+        and standard deviation based on the full set of total scores for
+        the requested panelist.
 
         :param panelist_slug: Panelist slug string
         :param use_decimal_scores: A boolean to determine if decimal

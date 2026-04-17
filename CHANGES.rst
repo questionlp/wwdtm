@@ -2,6 +2,29 @@
 Changes
 *******
 
+.. important::
+    The next minor release of the Wait Wait Stats Library will change the default value of the ``include_decimal_scores`` and ``use_decimal_scores`` parameters will switch from ``False`` to ``True``.
+
+2.23.1
+======
+
+Application Changes
+-------------------
+
+* Added ``variance`` to panelist statistics that calculates the variance of a panelist's complete set of total scores
+
+Development Changes
+-------------------
+
+* Upgraded pytest from 9.0.2 to 9.0.3
+
+Documentation Changes
+---------------------
+
+* Upgraded development component changes
+
+  * Upgraded pytest from 8.4.1 to 9.0.2
+
 2.23.1
 ======
 
