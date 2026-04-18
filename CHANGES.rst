@@ -30,6 +30,7 @@ Development Changes
 Documentation Changes
 ---------------------
 
+* Testing integration between Codeberg and Read The Docs
 * Upgraded application component changes
 
   * Upgraded NumPy from 2.4.1 to 2.4.4
