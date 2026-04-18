@@ -2,8 +2,39 @@
 Changes
 *******
 
-.. important::
-    The next minor release of the Wait Wait Stats Library will change the default value of the ``include_decimal_scores`` and ``use_decimal_scores`` parameters will switch from ``False`` to ``True``.
+2.24.0-beta
+===========
+
+Application Changes
+-------------------
+
+* The default value for methods with ``include_decimal_scores`` and ``use_decimal_scores`` named parameters has changed from ``False`` to ``True``.
+
+Component Changes
+-----------------
+
+* Upgraded NumPy from 2.4.1 to 2.4.4
+* Upgraded pytz from 2025.2 to 2026.1.post1
+
+Development Changes
+-------------------
+
+* Added link to the Git repository hosted on Codeberg and renamed "Source Code" link to "GitHub" in ``pyproject.toml``
+* Changed the minimum version of pytest from ``8.3`` to ``9.0`` in ``pyproject.toml``
+* Changed the minimum version of Ruff from 0.12.0 to 0.15.0 in ``pyproject.toml``
+* Upgraded build from 1.3.0 to 1.4.3
+* Upgraded Ruff from 0.14.14 to 0.15.6
+
+  * Version 0.15.6 was chosen as it was released before Astral announced that they had joined OpenAI
+
+Documentation Changes
+---------------------
+
+* Testing integration between Codeberg and Read The Docs
+* Upgraded application component changes
+
+  * Upgraded NumPy from 2.4.1 to 2.4.4
+  * Upgraded pytz from 2025.2 to 2026.1.post1
 
 2.23.2
 ======

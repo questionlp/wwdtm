@@ -8,6 +8,10 @@ insert_final_newline = true
 [*.{json,md,py,rst}]
 charset = utf-8
 
-[*.{css,html,json,py,rst,tmpl,md}]
+[*.{css,html,json,py,tmpl,md}]
 indent_size = 4
+indent_style = space
+
+[*.rst]
+indent_size = 2
 indent_style = space

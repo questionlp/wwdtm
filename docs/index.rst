@@ -53,7 +53,11 @@ Table of Contents
 Project Links
 =============
 
-* `Source Code`_
+* Source Code:
+
+  * `Codeberg`_
+  * `GitHub`_
+
 * `PyPI`_
 * `Wait Wait Stats API`_
 * `Wait Wait Stats Page`_
@@ -69,7 +73,8 @@ Indices and tables
 
 
 .. _PyPI: https://pypi.org/project/wwdtm/
-.. _Source Code: https://github.com/questionlp/wwdtm/
+.. _GitHub: https://github.com/questionlp/wwdtm/
+.. _Codeberg: https://codeberg.org/qlp/wwdtm
 .. _Wait Wait Stats API: https://api.stats.wwdt.me/
 .. _Wait Wait Stats Page: https://stats.wwdt.me/
 .. _Wait Wait Graphs: https://graphs.wwdt.me/
