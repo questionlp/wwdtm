@@ -1,5 +1,5 @@
 .. role:: bolditalic
-   :class: bolditalic
+  :class: bolditalic
 
 ****
 show

@@ -2,6 +2,12 @@
 Wait Wait Stats Library
 ***********************
 
+**Note:** The authoritative version of this repository now resides on Codeberg
+as `wwdtm` and mirrors changes to GitHub. Going forward, issues and pull
+requests should be created on Codeberg rather than GitHub.
+
+.. _wwdtm: https://codeberg.org/qlp/wwdtm/
+
 Overview
 ========
 
