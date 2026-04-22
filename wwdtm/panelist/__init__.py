@@ -11,3 +11,12 @@ from wwdtm.panelist.panelist import Panelist
 from wwdtm.panelist.scores import PanelistScores
 from wwdtm.panelist.statistics import PanelistStatistics
 from wwdtm.panelist.utility import PanelistUtility
+
+__all__: list[str] = [
+    "Panelist",
+    "PanelistAppearances",
+    "PanelistDecimalScores",
+    "PanelistScores",
+    "PanelistStatistics",
+    "PanelistUtility",
+]

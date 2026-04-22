@@ -8,3 +8,5 @@
 from wwdtm.location.location import Location
 from wwdtm.location.recordings import LocationRecordings
 from wwdtm.location.utility import LocationUtility
+
+__all__: list[str] = ["Location", "LocationRecordings", "LocationUtility"]

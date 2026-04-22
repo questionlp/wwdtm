@@ -8,3 +8,5 @@
 from wwdtm.scorekeeper.appearances import ScorekeeperAppearances
 from wwdtm.scorekeeper.scorekeeper import Scorekeeper
 from wwdtm.scorekeeper.utility import ScorekeeperUtility
+
+__all__: list[str] = ["Scorekeeper", "ScorekeeperAppearances", "ScorekeeperUtility"]

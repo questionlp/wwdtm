@@ -6,3 +6,5 @@
 """Wait Wait Stats: Pronouns module."""
 
 from wwdtm.pronoun.pronouns import Pronouns
+
+__all__: list[str] = ["Pronouns"]

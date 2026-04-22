@@ -8,3 +8,5 @@
 from wwdtm.host.appearances import HostAppearances
 from wwdtm.host.host import Host
 from wwdtm.host.utility import HostUtility
+
+__all__: list[str] = ["Host", "HostAppearances", "HostUtility"]
