@@ -177,7 +177,7 @@ class PanelistStatistics:
         return self.retrieve_rank_info_by_id(id_)
 
     def retrieve_statistics_by_id(
-        self, panelist_id: int, include_decimal_scores: bool = False
+        self, panelist_id: int, include_decimal_scores: bool = True
     ) -> dict[str, Any]:
         """Retrieves and calculates panelist statistics.
 
@@ -268,7 +268,7 @@ class PanelistStatistics:
             }
 
     def retrieve_statistics_by_slug(
-        self, panelist_slug: str, include_decimal_scores: bool = False
+        self, panelist_slug: str, include_decimal_scores: bool = True
     ) -> dict[str, Any]:
         """Retrieves and calculates panelist statistics.
 

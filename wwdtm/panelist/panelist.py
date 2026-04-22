@@ -107,7 +107,7 @@ class Panelist:
         return panelists
 
     def retrieve_all_details(
-        self, use_decimal_scores: bool = False
+        self, use_decimal_scores: bool = True
     ) -> list[dict[str, Any]]:
         """Retrieves panelist information, appearances and scores for all panelists.
 
@@ -286,7 +286,7 @@ class Panelist:
         return self.retrieve_by_id(id_)
 
     def retrieve_details_by_id(
-        self, panelist_id: int, use_decimal_scores: bool = False
+        self, panelist_id: int, use_decimal_scores: bool = True
     ) -> dict[str, Any]:
         """Retrieves panelist information, appearances and scores.
 
@@ -327,7 +327,7 @@ class Panelist:
         return info
 
     def retrieve_details_by_slug(
-        self, panelist_slug: str, use_decimal_scores: bool = False
+        self, panelist_slug: str, use_decimal_scores: bool = True
     ) -> dict[str, Any]:
         """Retrieves panelist information, appearances and scores.
 
@@ -407,7 +407,7 @@ class Panelist:
         return self.retrieve_by_id(panelist_id=_id)
 
     def retrieve_random_details(
-        self, use_decimal_scores: bool = False
+        self, use_decimal_scores: bool = True
     ) -> dict[str, Any]:
         """Retrieves information and appearances for a random panelist.
 
