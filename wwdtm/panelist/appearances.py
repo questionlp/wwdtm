@@ -44,7 +44,7 @@ class PanelistAppearances:
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
     def retrieve_appearances_by_id(
-        self, panelist_id: int, use_decimal_scores: bool = False
+        self, panelist_id: int, use_decimal_scores: bool = True
     ) -> dict[str, Any]:
         """Retrieves panelist appearance information.
 
@@ -213,7 +213,7 @@ class PanelistAppearances:
         return appearance_info
 
     def retrieve_appearances_by_slug(
-        self, panelist_slug: str, use_decimal_scores: bool = False
+        self, panelist_slug: str, use_decimal_scores: bool = True
     ) -> dict[str, Any]:
         """Retrieves panelist appearance information.
 

@@ -341,7 +341,7 @@ class ShowInfo:
         return guests
 
     def retrieve_panelist_info_by_id(
-        self, show_id: int, include_decimal_scores: bool = False
+        self, show_id: int, include_decimal_scores: bool = True
     ) -> list[dict[str, Any]]:
         """Retrieves panelist information.
 
