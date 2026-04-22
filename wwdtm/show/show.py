@@ -153,7 +153,7 @@ class Show:
         return shows
 
     def retrieve_all_best_ofs_details(
-        self, inclusive: bool = True, include_decimal_scores: bool = False
+        self, inclusive: bool = True, include_decimal_scores: bool = True
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for all Best Of shows.
 
@@ -265,7 +265,7 @@ class Show:
         return self.retrieve_all_repeat_best_ofs()
 
     def retrieve_all_repeat_best_ofs_details(
-        self, include_decimal_scores: bool = False
+        self, include_decimal_scores: bool = True
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for all Repeat Best Of shows.
 
@@ -313,7 +313,7 @@ class Show:
         return shows
 
     def retrieve_all_best_of_repeats_details(
-        self, include_decimal_scores: bool = False
+        self, include_decimal_scores: bool = True
     ) -> list[dict[str, Any]]:
         """Alias for :py:meth:`wwdtm.show.Show.retrieve_all_repeat_best_ofs_details`.
 
@@ -383,7 +383,7 @@ class Show:
         return shows
 
     def retrieve_all_repeats_details(
-        self, inclusive: bool = True, include_decimal_scores: bool = False
+        self, inclusive: bool = True, include_decimal_scores: bool = True
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for all repeat shows.
 
@@ -440,7 +440,7 @@ class Show:
         return shows
 
     def retrieve_all_details(
-        self, include_decimal_scores: bool = False
+        self, include_decimal_scores: bool = True
     ) -> list[dict[str, Any]]:
         """Returns a list of dictionaries with show information and details for all shows.
 
@@ -614,7 +614,7 @@ class Show:
         self,
         year: int,
         inclusive: bool = True,
-        include_decimal_scores: bool = False,
+        include_decimal_scores: bool = True,
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for Best Of shows by year.
 
@@ -950,7 +950,7 @@ class Show:
         return all_counts
 
     def retrieve_details_by_date(
-        self, year: int, month: int, day: int, include_decimal_scores: bool = False
+        self, year: int, month: int, day: int, include_decimal_scores: bool = True
     ) -> dict[str, Any]:
         """Retrieves detailed show information.
 
@@ -972,7 +972,7 @@ class Show:
         )
 
     def retrieve_details_by_date_string(
-        self, date_string: str, include_decimal_scores: bool = False
+        self, date_string: str, include_decimal_scores: bool = True
     ) -> dict[str, Any]:
         """Retrieves detailed show information.
 
@@ -997,7 +997,7 @@ class Show:
         )
 
     def retrieve_details_by_id(
-        self, show_id: int, include_decimal_scores: bool = False
+        self, show_id: int, include_decimal_scores: bool = True
     ) -> dict[str, Any]:
         """Retrieve detailed show information.
 
@@ -1024,7 +1024,7 @@ class Show:
         return info
 
     def retrieve_details_by_month_day(
-        self, month: int, day: int, include_decimal_scores: bool = False
+        self, month: int, day: int, include_decimal_scores: bool = True
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information by month and day.
 
@@ -1082,7 +1082,7 @@ class Show:
         return shows
 
     def retrieve_details_by_year(
-        self, year: int, include_decimal_scores: bool = False
+        self, year: int, include_decimal_scores: bool = True
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information by year.
 
@@ -1135,7 +1135,7 @@ class Show:
         return shows
 
     def retrieve_details_by_year_month(
-        self, year: int, month: int, include_decimal_scores: bool = False
+        self, year: int, month: int, include_decimal_scores: bool = True
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information by year and month.
 
@@ -1381,7 +1381,7 @@ class Show:
         return self.retrieve_by_id(show_id=_id)
 
     def retrieve_random_details(
-        self, include_decimal_scores: bool = False
+        self, include_decimal_scores: bool = True
     ) -> dict[str, Any]:
         """Retrieves information and appearances for a random show.
 
@@ -1399,7 +1399,7 @@ class Show:
         )
 
     def retrieve_random_details_by_year(
-        self, year: int, include_decimal_scores: bool = False
+        self, year: int, include_decimal_scores: bool = True
     ) -> dict[str, Any]:
         """Retrieves information and appearances for a random show for a specific year.
 
@@ -1468,7 +1468,7 @@ class Show:
         self,
         include_days_ahead: int = 7,
         include_days_back: int = 32,
-        include_decimal_scores: bool = False,
+        include_decimal_scores: bool = True,
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for recent shows.
 
@@ -1562,7 +1562,7 @@ class Show:
     def retrieve_repeat_best_ofs_details_by_year(
         self,
         year: int,
-        include_decimal_scores: bool = False,
+        include_decimal_scores: bool = True,
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for repeat Best Of shows by year.
 
@@ -1655,7 +1655,7 @@ class Show:
         self,
         year: int,
         inclusive: bool = True,
-        include_decimal_scores: bool = False,
+        include_decimal_scores: bool = True,
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for repeat shows by year.
 
@@ -1714,7 +1714,7 @@ class Show:
         return shows
 
     def retrieve_scores_by_year(
-        self, year: int, use_decimal_scores: bool = False
+        self, year: int, use_decimal_scores: bool = True
     ) -> list[tuple[str, int | Decimal]]:
         """Retrieves panelist scores for all shows as a tuple.
 

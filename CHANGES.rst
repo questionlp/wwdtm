@@ -2,8 +2,22 @@
 Changes
 *******
 
-2.24.0
+2.24.1
 ======
+
+Application Changes
+-------------------
+
+* The default value for methods with ``include_decimal_scores`` and ``use_decimal_scores`` named parameters has changed from ``False`` to ``True``.
+
+Component Changes
+-----------------
+
+* Upgraded NumPy from 2.4.1 to 2.4.4
+* Upgraded pytz from 2025.2 to 2026.1.post1
+
+2.24.0 (Yanked)
+===============
 
 Application Changes
 -------------------

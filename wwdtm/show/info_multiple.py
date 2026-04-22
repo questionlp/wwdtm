@@ -626,7 +626,7 @@ class ShowInfoMultiple:
         return shows
 
     def retrieve_panelist_info_all(
-        self, include_decimal_scores: bool = False
+        self, include_decimal_scores: bool = True
     ) -> dict[int, list[dict[str, Any]]]:
         """Retrieves panelist information for all shows.
 
@@ -720,7 +720,7 @@ class ShowInfoMultiple:
         return panelists
 
     def retrieve_panelist_info_by_ids(
-        self, show_ids: list[int], include_decimal_scores: bool = False
+        self, show_ids: list[int], include_decimal_scores: bool = True
     ) -> dict[int, list[dict[str, Any]]]:
         """Retrieves panelist information for a list of shows.
 
