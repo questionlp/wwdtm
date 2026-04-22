@@ -106,13 +106,9 @@ class Panelist:
 
         return panelists
 
-    def retrieve_all_details(
-        self, use_decimal_scores: bool = True
-    ) -> list[dict[str, Any]]:
+    def retrieve_all_details(self) -> list[dict[str, Any]]:
         """Retrieves panelist information, appearances and scores for all panelists.
 
-        :param use_decimal_scores: A boolean to determine if decimal
-            scores should be used and returned instead of integer scores
         :return: A list of dictionaries containing panelist ID, name,
             slug string, gender, pronouns, whether the panelist is
             also a guest, host or scorekeeper, scoring statistics and
@@ -168,12 +164,10 @@ class Panelist:
                     "is_scorekeeper": bool(
                         _scorekeeper_utility.slug_exists(scorekeeper_slug=_slug)
                     ),
-                    "statistics": self.statistics.retrieve_statistics_by_id(
-                        row["id"], include_decimal_scores=use_decimal_scores
-                    ),
+                    "statistics": self.statistics.retrieve_statistics_by_id(row["id"]),
                     "bluffs": self.statistics.retrieve_bluffs_by_id(row["id"]),
                     "appearances": self.appearances.retrieve_appearances_by_id(
-                        row["id"], use_decimal_scores=use_decimal_scores
+                        row["id"]
                     ),
                 }
             )
@@ -285,14 +279,10 @@ class Panelist:
 
         return self.retrieve_by_id(id_)
 
-    def retrieve_details_by_id(
-        self, panelist_id: int, use_decimal_scores: bool = True
-    ) -> dict[str, Any]:
+    def retrieve_details_by_id(self, panelist_id: int) -> dict[str, Any]:
         """Retrieves panelist information, appearances and scores.
 
         :param panelist_id: Panelist ID
-        :param use_decimal_scores: A boolean to determine if decimal
-            scores should be used and returned instead of integer scores
         :return: A dictionary containing panelist ID, name, slug string,
             gender, pronouns, whether the panelist is also a guest, host
             or scorekeeper, scoring statistics and appearances
@@ -316,24 +306,16 @@ class Panelist:
             _scorekeeper_utility.slug_exists(scorekeeper_slug=info["slug"])
         )
 
-        info["statistics"] = self.statistics.retrieve_statistics_by_id(
-            panelist_id, include_decimal_scores=use_decimal_scores
-        )
+        info["statistics"] = self.statistics.retrieve_statistics_by_id(panelist_id)
         info["bluffs"] = self.statistics.retrieve_bluffs_by_id(panelist_id)
-        info["appearances"] = self.appearances.retrieve_appearances_by_id(
-            panelist_id, use_decimal_scores=use_decimal_scores
-        )
+        info["appearances"] = self.appearances.retrieve_appearances_by_id(panelist_id)
 
         return info
 
-    def retrieve_details_by_slug(
-        self, panelist_slug: str, use_decimal_scores: bool = True
-    ) -> dict[str, Any]:
+    def retrieve_details_by_slug(self, panelist_slug: str) -> dict[str, Any]:
         """Retrieves panelist information, appearances and scores.
 
         :param panelist_slug: Panelist slug string
-        :param use_decimal_scores: A boolean to determine if decimal
-            scores should be used and returned instead of integer scores
         :return: A dictionary containing panelist ID, name, slug string,
             gender, pronouns, whether the panelist is also a guest, host
             or scorekeeper, scoring statistics and appearances
@@ -349,7 +331,7 @@ class Panelist:
         if not id_:
             return {}
 
-        return self.retrieve_details_by_id(id_, use_decimal_scores=use_decimal_scores)
+        return self.retrieve_details_by_id(id_)
 
     def retrieve_random_id(self) -> int:
         """Retrieves an ID for a random panelist.
@@ -406,9 +388,7 @@ class Panelist:
 
         return self.retrieve_by_id(panelist_id=_id)
 
-    def retrieve_random_details(
-        self, use_decimal_scores: bool = True
-    ) -> dict[str, Any]:
+    def retrieve_random_details(self) -> dict[str, Any]:
         """Retrieves information and appearances for a random panelist.
 
         :return: A dictionary containing panelist ID, name, slug string,
@@ -420,6 +400,4 @@ class Panelist:
         if not _id:
             return None
 
-        return self.retrieve_details_by_id(
-            panelist_id=_id, use_decimal_scores=use_decimal_scores
-        )
+        return self.retrieve_details_by_id(panelist_id=_id)

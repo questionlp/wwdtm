@@ -340,49 +340,32 @@ class ShowInfo:
 
         return guests
 
-    def retrieve_panelist_info_by_id(
-        self, show_id: int, include_decimal_scores: bool = True
-    ) -> list[dict[str, Any]]:
+    def retrieve_panelist_info_by_id(self, show_id: int) -> list[dict[str, Any]]:
         """Retrieves panelist information.
 
         :param show_id: Show ID
-        :param use_decimal_scores: A boolean to determine if decimal
-            scores should be used and returned instead of integer scores
         :return: A dictionary containing panelist information, scores
             and rankings
         """
         if not valid_int_id(show_id):
             return []
 
-        if include_decimal_scores:
-            query = """
-                SELECT pm.panelistid AS id, p.panelist AS name,
-                p.panelistslug AS slug,
-                pm.panelistlrndstart AS start,
-                pm.panelistlrndstart_decimal AS start_decimal,
-                pm.panelistlrndcorrect AS correct,
-                pm.panelistlrndcorrect_decimal AS correct_decimal,
-                pm.panelistscore AS score,
-                pm.panelistscore_decimal AS score_decimal,
-                pm.showpnlrank AS pnl_rank
-                FROM ww_showpnlmap pm
-                JOIN ww_panelists p on p.panelistid = pm.panelistid
-                WHERE pm.showid = %s
-                ORDER by pm.panelistscore_decimal DESC,
-                pm.showpnlmapid ASC;
-                """
-        else:
-            query = """
-                SELECT pm.panelistid AS id, p.panelist AS name,
-                p.panelistslug AS slug,
-                pm.panelistlrndstart AS start,
-                pm.panelistlrndcorrect AS correct,
-                pm.panelistscore AS score, pm.showpnlrank AS pnl_rank
-                FROM ww_showpnlmap pm
-                JOIN ww_panelists p on p.panelistid = pm.panelistid
-                WHERE pm.showid = %s
-                ORDER by pm.panelistscore DESC, pm.showpnlmapid ASC;
-                """
+        query = """
+            SELECT pm.panelistid AS id, p.panelist AS name,
+            p.panelistslug AS slug,
+            pm.panelistlrndstart AS start,
+            pm.panelistlrndstart_decimal AS start_decimal,
+            pm.panelistlrndcorrect AS correct,
+            pm.panelistlrndcorrect_decimal AS correct_decimal,
+            pm.panelistscore AS score,
+            pm.panelistscore_decimal AS score_decimal,
+            pm.showpnlrank AS pnl_rank
+            FROM ww_showpnlmap pm
+            JOIN ww_panelists p on p.panelistid = pm.panelistid
+            WHERE pm.showid = %s
+            ORDER by pm.panelistscore_decimal DESC,
+            pm.showpnlmapid ASC;
+            """
 
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (show_id,))
@@ -395,18 +378,12 @@ class ShowInfo:
         panelists = []
         for row in results:
             _score_exception = False
-            if include_decimal_scores:
-                start = row.get("start_decimal")
-                correct = row.get("correct_decimal")
-                score = row.get("score_decimal")
-                if start and correct and score and score != (start + (correct * 2)):
-                    _score_exception = True
-            else:
-                start = row.get("start")
-                correct = row.get("correct")
-                score = row.get("score")
-                if start and correct and score and score != (start + (correct * 2)):
-                    _score_exception = True
+
+            start = row.get("start_decimal")
+            correct = row.get("correct_decimal")
+            score = row.get("score_decimal")
+            if start and correct and score and score != (start + (correct * 2)):
+                _score_exception = True
 
             panelists.append(
                 {
@@ -414,11 +391,11 @@ class ShowInfo:
                     "name": row["name"],
                     "slug": row["slug"] if row["slug"] else slugify(row["name"]),
                     "lightning_round_start": row["start"],
-                    "lightning_round_start_decimal": row.get("start_decimal", None),
+                    "lightning_round_start_decimal": start,
                     "lightning_round_correct": row["correct"],
-                    "lightning_round_correct_decimal": row.get("correct_decimal", None),
+                    "lightning_round_correct_decimal": correct,
                     "score": row["score"],
-                    "score_decimal": row.get("score_decimal", None),
+                    "score_decimal": score,
                     "score_exception": _score_exception,
                     "rank": row["pnl_rank"] if row["pnl_rank"] else None,
                 }

@@ -176,9 +176,7 @@ class PanelistStatistics:
 
         return self.retrieve_rank_info_by_id(id_)
 
-    def retrieve_statistics_by_id(
-        self, panelist_id: int, include_decimal_scores: bool = True
-    ) -> dict[str, Any]:
+    def retrieve_statistics_by_id(self, panelist_id: int) -> dict[str, Any]:
         """Retrieves and calculates panelist statistics.
 
         The returned statistics includes estimated population variance
@@ -186,8 +184,6 @@ class PanelistStatistics:
         the requested panelist.
 
         :param panelist_id: Panelist ID
-        :param use_decimal_scores: A boolean to determine if decimal
-            scores should be used and returned instead of integer scores
         :return: A dictionary containing panelist scoring and ranking
             statistics
         """
@@ -199,10 +195,9 @@ class PanelistStatistics:
         if not score_data or not ranks:
             return {}
 
-        if include_decimal_scores:
-            score_data_decimal = self.scores_decimal.retrieve_scores_by_id(panelist_id)
-            if not score_data_decimal:
-                return {}
+        score_data_decimal = self.scores_decimal.retrieve_scores_by_id(panelist_id)
+        if not score_data_decimal:
+            return {}
 
         appearance_count = len(score_data)
         sorted_data = sorted(score_data)
@@ -220,21 +215,20 @@ class PanelistStatistics:
             "total": int(numpy.sum(score_data)),
         }
 
-        if include_decimal_scores:
-            sorted_data_decimal = sorted(score_data_decimal)
-            score_mode_decimal = statistics.mode(sorted_data_decimal)
-            score_multimode_decimal = statistics.multimode(sorted_data_decimal)
-            scoring_decimal = {
-                "minimum": Decimal(numpy.amin(score_data_decimal)),
-                "maximum": Decimal(numpy.amax(score_data_decimal)),
-                "mean": round(Decimal(numpy.mean(score_data_decimal)), 5),
-                "median": Decimal(numpy.median(score_data_decimal)),
-                "mode": score_mode_decimal if score_mode_decimal is not None else None,
-                "mode_multiple": sorted(score_multimode_decimal),
-                "standard_deviation": round(Decimal(numpy.std(score_data_decimal)), 5),
-                "variance": round(Decimal(numpy.var(score_data_decimal)), 5),
-                "total": Decimal(numpy.sum(score_data_decimal)),
-            }
+        sorted_data_decimal = sorted(score_data_decimal)
+        score_mode_decimal = statistics.mode(sorted_data_decimal)
+        score_multimode_decimal = statistics.multimode(sorted_data_decimal)
+        scoring_decimal = {
+            "minimum": Decimal(numpy.amin(score_data_decimal)),
+            "maximum": Decimal(numpy.amax(score_data_decimal)),
+            "mean": round(Decimal(numpy.mean(score_data_decimal)), 5),
+            "median": Decimal(numpy.median(score_data_decimal)),
+            "mode": score_mode_decimal if score_mode_decimal is not None else None,
+            "mode_multiple": sorted(score_multimode_decimal),
+            "standard_deviation": round(Decimal(numpy.std(score_data_decimal)), 5),
+            "variance": round(Decimal(numpy.var(score_data_decimal)), 5),
+            "total": Decimal(numpy.sum(score_data_decimal)),
+        }
 
         ranks_first = round(100 * (ranks["first"] / appearance_count), 5)
         ranks_first_tied = round(100 * (ranks["first_tied"] / appearance_count), 5)
@@ -255,21 +249,13 @@ class PanelistStatistics:
             "percentage": ranks_percentage,
         }
 
-        if include_decimal_scores:
-            return {
-                "scoring": scoring,
-                "scoring_decimal": scoring_decimal,
-                "ranking": ranking,
-            }
-        else:
-            return {
-                "scoring": scoring,
-                "ranking": ranking,
-            }
+        return {
+            "scoring": scoring,
+            "scoring_decimal": scoring_decimal,
+            "ranking": ranking,
+        }
 
-    def retrieve_statistics_by_slug(
-        self, panelist_slug: str, include_decimal_scores: bool = True
-    ) -> dict[str, Any]:
+    def retrieve_statistics_by_slug(self, panelist_slug: str) -> dict[str, Any]:
         """Retrieves and calculates panelist statistics.
 
         The returned statistics includes estimated population variance
@@ -277,8 +263,6 @@ class PanelistStatistics:
         the requested panelist.
 
         :param panelist_slug: Panelist slug string
-        :param use_decimal_scores: A boolean to determine if decimal
-            scores should be used and returned instead of integer scores
         :return: A dictionary containing panelist scoring and ranking
             statistics
         """
@@ -286,6 +270,4 @@ class PanelistStatistics:
         if not id_:
             return {}
 
-        return self.retrieve_statistics_by_id(
-            id_, include_decimal_scores=include_decimal_scores
-        )
+        return self.retrieve_statistics_by_id(id_)
