@@ -11,7 +11,7 @@ from mysql.connector import connect
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.pooling import PooledMySQLConnection
 
-VERSION = "2.24.1"
+VERSION = "3.0.0-alpha"
 
 
 def database_version(
