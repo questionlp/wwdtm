@@ -12,6 +12,12 @@ from mysql.connector.connection import MySQLConnection
 from mysql.connector.pooling import PooledMySQLConnection
 
 VERSION = "3.0.0-alpha"
+MINIMUM_DATABASE_VERSION = (4, 7, 0)
+MINIMUM_DATABASE_VERSION_STRING = "4.7.0"
+
+
+class DatabaseVersionError(Exception):
+    """Database Version Error."""
 
 
 def database_version(

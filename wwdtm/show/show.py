@@ -14,10 +14,11 @@ from mysql.connector import connect
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.pooling import PooledMySQLConnection
 
+from wwdtm import MINIMUM_DATABASE_VERSION_STRING, DatabaseVersionError
 from wwdtm.show.info import ShowInfo
 from wwdtm.show.info_multiple import ShowInfoMultiple
 from wwdtm.show.utility import ShowUtility
-from wwdtm.validation import valid_int_id
+from wwdtm.validation import check_database_version, valid_int_id
 
 
 class Show:
@@ -46,6 +47,11 @@ class Show:
                 database_connection.reconnect()
 
             self.database_connection = database_connection
+
+        if not check_database_version(database_connection=self.database_connection):
+            raise DatabaseVersionError(
+                f"Current database version does not meet the minimum database version: {MINIMUM_DATABASE_VERSION_STRING}"
+            )
 
         self.info = ShowInfo(database_connection=self.database_connection)
         self.info_multiple = ShowInfoMultiple(

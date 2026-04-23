@@ -5,6 +5,28 @@
 # vim: set noai syntax=python ts=4 sw=4:
 """Type validation module."""
 
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import PooledMySQLConnection
+
+from . import MINIMUM_DATABASE_VERSION, database_version
+
+
+def check_database_version(
+    database_connection: MySQLConnection | PooledMySQLConnection,
+) -> bool:
+    """Checks current database version against minimum database version.
+
+    :param database_connection: MySQL database connection object
+    :return: True or False, based on if the current database version
+        meets the library's minimum database version
+    """
+    current_database_version = database_version(database_connection=database_connection)
+
+    return (
+        current_database_version
+        and current_database_version >= MINIMUM_DATABASE_VERSION
+    )
+
 
 def valid_int_id(int_id: int) -> bool:
     """Validates an ID value as a signed 32-bit integer used in ID fields in MySQL tables.

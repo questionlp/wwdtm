@@ -72,6 +72,9 @@ exclude = [
 line-length = 88
 
 [tool.ruff.lint]
+unfixable = [
+    "F401"
+]
 ignore = [
     "B905",   # zip strict=True; remove once python <3.10 support is dropped.
     "D100",
