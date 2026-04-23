@@ -42,15 +42,10 @@ def test_panelist_retrieve_all():
     )
 
 
-@pytest.mark.parametrize("use_decimal_scores", [True, False])
-def test_panelist_retrieve_all_details(use_decimal_scores: bool):
-    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_details`.
-
-    :param use_decimal_scores: Flag set to use decimal score columns
-        and values
-    """
+def test_panelist_retrieve_all_details():
+    """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_all_details`."""
     panelist = Panelist(connect_dict=get_connect_dict())
-    panelists = panelist.retrieve_all_details(use_decimal_scores=use_decimal_scores)
+    panelists = panelist.retrieve_all_details()
 
     assert panelists, "No panelists could be retrieved"
     assert "id" in panelists[0], "'id' was not returned for first list item"
@@ -127,21 +122,14 @@ def test_panelist_retrieve_by_slug(panelist_slug: str):
     assert "pronouns" in info, f"'pronouns' was not returned for slug {panelist_slug}"
 
 
-@pytest.mark.parametrize(
-    "panelist_id, use_decimal_scores",
-    [(13, True), (13, False), (14, True), (14, False)],
-)
-def test_panelist_retrieve_details_by_id(panelist_id: int, use_decimal_scores: bool):
+@pytest.mark.parametrize("panelist_id", [13, 14])
+def test_panelist_retrieve_details_by_id(panelist_id: int):
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_details_by_id`.
 
     :param panelist_id: Panelist ID to test retrieving panelist details
-    :param use_decimal_scores: Flag set to use decimal score columns
-        and values
     """
     panelist = Panelist(connect_dict=get_connect_dict())
-    info = panelist.retrieve_details_by_id(
-        panelist_id, use_decimal_scores=use_decimal_scores
-    )
+    info = panelist.retrieve_details_by_id(panelist_id)
 
     assert info, f"Panelist ID {panelist_id} not found"
     assert "name" in info, f"'name' was not returned for ID {panelist_id}"
@@ -160,29 +148,15 @@ def test_panelist_retrieve_details_by_id(panelist_id: int, use_decimal_scores: b
     )
 
 
-@pytest.mark.parametrize(
-    "panelist_slug, use_decimal_scores",
-    [
-        ("luke-burbank", True),
-        ("luke-burbank", False),
-        ("roxanne-roberts", True),
-        ("roxanne-roberts", False),
-    ],
-)
-def test_panelist_retrieve_details_by_slug(
-    panelist_slug: str, use_decimal_scores: bool
-):
+@pytest.mark.parametrize("panelist_slug", ["luke-burbank", "roxanne-roberts"])
+def test_panelist_retrieve_details_by_slug(panelist_slug: str):
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_details_by_slug`.
 
     :param panelist_slug: Panelist slug string to test retrieving
         panelist details
-    :param use_decimal_scores: Flag set to use decimal score columns
-        and values
     """
     panelist = Panelist(connect_dict=get_connect_dict())
-    info = panelist.retrieve_details_by_slug(
-        panelist_slug, use_decimal_scores=use_decimal_scores
-    )
+    info = panelist.retrieve_details_by_slug(panelist_slug)
 
     assert info, f"Panelist slug {panelist_slug} not found"
     assert "name" in info, f"'name' was not returned for slug {panelist_slug}"
@@ -234,11 +208,10 @@ def test_panelist_retrieve_random() -> None:
     assert "pronouns" in info, "'pronouns' was not returned for a random panelist"
 
 
-@pytest.mark.parametrize("use_decimal_scores", [True, False])
-def test_panelist_retrieve_random_details(use_decimal_scores: bool) -> None:
+def test_panelist_retrieve_random_details() -> None:
     """Testing for :py:meth:`wwdtm.panelist.Panelist.retrieve_random_details`."""
     panelist = Panelist(connect_dict=get_connect_dict())
-    info = panelist.retrieve_random_details(use_decimal_scores=use_decimal_scores)
+    info = panelist.retrieve_random_details()
 
     assert info, "Random panelist not found"
     assert "name" in info, "'name' attribute was not returned for a random panelist"
