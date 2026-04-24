@@ -13,9 +13,10 @@ from mysql.connector.connection import MySQLConnection
 from mysql.connector.pooling import PooledMySQLConnection
 from slugify import slugify
 
+from wwdtm import MINIMUM_DATABASE_VERSION_STRING, DatabaseVersionError
 from wwdtm.location.location import LocationUtility
 from wwdtm.show.utility import ShowUtility
-from wwdtm.validation import valid_int_id
+from wwdtm.validation import check_database_version, valid_int_id
 
 
 class ShowInfoMultiple:
@@ -43,6 +44,11 @@ class ShowInfoMultiple:
                 database_connection.reconnect()
 
             self.database_connection = database_connection
+
+        if not check_database_version(database_connection=self.database_connection):
+            raise DatabaseVersionError(
+                f"Current database version does not meet the minimum database version: {MINIMUM_DATABASE_VERSION_STRING}"
+            )
 
         self.utility = ShowUtility(database_connection=self.database_connection)
         self.loc_util = LocationUtility(database_connection=self.database_connection)
