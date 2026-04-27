@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # vim: set noai syntax=python ts=4 sw=4:
+# ruff: noqa: F401
 """pytest conftest.py File."""
 
 from wwdtm.guest import Guest
