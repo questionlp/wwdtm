@@ -5,6 +5,9 @@
 # vim: set noai syntax=python ts=4 sw=4:
 """Type validation module."""
 
+from typing import Any
+
+from mysql.connector import connect
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.pooling import PooledMySQLConnection
 
@@ -12,14 +15,23 @@ from . import MINIMUM_DATABASE_VERSION, database_version
 
 
 def check_database_version(
-    database_connection: MySQLConnection | PooledMySQLConnection,
+    connect_dict: dict[str, Any] = None,
+    database_connection: MySQLConnection | PooledMySQLConnection = None,
 ) -> bool:
     """Checks current database version against minimum database version.
 
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
     :param database_connection: MySQL database connection object
     :return: True or False, based on if the current database version
         meets the library's minimum database version
     """
+    if not connect_dict and not database_connection:
+        return False
+
+    if connect_dict and not database_connection:
+        database_connection = connect(**connect_dict)
+
     current_database_version = database_version(database_connection=database_connection)
 
     return (
