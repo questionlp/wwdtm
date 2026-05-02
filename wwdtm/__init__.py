@@ -11,9 +11,11 @@ from mysql.connector import connect
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.pooling import PooledMySQLConnection
 
-VERSION = "3.0.0-alpha"
-MINIMUM_DATABASE_VERSION = (4, 7, 0)
-MINIMUM_DATABASE_VERSION_STRING = "4.7.0"
+VERSION: str = "3.0.0-alpha"
+MINIMUM_DATABASE_VERSION: tuple[int] = (4, 7, 0)  # Major, Minor, Patch
+MINIMUM_DATABASE_VERSION_STRING: str = ".".join(
+    str(segment) for segment in MINIMUM_DATABASE_VERSION
+)
 
 
 class DatabaseVersionError(Exception):
