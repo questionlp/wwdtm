@@ -11,22 +11,15 @@ from mysql.connector import connect
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.pooling import PooledMySQLConnection
 
-from wwdtm import validation
-from wwdtm.guest import Guest, GuestAppearances, GuestUtility
-from wwdtm.host import Host, HostAppearances, HostUtility
-from wwdtm.location import Location, LocationRecordings, LocationUtility
-from wwdtm.panelist import (
-    Panelist,
-    PanelistAppearances,
-    PanelistDecimalScores,
-    PanelistScores,
-    PanelistStatistics,
-    PanelistUtility,
+VERSION: str = "3.0.0-alpha"
+MINIMUM_DATABASE_VERSION: tuple[int] = (4, 7, 0)  # Major, Minor, Patch
+MINIMUM_DATABASE_VERSION_STRING: str = ".".join(
+    str(segment) for segment in MINIMUM_DATABASE_VERSION
 )
-from wwdtm.scorekeeper import Scorekeeper, ScorekeeperAppearances, ScorekeeperUtility
-from wwdtm.show import Show, ShowInfo, ShowInfoMultiple, ShowUtility
 
-VERSION = "2.24.1"
+
+class DatabaseVersionError(Exception):
+    """Database Version Error."""
 
 
 def database_version(

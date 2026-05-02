@@ -153,7 +153,7 @@ class Show:
         return shows
 
     def retrieve_all_best_ofs_details(
-        self, inclusive: bool = True, include_decimal_scores: bool = True
+        self, inclusive: bool = True
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for all Best Of shows.
 
@@ -161,8 +161,6 @@ class Show:
 
         :param inclusive: Include repeat shows in the list of Best Of
             shows
-        :param include_decimal_scores: A boolean to determine if decimal
-            scores should be included
         :return: A list of dictionaries containing show ID, show date,
             Best Of show flag, repeat show ID (if applicable), show URL
             at NPR.org, host, scorekeeper, location, panelists and
@@ -200,7 +198,7 @@ class Show:
         for show in info:
             if info[show]:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
-                    info[show]["id"], include_decimal_scores=include_decimal_scores
+                    info[show]["id"]
                 )
                 info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(
                     info[show]["id"]
@@ -264,13 +262,9 @@ class Show:
         """
         return self.retrieve_all_repeat_best_ofs()
 
-    def retrieve_all_repeat_best_ofs_details(
-        self, include_decimal_scores: bool = True
-    ) -> list[dict[str, Any]]:
+    def retrieve_all_repeat_best_ofs_details(self) -> list[dict[str, Any]]:
         """Retrieves detailed show information for all Repeat Best Of shows.
 
-        :param include_decimal_scores: A boolean to determine if decimal
-            scores should be included
         :return: A list of dictionaries containing show ID, show date,
             Best Of show flag, repeat show ID (if applicable), show URL
             at NPR.org, host, scorekeeper, location, panelists and
@@ -300,7 +294,7 @@ class Show:
         for show in info:
             if info[show]:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
-                    info[show]["id"], include_decimal_scores=include_decimal_scores
+                    info[show]["id"]
                 )
                 info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(
                     info[show]["id"]
@@ -312,21 +306,15 @@ class Show:
 
         return shows
 
-    def retrieve_all_best_of_repeats_details(
-        self, include_decimal_scores: bool = True
-    ) -> list[dict[str, Any]]:
+    def retrieve_all_best_of_repeats_details(self) -> list[dict[str, Any]]:
         """Alias for :py:meth:`wwdtm.show.Show.retrieve_all_repeat_best_ofs_details`.
 
-        :param include_decimal_scores: A boolean to determine if decimal
-            scores should be included
         :return: A list of dictionaries containing show ID, show date,
             Best Of show flag, repeat show ID (if applicable), show URL
             at NPR.org, host, scorekeeper, location, panelists and
             guests
         """
-        return self.retrieve_all_repeat_best_ofs_details(
-            include_decimal_scores=include_decimal_scores
-        )
+        return self.retrieve_all_repeat_best_ofs_details()
 
     def retrieve_all_repeats(self, inclusive: bool = True) -> list[dict[str, Any]]:
         """Retrieves basic show information for all repeat shows.
@@ -383,13 +371,11 @@ class Show:
         return shows
 
     def retrieve_all_repeats_details(
-        self, inclusive: bool = True, include_decimal_scores: bool = True
+        self, inclusive: bool = True
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for all repeat shows.
 
         :param inclusive: Include Best Of shows in repeat show counts
-        :param include_decimal_scores: A boolean to determine if decimal
-            scores should be included
         :return: A list of dictionaries containing show ID, show date,
             Best Of show flag, repeat show ID (if applicable), show URL
             at NPR.org, host, scorekeeper, location, panelists and
@@ -427,7 +413,7 @@ class Show:
         for show in info:
             if info[show]:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
-                    info[show]["id"], include_decimal_scores=include_decimal_scores
+                    info[show]["id"]
                 )
                 info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(
                     info[show]["id"]
@@ -439,13 +425,9 @@ class Show:
 
         return shows
 
-    def retrieve_all_details(
-        self, include_decimal_scores: bool = True
-    ) -> list[dict[str, Any]]:
+    def retrieve_all_details(self) -> list[dict[str, Any]]:
         """Returns a list of dictionaries with show information and details for all shows.
 
-        :param include_decimal_scores: Flag set to include panelist decimal
-            scores, if available
         :return: List of all shows and their corresponding details.
             If show information could not be retrieved, an empty list
             will be returned.
@@ -455,9 +437,7 @@ class Show:
         if not info:
             return []
 
-        panelists = self.info_multiple.retrieve_panelist_info_all(
-            include_decimal_scores=include_decimal_scores
-        )
+        panelists = self.info_multiple.retrieve_panelist_info_all()
         bluffs = self.info_multiple.retrieve_bluff_info_all()
         guests = self.info_multiple.retrieve_guest_info_all()
 
@@ -614,15 +594,12 @@ class Show:
         self,
         year: int,
         inclusive: bool = True,
-        include_decimal_scores: bool = True,
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for Best Of shows by year.
 
         :param year: Four-digit year
         :param inclusive: Include repeat shows in the list of Best Of
             shows
-        :param include_decimal_scores: A boolean to determine if decimal
-            scores should be included
         :return: List of recent shows and corresponding details. If show
             information could not be retrieved, an empty list will be
             returned.
@@ -661,9 +638,7 @@ class Show:
 
         shows = []
         for show in info:
-            info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
-                show, include_decimal_scores=include_decimal_scores
-            )
+            info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(show)
             info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(show)
             info[show]["guests"] = self.info.retrieve_guest_info_by_id(show)
             shows.append(info[show])
@@ -950,15 +925,13 @@ class Show:
         return all_counts
 
     def retrieve_details_by_date(
-        self, year: int, month: int, day: int, include_decimal_scores: bool = True
+        self, year: int, month: int, day: int
     ) -> dict[str, Any]:
         """Retrieves detailed show information.
 
         :param year: Four-digit year
         :param month: One or two-digit month
         :param day: One or two digit day
-        :param include_decimal_scores: A boolean to determine if decimal
-            scores should be included
         :return: A dictionary containing show ID, show date, Best Of
             show flag, repeat show ID (if applicable), show URL at
             NPR.org, host, scorekeeper, location, panelists and guests
@@ -967,18 +940,12 @@ class Show:
         if not id_:
             return {}
 
-        return self.retrieve_details_by_id(
-            id_, include_decimal_scores=include_decimal_scores
-        )
+        return self.retrieve_details_by_id(id_)
 
-    def retrieve_details_by_date_string(
-        self, date_string: str, include_decimal_scores: bool = True
-    ) -> dict[str, Any]:
+    def retrieve_details_by_date_string(self, date_string: str) -> dict[str, Any]:
         """Retrieves detailed show information.
 
         :param date_string: Show date in ``YYYY-MM-DD`` format
-        :param include_decimal_scores: A boolean to determine if decimal
-            scores should be included
         :return: A dictionary containing show ID, show date, Best Of
             show flag, repeat show ID (if applicable), show URL at
             NPR.org, host, scorekeeper, location, panelists and guests
@@ -992,18 +959,12 @@ class Show:
             parsed_date.year, parsed_date.month, parsed_date.day
         )
 
-        return self.retrieve_details_by_id(
-            id_, include_decimal_scores=include_decimal_scores
-        )
+        return self.retrieve_details_by_id(id_)
 
-    def retrieve_details_by_id(
-        self, show_id: int, include_decimal_scores: bool = True
-    ) -> dict[str, Any]:
+    def retrieve_details_by_id(self, show_id: int) -> dict[str, Any]:
         """Retrieve detailed show information.
 
         :param show_id: Show ID
-        :param include_decimal_scores: A boolean to determine if decimal
-            scores should be included
         :return: A dictionary containing show ID, show date, Best Of
             show flag, repeat show ID (if applicable), show URL at
             NPR.org, host, scorekeeper, location, panelists and guests
@@ -1015,23 +976,19 @@ class Show:
         if not info:
             return {}
 
-        info["panelists"] = self.info.retrieve_panelist_info_by_id(
-            show_id, include_decimal_scores=include_decimal_scores
-        )
+        info["panelists"] = self.info.retrieve_panelist_info_by_id(show_id)
         info["bluffs"] = self.info.retrieve_bluff_info_by_id(show_id)
         info["guests"] = self.info.retrieve_guest_info_by_id(show_id)
 
         return info
 
     def retrieve_details_by_month_day(
-        self, month: int, day: int, include_decimal_scores: bool = True
+        self, month: int, day: int
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information by month and day.
 
         :param month: One or two-digit month
         :param day: One or two-digit day
-        :param include_decimal_scores: A boolean to determine if decimal
-            scores should be included
         :return: A list of dictionaries containing show ID, show date,
             Best Of show flag, repeat show ID (if applicable), show URL
             at NPR.org, host, scorekeeper, location, panelists and
@@ -1069,7 +1026,7 @@ class Show:
         for show in info:
             if info[show]:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
-                    info[show]["id"], include_decimal_scores=include_decimal_scores
+                    info[show]["id"]
                 )
                 info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(
                     info[show]["id"]
@@ -1081,14 +1038,10 @@ class Show:
 
         return shows
 
-    def retrieve_details_by_year(
-        self, year: int, include_decimal_scores: bool = True
-    ) -> list[dict[str, Any]]:
+    def retrieve_details_by_year(self, year: int) -> list[dict[str, Any]]:
         """Retrieves detailed show information by year.
 
         :param year: Four-digit year
-        :param include_decimal_scores: A boolean to determine if decimal
-            scores should be included
         :return: A list of dictionaries containing show ID, show date,
             Best Of show flag, repeat show ID (if applicable), show URL
             at NPR.org, host, scorekeeper, location, panelists and
@@ -1122,7 +1075,7 @@ class Show:
         for show in info:
             if info[show]:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
-                    info[show]["id"], include_decimal_scores=include_decimal_scores
+                    info[show]["id"]
                 )
                 info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(
                     info[show]["id"]
@@ -1135,14 +1088,12 @@ class Show:
         return shows
 
     def retrieve_details_by_year_month(
-        self, year: int, month: int, include_decimal_scores: bool = True
+        self, year: int, month: int
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information by year and month.
 
         :param year: Four-digit year
         :param month: One or two-digit month
-        :param include_decimal_scores: A boolean to determine if decimal
-            scores should be included
         :return: A list of dictionaries containing show ID, show date,
             Best Of show flag, repeat show ID (if applicable), show URL
             at NPR.org, host, scorekeeper, location, panelists and
@@ -1184,7 +1135,7 @@ class Show:
         for show in info:
             if info[show]:
                 info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
-                    info[show]["id"], include_decimal_scores=include_decimal_scores
+                    info[show]["id"]
                 )
                 info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(
                     info[show]["id"]
@@ -1380,9 +1331,7 @@ class Show:
 
         return self.retrieve_by_id(show_id=_id)
 
-    def retrieve_random_details(
-        self, include_decimal_scores: bool = True
-    ) -> dict[str, Any]:
+    def retrieve_random_details(self) -> dict[str, Any]:
         """Retrieves information and appearances for a random show.
 
         :return: A dictionary containing show ID, show date, Best Of
@@ -1394,13 +1343,9 @@ class Show:
         if not _id:
             return None
 
-        return self.retrieve_details_by_id(
-            show_id=_id, include_decimal_scores=include_decimal_scores
-        )
+        return self.retrieve_details_by_id(show_id=_id)
 
-    def retrieve_random_details_by_year(
-        self, year: int, include_decimal_scores: bool = True
-    ) -> dict[str, Any]:
+    def retrieve_random_details_by_year(self, year: int) -> dict[str, Any]:
         """Retrieves information and appearances for a random show for a specific year.
 
         :return: A dictionary containing show ID, show date, Best Of
@@ -1412,9 +1357,7 @@ class Show:
         if not _id:
             return None
 
-        return self.retrieve_details_by_id(
-            show_id=_id, include_decimal_scores=include_decimal_scores
-        )
+        return self.retrieve_details_by_id(show_id=_id)
 
     def retrieve_recent(
         self,
@@ -1468,7 +1411,6 @@ class Show:
         self,
         include_days_ahead: int = 7,
         include_days_back: int = 32,
-        include_decimal_scores: bool = True,
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for recent shows.
 
@@ -1476,8 +1418,6 @@ class Show:
             include
         :param include_days_back: Number of days in the past to
             include
-        :param include_decimal_scores: A boolean to determine if decimal
-            scores should be included
         :return: List of recent shows and corresponding details. If show
             information could not be retrieved, an empty list will be
             returned.
@@ -1521,9 +1461,7 @@ class Show:
 
         shows = []
         for show in info:
-            info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
-                show, include_decimal_scores=include_decimal_scores
-            )
+            info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(show)
             info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(show)
             info[show]["guests"] = self.info.retrieve_guest_info_by_id(show)
             shows.append(info[show])
@@ -1560,15 +1498,11 @@ class Show:
         return [self.retrieve_by_id(v[0]) for v in results]
 
     def retrieve_repeat_best_ofs_details_by_year(
-        self,
-        year: int,
-        include_decimal_scores: bool = True,
+        self, year: int
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for repeat Best Of shows by year.
 
         :param year: Four-digit year
-        :param include_decimal_scores: A boolean to determine if decimal
-            scores should be included
         :return: List of recent shows and corresponding details. If show
             information could not be retrieved, an empty list will be
             returned.
@@ -1600,9 +1534,7 @@ class Show:
 
         shows = []
         for show in info:
-            info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
-                show, include_decimal_scores=include_decimal_scores
-            )
+            info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(show)
             info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(show)
             info[show]["guests"] = self.info.retrieve_guest_info_by_id(show)
             shows.append(info[show])
@@ -1655,7 +1587,6 @@ class Show:
         self,
         year: int,
         inclusive: bool = True,
-        include_decimal_scores: bool = True,
     ) -> list[dict[str, Any]]:
         """Retrieves detailed show information for repeat shows by year.
 
@@ -1664,8 +1595,6 @@ class Show:
         :param year: Four-digit year
         :param inclusive: Include Best Of shows in the list of repeat
             shows
-        :param include_decimal_scores: A boolean to determine if decimal
-            scores should be included
         :return: List of recent shows and corresponding details. If show
             information could not be retrieved, an empty list will be
             returned.
@@ -1704,23 +1633,17 @@ class Show:
 
         shows = []
         for show in info:
-            info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(
-                show, include_decimal_scores=include_decimal_scores
-            )
+            info[show]["panelists"] = self.info.retrieve_panelist_info_by_id(show)
             info[show]["bluffs"] = self.info.retrieve_bluff_info_by_id(show)
             info[show]["guests"] = self.info.retrieve_guest_info_by_id(show)
             shows.append(info[show])
 
         return shows
 
-    def retrieve_scores_by_year(
-        self, year: int, use_decimal_scores: bool = True
-    ) -> list[tuple[str, int | Decimal]]:
+    def retrieve_scores_by_year(self, year: int) -> list[tuple[str, int | Decimal]]:
         """Retrieves panelist scores for all shows as a tuple.
 
         :param year: Four-digit year
-        :param use_decimal_scores: A boolean to determine if decimal
-            scores should be used and returned instead of integer scores
         :return: A list of tuples each containing show date and panelist
             scores
         """
@@ -1729,26 +1652,15 @@ class Show:
         except ValueError:
             return []
 
-        if use_decimal_scores:
-            query = """
-                SELECT s.showdate AS date, pm.panelistscore_decimal AS score
-                FROM ww_showpnlmap pm
-                JOIN ww_shows s ON s.showid = pm.showid
-                WHERE s.bestof = 0 AND s.repeatshowid IS NULL
-                AND pm.panelistscore_decimal IS NOT NULL
-                AND YEAR(s.showdate) = %s
-                ORDER BY s.showdate ASC, pm.panelistscore_decimal ASC;
-                """
-        else:
-            query = """
-                SELECT s.showdate AS date, pm.panelistscore AS score
-                FROM ww_showpnlmap pm
-                JOIN ww_shows s ON s.showid = pm.showid
-                WHERE s.bestof = 0 AND s.repeatshowid IS NULL
-                AND pm.panelistscore IS NOT NULL
-                AND YEAR(s.showdate) = %s
-                ORDER BY s.showdate ASC, pm.panelistscore ASC;
-                """
+        query = """
+            SELECT s.showdate AS date, pm.panelistscore_decimal AS score
+            FROM ww_showpnlmap pm
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE s.bestof = 0 AND s.repeatshowid IS NULL
+            AND pm.panelistscore_decimal IS NOT NULL
+            AND YEAR(s.showdate) = %s
+            ORDER BY s.showdate ASC, pm.panelistscore_decimal ASC;
+            """
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (year,))
         results = cursor.fetchall()

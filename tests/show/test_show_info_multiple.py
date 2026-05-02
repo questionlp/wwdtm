@@ -184,23 +184,15 @@ def test_show_info_retrieve_guest_info_by_ids(show_ids: list[int]):
             )
 
 
-@pytest.mark.parametrize(
-    "show_id, include_decimal_scores", [(1082, True), (1082, False)]
-)
-def test_show_info_retrieve_panelist_info_all(
-    show_id: int, include_decimal_scores: bool
-):
+@pytest.mark.parametrize("show_id", [1082, 1162])
+def test_show_info_retrieve_panelist_info_all(show_id: int):
     """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_panelist_info_all`.
 
     :param show_id: Show ID to test retrieving show panelist information
         for all shows retrieved
-    :param include_decimal_scores: Flag set to include decimal score columns
-        and values
     """
     info = ShowInfoMultiple(connect_dict=get_connect_dict())
-    shows_panelists = info.retrieve_panelist_info_all(
-        include_decimal_scores=include_decimal_scores
-    )
+    shows_panelists = info.retrieve_panelist_info_all()
 
     assert shows_panelists, "Panelist information for all shows could not be retrieved"
     assert show_id in shows_panelists, (
@@ -214,32 +206,23 @@ def test_show_info_retrieve_panelist_info_all(
     assert "score" in panelists[0], (
         f"'score' was not returned for the first panelist for show ID {show_id}"
     )
-    if include_decimal_scores:
-        assert "score_decimal" in panelists[0], (
-            f"'score_decimal' was not returned for the first panelist for show ID {show_id}"
-        )
+    assert "score_decimal" in panelists[0], (
+        f"'score_decimal' was not returned for the first panelist for show ID {show_id}"
+    )
     assert "score_exception" in panelists[0], (
         f"'score_exception' was not returned for the first panelist for show ID {show_id}"
     )
 
 
-@pytest.mark.parametrize(
-    "show_ids, include_decimal_scores", [([1082, 1162], True), ([1082, 1162], False)]
-)
-def test_show_info_retrieve_panelist_info_by_ids(
-    show_ids: list[int], include_decimal_scores: bool
-):
+@pytest.mark.parametrize("show_ids", [[1082, 1162]])
+def test_show_info_retrieve_panelist_info_by_ids(show_ids: list[int]):
     """Testing for :py:meth:`wwdtm.show.ShowInfoMultiple.retrieve_panelist_info_by_ids`.
 
     :param show_ids: List of show IDs to test retrieving show panelist
         information
-    :param include_decimal_scores: Flag set to include decimal score columns
-        and values
     """
     info = ShowInfoMultiple(connect_dict=get_connect_dict())
-    shows_panelists = info.retrieve_panelist_info_by_ids(
-        show_ids, include_decimal_scores=include_decimal_scores
-    )
+    shows_panelists = info.retrieve_panelist_info_by_ids(show_ids)
 
     assert shows_panelists, (
         f"Panelist information for show IDs {show_ids} could not be retrieved"
@@ -257,10 +240,9 @@ def test_show_info_retrieve_panelist_info_by_ids(
             assert "score" in panelists[0], (
                 f"'score' was not returned for the first panelist for show ID {show_id}"
             )
-            if include_decimal_scores:
-                assert "score_decimal" in panelists[0], (
-                    f"'score_decimal' was not returned for the first panelist for show ID {show_id}"
-                )
+            assert "score_decimal" in panelists[0], (
+                f"'score_decimal' was not returned for the first panelist for show ID {show_id}"
+            )
             assert "score_exception" in panelists[0], (
                 f"'score_exception' was not returned for the first panelist for show ID {show_id}"
             )

@@ -2,6 +2,24 @@
 Changes
 *******
 
+3.0.0-alpha
+===========
+
+Application Changes
+-------------------
+
+* The library now requires panelist decimal score columns in the Wait Wait Stats Database and removed all instances of the ``include_decimal_scores`` and ``use_decimal_scores`` named parameters.
+
+  * Since this is a breaking change and the library tries to follow the SemVer format, this is being done as a brand new major version
+
+* Added ``__all__`` entries to each of the ``__init__.py`` files for the guest, host, location, panelist, pronoun, scorekeeper and show modules
+* Added :py:meth:`wwdtm.validation.check_database_version` that can be used to check if the Wait Wait Stats Database being used meets the minimum required version, ``4.7.0``.
+
+Development Changes
+-------------------
+
+* Removed ``F401`` from ``tool.ruff.lint.ignore`` from ``pyproject.toml``
+
 2.24.1
 ======
 

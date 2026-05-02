@@ -43,14 +43,10 @@ class PanelistAppearances:
 
         self.utility = PanelistUtility(database_connection=self.database_connection)
 
-    def retrieve_appearances_by_id(
-        self, panelist_id: int, use_decimal_scores: bool = True
-    ) -> dict[str, Any]:
+    def retrieve_appearances_by_id(self, panelist_id: int) -> dict[str, Any]:
         """Retrieves panelist appearance information.
 
         :param panelist_id: Panelist ID
-        :param use_decimal_scores: A boolean to determine if decimal
-            scores returned instead of integer scores
         :return: A dictionary containing appearance statistics, scoring
             and ranking details
         """
@@ -133,35 +129,21 @@ class PanelistAppearances:
                 "milestones": None,
             }
 
-        if use_decimal_scores:
-            query = """
-                SELECT pm.showid AS show_id, s.showdate AS date,
-                s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
-                pm.panelistlrndstart AS start,
-                pm.panelistlrndstart_decimal AS start_decimal,
-                pm.panelistlrndcorrect AS correct,
-                pm.panelistlrndcorrect_decimal AS correct_decimal,
-                pm.panelistscore AS score,
-                pm.panelistscore_decimal AS score_decimal,
-                pm.showpnlrank AS pnl_rank FROM ww_showpnlmap pm
-                JOIN ww_panelists p ON p.panelistid = pm.panelistid
-                JOIN ww_shows s ON s.showid = pm.showid
-                WHERE pm.panelistid = %s
-                ORDER BY s.showdate ASC;
-                """
-        else:
-            query = """
-                SELECT pm.showid AS show_id, s.showdate AS date,
-                s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
-                pm.panelistlrndstart AS start,
-                pm.panelistlrndcorrect AS correct,
-                pm.panelistscore AS score,
-                pm.showpnlrank AS pnl_rank FROM ww_showpnlmap pm
-                JOIN ww_panelists p ON p.panelistid = pm.panelistid
-                JOIN ww_shows s ON s.showid = pm.showid
-                WHERE pm.panelistid = %s
-                ORDER BY s.showdate ASC;
-                """
+        query = """
+            SELECT pm.showid AS show_id, s.showdate AS date,
+            s.bestof AS best_of, s.repeatshowid AS repeat_show_id,
+            pm.panelistlrndstart AS start,
+            pm.panelistlrndstart_decimal AS start_decimal,
+            pm.panelistlrndcorrect AS correct,
+            pm.panelistlrndcorrect_decimal AS correct_decimal,
+            pm.panelistscore AS score,
+            pm.panelistscore_decimal AS score_decimal,
+            pm.showpnlrank AS pnl_rank FROM ww_showpnlmap pm
+            JOIN ww_panelists p ON p.panelistid = pm.panelistid
+            JOIN ww_shows s ON s.showid = pm.showid
+            WHERE pm.panelistid = %s
+            ORDER BY s.showdate ASC;
+            """
 
         cursor.execute(query, (panelist_id,))
         results = cursor.fetchall()
@@ -171,18 +153,12 @@ class PanelistAppearances:
             appearances = []
             for appearance in results:
                 _score_exception = False
-                if use_decimal_scores:
-                    start = appearance.get("start_decimal")
-                    correct = appearance.get("correct_decimal")
-                    score = appearance.get("score_decimal")
-                    if start and correct and score and score != (start + (correct * 2)):
-                        _score_exception = True
-                else:
-                    start = appearance.get("start")
-                    correct = appearance.get("correct")
-                    score = appearance.get("score")
-                    if start and correct and score and score != (start + (correct * 2)):
-                        _score_exception = True
+
+                start = appearance.get("start_decimal")
+                correct = appearance.get("correct_decimal")
+                score = appearance.get("score_decimal")
+                if start and correct and score and score != (start + (correct * 2)):
+                    _score_exception = True
 
                 info = {
                     "show_id": appearance["show_id"],
@@ -190,15 +166,11 @@ class PanelistAppearances:
                     "best_of": bool(appearance["best_of"]),
                     "repeat_show": bool(appearance["repeat_show_id"]),
                     "lightning_round_start": appearance["start"],
-                    "lightning_round_start_decimal": appearance.get(
-                        "start_decimal", None
-                    ),
+                    "lightning_round_start_decimal": start,
                     "lightning_round_correct": appearance["correct"],
-                    "lightning_round_correct_decimal": appearance.get(
-                        "correct_decimal", None
-                    ),
+                    "lightning_round_correct_decimal": correct,
                     "score": appearance["score"],
-                    "score_decimal": appearance.get("score_decimal", None),
+                    "score_decimal": score,
                     "score_exception": _score_exception,
                     "rank": appearance.get("pnl_rank", None),
                 }
@@ -212,14 +184,10 @@ class PanelistAppearances:
 
         return appearance_info
 
-    def retrieve_appearances_by_slug(
-        self, panelist_slug: str, use_decimal_scores: bool = True
-    ) -> dict[str, Any]:
+    def retrieve_appearances_by_slug(self, panelist_slug: str) -> dict[str, Any]:
         """Retrieves panelist appearance information.
 
         :param panelist_slug: Panelist slug string
-        :param use_decimal_scores: A boolean to determine if decimal
-            scores returned instead of integer scores
         :return: A dictionary containing appearance statistics, scoring
             and ranking details
         """
@@ -227,9 +195,7 @@ class PanelistAppearances:
         if not id_:
             return {}
 
-        return self.retrieve_appearances_by_id(
-            id_, use_decimal_scores=use_decimal_scores
-        )
+        return self.retrieve_appearances_by_id(id_)
 
     def retrieve_yearly_appearances_by_id(self, panelist_id: int) -> dict[int, int]:
         """Retrieves panelist appearance counts grouped by year.
