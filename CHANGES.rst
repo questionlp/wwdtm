@@ -5,6 +5,9 @@ Changes
 3.0.0-beta
 ==========
 
+Development Changes
+-------------------
+
 * Updated several entries in ``pyproject.toml`` including Project URLs and Classifiers
 
 3.0.0-alpha
