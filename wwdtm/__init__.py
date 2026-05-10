@@ -11,7 +11,7 @@ from mysql.connector import connect
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.pooling import PooledMySQLConnection
 
-VERSION: str = "3.0.0-alpha"
+VERSION: str = "3.0.0-beta"
 MINIMUM_DATABASE_VERSION: tuple[int] = (4, 7, 0)  # Major, Minor, Patch
 MINIMUM_DATABASE_VERSION_STRING: str = ".".join(
     str(segment) for segment in MINIMUM_DATABASE_VERSION

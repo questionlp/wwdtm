@@ -2,6 +2,11 @@
 Changes
 *******
 
+3.0.0-beta
+==========
+
+* Updated several entries in ``pyproject.toml`` including Project URLs and Classifiers
+
 3.0.0-alpha
 ===========
 
