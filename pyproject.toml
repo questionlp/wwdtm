@@ -27,11 +27,11 @@ dependencies = [
 ]
 
 [project.urls]
-changelog = "https://docs.wwdt.me/latest/changes/"
-source = "https://codeberg.org/qlp/wwdtm/"
-documentation = "https://docs.wwdt.me"
-github = "https://github.com/questionlp/wwdtm"
-sponsor = "https://github.com/sponsors/questionlp"
+Changelog = "https://docs.wwdt.me/latest/changes/"
+Source = "https://codeberg.org/qlp/wwdtm/"
+Documentation = "https://docs.wwdt.me"
+GitHub = "https://github.com/questionlp/wwdtm"
+Sponsor = "https://github.com/sponsors/questionlp"
 Mastodon = "https://linh.social/@qlp"
 "Stats Page" = "https://stats.wwdt.me"
 
