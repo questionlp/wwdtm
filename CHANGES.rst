@@ -2,6 +2,21 @@
 Changes
 *******
 
+3.0.0-rc
+========
+
+Development Changes
+-------------------
+
+* Added pydoclint 0.8.4
+* Added test for :py:func:`wwdtm.database_version` that passes through a database connection object
+
+Documentation Changes
+---------------------
+
+* Added missing document page for ``tests/test_init.py``
+* Removed unnecessary docstrings for the ``__init__()`` methods
+
 3.0.0-beta
 ==========
 
