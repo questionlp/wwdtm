@@ -30,6 +30,8 @@ Documentation Changes
 * Removed unnecessary docstrings for the ``__init__()`` methods
 * Replaced Google Fonts with Bunny Fonts as the web font provider for the required IBM Plex fonts
 
+  * For documentation hosted on Read the Docs, this will only apply starting with version 3.0.0. Previous versions will continue to use Google Fonts to source web fonts.
+
 3.0.0-rc (Pre-Release)
 ======================
 
