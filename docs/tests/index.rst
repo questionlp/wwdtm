@@ -18,3 +18,4 @@ each of the :py:mod:`wwdtm` library modules:
     scorekeeper
     show
     validation
+    wwdtm

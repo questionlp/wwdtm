@@ -2,6 +2,77 @@
 Changes
 *******
 
+3.0.0
+=====
+
+Application Changes
+-------------------
+
+* The library now requires panelist decimal score columns in the Wait Wait Stats Database and removed all instances of the ``include_decimal_scores`` and ``use_decimal_scores`` named parameters.
+
+  * Since this is a breaking change and the library tries to follow the SemVer format, this is being done as a brand new major version
+
+* Added ``__all__`` entries to each of the ``__init__.py`` files for the guest, host, location, panelist, pronoun, scorekeeper and show modules
+* Added :py:meth:`wwdtm.validation.check_database_version` that can be used to check if the Wait Wait Stats Database being used meets the minimum required version, ``4.7.0``.
+
+Development Changes
+-------------------
+
+* Added pydoclint 0.8.4
+* Added test for :py:func:`wwdtm.database_version` that passes through a database connection object
+* Removed ``F401`` from ``tool.ruff.lint.ignore`` from ``pyproject.toml``
+* Updated several entries in ``pyproject.toml`` including Project URLs and Classifiers
+
+Documentation Changes
+---------------------
+
+* Added missing document page for ``tests/test_init.py``
+* Removed unnecessary docstrings for the ``__init__()`` methods
+* Replaced Google Fonts with Bunny Fonts as the web font provider for the required IBM Plex fonts
+
+  * For documentation hosted on Read the Docs, this will only apply starting with version 3.0.0. Previous versions will continue to use Google Fonts to source web fonts.
+
+3.0.0-rc (Pre-Release)
+======================
+
+Development Changes
+-------------------
+
+* Added pydoclint 0.8.4
+* Added test for :py:func:`wwdtm.database_version` that passes through a database connection object
+
+Documentation Changes
+---------------------
+
+* Added missing document page for ``tests/test_init.py``
+* Removed unnecessary docstrings for the ``__init__()`` methods
+
+3.0.0-beta (Pre-Release)
+========================
+
+Development Changes
+-------------------
+
+* Updated several entries in ``pyproject.toml`` including Project URLs and Classifiers
+
+3.0.0-alpha (Pre-Release)
+=========================
+
+Application Changes
+-------------------
+
+* The library now requires panelist decimal score columns in the Wait Wait Stats Database and removed all instances of the ``include_decimal_scores`` and ``use_decimal_scores`` named parameters.
+
+  * Since this is a breaking change and the library tries to follow the SemVer format, this is being done as a brand new major version
+
+* Added ``__all__`` entries to each of the ``__init__.py`` files for the guest, host, location, panelist, pronoun, scorekeeper and show modules
+* Added :py:meth:`wwdtm.validation.check_database_version` that can be used to check if the Wait Wait Stats Database being used meets the minimum required version, ``4.7.0``.
+
+Development Changes
+-------------------
+
+* Removed ``F401`` from ``tool.ruff.lint.ignore`` from ``pyproject.toml``
+
 2.24.1
 ======
 

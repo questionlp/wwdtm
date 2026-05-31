@@ -15,6 +15,9 @@ via the links below.
 
 Packaged versions of the ``wwdtm`` library are available at `PyPI`_.
 
+Starting with version 3.0.0 of the ``wwdtm`` library, panelist decimal scoring
+columns in the database will be required.
+
 Migrating to v2
 ===============
 

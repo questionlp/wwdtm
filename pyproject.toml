@@ -15,6 +15,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3 :: Only",
     "Topic :: Software Development :: Libraries",
 ]
 
@@ -26,10 +27,11 @@ dependencies = [
 ]
 
 [project.urls]
-Changes = "https://docs.wwdt.me/latest/changes/"
-Codeberg = "https://codeberg.org/qlp/wwdtm/"
+Changelog = "https://docs.wwdt.me/latest/changes/"
+Source = "https://codeberg.org/qlp/wwdtm/"
 Documentation = "https://docs.wwdt.me"
 GitHub = "https://github.com/questionlp/wwdtm"
+Sponsor = "https://github.com/sponsors/questionlp"
 Mastodon = "https://linh.social/@qlp"
 "Stats Page" = "https://stats.wwdt.me"
 
@@ -72,6 +74,9 @@ exclude = [
 line-length = 88
 
 [tool.ruff.lint]
+unfixable = [
+    "F401"
+]
 ignore = [
     "B905",   # zip strict=True; remove once python <3.10 support is dropped.
     "D100",
@@ -86,7 +91,6 @@ ignore = [
     "D401",
     "E402",
     "E501",
-    "F401",
     "TRY003", # Avoid specifying messages outside exception class; overly strict, especially for ValueError
     "S608",
     "ISC001",

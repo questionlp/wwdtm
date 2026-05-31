@@ -9,3 +9,5 @@ from wwdtm.show.info import ShowInfo
 from wwdtm.show.info_multiple import ShowInfoMultiple
 from wwdtm.show.show import Show
 from wwdtm.show.utility import ShowUtility
+
+__all__: list[str] = ["Show", "ShowInfo", "ShowInfoMultiple", "ShowUtility"]

@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from numpy import isin
 
 from wwdtm.location import Location
 

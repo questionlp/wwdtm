@@ -4,7 +4,6 @@
 #
 # vim: set noai syntax=python ts=4 sw=4:
 import sys
-from email.mime import base
 from pathlib import Path
 
 current_path = Path.cwd()

@@ -30,7 +30,6 @@ class GuestUtility:
         connect_dict: dict[str, Any] = None,
         database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
-        """Class initialization method."""
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)

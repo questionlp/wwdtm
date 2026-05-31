@@ -8,3 +8,5 @@
 from wwdtm.guest.appearances import GuestAppearances
 from wwdtm.guest.guest import Guest
 from wwdtm.guest.utility import GuestUtility
+
+__all__: list[str] = ["Guest", "GuestAppearances", "GuestUtility"]

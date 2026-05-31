@@ -41,6 +41,9 @@ version 11.8 is used over 12 due to the former being on a stable release train
 while the latter is on a rolling release train. Rolling releases can introduce
 regressions or breaking changes that are generally avoided with stable releases.
 
+Starting with version 3.0.0, the minimum required version of the Wat Wait Stats
+Database is 4.7.0, which includes all panelist decimal score-related columns.
+
 Running Tests
 =============
 
