@@ -59,3 +59,23 @@ def valid_int_id(int_id: int) -> bool:
     # maximum value of signed INT type in MySQL/MariaDB is (2**31) - 1,
     # or 2147483647
     return 0 <= int_id_ <= (2**31 - 1)
+
+
+def valid_rounding_digits(
+    number_digits: int, min_digits: int = 0, max_digits: int = 20
+) -> bool:
+    """Validates number of rounding digits is within the min/max value.
+
+    :param number_digits: Number of rounding digits to validate
+    :param min_digits: Minimum number of rounding digits
+    :param max_digits: Maximum number of rounding digits
+    :return: True or False, based on if the number of rounding digits
+        is within the min/max value and if it is an integer
+    """
+    if number_digits is None:
+        return False
+
+    if not isinstance(number_digits, int):
+        return False
+
+    return min_digits <= number_digits <= max_digits

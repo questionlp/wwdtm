@@ -2,6 +2,20 @@
 Changes
 *******
 
+3.1.0
+=====
+
+Application Changes
+-------------------
+
+* Added ``number_digits`` parameter to :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_id` and :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_id` to set the number of digits after the decimal separator to round to
+
+  * Default value of the parameter is ``5``
+  * Minimum and maximum supported values for the parameter is ``0`` and ``20``
+  * If an invalid value is passed in, the method will return an empty dictionary
+
+* Added :py:meth:`wwdtm.validation.valid_rounding_digits` that is used to validate the ``number_digits`` value using the above minimum and maximum values
+
 3.0.0
 =====
 
