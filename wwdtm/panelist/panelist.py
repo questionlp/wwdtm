@@ -18,7 +18,7 @@ from wwdtm.panelist.appearances import PanelistAppearances
 from wwdtm.panelist.statistics import PanelistStatistics
 from wwdtm.panelist.utility import PanelistUtility
 from wwdtm.scorekeeper.utility import ScorekeeperUtility
-from wwdtm.validation import valid_int_id
+from wwdtm.validation import valid_int_id, valid_rounding_decimal_places
 
 
 class Panelist:
@@ -105,14 +105,23 @@ class Panelist:
 
         return panelists
 
-    def retrieve_all_details(self) -> list[dict[str, Any]]:
+    def retrieve_all_details(
+        self, number_decimal_places: int = 5
+    ) -> list[dict[str, Any]]:
         """Retrieves panelist information, appearances and scores for all panelists.
 
+        :param number_decimal_places: Number of decimal places to
+            include when rounding (valid range: 0 through 20)
         :return: A list of dictionaries containing panelist ID, name,
             slug string, gender, pronouns, whether the panelist is
             also a guest, host or scorekeeper, scoring statistics and
             appearances for each panelist
         """
+        if not valid_rounding_decimal_places(
+            number_decimal_places=number_decimal_places
+        ):
+            return {}
+
         query = """
             SELECT p.panelistid AS id, p.panelist AS name, p.panelistslug AS slug,
             p.panelistgender AS gender
@@ -163,7 +172,9 @@ class Panelist:
                     "is_scorekeeper": bool(
                         _scorekeeper_utility.slug_exists(scorekeeper_slug=_slug)
                     ),
-                    "statistics": self.statistics.retrieve_statistics_by_id(row["id"]),
+                    "statistics": self.statistics.retrieve_statistics_by_id(
+                        row["id"], number_decimal_places=number_decimal_places
+                    ),
                     "bluffs": self.statistics.retrieve_bluffs_by_id(row["id"]),
                     "appearances": self.appearances.retrieve_appearances_by_id(
                         row["id"]
@@ -278,10 +289,14 @@ class Panelist:
 
         return self.retrieve_by_id(id_)
 
-    def retrieve_details_by_id(self, panelist_id: int) -> dict[str, Any]:
+    def retrieve_details_by_id(
+        self, panelist_id: int, number_decimal_places: int = 5
+    ) -> dict[str, Any]:
         """Retrieves panelist information, appearances and scores.
 
         :param panelist_id: Panelist ID
+        :param number_decimal_places: Number of decimal places to
+            include when rounding (valid range: 0 through 20)
         :return: A dictionary containing panelist ID, name, slug string,
             gender, pronouns, whether the panelist is also a guest, host
             or scorekeeper, scoring statistics and appearances
@@ -291,6 +306,11 @@ class Panelist:
 
         info = self.retrieve_by_id(panelist_id)
         if not info:
+            return {}
+
+        if not valid_rounding_decimal_places(
+            number_decimal_places=number_decimal_places
+        ):
             return {}
 
         _guest_utility = GuestUtility(database_connection=self.database_connection)
@@ -305,16 +325,22 @@ class Panelist:
             _scorekeeper_utility.slug_exists(scorekeeper_slug=info["slug"])
         )
 
-        info["statistics"] = self.statistics.retrieve_statistics_by_id(panelist_id)
+        info["statistics"] = self.statistics.retrieve_statistics_by_id(
+            panelist_id, number_decimal_places=number_decimal_places
+        )
         info["bluffs"] = self.statistics.retrieve_bluffs_by_id(panelist_id)
         info["appearances"] = self.appearances.retrieve_appearances_by_id(panelist_id)
 
         return info
 
-    def retrieve_details_by_slug(self, panelist_slug: str) -> dict[str, Any]:
+    def retrieve_details_by_slug(
+        self, panelist_slug: str, number_decimal_places: int = 5
+    ) -> dict[str, Any]:
         """Retrieves panelist information, appearances and scores.
 
         :param panelist_slug: Panelist slug string
+        :param number_decimal_places: Number of decimal places to
+            include when rounding (valid range: 0 through 20)
         :return: A dictionary containing panelist ID, name, slug string,
             gender, pronouns, whether the panelist is also a guest, host
             or scorekeeper, scoring statistics and appearances
@@ -330,7 +356,14 @@ class Panelist:
         if not id_:
             return {}
 
-        return self.retrieve_details_by_id(id_)
+        if not valid_rounding_decimal_places(
+            number_decimal_places=number_decimal_places
+        ):
+            return {}
+
+        return self.retrieve_details_by_id(
+            id_, number_decimal_places=number_decimal_places
+        )
 
     def retrieve_random_id(self) -> int:
         """Retrieves an ID for a random panelist.
@@ -385,11 +418,13 @@ class Panelist:
         if not _id:
             return None
 
-        return self.retrieve_by_id(panelist_id=_id)
+        return self.retrieve_by_id(_id)
 
-    def retrieve_random_details(self) -> dict[str, Any]:
+    def retrieve_random_details(self, number_decimal_places: int = 5) -> dict[str, Any]:
         """Retrieves information and appearances for a random panelist.
 
+        :param number_decimal_places: Number of decimal places to
+            include when rounding (valid range: 0 through 20)
         :return: A dictionary containing panelist ID, name, slug string,
             gender, pronouns, whether the panelist is also a guest, host
             or scorekeeper, scoring statistics and appearances
@@ -399,4 +434,11 @@ class Panelist:
         if not _id:
             return None
 
-        return self.retrieve_details_by_id(panelist_id=_id)
+        if not valid_rounding_decimal_places(
+            number_decimal_places=number_decimal_places
+        ):
+            return {}
+
+        return self.retrieve_details_by_id(
+            _id, number_decimal_places=number_decimal_places
+        )

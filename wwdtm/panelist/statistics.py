@@ -17,7 +17,7 @@ from mysql.connector.pooling import PooledMySQLConnection
 from wwdtm.panelist.decimal_scores import PanelistDecimalScores
 from wwdtm.panelist.scores import PanelistScores
 from wwdtm.panelist.utility import PanelistUtility
-from wwdtm.validation import valid_int_id, valid_rounding_digits
+from wwdtm.validation import valid_int_id, valid_rounding_decimal_places
 
 
 class PanelistStatistics:
@@ -176,7 +176,7 @@ class PanelistStatistics:
         return self.retrieve_rank_info_by_id(id_)
 
     def retrieve_statistics_by_id(
-        self, panelist_id: int, number_digits: int = 5
+        self, panelist_id: int, number_decimal_places: int = 5
     ) -> dict[str, Any]:
         """Retrieves and calculates panelist statistics.
 
@@ -185,8 +185,8 @@ class PanelistStatistics:
         the requested panelist.
 
         :param panelist_id: Panelist ID
-        :param number_digits: Number of digits after the decimal
-            separator included when rounding (valid range: 0 through 20)
+        :param number_decimal_places: Number of decimal places to
+            include when rounding (valid range: 0 through 20)
         :return: A dictionary containing panelist scoring and ranking
             statistics. Returns an empty dictionary if number_digits
             value is not valid.
@@ -194,7 +194,9 @@ class PanelistStatistics:
         if not valid_int_id(panelist_id):
             return {}
 
-        if not valid_rounding_digits(number_digits=number_digits):
+        if not valid_rounding_decimal_places(
+            number_decimal_places=number_decimal_places
+        ):
             return {}
 
         score_data = self.scores.retrieve_scores_by_id(panelist_id)
@@ -213,12 +215,12 @@ class PanelistStatistics:
         scoring = {
             "minimum": int(numpy.amin(score_data)),
             "maximum": int(numpy.amax(score_data)),
-            "mean": round(numpy.mean(score_data), number_digits),
+            "mean": round(numpy.mean(score_data), number_decimal_places),
             "median": int(numpy.median(score_data)),
             "mode": score_mode if score_mode is not None else None,
             "mode_multiple": sorted(score_multimode),
-            "standard_deviation": round(numpy.std(score_data), number_digits),
-            "variance": round(numpy.var(score_data), number_digits),
+            "standard_deviation": round(numpy.std(score_data), number_decimal_places),
+            "variance": round(numpy.var(score_data), number_decimal_places),
             "total": int(numpy.sum(score_data)),
         }
 
@@ -228,26 +230,36 @@ class PanelistStatistics:
         scoring_decimal = {
             "minimum": Decimal(numpy.amin(score_data_decimal)),
             "maximum": Decimal(numpy.amax(score_data_decimal)),
-            "mean": round(Decimal(numpy.mean(score_data_decimal)), number_digits),
+            "mean": round(
+                Decimal(numpy.mean(score_data_decimal)), number_decimal_places
+            ),
             "median": Decimal(numpy.median(score_data_decimal)),
             "mode": score_mode_decimal if score_mode_decimal is not None else None,
             "mode_multiple": sorted(score_multimode_decimal),
             "standard_deviation": round(
-                Decimal(numpy.std(score_data_decimal)), number_digits
+                Decimal(numpy.std(score_data_decimal)), number_decimal_places
             ),
-            "variance": round(Decimal(numpy.var(score_data_decimal)), number_digits),
+            "variance": round(
+                Decimal(numpy.var(score_data_decimal)), number_decimal_places
+            ),
             "total": Decimal(numpy.sum(score_data_decimal)),
         }
 
-        ranks_first = round(100 * (ranks["first"] / appearance_count), number_digits)
+        ranks_first = round(
+            100 * (ranks["first"] / appearance_count), number_decimal_places
+        )
         ranks_first_tied = round(
-            100 * (ranks["first_tied"] / appearance_count), number_digits
+            100 * (ranks["first_tied"] / appearance_count), number_decimal_places
         )
-        ranks_second = round(100 * (ranks["second"] / appearance_count), number_digits)
+        ranks_second = round(
+            100 * (ranks["second"] / appearance_count), number_decimal_places
+        )
         ranks_second_tied = round(
-            100 * (ranks["second_tied"] / appearance_count), number_digits
+            100 * (ranks["second_tied"] / appearance_count), number_decimal_places
         )
-        ranks_third = round(100 * (ranks["third"] / appearance_count), number_digits)
+        ranks_third = round(
+            100 * (ranks["third"] / appearance_count), number_decimal_places
+        )
 
         ranks_percentage = {
             "first": ranks_first,
@@ -269,7 +281,7 @@ class PanelistStatistics:
         }
 
     def retrieve_statistics_by_slug(
-        self, panelist_slug: str, number_digits: int = 5
+        self, panelist_slug: str, number_decimal_places: int = 5
     ) -> dict[str, Any]:
         """Retrieves and calculates panelist statistics.
 
@@ -278,8 +290,8 @@ class PanelistStatistics:
         the requested panelist.
 
         :param panelist_slug: Panelist slug string
-        :param number_digits: Number of digits after the decimal
-            separator included when rounding (valid range: 0 through 20)
+        :param number_decimal_places: Number of decimal places to
+            include when rounding (valid range: 0 through 20)
         :return: A dictionary containing panelist scoring and ranking
             statistics. Returns an empty dictionary if number_digits
             value is not valid.
@@ -288,4 +300,6 @@ class PanelistStatistics:
         if not id_:
             return {}
 
-        return self.retrieve_statistics_by_id(id_, number_digits=number_digits)
+        return self.retrieve_statistics_by_id(
+            id_, number_decimal_places=number_decimal_places
+        )
