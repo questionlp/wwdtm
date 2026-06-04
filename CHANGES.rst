@@ -16,6 +16,11 @@ Application Changes
 
 * Added :py:meth:`wwdtm.validation.valid_rounding_digits` that is used to validate the ``number_digits`` value using the above minimum and maximum values
 
+Development Changes
+-------------------
+
+* Added positive and negative tests for :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_id`, :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_id`, and :py:meth:`wwdtm.validation.valid_rounding_digits`
+
 3.0.0
 =====
 
