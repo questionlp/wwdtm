@@ -6,6 +6,7 @@
 """Testing for object: :py:class:`wwdtm.panelist.PanelistStatistics`."""
 
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -105,6 +106,52 @@ def test_panelist_statistics_retrieve_statistics_by_id(panelist_id: int):
     assert "ranking" in stats, f"'ranking' was not returned for ID {panelist_id}"
 
 
+@pytest.mark.parametrize("panelist_id, number_digits", [(14, 0), (14, 5), (14, 20)])
+def test_panelist_statistics_retrieve_statistics_by_id_valid_number_digits(
+    panelist_id: int, number_digits: int
+):
+    """Testing for :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_id`.
+
+    Testing is done with a value for number_digits.
+    """
+    statistics = PanelistStatistics(connect_dict=get_connect_dict())
+    stats = statistics.retrieve_statistics_by_id(
+        panelist_id, number_digits=number_digits
+    )
+
+    assert "scoring" in stats, f"'scoring' was not returned for ID {panelist_id}"
+    assert "total" in stats["scoring"], (
+        f"'total' was not returned in 'scoring' for ID {panelist_id}"
+    )
+    assert "scoring_decimal" in stats, (
+        f"'scoring_decimal' was not returned for ID {panelist_id}"
+    )
+    assert "total" in stats["scoring_decimal"], (
+        f"'total' was not returned in 'scoring_decimal' for ID {panelist_id}"
+    )
+    assert "ranking" in stats, f"'ranking' was not returned for ID {panelist_id}"
+
+
+@pytest.mark.parametrize(
+    "panelist_id, number_digits", [(14, -1), (14, 100), (14, math.pi), (14, "1")]
+)
+def test_panelist_statistics_retrieve_statistics_by_id_invalid_number_digits(
+    panelist_id: int, number_digits: int
+):
+    """Testing for :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_id`.
+
+    Testing is done with an invalid value for number_digits.
+    """
+    statistics = PanelistStatistics(connect_dict=get_connect_dict())
+    stats = statistics.retrieve_statistics_by_id(
+        panelist_id, number_digits=number_digits
+    )
+
+    assert not stats, (
+        f"Incorrect handling of invalid number_digits value of {number_digits}"
+    )
+
+
 @pytest.mark.parametrize("panelist_slug", ["luke-burbank", "faith-salie"])
 def test_panelist_statistics_retrieve_statistics_by_slug(panelist_slug: str):
     """Testing for :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_slug`.
@@ -126,3 +173,58 @@ def test_panelist_statistics_retrieve_statistics_by_slug(panelist_slug: str):
         f"'total' was not returned in 'scoring_decimal' for slug {panelist_slug}"
     )
     assert "ranking" in stats, f"'ranking' was not returned for slug {panelist_slug}"
+
+
+@pytest.mark.parametrize(
+    "panelist_slug, number_digits",
+    [("luke-burbank", 0), ("luke-burbank", 5), ("luke-burbank", 20)],
+)
+def test_panelist_statistics_retrieve_statistics_by_slug_valid_number_digits(
+    panelist_slug: str, number_digits: int
+):
+    """Testing for :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_slug`.
+
+    Testing is done with a value for number_digits.
+    """
+    statistics = PanelistStatistics(connect_dict=get_connect_dict())
+    stats = statistics.retrieve_statistics_by_slug(
+        panelist_slug, number_digits=number_digits
+    )
+
+    assert "scoring" in stats, f"'scoring' was not returned for slug {panelist_slug}"
+    assert "total" in stats["scoring"], (
+        f"'total' was not returned in 'scoring' for slug {panelist_slug}"
+    )
+    assert "scoring_decimal" in stats, (
+        f"'scoring_decimal' was not returned for slug {panelist_slug}"
+    )
+    assert "total" in stats["scoring_decimal"], (
+        f"'total' was not returned in 'scoring_decimal' for slug {panelist_slug}"
+    )
+    assert "ranking" in stats, f"'ranking' was not returned for slug {panelist_slug}"
+
+
+@pytest.mark.parametrize(
+    "panelist_slug, number_digits",
+    [
+        ("luke-burbank", -1),
+        ("luke-burbank", 100),
+        ("luke-burbank", math.pi),
+        ("luke-burbank", "1"),
+    ],
+)
+def test_panelist_statistics_retrieve_statistics_by_slug_invalid_number_digits(
+    panelist_slug: str, number_digits: int
+):
+    """Testing for :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_slug`.
+
+    Testing is done with an invalid value for number_digits.
+    """
+    statistics = PanelistStatistics(connect_dict=get_connect_dict())
+    stats = statistics.retrieve_statistics_by_slug(
+        panelist_slug, number_digits=number_digits
+    )
+
+    assert not stats, (
+        f"Incorrect handling of invalid number_digits value of {number_digits}"
+    )
