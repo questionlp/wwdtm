@@ -5,6 +5,7 @@
 """Testing for object: :py:class:`wwdtm.validation`."""
 
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -13,7 +14,11 @@ from mysql.connector import connect
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.pooling import PooledMySQLConnection
 
-from wwdtm.validation import check_database_version, valid_int_id, valid_rounding_digits
+from wwdtm.validation import (
+    check_database_version,
+    valid_int_id,
+    valid_rounding_decimal_places,
+)
 
 
 @pytest.mark.skip
@@ -88,52 +93,139 @@ def test_validation_no_id():
     assert not valid_int_id(None), "Provided ID 'None' was valid"
 
 
-@pytest.mark.parametrize("number_digits", [0, 1, 2, 5, 10, 20])
-def test_validation_valid_rounding_digits(number_digits: int):
-    """Testing for :py:meth:`wwdtm.validation.valid_rounding_digits`.
+@pytest.mark.parametrize("number_decimal_places", [0, 1, 2, 5, 10, 20])
+def test_validation_valid_rounding_decimal_places(number_decimal_places: int):
+    """Testing for :py:meth:`wwdtm.validation.valid_rounding_decimal_places`.
 
-    :param number_digits: Number of rounding digits to validate
+    :param number_decimal_places: Number of rounding decimal places
     """
-    assert valid_rounding_digits(number_digits=number_digits)
+    assert valid_rounding_decimal_places(number_decimal_places=number_decimal_places)
+
+
+@pytest.mark.parametrize("number_decimal_places", [None, -1, 100, math.pi])
+def test_validation_valid_rounding_decimal_places_invalid(number_decimal_places: int):
+    """Testing for :py:meth:`wwdtm.validation.valid_rounding_decimal_places`.
+
+    Testing is done with an invalid value for number_decimal_places.
+
+    :param number_decimal_places: Number of rounding decimal places
+    """
+    assert not valid_rounding_decimal_places(
+        number_decimal_places=number_decimal_places
+    )
 
 
 @pytest.mark.parametrize(
-    "number_digits, min_digits", [(0, 0), (5, 1), (10, 5), (20, 10)]
+    "number_decimal_places, min_decimal_places", [(0, 0), (5, 1), (10, 5), (20, 10)]
 )
-def test_validation_valid_rounding_digits_with_min(number_digits: int, min_digits: int):
-    """Testing for :py:meth:`wwdtm.validation.valid_rounding_digits`.
+def test_validation_valid_rounding_decimal_places_with_min(
+    number_decimal_places: int, min_decimal_places: int
+):
+    """Testing for :py:meth:`wwdtm.validation.valid_rounding_decimal_places`.
 
-    :param number_digits: Number of rounding digits to validate
-    :param min_digits: Minimum of rounding digits
+    :param number_decimal_places: Number of rounding decimal places
+    :param min_decimal_places: Minimum of rounding decimal places
     """
-    assert valid_rounding_digits(number_digits=number_digits, min_digits=min_digits)
+    assert valid_rounding_decimal_places(
+        number_decimal_places=number_decimal_places,
+        min_decimal_places=min_decimal_places,
+    )
 
 
 @pytest.mark.parametrize(
-    "number_digits, max_digits", [(0, 0), (1, 5), (5, 10), (10, 20)]
+    "number_decimal_places, min_decimal_places",
+    [(None, 0), (-1, 1), (10, 50), (20, math.pi)],
 )
-def test_validation_valid_rounding_digits_with_max(number_digits: int, max_digits: int):
-    """Testing for :py:meth:`wwdtm.validation.valid_rounding_digits`.
+def test_validation_valid_rounding_decimal_places_with_min_invalid(
+    number_decimal_places: int, min_decimal_places: int
+):
+    """Testing for :py:meth:`wwdtm.validation.valid_rounding_decimal_places`.
 
-    :param number_digits: Number of rounding digits to validate
-    :param max_digits: Maximum of rounding digits
+    Testing is done with an invalid value for number_decimal_places.
+
+    :param number_decimal_places: Number of rounding decimal places
+    :param min_decimal_places: Minimum of rounding decimal places
     """
-    assert valid_rounding_digits(number_digits=number_digits, max_digits=max_digits)
+    assert not valid_rounding_decimal_places(
+        number_decimal_places=number_decimal_places,
+        min_decimal_places=min_decimal_places,
+    )
 
 
 @pytest.mark.parametrize(
-    "number_digits, min_digits, max_digits",
+    "number_decimal_places, max_decimal_places", [(0, 0), (1, 5), (5, 10), (10, 20)]
+)
+def test_validation_valid_rounding_decimal_places_with_max(
+    number_decimal_places: int, max_decimal_places: int
+):
+    """Testing for :py:meth:`wwdtm.validation.valid_rounding_decimal_places`.
+
+    :param number_decimal_places: Number of rounding decimal places
+    :param max_decimal_places: Maximum of rounding decimal places
+    """
+    assert valid_rounding_decimal_places(
+        number_decimal_places=number_decimal_places,
+        max_decimal_places=max_decimal_places,
+    )
+
+
+@pytest.mark.parametrize(
+    "number_decimal_places, max_decimal_places",
+    [(0, -1), (1, 500), (None, math.pi), (10, "1")],
+)
+def test_validation_valid_rounding_decimal_places_with_max_invalid(
+    number_decimal_places: int, max_decimal_places: int
+):
+    """Testing for :py:meth:`wwdtm.validation.valid_rounding_decimal_places`.
+
+    Testing is done with an invalid value for number_decimal_places.
+
+    :param number_decimal_places: Number of rounding decimal places
+    :param max_decimal_places: Maximum of rounding decimal places
+    """
+    assert not valid_rounding_decimal_places(
+        number_decimal_places=number_decimal_places,
+        max_decimal_places=max_decimal_places,
+    )
+
+
+@pytest.mark.parametrize(
+    "number_decimal_places, min_decimal_places, max_decimal_places",
     [(0, 0, 1), (1, 0, 5), (5, 2, 10), (10, 2, 20)],
 )
-def test_validation_valid_rounding_digits_with_min_max(
-    number_digits: int, min_digits: int, max_digits: int
+def test_validation_valid_rounding_decimal_places_with_min_max(
+    number_decimal_places: int, min_decimal_places: int, max_decimal_places: int
 ):
     """Testing for :py:meth:`wwdtm.validation.valid_rounding_digits`.
 
-    :param number_digits: Number of rounding digits to validate
-    :param min_digits: Minimum of rounding digits
-    :param max_digits: Maximum of rounding digits
+    :param number_decimal_places: Number of rounding decimal places
+    :param min_decimal_places: Minimum of rounding decimal places
+    :param max_decimal_places: Maximum of rounding decimal places
     """
-    assert valid_rounding_digits(
-        number_digits=number_digits, min_digits=min_digits, max_digits=max_digits
+    assert valid_rounding_decimal_places(
+        number_decimal_places=number_decimal_places,
+        min_decimal_places=min_decimal_places,
+        max_decimal_places=max_decimal_places,
+    )
+
+
+@pytest.mark.parametrize(
+    "number_decimal_places, min_decimal_places, max_decimal_places",
+    [(0, 5, 2), (1, None, 5), (5, 2, "10"), (None, 2, 20)],
+)
+def test_validation_valid_rounding_decimal_places_with_min_max_invalid(
+    number_decimal_places: int, min_decimal_places: int, max_decimal_places: int
+):
+    """Testing for :py:meth:`wwdtm.validation.valid_rounding_digits`.
+
+    Testing is done with an invalid value for number_decimal_places.
+
+    :param number_decimal_places: Number of rounding decimal places
+    :param min_decimal_places: Minimum of rounding decimal places
+    :param max_decimal_places: Maximum of rounding decimal places
+    """
+    assert not valid_rounding_decimal_places(
+        number_decimal_places=number_decimal_places,
+        min_decimal_places=min_decimal_places,
+        max_decimal_places=max_decimal_places,
     )

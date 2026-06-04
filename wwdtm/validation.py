@@ -61,21 +61,38 @@ def valid_int_id(int_id: int) -> bool:
     return 0 <= int_id_ <= (2**31 - 1)
 
 
-def valid_rounding_digits(
-    number_digits: int, min_digits: int = 0, max_digits: int = 20
+def valid_rounding_decimal_places(
+    number_decimal_places: int,
+    min_decimal_places: int = 0,
+    max_decimal_places: int = 20,
 ) -> bool:
-    """Validates number of rounding digits is within the min/max value.
+    """Validates that number of decimal places is within the min/max values.
 
-    :param number_digits: Number of rounding digits to validate
-    :param min_digits: Minimum number of rounding digits
-    :param max_digits: Maximum number of rounding digits
-    :return: True or False, based on if the number of rounding digits
-        is within the min/max value and if it is an integer
+    :param number_decimal_places: Number of decimal places to validate
+    :param min_decimal_places: Minimum number of decimal places
+    :param max_decimal_places: Maximum number of decimal places
+    :return: True or False, based on if the number of decimal places is
+        within the min/max value and if it is an integer
     """
-    if number_digits is None:
+    if (
+        number_decimal_places is None
+        or min_decimal_places is None
+        or max_decimal_places is None
+    ):
         return False
 
-    if not isinstance(number_digits, int):
+    if (
+        not isinstance(number_decimal_places, int)
+        or not isinstance(min_decimal_places, int)
+        or not isinstance(max_decimal_places, int)
+    ):
         return False
 
-    return min_digits <= number_digits <= max_digits
+    if (
+        (min_decimal_places > max_decimal_places)
+        or (min_decimal_places < 0)
+        or (max_decimal_places > 20)
+    ):
+        return False
+
+    return min_decimal_places <= number_decimal_places <= max_decimal_places

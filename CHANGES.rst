@@ -2,6 +2,30 @@
 Changes
 *******
 
+3.2.0
+=====
+
+Application Changes
+-------------------
+
+* Added ``number_decimal_places`` optional parameter the following methods with a default value of 5
+
+  * :py:meth:`wwdtm.panelist.Panelist.retrieve_all_details`
+  * :py:meth:`wwdtm.panelist.Panelist.retrieve_details_by_id`
+  * :py:meth:`wwdtm.panelist.Panelist.retrieve_details_by_slug`
+  * :py:meth:`wwdtm.panelist.Panelist.retrieve_random_details`
+
+* Renamed functions, methods and parameters for clarity regarding the number of number of decimal places to round to for panelist statistics
+
+  * Renamed ``number_digits`` parameter to ``number_decimal_places`` for :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_id` and :py:meth:`wwdtm.panelist.PanelistStatistics.retrieve_statistics_by_id`
+  * Renamed :py:meth:`wwdtm.validation.valid_rounding_digits` to :py:meth:`wwdtm.validation.valid_rounding_decimal_places` and updated parameter names to match
+
+Development Changes
+-------------------
+
+* Added new permutations of tests for the recently and newly added functions and methods
+* Updated tests to reflect the new functions or mathod names, along with parameter names
+
 3.1.0
 =====
 
