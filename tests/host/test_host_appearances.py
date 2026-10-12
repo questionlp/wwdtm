@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.host import HostAppearances
 
@@ -26,6 +27,32 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+
+def test_host_appearances_database_connection():
+    """Testing instantiating :py:class:`wwdtm.host.HostAppearances` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    appearances = HostAppearances(database_connection=database_connection)
+
+    assert appearances, (
+        "Could not instantiate HostAppearances object using database connection"
+    )
+    assert isinstance(appearances, HostAppearances), (
+        "Instantiated object is not an instance of HostAppearances"
+    )
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    appearances = HostAppearances(database_connection=database_connection)
+
+    assert appearances, (
+        "Could not instantiate HostAppearances object using database connection"
+    )
+    assert isinstance(appearances, HostAppearances), (
+        "Instantiated object is not an instance of HostAppearances"
+    )
 
 
 @pytest.mark.parametrize("host_id", [2])

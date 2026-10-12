@@ -123,8 +123,8 @@ class LocationRecordings:
         :return: A dictionary containing location recording counts,
             dates and show flags
         """
-        id_ = self.utility.convert_slug_to_id(location_slug)
-        if not id_:
+        _id = self.utility.convert_slug_to_id(location_slug)
+        if not _id:
             return {}
 
-        return self.retrieve_recordings_by_id(id_)
+        return self.retrieve_recordings_by_id(_id)

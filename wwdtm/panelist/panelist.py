@@ -77,28 +77,16 @@ class Panelist:
 
         panelists = []
 
-        cursor = self.database_connection.cursor(dictionary=True)
         for row in results:
-            query = """
-                SELECT pn.pronouns
-                FROM ww_panelistpronounsmap ppm
-                JOIN ww_pronouns pn on pn.pronounsid = ppm.pronounsid
-                WHERE ppm.panelistid = %s
-                ORDER BY ppm.panelistpronounsmapid ASC;
-                """
-            cursor.execute(query, (row["id"],))
-            pn_results = cursor.fetchall()
-
             panelists.append(
                 {
                     "id": row["id"],
                     "name": row["name"],
                     "slug": row["slug"] if row["slug"] else slugify(row["name"]),
                     "gender": row["gender"],
-                    "pronouns": (
-                        [result["pronouns"] for result in pn_results]
-                        if pn_results
-                        else []
+                    "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                    "social_media_accounts": self.retrieve_social_media_accounts_by_id(
+                        row["id"]
                     ),
                 }
             )
@@ -144,34 +132,22 @@ class Panelist:
             database_connection=self.database_connection
         )
 
-        cursor = self.database_connection.cursor(dictionary=True)
         for row in results:
             _slug = row["slug"] if row["slug"] else slugify(row["name"])
-            query = """
-                SELECT pn.pronouns
-                FROM ww_panelistpronounsmap ppm
-                JOIN ww_pronouns pn on pn.pronounsid = ppm.pronounsid
-                WHERE ppm.panelistid = %s
-                ORDER BY ppm.panelistpronounsmapid ASC;
-                """
-            cursor.execute(query, (row["id"],))
-            pn_results = cursor.fetchall()
+
             panelists.append(
                 {
                     "id": row["id"],
                     "name": row["name"],
                     "slug": _slug,
                     "gender": row["gender"],
-                    "pronouns": (
-                        [result["pronouns"] for result in pn_results]
-                        if pn_results
-                        else []
+                    "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                    "social_media_accounts": self.retrieve_social_media_accounts_by_id(
+                        row["id"]
                     ),
-                    "is_guest": bool(_guest_utility.slug_exists(guest_slug=_slug)),
-                    "is_host": bool(_host_utility.slug_exists(host_slug=_slug)),
-                    "is_scorekeeper": bool(
-                        _scorekeeper_utility.slug_exists(scorekeeper_slug=_slug)
-                    ),
+                    "is_guest": bool(_guest_utility.slug_exists(_slug)),
+                    "is_host": bool(_host_utility.slug_exists(_slug)),
+                    "is_scorekeeper": bool(_scorekeeper_utility.slug_exists(_slug)),
                     "statistics": self.statistics.retrieve_statistics_by_id(
                         row["id"], number_decimal_places=number_decimal_places
                     ),
@@ -249,24 +225,15 @@ class Panelist:
         if not result:
             return {}
 
-        query = """
-            SELECT pn.pronouns
-            FROM ww_panelistpronounsmap ppm
-            JOIN ww_pronouns pn on pn.pronounsid = ppm.pronounsid
-            WHERE ppm.panelistid = %s
-            ORDER BY ppm.panelistpronounsmapid ASC;
-            """
-        cursor = self.database_connection.cursor(dictionary=True)
-        cursor.execute(query, (panelist_id,))
-        results = cursor.fetchall()
-        cursor.close()
-
         return {
             "id": result["id"],
             "name": result["name"],
             "slug": result["slug"] if result["slug"] else slugify(result["name"]),
             "gender": result["gender"],
-            "pronouns": [result["pronouns"] for result in results] if results else [],
+            "pronouns": self.retrieve_pronouns_by_id(panelist_id),
+            "social_media_accounts": self.retrieve_social_media_accounts_by_id(
+                panelist_id
+            ),
         }
 
     def retrieve_by_slug(self, panelist_slug: str) -> dict[str, Any]:
@@ -276,18 +243,11 @@ class Panelist:
         :return: A dictionary containing panelist ID, name, slug string,
             gender and pronouns
         """
-        try:
-            slug = panelist_slug.strip()
-            if not slug:
-                return {}
-        except AttributeError:
+        _id = self.utility.convert_slug_to_id(panelist_slug)
+        if not _id:
             return {}
 
-        id_ = self.utility.convert_slug_to_id(slug)
-        if not id_:
-            return {}
-
-        return self.retrieve_by_id(id_)
+        return self.retrieve_by_id(_id)
 
     def retrieve_details_by_id(
         self, panelist_id: int, number_decimal_places: int = 5
@@ -319,11 +279,9 @@ class Panelist:
             database_connection=self.database_connection
         )
 
-        info["is_guest"] = bool(_guest_utility.slug_exists(guest_slug=info["slug"]))
-        info["is_host"] = bool(_host_utility.slug_exists(host_slug=info["slug"]))
-        info["is_scorekeeper"] = bool(
-            _scorekeeper_utility.slug_exists(scorekeeper_slug=info["slug"])
-        )
+        info["is_guest"] = bool(_guest_utility.slug_exists(info["slug"]))
+        info["is_host"] = bool(_host_utility.slug_exists(info["slug"]))
+        info["is_scorekeeper"] = bool(_scorekeeper_utility.slug_exists(info["slug"]))
 
         info["statistics"] = self.statistics.retrieve_statistics_by_id(
             panelist_id, number_decimal_places=number_decimal_places
@@ -345,15 +303,8 @@ class Panelist:
             gender, pronouns, whether the panelist is also a guest, host
             or scorekeeper, scoring statistics and appearances
         """
-        try:
-            slug = panelist_slug.strip()
-            if not slug:
-                return {}
-        except AttributeError:
-            return {}
-
-        id_ = self.utility.convert_slug_to_id(slug)
-        if not id_:
+        _id = self.utility.convert_slug_to_id(panelist_slug)
+        if not _id:
             return {}
 
         if not valid_rounding_decimal_places(
@@ -362,8 +313,46 @@ class Panelist:
             return {}
 
         return self.retrieve_details_by_id(
-            id_, number_decimal_places=number_decimal_places
+            _id, number_decimal_places=number_decimal_places
         )
+
+    def retrieve_pronouns_by_id(self, panelist_id: int) -> list[str]:
+        """Retrieves preferred pronouns for a panelist.
+
+        :param panelist_id: Panelist ID
+        :return: A list of preferred pronouns.
+        """
+        if not valid_int_id(panelist_id):
+            return []
+
+        query = """
+            SELECT pn.pronouns
+            FROM ww_panelistpronounsmap ppm
+            JOIN ww_pronouns pn on pn.pronounsid = ppm.pronounsid
+            WHERE ppm.panelistid = %s
+            ORDER BY ppm.panelistpronounsmapid ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=True)
+        cursor.execute(query, (panelist_id,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        return [result["pronouns"] for result in results]
+
+    def retrieve_pronouns_by_slug(self, panelist_slug: str) -> list[str]:
+        """Retrieves preferred pronouns for a panelist.
+
+        :param panelist_slug: Panelist slug string
+        :return: A list of preferred pronouns.
+        """
+        _id = self.utility.convert_slug_to_id(panelist_slug)
+        if not _id:
+            return {}
+
+        return self.retrieve_pronouns_by_id(_id)
 
     def retrieve_random_id(self) -> int:
         """Retrieves an ID for a random panelist.
@@ -442,3 +431,58 @@ class Panelist:
         return self.retrieve_details_by_id(
             _id, number_decimal_places=number_decimal_places
         )
+
+    def retrieve_social_media_accounts_by_id(
+        self, panelist_id: int
+    ) -> list[dict[str, str]]:
+        """Retrieves social media accounts for a panelist.
+
+        :param panelist_id: Panelist ID
+        :return: A list of dictionaries containing social media
+            account information.
+        """
+        if not valid_int_id(panelist_id):
+            return []
+
+        query = """
+            SELECT smn.network, smn.networkslug, psm.account, psm.url
+            FROM ww_panelistsocialmap psm
+            JOIN ww_socialmedianetworks smn ON smn.networkid = psm.networkid
+            WHERE psm.panelistid = %s
+            ORDER BY smn.network ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=True)
+        cursor.execute(query, (panelist_id,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        accounts = []
+        for row in results:
+            accounts.append(
+                {
+                    "network": row["network"],
+                    "network_slug": row["networkslug"],
+                    "account": row["account"],
+                    "url": row["url"],
+                }
+            )
+
+        return accounts
+
+    def retrieve_social_media_accounts_by_slug(
+        self, panelist_slug: str
+    ) -> list[dict[str, str]]:
+        """Retrieves social media accounts for a panelist.
+
+        :param panelist_slug: Panelist slug string
+        :return: A list of dictionaries containing social media
+            account information.
+        """
+        _id = self.utility.convert_slug_to_id(panelist_slug)
+        if not _id:
+            return {}
+
+        return self.retrieve_social_media_accounts_by_id(_id)

@@ -285,18 +285,11 @@ class Location:
         :return: A dictionary containing location ID, venue, city, state
             and slug string
         """
-        try:
-            slug = location_slug.strip()
-            if not slug:
-                return {}
-        except AttributeError:
+        _id = self.utility.convert_slug_to_id(location_slug)
+        if not _id:
             return {}
 
-        id_ = self.utility.convert_slug_to_id(slug)
-        if not id_:
-            return {}
-
-        return self.retrieve_by_id(id_)
+        return self.retrieve_by_id(_id)
 
     def retrieve_details_by_id(self, location_id: int) -> dict[str, Any]:
         """Retrieves location information and recordings.
@@ -323,18 +316,11 @@ class Location:
         :return: A dictionary containing location ID, venue name, city,
             state, slug string and a list of recordings
         """
-        try:
-            slug = location_slug.strip()
-            if not slug:
-                return {}
-        except AttributeError:
+        _id = self.utility.convert_slug_to_id(location_slug)
+        if not _id:
             return {}
 
-        id_ = self.utility.convert_slug_to_id(slug)
-        if not id_:
-            return {}
-
-        return self.retrieve_details_by_id(id_)
+        return self.retrieve_details_by_id(_id)
 
     def retrieve_postal_abbreviations(self) -> dict[str, dict[str, str]]:
         """Retrieves postal abbreviations, corresponding names and countries.
@@ -473,7 +459,7 @@ class Location:
         if not _id:
             return None
 
-        return self.retrieve_by_id(location_id=_id)
+        return self.retrieve_by_id(_id)
 
     def retrieve_random_details(self) -> dict[str, Any]:
         """Retrieves information and recordings for a random location.
@@ -486,4 +472,4 @@ class Location:
         if not _id:
             return None
 
-        return self.retrieve_details_by_id(location_id=_id)
+        return self.retrieve_details_by_id(_id)

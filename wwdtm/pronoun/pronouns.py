@@ -128,7 +128,7 @@ class Pronouns:
         return [row[0] for row in results]
 
     def retrieve_by_id(self, pronouns_id: int) -> dict[int, str]:
-        """Retrieves pronouns information.
+        """Retrieves pronouns information by ID.
 
         :param pronouns_id: Pronouns ID
         :return: A dictionary containing pronouns ID and corresponding
@@ -143,6 +143,7 @@ class Pronouns:
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (pronouns_id,))
         result = cursor.fetchone()
+        cursor.close()
 
         if not result:
             return {}

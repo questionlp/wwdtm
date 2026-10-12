@@ -17,5 +17,6 @@ each of the :py:mod:`wwdtm` library modules:
     pronoun
     scorekeeper
     show
+    social_media
     validation
     wwdtm

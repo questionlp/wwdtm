@@ -190,11 +190,11 @@ class PanelistAppearances:
         :return: A dictionary containing appearance statistics, scoring
             and ranking details
         """
-        id_ = self.utility.convert_slug_to_id(panelist_slug)
-        if not id_:
+        _id = self.utility.convert_slug_to_id(panelist_slug)
+        if not _id:
             return {}
 
-        return self.retrieve_appearances_by_id(id_)
+        return self.retrieve_appearances_by_id(_id)
 
     def retrieve_yearly_appearances_by_id(self, panelist_id: int) -> dict[int, int]:
         """Retrieves panelist appearance counts grouped by year.
@@ -252,8 +252,8 @@ class PanelistAppearances:
         :return: A dictionary containing years as keys and appearance
             counts for each year as values
         """
-        id_ = self.utility.convert_slug_to_id(panelist_slug)
-        if not id_:
+        _id = self.utility.convert_slug_to_id(panelist_slug)
+        if not _id:
             return {}
 
-        return self.retrieve_yearly_appearances_by_id(id_)
+        return self.retrieve_yearly_appearances_by_id(_id)

@@ -63,10 +63,10 @@ def test_scorekeeper_utility_convert_slug_to_id(scorekeeper_slug: str):
         into scorekeeper ID
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
-    id_ = utility.convert_slug_to_id(scorekeeper_slug)
+    _id = utility.convert_slug_to_id(scorekeeper_slug)
 
-    assert id_, f"Scorekeeper ID for slug {scorekeeper_slug} was found"
-    assert isinstance(id_, int), f"Invalid value returned for slug {scorekeeper_slug}"
+    assert _id, f"Scorekeeper ID for slug {scorekeeper_slug} was found"
+    assert isinstance(_id, int), f"Invalid value returned for slug {scorekeeper_slug}"
 
 
 @pytest.mark.parametrize("scorekeeper_slug", ["corva-coleman"])
@@ -77,9 +77,9 @@ def test_scorekeeper_utility_convert_invalid_slug_to_id(scorekeeper_slug: str):
         convert into scorekeeper ID
     """
     utility = ScorekeeperUtility(connect_dict=get_connect_dict())
-    id_ = utility.convert_slug_to_id(scorekeeper_slug)
+    _id = utility.convert_slug_to_id(scorekeeper_slug)
 
-    assert not id_, f"Scorekeeper ID for slug {scorekeeper_slug} was not found"
+    assert not _id, f"Scorekeeper ID for slug {scorekeeper_slug} was not found"
 
 
 @pytest.mark.parametrize("scorekeeper_id", [2])

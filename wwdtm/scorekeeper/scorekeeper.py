@@ -72,28 +72,16 @@ class Scorekeeper:
 
         scorekeepers = []
 
-        cursor = self.database_connection.cursor(dictionary=True)
         for row in results:
-            query = """
-                SELECT pn.pronouns
-                FROM ww_skpronounsmap spm
-                JOIN ww_pronouns pn on pn.pronounsid = spm.pronounsid
-                WHERE spm.scorekeeperid = %s
-                ORDER BY spm.skpronounsmapid ASC;
-                """
-            cursor.execute(query, (row["id"],))
-            pn_results = cursor.fetchall()
-
             scorekeepers.append(
                 {
                     "id": row["id"],
                     "name": row["name"],
                     "slug": row["slug"] if row["slug"] else slugify(row["name"]),
                     "gender": row["gender"],
-                    "pronouns": (
-                        [result["pronouns"] for result in pn_results]
-                        if pn_results
-                        else []
+                    "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                    "social_media_accounts": self.retrieve_social_media_accounts_by_id(
+                        row["id"]
                     ),
                 }
             )
@@ -129,18 +117,8 @@ class Scorekeeper:
             database_connection=self.database_connection
         )
 
-        cursor = self.database_connection.cursor(dictionary=True)
         for row in results:
             _slug = row["slug"] if row["slug"] else slugify(row["name"])
-            query = """
-                SELECT pn.pronouns
-                FROM ww_skpronounsmap spm
-                JOIN ww_pronouns pn on pn.pronounsid = spm.pronounsid
-                WHERE spm.scorekeeperid = %s
-                ORDER BY spm.skpronounsmapid ASC;
-                """
-            cursor.execute(query, (row["id"],))
-            pn_results = cursor.fetchall()
 
             scorekeepers.append(
                 {
@@ -148,16 +126,13 @@ class Scorekeeper:
                     "name": row["name"],
                     "slug": _slug,
                     "gender": row["gender"],
-                    "pronouns": (
-                        [result["pronouns"] for result in pn_results]
-                        if pn_results
-                        else []
+                    "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                    "social_media_accounts": self.retrieve_social_media_accounts_by_id(
+                        row["id"]
                     ),
-                    "is_guest": bool(_guest_utility.slug_exists(guest_slug=_slug)),
-                    "is_host": bool(_host_utility.slug_exists(host_slug=_slug)),
-                    "is_panelist": bool(
-                        _panelist_utility.slug_exists(panelist_slug=_slug)
-                    ),
+                    "is_guest": bool(_guest_utility.slug_exists(_slug)),
+                    "is_host": bool(_host_utility.slug_exists(_slug)),
+                    "is_panelist": bool(_panelist_utility.slug_exists(_slug)),
                     "appearances": self.appearances.retrieve_appearances_by_id(
                         row["id"]
                     ),
@@ -227,24 +202,15 @@ class Scorekeeper:
         if not result:
             return {}
 
-        query = """
-            SELECT pn.pronouns
-            FROM ww_skpronounsmap spm
-            JOIN ww_pronouns pn on pn.pronounsid = spm.pronounsid
-            WHERE spm.scorekeeperid = %s
-            ORDER BY spm.skpronounsmapid ASC;
-            """
-        cursor = self.database_connection.cursor(dictionary=True)
-        cursor.execute(query, (scorekeeper_id,))
-        results = cursor.fetchall()
-        cursor.close()
-
         return {
             "id": result["id"],
             "name": result["name"],
             "slug": result["slug"] if result["slug"] else slugify(result["name"]),
             "gender": result["gender"],
-            "pronouns": [result["pronouns"] for result in results] if results else [],
+            "pronouns": self.retrieve_pronouns_by_id(scorekeeper_id),
+            "social_media_accounts": self.retrieve_social_media_accounts_by_id(
+                scorekeeper_id
+            ),
         }
 
     def retrieve_by_slug(self, scorekeeper_slug: str) -> dict[str, Any]:
@@ -254,18 +220,11 @@ class Scorekeeper:
         :return: A dictionary containing scorekeeper ID, name, slug
             string, gender and pronouns
         """
-        try:
-            slug = scorekeeper_slug.strip()
-            if not slug:
-                return {}
-        except AttributeError:
+        _id = self.utility.convert_slug_to_id(scorekeeper_slug)
+        if not _id:
             return {}
 
-        id_ = self.utility.convert_slug_to_id(slug)
-        if not id_:
-            return {}
-
-        return self.retrieve_by_id(id_)
+        return self.retrieve_by_id(_id)
 
     def retrieve_details_by_id(self, scorekeeper_id: int) -> dict[str, Any]:
         """Retrieves scorekeeper information and appearances.
@@ -290,10 +249,8 @@ class Scorekeeper:
         )
 
         info["is_guest"] = bool(_guest_utility.slug_exists(info["slug"]))
-        info["is_host"] = bool(_host_utility.slug_exists(host_slug=info["slug"]))
-        info["is_panelist"] = bool(
-            _panelist_utility.slug_exists(panelist_slug=info["slug"])
-        )
+        info["is_host"] = bool(_host_utility.slug_exists(info["slug"]))
+        info["is_panelist"] = bool(_panelist_utility.slug_exists(info["slug"]))
         info["appearances"] = self.appearances.retrieve_appearances_by_id(
             scorekeeper_id
         )
@@ -309,18 +266,49 @@ class Scorekeeper:
             a guest, host or panelist, and a list of appearances with
             show flags
         """
-        try:
-            slug = scorekeeper_slug.strip()
-            if not slug:
-                return {}
-        except AttributeError:
+        _id = self.utility.convert_slug_to_id(scorekeeper_slug)
+        if not _id:
             return {}
 
-        id_ = self.utility.convert_slug_to_id(slug)
-        if not id_:
+        return self.retrieve_details_by_id(_id)
+
+    def retrieve_pronouns_by_id(self, scorekeeper_id: int) -> list[str]:
+        """Retrieves preferred pronouns for a scorekeeper.
+
+        :param scorekeeper_id: Scorekeeper ID
+        :return: A list of preferred pronouns.
+        """
+        if not valid_int_id(scorekeeper_id):
+            return []
+
+        query = """
+            SELECT pn.pronouns
+            FROM ww_skpronounsmap spm
+            JOIN ww_pronouns pn on pn.pronounsid = spm.pronounsid
+            WHERE spm.scorekeeperid = %s
+            ORDER BY spm.skpronounsmapid ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=True)
+        cursor.execute(query, (scorekeeper_id,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        return [result["pronouns"] for result in results]
+
+    def retrieve_pronouns_by_slug(self, scorekeeper_slug: str) -> list[str]:
+        """Retrieves preferred pronouns for a scorekeeper.
+
+        :param scorekeeper_slug: Scorekeeper slug string
+        :return: A list of preferred pronouns.
+        """
+        _id = self.utility.convert_slug_to_id(scorekeeper_slug)
+        if not _id:
             return {}
 
-        return self.retrieve_details_by_id(id_)
+        return self.retrieve_pronouns_by_id(_id)
 
     def retrieve_random_id(self) -> int:
         """Retrieves an ID for a random scorekeeper.
@@ -375,7 +363,7 @@ class Scorekeeper:
         if not _id:
             return None
 
-        return self.retrieve_by_id(scorekeeper_id=_id)
+        return self.retrieve_by_id(_id)
 
     def retrieve_random_details(self) -> dict[str, Any]:
         """Retrieves information and appearances for a random scorekeeper.
@@ -390,4 +378,59 @@ class Scorekeeper:
         if not _id:
             return None
 
-        return self.retrieve_details_by_id(scorekeeper_id=_id)
+        return self.retrieve_details_by_id(_id)
+
+    def retrieve_social_media_accounts_by_id(
+        self, scorekeeper_id: int
+    ) -> list[dict[str, str]]:
+        """Retrieves social media accounts for a scorekeeper.
+
+        :param scorekeeper_id: Scorekeeper ID
+        :return: A list of dictionaries containing social media
+            account information.
+        """
+        if not valid_int_id(scorekeeper_id):
+            return []
+
+        query = """
+            SELECT smn.network, smn.networkslug, ssm.account, ssm.url
+            FROM ww_sksocialmap ssm
+            JOIN ww_socialmedianetworks smn ON smn.networkid = ssm.networkid
+            WHERE ssm.scorekeeperid = %s
+            ORDER BY smn.network ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=True)
+        cursor.execute(query, (scorekeeper_id,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        accounts = []
+        for row in results:
+            accounts.append(
+                {
+                    "network": row["network"],
+                    "network_slug": row["networkslug"],
+                    "account": row["account"],
+                    "url": row["url"],
+                }
+            )
+
+        return accounts
+
+    def retrieve_social_media_accounts_by_slug(
+        self, scorekeeper_slug: str
+    ) -> list[dict[str, str]]:
+        """Retrieves social media accounts for a scorekeeper.
+
+        :param scorekeeper_slug: Scorekeeper slug string
+        :return: A list of dictionaries containing social media
+            account information.
+        """
+        _id = self.utility.convert_slug_to_id(scorekeeper_slug)
+        if not _id:
+            return {}
+
+        return self.retrieve_social_media_accounts_by_id(_id)

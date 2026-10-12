@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.guest import Guest
 
@@ -26,6 +27,24 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+
+def test_guest_database_connection():
+    """Testing instantiating :py:class:`wwdtm.guest.Guest` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    _guest = Guest(database_connection=database_connection)
+
+    assert _guest, "Could not instantiate Guest object using database connection"
+    assert isinstance(_guest, Guest), "Instantiated object is not an instance of Guest"
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    _guest = Guest(database_connection=database_connection)
+
+    assert _guest, "Could not instantiate Guest object using database connection"
+    assert isinstance(_guest, Guest), "Instantiated object is not an instance of Guest"
 
 
 def test_guest_retrieve_all():

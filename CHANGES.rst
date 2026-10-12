@@ -2,6 +2,39 @@
 Changes
 *******
 
+3.3.0 (In-Development)
+======================
+
+Application Changes
+-------------------
+
+* The library now requires version 4.8 of the Wait Wait Stats Database in order to support the new social media account tables for hosts, panelists and scorekeepers
+* Added the following methods that retrieve social media accounts from the Stats Database for hosts, panelists and scorekeepers
+
+  * :py:meth:`wwdtm.host.Host.retrieve_social_media_accounts_by_id`
+  * :py:meth:`wwdtm.host.Host.retrieve_social_media_accounts_by_slug`
+  * :py:meth:`wwdtm.panelist.Panelist.retrieve_social_media_accounts_by_id`
+  * :py:meth:`wwdtm.panelist.Panelist.retrieve_social_media_accounts_by_slug`
+  * :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_social_media_accounts_by_id`
+  * :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_social_media_accounts_by_slug`
+
+* Added the following methods used to retrieve preferred pronouns for hosts, panelists and scorekeepers.
+
+  * :py:meth:`wwdtm.host.Host.retrieve_pronouns_by_id`
+  * :py:meth:`wwdtm.host.Host.retrieve_pronouns_by_slug`
+  * :py:meth:`wwdtm.panelist.Panelist.retrieve_pronouns_by_id`
+  * :py:meth:`wwdtm.panelist.Panelist.retrieve_pronouns_by_slug`
+  * :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_pronouns_by_id`
+  * :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_pronouns_by_slug`
+
+* Refactored the following classes to make use of the new ``retrieve_pronouns_by_id`` and ``retrieve_pronouns_by_slug`` instead of duplicated inline queries
+
+  * :py:class:`wwdtm.host.Host`
+  * :py:class:`wwdtm.panelist.Panelist`
+  * :py:class:`wwdtm.scorekeeper.Scorekeeper`
+
+* Various code cleanup and updating variable naming conventions for IDs and slug strings
+
 3.2.0
 =====
 

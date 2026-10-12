@@ -82,11 +82,11 @@ class PanelistDecimalScores:
         :param panelist_slug: Panelist slug string
         :return: A list containing panelist decimal scores
         """
-        id_ = self.utility.convert_slug_to_id(panelist_slug)
-        if not id_:
+        _id = self.utility.convert_slug_to_id(panelist_slug)
+        if not _id:
             return []
 
-        return self.retrieve_scores_by_id(id_)
+        return self.retrieve_scores_by_id(_id)
 
     def retrieve_scores_grouped_list_by_id(
         self, panelist_id: int
@@ -158,11 +158,11 @@ class PanelistDecimalScores:
         :return: A dictionary containing two lists, one containing
             decimal scores and one containing counts of those scores
         """
-        id_ = self.utility.convert_slug_to_id(panelist_slug)
-        if not id_:
+        _id = self.utility.convert_slug_to_id(panelist_slug)
+        if not _id:
             return {}
 
-        return self.retrieve_scores_grouped_list_by_id(id_)
+        return self.retrieve_scores_grouped_list_by_id(_id)
 
     def retrieve_scores_grouped_ordered_pair_by_id(
         self, panelist_id: int
@@ -231,11 +231,11 @@ class PanelistDecimalScores:
         :return: A list of tuples containing decimal scores and score
             counts
         """
-        id_ = self.utility.convert_slug_to_id(panelist_slug)
-        if not id_:
+        _id = self.utility.convert_slug_to_id(panelist_slug)
+        if not _id:
             return []
 
-        return self.retrieve_scores_grouped_ordered_pair_by_id(id_)
+        return self.retrieve_scores_grouped_ordered_pair_by_id(_id)
 
     def retrieve_scores_list_by_id(
         self,
@@ -288,11 +288,11 @@ class PanelistDecimalScores:
         :return: A dictionary containing a list show dates and a list
             of decimal scores
         """
-        id_ = self.utility.convert_slug_to_id(panelist_slug)
-        if not id_:
+        _id = self.utility.convert_slug_to_id(panelist_slug)
+        if not _id:
             return {}
 
-        return self.retrieve_scores_list_by_id(id_)
+        return self.retrieve_scores_list_by_id(_id)
 
     def retrieve_scores_ordered_pair_by_id(
         self, panelist_id: int
@@ -341,8 +341,8 @@ class PanelistDecimalScores:
         :return: A list of tuples containing show dates and decimal
             scores
         """
-        id_ = self.utility.convert_slug_to_id(panelist_slug)
-        if not id_:
+        _id = self.utility.convert_slug_to_id(panelist_slug)
+        if not _id:
             return []
 
-        return self.retrieve_scores_ordered_pair_by_id(id_)
+        return self.retrieve_scores_ordered_pair_by_id(_id)

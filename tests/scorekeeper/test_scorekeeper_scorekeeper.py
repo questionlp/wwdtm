@@ -156,6 +156,34 @@ def test_scorekeeper_retrieve_details_by_slug(scorekeeper_slug: str):
     )
 
 
+@pytest.mark.parametrize("scorekeeper_id", [13])
+def test_scorekeeper_retrieve_pronouns_by_id(scorekeeper_id: int):
+    """Testing for :py:meth`wwdtm.scorekeeper.Scorekeeper.retrieve_pronouns_by_id`."""
+    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
+    _pronouns = scorekeeper.retrieve_pronouns_by_id(scorekeeper_id)
+
+    assert isinstance(_pronouns, list), (
+        f"Returned value for scorekeeper ID {scorekeeper_id} was not of type list"
+    )
+    assert _pronouns, (
+        f"No preferred pronouns were returned for scorekeeper ID {scorekeeper_id}"
+    )
+
+
+@pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson"])
+def test_scorekeeper_retrieve_pronouns_by_slug(scorekeeper_slug: str):
+    """Testing for :py:meth`wwdtm.scorekeeper.Scorekeeper.retrieve_pronouns_by_id`."""
+    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
+    _pronouns = scorekeeper.retrieve_pronouns_by_slug(scorekeeper_slug)
+
+    assert isinstance(_pronouns, list), (
+        f"Returned value for scorekeeper slug string {scorekeeper_slug} was not of type list"
+    )
+    assert _pronouns, (
+        f"No preferred pronouns were returned for scorekeeper slug string {scorekeeper_slug}"
+    )
+
+
 def test_scorekeeper_retrieve_random_id() -> None:
     """Testing for :py:meth`wwdtm.scorekeeper.Scorekeeper.retrieve_random_id`."""
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
@@ -198,4 +226,32 @@ def test_scorekeeper_retrieve_random_details() -> None:
     assert "pronouns" in info, "'pronouns' was not returned for a random scorekeeper"
     assert "appearances" in info, (
         "'appearances' was not returned for a random scorekeeper"
+    )
+
+
+@pytest.mark.parametrize("scorekeeper_id", [2, 20])
+def test_scorekeeper_retrieve_social_acounts_by_id(scorekeeper_id: int):
+    """Testing for :py:meth`wwdtm.scorekeeper.Scorekeeper.retrieve_social_media_accounts_by_id`."""
+    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
+    _accounts = scorekeeper.retrieve_social_media_accounts_by_id(scorekeeper_id)
+
+    assert isinstance(_accounts, list), (
+        f"Returned value for scorekeeper ID {scorekeeper_id} was not of type list"
+    )
+    assert _accounts, (
+        f"No social media accounts were returned for scorekeeper ID {scorekeeper_id}"
+    )
+
+
+@pytest.mark.parametrize("scorekeeper_slug", ["korva-coleman", "alzo-slade"])
+def test_scorekeeper_retrieve_social_media_accounts_by_slug(scorekeeper_slug: str):
+    """Testing for :py:meth`wwdtm.scorekeeper.Scorekeeper.retrieve_social_media_accounts_by_id`."""
+    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
+    _accounts = scorekeeper.retrieve_social_media_accounts_by_slug(scorekeeper_slug)
+
+    assert isinstance(_accounts, list), (
+        f"Returned value for scorekeeper slug string {scorekeeper_slug} was not of type list"
+    )
+    assert _accounts, (
+        f"No social media accounts were returned for scorekeeper slug string {scorekeeper_slug}"
     )

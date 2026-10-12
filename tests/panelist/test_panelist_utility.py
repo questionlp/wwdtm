@@ -63,10 +63,10 @@ def test_panelist_utility_convert_slug_to_id(panelist_slug: str):
         panelist ID
     """
     utility = PanelistUtility(get_connect_dict())
-    id_ = utility.convert_slug_to_id(panelist_slug)
+    _id = utility.convert_slug_to_id(panelist_slug)
 
-    assert id_, f"Panelist ID for slug {panelist_slug} was not found"
-    assert isinstance(id_, int), f"Invalid value returned for slug {panelist_slug}"
+    assert _id, f"Panelist ID for slug {panelist_slug} was not found"
+    assert isinstance(_id, int), f"Invalid value returned for slug {panelist_slug}"
 
 
 @pytest.mark.parametrize("panelist_slug", ["faith-sale"])
@@ -77,9 +77,9 @@ def test_panelist_utility_convert_invalid_slug_to_id(panelist_slug: str):
         convert into panelist ID
     """
     utility = PanelistUtility(get_connect_dict())
-    id_ = utility.convert_slug_to_id(panelist_slug)
+    _id = utility.convert_slug_to_id(panelist_slug)
 
-    assert not id_, f"Panelist ID for slug {panelist_slug} was found"
+    assert not _id, f"Panelist ID for slug {panelist_slug} was found"
 
 
 @pytest.mark.parametrize("panelist_id", [14])

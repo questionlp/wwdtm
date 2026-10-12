@@ -37,10 +37,10 @@ def test_show_utility_convert_date_to_id(year: int, month: int, day: int):
     :param day: One or two digit day to test converting into show ID
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
-    id_ = utility.convert_date_to_id(year, month, day)
+    _id = utility.convert_date_to_id(year, month, day)
 
-    assert id_, f"Show ID for date {year:04d}-{month:02d}-{day:02d} not found"
-    assert isinstance(id_, int), (
+    assert _id, f"Show ID for date {year:04d}-{month:02d}-{day:02d} not found"
+    assert isinstance(_id, int), (
         f"Invalid value returned for date {year:04d}-{month:02d}-{day:02d}"
     )
 
@@ -56,9 +56,9 @@ def test_show_utility_convert_invalid_date_to_id(year: int, month: int, day: int
         show ID
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
-    id_ = utility.convert_date_to_id(year, month, day)
+    _id = utility.convert_date_to_id(year, month, day)
 
-    assert not id_, f"Show ID for date {year:04d}-{month:02d}-{day:02d} was found"
+    assert not _id, f"Show ID for date {year:04d}-{month:02d}-{day:02d} was found"
 
 
 @pytest.mark.parametrize("show_id", [1162])

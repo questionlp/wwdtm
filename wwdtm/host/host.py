@@ -70,33 +70,19 @@ class Host:
 
         hosts = []
 
-        cursor = self.database_connection.cursor(dictionary=True)
         for row in results:
-            query = """
-                SELECT pn.pronouns
-                FROM ww_hostpronounsmap hpm
-                JOIN ww_pronouns pn on pn.pronounsid = hpm.pronounsid
-                WHERE hpm.hostid = %s
-                ORDER BY hpm.hostpronounsmapid ASC;
-                """
-            cursor.execute(query, (row["id"],))
-            pn_results = cursor.fetchall()
-
             hosts.append(
                 {
                     "id": row["id"],
                     "name": row["name"],
                     "slug": row["slug"] if row["slug"] else slugify(row["name"]),
                     "gender": row["gender"],
-                    "pronouns": (
-                        [result["pronouns"] for result in pn_results]
-                        if pn_results
-                        else []
+                    "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                    "social_media_accounts": self.retrieve_social_media_accounts_by_id(
+                        row["id"]
                     ),
                 }
             )
-
-        cursor.close()
 
         return hosts
 
@@ -131,18 +117,8 @@ class Host:
             database_connection=self.database_connection
         )
 
-        cursor = self.database_connection.cursor(dictionary=True)
         for row in results:
             _slug = row["slug"] if row["slug"] else slugify(row["name"])
-            query = """
-                SELECT pn.pronouns
-                FROM ww_hostpronounsmap hpm
-                JOIN ww_pronouns pn on pn.pronounsid = hpm.pronounsid
-                WHERE hpm.hostid = %s
-                ORDER BY hpm.hostpronounsmapid ASC;
-                """
-            cursor.execute(query, (row["id"],))
-            pn_results = cursor.fetchall()
 
             hosts.append(
                 {
@@ -150,25 +126,18 @@ class Host:
                     "name": row["name"],
                     "slug": _slug,
                     "gender": row["gender"],
-                    "pronouns": (
-                        [result["pronouns"] for result in pn_results]
-                        if pn_results
-                        else []
+                    "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                    "social_media_accounts": self.retrieve_social_media_accounts_by_id(
+                        row["id"]
                     ),
-                    "is_guest": bool(_guest_utility.slug_exists(guest_slug=_slug)),
-                    "is_panelist": bool(
-                        _panelist_utility.slug_exists(panelist_slug=_slug)
-                    ),
-                    "is_scorekeeper": bool(
-                        _scorekeeper_utility.slug_exists(scorekeeper_slug=_slug)
-                    ),
+                    "is_guest": bool(_guest_utility.slug_exists(_slug)),
+                    "is_panelist": bool(_panelist_utility.slug_exists(_slug)),
+                    "is_scorekeeper": bool(_scorekeeper_utility.slug_exists(_slug)),
                     "appearances": self.appearances.retrieve_appearances_by_id(
                         row["id"]
                     ),
                 }
             )
-
-        cursor.close()
 
         return hosts
 
@@ -229,24 +198,13 @@ class Host:
         if not result:
             return {}
 
-        query = """
-            SELECT pn.pronouns
-            FROM ww_hostpronounsmap hpm
-            JOIN ww_pronouns pn on pn.pronounsid = hpm.pronounsid
-            WHERE hpm.hostid = %s
-            ORDER BY hpm.hostpronounsmapid ASC;
-            """
-        cursor = self.database_connection.cursor(dictionary=True)
-        cursor.execute(query, (host_id,))
-        results = cursor.fetchall()
-        cursor.close()
-
         return {
             "id": result["id"],
             "name": result["name"],
             "slug": result["slug"] if result["slug"] else slugify(result["name"]),
             "gender": result["gender"],
-            "pronouns": [result["pronouns"] for result in results] if results else [],
+            "pronouns": self.retrieve_pronouns_by_id(host_id),
+            "social_media_accounts": self.retrieve_social_media_accounts_by_id(host_id),
         }
 
     def retrieve_by_slug(self, host_slug: str) -> dict[str, Any]:
@@ -256,18 +214,11 @@ class Host:
         :return: A dictionary containing host ID, name, gender and slug
             string
         """
-        try:
-            slug = host_slug.strip()
-            if not slug:
-                return {}
-        except AttributeError:
+        _id = self.utility.convert_slug_to_id(host_slug)
+        if not _id:
             return {}
 
-        id_ = self.utility.convert_slug_to_id(slug)
-        if not id_:
-            return {}
-
-        return self.retrieve_by_id(id_)
+        return self.retrieve_by_id(_id)
 
     def retrieve_details_by_id(self, host_id: int) -> dict[str, Any]:
         """Retrieves host information and appearances.
@@ -292,13 +243,9 @@ class Host:
             database_connection=self.database_connection
         )
 
-        info["is_guest"] = bool(_guest_utility.slug_exists(guest_slug=info["slug"]))
-        info["is_panelist"] = bool(
-            _panelist_utility.slug_exists(panelist_slug=info["slug"])
-        )
-        info["is_scorekeeper"] = bool(
-            _scorekeeper_utility.slug_exists(scorekeeper_slug=info["slug"])
-        )
+        info["is_guest"] = bool(_guest_utility.slug_exists(info["slug"]))
+        info["is_panelist"] = bool(_panelist_utility.slug_exists(info["slug"]))
+        info["is_scorekeeper"] = bool(_scorekeeper_utility.slug_exists(info["slug"]))
         info["appearances"] = self.appearances.retrieve_appearances_by_id(host_id)
 
         return info
@@ -311,18 +258,11 @@ class Host:
             gender, pronouns, whether the host is also a guest, host or
             scorekeeper, and a list of appearances with show flags
         """
-        try:
-            slug = host_slug.strip()
-            if not slug:
-                return {}
-        except AttributeError:
+        _id = self.utility.convert_slug_to_id(host_slug)
+        if not _id:
             return {}
 
-        id_ = self.utility.convert_slug_to_id(slug)
-        if not id_:
-            return {}
-
-        return self.retrieve_details_by_id(id_)
+        return self.retrieve_details_by_id(_id)
 
     def retrieve_random_id(self) -> int:
         """Retrieves an ID for a random host.
@@ -366,6 +306,44 @@ class Host:
 
         return result[0]
 
+    def retrieve_pronouns_by_id(self, host_id: int) -> list[str]:
+        """Retrieves preferred pronouns for a host.
+
+        :param host_id: Host ID
+        :return: A list of preferred pronouns.
+        """
+        if not valid_int_id(host_id):
+            return []
+
+        query = """
+            SELECT pn.pronouns
+            FROM ww_hostpronounsmap hpm
+            JOIN ww_pronouns pn on pn.pronounsid = hpm.pronounsid
+            WHERE hpm.hostid = %s
+            ORDER BY hpm.hostpronounsmapid ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=True)
+        cursor.execute(query, (host_id,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        return [result["pronouns"] for result in results]
+
+    def retrieve_pronouns_by_slug(self, host_slug: str) -> list[str]:
+        """Retrieves preferred pronouns for a host.
+
+        :param host_slug: Host slug string
+        :return: A list of preferred pronouns.
+        """
+        _id = self.utility.convert_slug_to_id(host_slug)
+        if not _id:
+            return {}
+
+        return self.retrieve_pronouns_by_id(_id)
+
     def retrieve_random(self) -> dict[str, Any]:
         """Retrieves information for a random host.
 
@@ -377,7 +355,7 @@ class Host:
         if not _id:
             return None
 
-        return self.retrieve_by_id(host_id=_id)
+        return self.retrieve_by_id(_id)
 
     def retrieve_random_details(self) -> dict[str, Any]:
         """Retrieves information and appearances for a random host.
@@ -391,4 +369,59 @@ class Host:
         if not _id:
             return None
 
-        return self.retrieve_details_by_id(host_id=_id)
+        return self.retrieve_details_by_id(_id)
+
+    def retrieve_social_media_accounts_by_id(
+        self, host_id: int
+    ) -> list[dict[str, str]]:
+        """Retrieves social media accounts for a host.
+
+        :param host_id: Host ID
+        :return: A list of dictionaries containing social media
+            account information.
+        """
+        if not valid_int_id(host_id):
+            return []
+
+        query = """
+            SELECT smn.network, smn.networkslug, hsm.account, hsm.url
+            FROM ww_hostsocialmap hsm
+            JOIN ww_socialmedianetworks smn ON smn.networkid = hsm.networkid
+            WHERE hsm.hostid = %s
+            ORDER BY smn.network ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=True)
+        cursor.execute(query, (host_id,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        accounts = []
+        for row in results:
+            accounts.append(
+                {
+                    "network": row["network"],
+                    "network_slug": row["networkslug"],
+                    "account": row["account"],
+                    "url": row["url"],
+                }
+            )
+
+        return accounts
+
+    def retrieve_social_media_accounts_by_slug(
+        self, host_slug: str
+    ) -> list[dict[str, str]]:
+        """Retrieves social media accounts for a host.
+
+        :param host_slug: Host slug string
+        :return: A list of dictionaries containing social media
+            account information.
+        """
+        _id = self.utility.convert_slug_to_id(host_slug)
+        if not _id:
+            return {}
+
+        return self.retrieve_social_media_accounts_by_id(_id)

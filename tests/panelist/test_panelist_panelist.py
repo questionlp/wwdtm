@@ -370,6 +370,34 @@ def test_panelist_retrieve_details_by_slug_invalid_number_decimal_places(
     )
 
 
+@pytest.mark.parametrize("panelist_id", [32, 88])
+def test_panelist_retrieve_pronouns_by_id(panelist_id: int):
+    """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_pronouns_by_id`."""
+    panelist = Panelist(connect_dict=get_connect_dict())
+    _pronouns = panelist.retrieve_pronouns_by_id(panelist_id)
+
+    assert isinstance(_pronouns, list), (
+        f"Returned value for panelist ID {panelist_id} was not of type list"
+    )
+    assert _pronouns, (
+        f"No preferred pronouns were returned for panelist ID {panelist_id}"
+    )
+
+
+@pytest.mark.parametrize("panelist_slug", ["peter-grosz", "karen-chee"])
+def test_panelist_retrieve_pronouns_by_slug(panelist_slug: str):
+    """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_pronouns_by_id`."""
+    panelist = Panelist(connect_dict=get_connect_dict())
+    _pronouns = panelist.retrieve_pronouns_by_slug(panelist_slug)
+
+    assert isinstance(_pronouns, list), (
+        f"Returned value for panelist slug string {panelist_slug} was not of type list"
+    )
+    assert _pronouns, (
+        f"No preferred pronouns were returned for panelist slug string {panelist_slug}"
+    )
+
+
 def test_panelist_retrieve_random_id() -> None:
     """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_random_id`."""
     panelist = Panelist(connect_dict=get_connect_dict())
@@ -448,4 +476,32 @@ def test_panelist_retrieve_random_details_invalid_number_decimal_places(
 
     assert not info, (
         f"Incorrect handling of invalid number_decimal_places value of {number_decimal_places}"
+    )
+
+
+@pytest.mark.parametrize("panelist_id", [2, 10])
+def test_panelist_retrieve_social_acounts_by_id(panelist_id: int):
+    """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_social_media_accounts_by_id`."""
+    panelist = Panelist(connect_dict=get_connect_dict())
+    _accounts = panelist.retrieve_social_media_accounts_by_id(panelist_id)
+
+    assert isinstance(_accounts, list), (
+        f"Returned value for panelist ID {panelist_id} was not of type list"
+    )
+    assert _accounts, (
+        f"No social media accounts were returned for panelist ID {panelist_id}"
+    )
+
+
+@pytest.mark.parametrize("panelist_slug", ["tom-bodett", "paula-poundstone"])
+def test_panelist_retrieve_social_media_accounts_by_slug(panelist_slug: str):
+    """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_social_media_accounts_by_id`."""
+    panelist = Panelist(connect_dict=get_connect_dict())
+    _accounts = panelist.retrieve_social_media_accounts_by_slug(panelist_slug)
+
+    assert isinstance(_accounts, list), (
+        f"Returned value for panelist slug string {panelist_slug} was not of type list"
+    )
+    assert _accounts, (
+        f"No social media accounts were returned for panelist slug string {panelist_slug}"
     )

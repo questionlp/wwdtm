@@ -654,11 +654,11 @@ class Show:
             show flag, repeat show ID (if applicable) and show URL at
             NPR.org
         """
-        id_ = self.utility.convert_date_to_id(year, month, day)
-        if not id_:
+        _id = self.utility.convert_date_to_id(year, month, day)
+        if not _id:
             return {}
 
-        return self.retrieve_by_id(id_)
+        return self.retrieve_by_id(_id)
 
     def retrieve_by_date_string(self, date_string: str) -> dict[str, Any]:
         """Retrieves basic show information.
@@ -673,11 +673,11 @@ class Show:
         except ValueError:
             return {}
 
-        id_ = self.utility.convert_date_to_id(
+        _id = self.utility.convert_date_to_id(
             parsed_date.year, parsed_date.month, parsed_date.day
         )
 
-        return self.retrieve_by_id(id_)
+        return self.retrieve_by_id(_id)
 
     def retrieve_by_id(self, show_id: int) -> dict[str, Any]:
         """Retrieves basic show information.
@@ -935,11 +935,11 @@ class Show:
             show flag, repeat show ID (if applicable), show URL at
             NPR.org, host, scorekeeper, location, panelists and guests
         """
-        id_ = self.utility.convert_date_to_id(year, month, day)
-        if not id_:
+        _id = self.utility.convert_date_to_id(year, month, day)
+        if not _id:
             return {}
 
-        return self.retrieve_details_by_id(id_)
+        return self.retrieve_details_by_id(_id)
 
     def retrieve_details_by_date_string(self, date_string: str) -> dict[str, Any]:
         """Retrieves detailed show information.
@@ -954,11 +954,11 @@ class Show:
         except ValueError:
             return {}
 
-        id_ = self.utility.convert_date_to_id(
+        _id = self.utility.convert_date_to_id(
             parsed_date.year, parsed_date.month, parsed_date.day
         )
 
-        return self.retrieve_details_by_id(id_)
+        return self.retrieve_details_by_id(_id)
 
     def retrieve_details_by_id(self, show_id: int) -> dict[str, Any]:
         """Retrieve detailed show information.
