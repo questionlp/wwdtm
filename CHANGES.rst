@@ -2,8 +2,8 @@
 Changes
 *******
 
-3.3.0-alpha
-===========
+3.3.0-beta
+==========
 
 Application Changes
 -------------------
@@ -51,6 +51,10 @@ Development Changes
 * Upgraded pytest-cov from 7.0.0 to 7.1.0
 * Upgraded pydoclint from 0.8.4 to 0.11.0
 * Upgraded pytest from 9.0.3 to 9.1.1
+* Upgraded ruff from 0.15.6 to 0.17.0
+
+  * Minimum version of ruff in ``pyproject.toml`` has been increased to 0.17.0 to match
+
 * Upgraded twine from 6.2.0 to 7.0.0
 * Upgraded wheel from 0.46.3 to 0.48.0
 

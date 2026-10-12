@@ -2,7 +2,7 @@ build==1.6.1
 pytest-cov==7.1.0
 pydoclint==0.11.0
 pytest==9.1.1
-ruff==0.15.6
+ruff==0.17.0
 twine==7.0.0
 wheel==0.48.0
 
