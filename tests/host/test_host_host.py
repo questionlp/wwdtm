@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.host import Host
 
@@ -28,6 +29,24 @@ def get_connect_dict() -> dict[str, Any]:
             return config_dict["database"]
 
 
+def test_host_database_connection():
+    """Testing instantiating :py:class:`wwdtm.host.Host` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    _host = Host(database_connection=database_connection)
+
+    assert _host, "Could not instantiate Host object using database connection"
+    assert isinstance(_host, Host), "Instantiated object is not an instance of Host"
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    _host = Host(database_connection=database_connection)
+
+    assert _host, "Could not instantiate Host object using database connection"
+    assert isinstance(_host, Host), "Instantiated object is not an instance of Host"
+
+
 def test_host_retrieve_all():
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_all`."""
     host = Host(connect_dict=get_connect_dict())
@@ -38,6 +57,9 @@ def test_host_retrieve_all():
     assert "name" in hosts[0], "'name' was not returned for the first list item"
     assert "slug" in hosts[0], "'slug' was not returned for the first list item"
     assert "pronouns" in hosts[0], "'pronouns' was not returned for the first list item"
+    assert "social_media_accounts" in hosts[0], (
+        "'social_media_accounts' was not returned for the first list item"
+    )
 
 
 def test_host_retrieve_all_details():
@@ -50,6 +72,9 @@ def test_host_retrieve_all_details():
     assert "name" in hosts[0], "'name' was not returned for the first list item"
     assert "slug" in hosts[0], "'slug' was not returned for the first list item"
     assert "pronouns" in hosts[0], "'pronouns' was not returned for the first list item"
+    assert "social_media_accounts" in hosts[0], (
+        "'social_media_accounts' was not returned for the first list item"
+    )
     assert "is_panelist" in hosts[0], (
         "'is_panelist' was not returned for first list item"
     )
@@ -74,7 +99,7 @@ def test_host_retrieve_all_slugs():
     assert slugs, "No host slug strings could be retrieved"
 
 
-@pytest.mark.parametrize("host_id", [2])
+@pytest.mark.parametrize("host_id", [1, 2])
 def test_host_retrieve_by_id(host_id: int):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_by_id`.
 
@@ -87,9 +112,12 @@ def test_host_retrieve_by_id(host_id: int):
     assert "name" in info, f"'name' was not returned for ID {host_id}"
     assert "slug" in info, f"'slug' was not returned for ID {host_id}"
     assert "pronouns" in info, f"'pronouns' was not returned for ID {host_id}"
+    assert "social_media_accounts" in info, (
+        f"'social_media_accounts' was not returned for ID {host_id}"
+    )
 
 
-@pytest.mark.parametrize("host_slug", ["luke-burbank"])
+@pytest.mark.parametrize("host_slug", ["peter-sagal", "luke-burbank"])
 def test_host_retrieve_by_slug(host_slug: str):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_by_slug`.
 
@@ -103,9 +131,12 @@ def test_host_retrieve_by_slug(host_slug: str):
     assert "name" in info, f"'name' was not returned for slug {host_slug}"
     assert "slug" in info, f"'slug' was not returned for ID {host_slug}"
     assert "pronouns" in info, f"'pronouns' was not returned for ID {host_slug}"
+    assert "social_media_accounts" in info, (
+        f"'social_media_accounts' was not returned for ID {host_slug}"
+    )
 
 
-@pytest.mark.parametrize("host_id", [2])
+@pytest.mark.parametrize("host_id", [1, 2])
 def test_host_retrieve_details_by_id(host_id: int):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_details_by_id`.
 
@@ -118,11 +149,14 @@ def test_host_retrieve_details_by_id(host_id: int):
     assert "name" in info, f"'name' was not returned for ID {host_id}"
     assert "slug" in info, f"'slug' was not returned for ID {host_id}"
     assert "pronouns" in info, f"'pronouns' was not returned for ID {host_id}"
+    assert "social_media_accounts" in info, (
+        f"'social_media_accounts' was not returned for ID {host_id}"
+    )
     assert "is_panelist" in info, f"'is_panelist' was not returned for ID {host_id}"
     assert "appearances" in info, f"'appearances' was not returned for ID {host_id}"
 
 
-@pytest.mark.parametrize("host_slug", ["luke-burbank"])
+@pytest.mark.parametrize("host_slug", ["peter-sagal", "luke-burbank"])
 def test_host_retrieve_details_by_slug(host_slug: str):
     """Testing for :py:meth:`wwdtm.host.Host.retrieve_details_by_slug`.
 
@@ -135,8 +169,37 @@ def test_host_retrieve_details_by_slug(host_slug: str):
     assert "name" in info, f"'name' was not returned for slug {host_slug}"
     assert "slug" in info, f"'slug' was not returned for slug {host_slug}"
     assert "pronouns" in info, f"'pronouns' was not returned for slug {host_slug}"
+    assert "social_media_accounts" in info, (
+        f"'social_media_accounts' was not returned for ID {host_slug}"
+    )
     assert "is_panelist" in info, f"'is_panelist' was not returned for slug {host_slug}"
     assert "appearances" in info, f"'appearances' was not returned for slug {host_slug}"
+
+
+@pytest.mark.parametrize("host_id", [11, 24])
+def test_host_retrieve_pronouns_by_id(host_id: int):
+    """Testing for :py:meth`wwdtm.host.Host.retrieve_pronouns_by_id`."""
+    host = Host(connect_dict=get_connect_dict())
+    _pronouns = host.retrieve_pronouns_by_id(host_id)
+
+    assert isinstance(_pronouns, list), (
+        f"Returned value for host ID {host_id} was not of type list"
+    )
+    assert _pronouns, f"No preferred pronouns were returned for host ID {host_id}"
+
+
+@pytest.mark.parametrize("host_slug", ["peter-grosz", "karen-chee"])
+def test_host_retrieve_pronouns_by_slug(host_slug: str):
+    """Testing for :py:meth`wwdtm.host.Host.retrieve_pronouns_by_id`."""
+    host = Host(connect_dict=get_connect_dict())
+    _pronouns = host.retrieve_pronouns_by_slug(host_slug)
+
+    assert isinstance(_pronouns, list), (
+        f"Returned value for host slug string {host_slug} was not of type list"
+    )
+    assert _pronouns, (
+        f"No preferred pronouns were returned for host slug string {host_slug}"
+    )
 
 
 def test_host_retrieve_random_id() -> None:
@@ -177,4 +240,33 @@ def test_host_retrieve_random_details() -> None:
     assert "name" in info, "'name' attribute was not returned for a random host"
     assert "slug" in info, "'slug' was not returned for a random host"
     assert "pronouns" in info, "'pronouns' was not returned for a random host"
+    assert "social_media_accounts" in info, (
+        "'social_media_accounts' was not returned for a random host"
+    )
     assert "appearances" in info, "'appearances' was not returned for a random host"
+
+
+@pytest.mark.parametrize("host_id", [1, 2])
+def test_host_retrieve_social_acounts_by_id(host_id: int):
+    """Testing for :py:meth`wwdtm.host.Host.retrieve_social_media_accounts_by_id`."""
+    host = Host(connect_dict=get_connect_dict())
+    _accounts = host.retrieve_social_media_accounts_by_id(host_id)
+
+    assert isinstance(_accounts, list), (
+        f"Returned value for host ID {host_id} was not of type list"
+    )
+    assert _accounts, f"No social media accounts were returned for host ID {host_id}"
+
+
+@pytest.mark.parametrize("host_slug", ["peter-sagal", "luke-burbank"])
+def test_host_retrieve_social_media_accounts_by_slug(host_slug: str):
+    """Testing for :py:meth`wwdtm.host.Host.retrieve_social_media_accounts_by_id`."""
+    host = Host(connect_dict=get_connect_dict())
+    _accounts = host.retrieve_social_media_accounts_by_slug(host_slug)
+
+    assert isinstance(_accounts, list), (
+        f"Returned value for host slug string {host_slug} was not of type list"
+    )
+    assert _accounts, (
+        f"No social media accounts were returned for host slug string {host_slug}"
+    )

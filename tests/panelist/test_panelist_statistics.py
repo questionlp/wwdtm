@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.panelist import PanelistStatistics
 
@@ -27,6 +28,32 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+
+def test_panelist_statistics_database_connection():
+    """Testing instantiating :py:class:`wwdtm.panelist.PanelistStatistics` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    stats = PanelistStatistics(database_connection=database_connection)
+
+    assert stats, (
+        "Could not instantiate PanelistStatistics object using database connection"
+    )
+    assert isinstance(stats, PanelistStatistics), (
+        "Instantiated object is not an instance of PanelistStatistics"
+    )
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    stats = PanelistStatistics(database_connection=database_connection)
+
+    assert stats, (
+        "Could not instantiate PanelistStatistics object using database connection"
+    )
+    assert isinstance(stats, PanelistStatistics), (
+        "Instantiated object is not an instance of PanelistStatistics"
+    )
 
 
 @pytest.mark.parametrize("panelist_id", [14])

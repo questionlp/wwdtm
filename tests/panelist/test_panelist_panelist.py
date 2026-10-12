@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.panelist import Panelist
 
@@ -27,6 +28,28 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+
+def test_panelist_database_connection():
+    """Testing instantiating :py:class:`wwdtm.panelist.Panelist` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    _panelist = Panelist(database_connection=database_connection)
+
+    assert _panelist, "Could not instantiate Panelist object using database connection"
+    assert isinstance(_panelist, Panelist), (
+        "Instantiated object is not an instance of Panelist"
+    )
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    _panelist = Panelist(database_connection=database_connection)
+
+    assert _panelist, "Could not instantiate Panelist object using database connection"
+    assert isinstance(_panelist, Panelist), (
+        "Instantiated object is not an instance of Panelist"
+    )
 
 
 def test_panelist_retrieve_all():
@@ -370,6 +393,34 @@ def test_panelist_retrieve_details_by_slug_invalid_number_decimal_places(
     )
 
 
+@pytest.mark.parametrize("panelist_id", [32, 88])
+def test_panelist_retrieve_pronouns_by_id(panelist_id: int):
+    """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_pronouns_by_id`."""
+    panelist = Panelist(connect_dict=get_connect_dict())
+    _pronouns = panelist.retrieve_pronouns_by_id(panelist_id)
+
+    assert isinstance(_pronouns, list), (
+        f"Returned value for panelist ID {panelist_id} was not of type list"
+    )
+    assert _pronouns, (
+        f"No preferred pronouns were returned for panelist ID {panelist_id}"
+    )
+
+
+@pytest.mark.parametrize("panelist_slug", ["peter-grosz", "karen-chee"])
+def test_panelist_retrieve_pronouns_by_slug(panelist_slug: str):
+    """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_pronouns_by_id`."""
+    panelist = Panelist(connect_dict=get_connect_dict())
+    _pronouns = panelist.retrieve_pronouns_by_slug(panelist_slug)
+
+    assert isinstance(_pronouns, list), (
+        f"Returned value for panelist slug string {panelist_slug} was not of type list"
+    )
+    assert _pronouns, (
+        f"No preferred pronouns were returned for panelist slug string {panelist_slug}"
+    )
+
+
 def test_panelist_retrieve_random_id() -> None:
     """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_random_id`."""
     panelist = Panelist(connect_dict=get_connect_dict())
@@ -448,4 +499,32 @@ def test_panelist_retrieve_random_details_invalid_number_decimal_places(
 
     assert not info, (
         f"Incorrect handling of invalid number_decimal_places value of {number_decimal_places}"
+    )
+
+
+@pytest.mark.parametrize("panelist_id", [2, 10])
+def test_panelist_retrieve_social_acounts_by_id(panelist_id: int):
+    """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_social_media_accounts_by_id`."""
+    panelist = Panelist(connect_dict=get_connect_dict())
+    _accounts = panelist.retrieve_social_media_accounts_by_id(panelist_id)
+
+    assert isinstance(_accounts, list), (
+        f"Returned value for panelist ID {panelist_id} was not of type list"
+    )
+    assert _accounts, (
+        f"No social media accounts were returned for panelist ID {panelist_id}"
+    )
+
+
+@pytest.mark.parametrize("panelist_slug", ["tom-bodett", "paula-poundstone"])
+def test_panelist_retrieve_social_media_accounts_by_slug(panelist_slug: str):
+    """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_social_media_accounts_by_id`."""
+    panelist = Panelist(connect_dict=get_connect_dict())
+    _accounts = panelist.retrieve_social_media_accounts_by_slug(panelist_slug)
+
+    assert isinstance(_accounts, list), (
+        f"Returned value for panelist slug string {panelist_slug} was not of type list"
+    )
+    assert _accounts, (
+        f"No social media accounts were returned for panelist slug string {panelist_slug}"
     )

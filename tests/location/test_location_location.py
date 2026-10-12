@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.location import Location
 
@@ -26,6 +27,28 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+
+def test_location_database_connection():
+    """Testing instantiating :py:class:`wwdtm.location.Location` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    _location = Location(database_connection=database_connection)
+
+    assert _location, "Could not instantiate Location object using database connection"
+    assert isinstance(_location, Location), (
+        "Instantiated object is not an instance of Location"
+    )
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    _location = Location(database_connection=database_connection)
+
+    assert _location, "Could not instantiate Location object using database connection"
+    assert isinstance(_location, Location), (
+        "Instantiated object is not an instance of Location"
+    )
 
 
 def test_location_retrieve_all():

@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.location import LocationRecordings
 
@@ -26,6 +27,32 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+
+def test_location_recordings_database_connection():
+    """Testing instantiating :py:class:`wwdtm.location.LocationRecordings` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    _recordings = LocationRecordings(database_connection=database_connection)
+
+    assert _recordings, (
+        "Could not instantiate LocationRecordings object using database connection"
+    )
+    assert isinstance(_recordings, LocationRecordings), (
+        "Instantiated object is not an instance of LocationRecordings"
+    )
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    _recordings = LocationRecordings(database_connection=database_connection)
+
+    assert _recordings, (
+        "Could not instantiate LocationRecordings object using database connection"
+    )
+    assert isinstance(_recordings, LocationRecordings), (
+        "Instantiated object is not an instance of LocationRecordings"
+    )
 
 
 @pytest.mark.parametrize("location_id", [95])

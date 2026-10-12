@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.scorekeeper import Scorekeeper
 
@@ -26,6 +27,32 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+
+def test_scorekeeper_database_connection():
+    """Testing instantiating :py:class:`wwdtm.scorekeeper.Scorekeeper` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    _scorekeeper = Scorekeeper(database_connection=database_connection)
+
+    assert _scorekeeper, (
+        "Could not instantiate Scorekeeper object using database connection"
+    )
+    assert isinstance(_scorekeeper, Scorekeeper), (
+        "Instantiated object is not an instance of Scorekeeper"
+    )
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    _scorekeeper = Scorekeeper(database_connection=database_connection)
+
+    assert _scorekeeper, (
+        "Could not instantiate Scorekeeper object using database connection"
+    )
+    assert isinstance(_scorekeeper, Scorekeeper), (
+        "Instantiated object is not an instance of Scorekeeper"
+    )
 
 
 def test_scorekeeper_retrieve_all():
@@ -78,7 +105,7 @@ def test_scorekeeper_retrieve_all_slugs():
     assert slugs, "No scorekeeper slug strings could be retrieved"
 
 
-@pytest.mark.parametrize("scorekeeper_id", [13])
+@pytest.mark.parametrize("scorekeeper_id", [13, 20])
 def test_scorekeeper_retrieve_by_id(scorekeeper_id: int):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_by_id`.
 
@@ -94,7 +121,7 @@ def test_scorekeeper_retrieve_by_id(scorekeeper_id: int):
     assert "pronouns" in info, f"'pronouns' was not returned for ID {scorekeeper_id}"
 
 
-@pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson"])
+@pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson", "alzo-slade"])
 def test_scorekeeper_retrieve_by_slug(scorekeeper_slug: str):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_by_slug`.
 
@@ -110,7 +137,7 @@ def test_scorekeeper_retrieve_by_slug(scorekeeper_slug: str):
     assert "pronouns" in info, f"'pronouns' was not returned for ID {scorekeeper_slug}"
 
 
-@pytest.mark.parametrize("scorekeeper_id", [13])
+@pytest.mark.parametrize("scorekeeper_id", [13, 20])
 def test_scorekeeper_retrieve_details_by_id(scorekeeper_id: int):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_details_by_id`.
 
@@ -132,7 +159,7 @@ def test_scorekeeper_retrieve_details_by_id(scorekeeper_id: int):
     )
 
 
-@pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson"])
+@pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson", "alzo-slade"])
 def test_scorekeeper_retrieve_details_by_slug(scorekeeper_slug: str):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_details_by_slug`.
 
@@ -153,6 +180,34 @@ def test_scorekeeper_retrieve_details_by_slug(scorekeeper_slug: str):
     )
     assert "appearances" in info, (
         f"'appearances' was not returned for slug {scorekeeper_slug}"
+    )
+
+
+@pytest.mark.parametrize("scorekeeper_id", [13])
+def test_scorekeeper_retrieve_pronouns_by_id(scorekeeper_id: int):
+    """Testing for :py:meth`wwdtm.scorekeeper.Scorekeeper.retrieve_pronouns_by_id`."""
+    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
+    _pronouns = scorekeeper.retrieve_pronouns_by_id(scorekeeper_id)
+
+    assert isinstance(_pronouns, list), (
+        f"Returned value for scorekeeper ID {scorekeeper_id} was not of type list"
+    )
+    assert _pronouns, (
+        f"No preferred pronouns were returned for scorekeeper ID {scorekeeper_id}"
+    )
+
+
+@pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson"])
+def test_scorekeeper_retrieve_pronouns_by_slug(scorekeeper_slug: str):
+    """Testing for :py:meth`wwdtm.scorekeeper.Scorekeeper.retrieve_pronouns_by_id`."""
+    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
+    _pronouns = scorekeeper.retrieve_pronouns_by_slug(scorekeeper_slug)
+
+    assert isinstance(_pronouns, list), (
+        f"Returned value for scorekeeper slug string {scorekeeper_slug} was not of type list"
+    )
+    assert _pronouns, (
+        f"No preferred pronouns were returned for scorekeeper slug string {scorekeeper_slug}"
     )
 
 
@@ -198,4 +253,32 @@ def test_scorekeeper_retrieve_random_details() -> None:
     assert "pronouns" in info, "'pronouns' was not returned for a random scorekeeper"
     assert "appearances" in info, (
         "'appearances' was not returned for a random scorekeeper"
+    )
+
+
+@pytest.mark.parametrize("scorekeeper_id", [2, 20])
+def test_scorekeeper_retrieve_social_acounts_by_id(scorekeeper_id: int):
+    """Testing for :py:meth`wwdtm.scorekeeper.Scorekeeper.retrieve_social_media_accounts_by_id`."""
+    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
+    _accounts = scorekeeper.retrieve_social_media_accounts_by_id(scorekeeper_id)
+
+    assert isinstance(_accounts, list), (
+        f"Returned value for scorekeeper ID {scorekeeper_id} was not of type list"
+    )
+    assert _accounts, (
+        f"No social media accounts were returned for scorekeeper ID {scorekeeper_id}"
+    )
+
+
+@pytest.mark.parametrize("scorekeeper_slug", ["korva-coleman", "alzo-slade"])
+def test_scorekeeper_retrieve_social_media_accounts_by_slug(scorekeeper_slug: str):
+    """Testing for :py:meth`wwdtm.scorekeeper.Scorekeeper.retrieve_social_media_accounts_by_id`."""
+    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
+    _accounts = scorekeeper.retrieve_social_media_accounts_by_slug(scorekeeper_slug)
+
+    assert isinstance(_accounts, list), (
+        f"Returned value for scorekeeper slug string {scorekeeper_slug} was not of type list"
+    )
+    assert _accounts, (
+        f"No social media accounts were returned for scorekeeper slug string {scorekeeper_slug}"
     )

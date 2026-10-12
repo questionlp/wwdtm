@@ -20,4 +20,5 @@ The following is a list of modules provided in the library:
     pronoun
     scorekeeper
     show
+    social_media
     validation

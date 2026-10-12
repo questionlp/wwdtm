@@ -119,13 +119,9 @@ class Guest:
                     "id": row["id"],
                     "name": row["name"],
                     "slug": _slug,
-                    "is_host": bool(_host_utility.slug_exists(host_slug=_slug)),
-                    "is_panelist": bool(
-                        _panelist_utility.slug_exists(panelist_slug=_slug)
-                    ),
-                    "is_scorekeeper": bool(
-                        _scorekeeper_utility.slug_exists(scorekeeper_slug=_slug)
-                    ),
+                    "is_host": bool(_host_utility.slug_exists(_slug)),
+                    "is_panelist": bool(_panelist_utility.slug_exists(_slug)),
+                    "is_scorekeeper": bool(_scorekeeper_utility.slug_exists(_slug)),
                     "appearances": self.appearances.retrieve_appearances_by_id(
                         row["id"]
                     ),
@@ -209,18 +205,11 @@ class Guest:
         :param guest_slug: Guest slug string
         :return: A dictionary containing guest ID, name and slug string
         """
-        try:
-            slug = guest_slug.strip()
-            if not slug:
-                return {}
-        except AttributeError:
+        _id = self.utility.convert_slug_to_id(guest_slug)
+        if not _id:
             return {}
 
-        id_ = self.utility.convert_slug_to_id(slug)
-        if not id_:
-            return {}
-
-        return self.retrieve_by_id(id_)
+        return self.retrieve_by_id(_id)
 
     def retrieve_details_by_id(self, guest_id: int) -> dict[str, Any]:
         """Retrieves guest information and appearances.
@@ -246,13 +235,9 @@ class Guest:
             database_connection=self.database_connection
         )
 
-        info["is_host"] = bool(_host_utility.slug_exists(host_slug=info["slug"]))
-        info["is_panelist"] = bool(
-            _panelist_utility.slug_exists(panelist_slug=info["slug"])
-        )
-        info["is_scorekeeper"] = bool(
-            _scorekeeper_utility.slug_exists(scorekeeper_slug=info["slug"])
-        )
+        info["is_host"] = bool(_host_utility.slug_exists(info["slug"]))
+        info["is_panelist"] = bool(_panelist_utility.slug_exists(info["slug"]))
+        info["is_scorekeeper"] = bool(_scorekeeper_utility.slug_exists(info["slug"]))
         info["appearances"] = self.appearances.retrieve_appearances_by_id(guest_id)
 
         return info
@@ -266,18 +251,11 @@ class Guest:
             and list of appearances with show flags, scores and scoring
             exceptions
         """
-        try:
-            slug = guest_slug.strip()
-            if not slug:
-                return {}
-        except AttributeError:
+        _id = self.utility.convert_slug_to_id(guest_slug)
+        if not _id:
             return {}
 
-        id_ = self.utility.convert_slug_to_id(slug)
-        if not id_:
-            return {}
-
-        return self.retrieve_details_by_id(id_)
+        return self.retrieve_details_by_id(_id)
 
     def retrieve_random_id(self) -> int:
         """Retrieves an ID for a random guest.
@@ -331,7 +309,7 @@ class Guest:
         if not _id:
             return None
 
-        return self.retrieve_by_id(guest_id=_id)
+        return self.retrieve_by_id(_id)
 
     def retrieve_random_details(self) -> dict[str, Any]:
         """Retrieves information and appearances for a random guest.
@@ -346,4 +324,4 @@ class Guest:
         if not _id:
             return None
 
-        return self.retrieve_details_by_id(guest_id=_id)
+        return self.retrieve_details_by_id(_id)

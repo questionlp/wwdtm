@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.host import HostUtility
 
@@ -26,6 +27,32 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+
+def test_host_utility_database_connection():
+    """Testing instantiating :py:class:`wwdtm.host.HostUtility` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    _utility = HostUtility(database_connection=database_connection)
+
+    assert _utility, (
+        "Could not instantiate HostUtility object using database connection"
+    )
+    assert isinstance(_utility, HostUtility), (
+        "Instantiated object is not an instance of HostUtility"
+    )
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    _utility = HostUtility(database_connection=database_connection)
+
+    assert _utility, (
+        "Could not instantiate HostUtility object using database connection"
+    )
+    assert isinstance(_utility, HostUtility), (
+        "Instantiated object is not an instance of HostUtility"
+    )
 
 
 @pytest.mark.parametrize("host_id", [2])
@@ -61,10 +88,10 @@ def test_host_utility_convert_slug_to_id(host_slug: str):
     :param host_slug: Host slug string to test converting into host ID
     """
     utility = HostUtility(connect_dict=get_connect_dict())
-    id_ = utility.convert_slug_to_id(host_slug)
+    _id = utility.convert_slug_to_id(host_slug)
 
-    assert id_, f"Host ID for slug {host_slug} was not found"
-    assert isinstance(id_, int), f"Invalid value returned for slug {host_slug}"
+    assert _id, f"Host ID for slug {host_slug} was not found"
+    assert isinstance(_id, int), f"Invalid value returned for slug {host_slug}"
 
 
 @pytest.mark.parametrize("host_slug", ["tom-hanx"])

@@ -97,11 +97,11 @@ class PanelistStatistics:
             Bluff the Listener story was chosen and number of times
             they had the correct story
         """
-        id_ = self.utility.convert_slug_to_id(panelist_slug)
-        if not id_:
+        _id = self.utility.convert_slug_to_id(panelist_slug)
+        if not _id:
             return {}
 
-        return self.retrieve_bluffs_by_id(id_)
+        return self.retrieve_bluffs_by_id(_id)
 
     def retrieve_rank_info_by_id(self, panelist_id: int) -> dict[str, int]:
         """Retrieves panelist ranking information.
@@ -169,11 +169,11 @@ class PanelistStatistics:
         :return: A dictionary containing the number of times a panelist
             has finished in 1st, 1st tied, 2nd, 2nd tied and 3rd place
         """
-        id_ = self.utility.convert_slug_to_id(panelist_slug)
-        if not id_:
+        _id = self.utility.convert_slug_to_id(panelist_slug)
+        if not _id:
             return {}
 
-        return self.retrieve_rank_info_by_id(id_)
+        return self.retrieve_rank_info_by_id(_id)
 
     def retrieve_statistics_by_id(
         self, panelist_id: int, number_decimal_places: int = 5
@@ -296,10 +296,10 @@ class PanelistStatistics:
             statistics. Returns an empty dictionary if number_digits
             value is not valid.
         """
-        id_ = self.utility.convert_slug_to_id(panelist_slug)
-        if not id_:
+        _id = self.utility.convert_slug_to_id(panelist_slug)
+        if not _id:
             return {}
 
         return self.retrieve_statistics_by_id(
-            id_, number_decimal_places=number_decimal_places
+            _id, number_decimal_places=number_decimal_places
         )
