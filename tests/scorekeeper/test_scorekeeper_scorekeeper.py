@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.scorekeeper import Scorekeeper
 
@@ -26,6 +27,32 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+
+def test_scorekeeper_database_connection():
+    """Testing instantiating :py:class:`wwdtm.scorekeeper.Scorekeeper` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    _scorekeeper = Scorekeeper(database_connection=database_connection)
+
+    assert _scorekeeper, (
+        "Could not instantiate Scorekeeper object using database connection"
+    )
+    assert isinstance(_scorekeeper, Scorekeeper), (
+        "Instantiated object is not an instance of Scorekeeper"
+    )
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    _scorekeeper = Scorekeeper(database_connection=database_connection)
+
+    assert _scorekeeper, (
+        "Could not instantiate Scorekeeper object using database connection"
+    )
+    assert isinstance(_scorekeeper, Scorekeeper), (
+        "Instantiated object is not an instance of Scorekeeper"
+    )
 
 
 def test_scorekeeper_retrieve_all():

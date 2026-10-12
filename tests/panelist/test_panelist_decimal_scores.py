@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.panelist import PanelistDecimalScores
 
@@ -26,6 +27,32 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+
+def test_panelist_decimal_scores_database_connection():
+    """Testing instantiating :py:class:`wwdtm.panelist.PanelistDecimalScores` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    scores = PanelistDecimalScores(database_connection=database_connection)
+
+    assert scores, (
+        "Could not instantiate PanelistDecimalScores object using database connection"
+    )
+    assert isinstance(scores, PanelistDecimalScores), (
+        "Instantiated object is not an instance of PanelistDecimalScores"
+    )
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    scores = PanelistDecimalScores(database_connection=database_connection)
+
+    assert scores, (
+        "Could not instantiate PanelistDecimalScores object using database connection"
+    )
+    assert isinstance(scores, PanelistDecimalScores), (
+        "Instantiated object is not an instance of PanelistDecimalScores"
+    )
 
 
 @pytest.mark.parametrize("panelist_id", [14])

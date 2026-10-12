@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.social_media import SocialMediaNetworks
 
@@ -26,6 +27,32 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+
+def test_social_media_networks_database_connection():
+    """Testing instantiating :py:class:`wwdtm.social_media.SocialMediaNetworks` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    _social_media = SocialMediaNetworks(database_connection=database_connection)
+
+    assert _social_media, (
+        "Could not instantiate SocialMediaNetworks object using database connection"
+    )
+    assert isinstance(_social_media, SocialMediaNetworks), (
+        "Instantiated object is not an instance of SocialMediaNetworks"
+    )
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    _social_media = SocialMediaNetworks(database_connection=database_connection)
+
+    assert _social_media, (
+        "Could not instantiate SocialMediaNetworks object using database connection"
+    )
+    assert isinstance(_social_media, SocialMediaNetworks), (
+        "Instantiated object is not an instance of SocialMediaNetworks"
+    )
 
 
 def test_networks_retrieve_all() -> None:
