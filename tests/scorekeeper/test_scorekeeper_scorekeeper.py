@@ -105,7 +105,7 @@ def test_scorekeeper_retrieve_all_slugs():
     assert slugs, "No scorekeeper slug strings could be retrieved"
 
 
-@pytest.mark.parametrize("scorekeeper_id", [13])
+@pytest.mark.parametrize("scorekeeper_id", [13, 20])
 def test_scorekeeper_retrieve_by_id(scorekeeper_id: int):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_by_id`.
 
@@ -121,7 +121,7 @@ def test_scorekeeper_retrieve_by_id(scorekeeper_id: int):
     assert "pronouns" in info, f"'pronouns' was not returned for ID {scorekeeper_id}"
 
 
-@pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson"])
+@pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson", "alzo-slade"])
 def test_scorekeeper_retrieve_by_slug(scorekeeper_slug: str):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_by_slug`.
 
@@ -137,7 +137,7 @@ def test_scorekeeper_retrieve_by_slug(scorekeeper_slug: str):
     assert "pronouns" in info, f"'pronouns' was not returned for ID {scorekeeper_slug}"
 
 
-@pytest.mark.parametrize("scorekeeper_id", [13])
+@pytest.mark.parametrize("scorekeeper_id", [13, 20])
 def test_scorekeeper_retrieve_details_by_id(scorekeeper_id: int):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_details_by_id`.
 
@@ -159,7 +159,7 @@ def test_scorekeeper_retrieve_details_by_id(scorekeeper_id: int):
     )
 
 
-@pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson"])
+@pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson", "alzo-slade"])
 def test_scorekeeper_retrieve_details_by_slug(scorekeeper_slug: str):
     """Testing for :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_details_by_slug`.
 
