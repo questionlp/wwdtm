@@ -38,7 +38,7 @@ testing has been completed, it can be pushed using the following command:
 
 ## Pull Requests
 
-Once the new branch has been published to Github, the next step will be to
+Once the new branch has been published to Codeberg, the next step will be to
 create a new pull request to merge the new branch with the `develop` branch.
 
 After creating the pull request, it will go through a review and the request

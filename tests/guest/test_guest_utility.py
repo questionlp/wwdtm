@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.guest import GuestUtility
 
@@ -26,6 +27,32 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+
+def test_guest_utility_database_connection():
+    """Testing instantiating :py:class:`wwdtm.guest.GuestUtility` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    _utility = GuestUtility(database_connection=database_connection)
+
+    assert _utility, (
+        "Could not instantiate GuestUtility object using database connection"
+    )
+    assert isinstance(_utility, GuestUtility), (
+        "Instantiated object is not an instance of GuestUtility"
+    )
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    _utility = GuestUtility(database_connection=database_connection)
+
+    assert _utility, (
+        "Could not instantiate GuestUtility object using database connection"
+    )
+    assert isinstance(_utility, GuestUtility), (
+        "Instantiated object is not an instance of GuestUtility"
+    )
 
 
 @pytest.mark.parametrize("guest_id", [54])
@@ -62,10 +89,10 @@ def test_guest_utility_convert_slug_to_id(guest_slug: str):
         ID
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
-    id_ = utility.convert_slug_to_id(guest_slug)
+    _id = utility.convert_slug_to_id(guest_slug)
 
-    assert id_, f"Guest ID for slug {guest_slug} was not found"
-    assert isinstance(id_, int), f"Invalid value returned for slug {guest_slug}"
+    assert _id, f"Guest ID for slug {guest_slug} was not found"
+    assert isinstance(_id, int), f"Invalid value returned for slug {guest_slug}"
 
 
 @pytest.mark.parametrize("guest_slug", ["tom-hanx", "steven-colbert"])
@@ -76,9 +103,9 @@ def test_guest_utility_convert_invalid_slug_to_id(guest_slug: str):
         guest ID
     """
     utility = GuestUtility(connect_dict=get_connect_dict())
-    id_ = utility.convert_slug_to_id(guest_slug)
+    _id = utility.convert_slug_to_id(guest_slug)
 
-    assert not id_, f"Guest ID for slug {guest_slug} was found"
+    assert not _id, f"Guest ID for slug {guest_slug} was found"
 
 
 @pytest.mark.parametrize("guest_id", [54])

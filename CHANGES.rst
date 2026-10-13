@@ -2,6 +2,72 @@
 Changes
 *******
 
+3.3.0
+=====
+
+Application Changes
+-------------------
+
+* The library now requires version 4.8 of the Wait Wait Stats Database in order to support the new social media account tables for hosts, panelists and scorekeepers
+* Added the following methods that retrieve social media accounts from the Stats Database for hosts, panelists and scorekeepers
+
+  * :py:meth:`wwdtm.host.Host.retrieve_social_media_accounts_by_id`
+  * :py:meth:`wwdtm.host.Host.retrieve_social_media_accounts_by_slug`
+  * :py:meth:`wwdtm.panelist.Panelist.retrieve_social_media_accounts_by_id`
+  * :py:meth:`wwdtm.panelist.Panelist.retrieve_social_media_accounts_by_slug`
+  * :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_social_media_accounts_by_id`
+  * :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_social_media_accounts_by_slug`
+
+* Added the following methods used to retrieve preferred pronouns for hosts, panelists and scorekeepers.
+
+  * :py:meth:`wwdtm.host.Host.retrieve_pronouns_by_id`
+  * :py:meth:`wwdtm.host.Host.retrieve_pronouns_by_slug`
+  * :py:meth:`wwdtm.panelist.Panelist.retrieve_pronouns_by_id`
+  * :py:meth:`wwdtm.panelist.Panelist.retrieve_pronouns_by_slug`
+  * :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_pronouns_by_id`
+  * :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_pronouns_by_slug`
+
+* Refactored the following classes to make use of the new ``retrieve_pronouns_by_id`` and ``retrieve_pronouns_by_slug`` instead of duplicated inline queries
+
+  * :py:class:`wwdtm.host.Host`
+  * :py:class:`wwdtm.panelist.Panelist`
+  * :py:class:`wwdtm.scorekeeper.Scorekeeper`
+
+* Various code cleanup and updating variable naming conventions for IDs and slug strings
+
+Component Changes
+-----------------
+
+* Upgraded MySQL Connector/Python from 9.5.0 to 26.7.0
+* Upgraded NumPy from 2.4.4 to 2.5.0
+* Upgraded python-slugify from 8.0.4 to 9.1.3
+* Upgraded pytz from 2026.1.post1 to 2026.5
+
+Development Changes
+-------------------
+
+* Added missing test cases for each class that check whether each class can be instantiated using a connected and disconnected database connection
+* Upgraded build from 1.4.3 to 1.6.1
+* Upgraded pytest-cov from 7.0.0 to 7.1.0
+* Upgraded pydoclint from 0.8.4 to 0.11.0
+* Upgraded pytest from 9.0.3 to 9.1.1
+* Upgraded ruff from 0.15.6 to 0.17.0
+
+  * Minimum version of ruff in ``pyproject.toml`` has been increased to 0.17.0 to match
+
+* Upgraded twine from 6.2.0 to 7.0.0
+* Upgraded wheel from 0.46.3 to 0.48.0
+
+Documentation Changes
+---------------------
+
+* Upgraded application component changes
+
+  * Upgraded MySQL Connector/Python from 9.5.0 to 26.7.0
+  * Upgraded NumPy from 2.4.4 to 2.5.0
+  * Upgraded python-slugify from 8.0.4 to 9.1.3
+  * Upgraded pytz from 2026.1.post1 to 2026.5
+
 3.2.0
 =====
 

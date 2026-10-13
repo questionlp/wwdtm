@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.location import LocationUtility
 
@@ -26,6 +27,32 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+
+def test_location_utility_database_connection():
+    """Testing instantiating :py:class:`wwdtm.location.LocationUtility` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    _utility = LocationUtility(database_connection=database_connection)
+
+    assert _utility, (
+        "Could not instantiate LocationUtility object using database connection"
+    )
+    assert isinstance(_utility, LocationUtility), (
+        "Instantiated object is not an instance of LocationUtility"
+    )
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    _utility = LocationUtility(database_connection=database_connection)
+
+    assert _utility, (
+        "Could not instantiate LocationUtility object using database connection"
+    )
+    assert isinstance(_utility, LocationUtility), (
+        "Instantiated object is not an instance of LocationUtility"
+    )
 
 
 @pytest.mark.parametrize("location_id", [95])
@@ -62,9 +89,9 @@ def test_location_utility_convert_slug_to_id(location_slug: str):
         location ID
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
-    id_ = utility.convert_slug_to_id(location_slug)
+    _id = utility.convert_slug_to_id(location_slug)
 
-    assert id_, f"Location ID for slug {location_slug} was not found"
+    assert _id, f"Location ID for slug {location_slug} was not found"
 
 
 @pytest.mark.parametrize("location_slug", ["the-chicago-theatre-chicago-li"])
@@ -75,9 +102,9 @@ def test_location_utility_convert_invalid_slug_to_id(location_slug: str):
         convert into location ID
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
-    id_ = utility.convert_slug_to_id(location_slug)
+    _id = utility.convert_slug_to_id(location_slug)
 
-    assert not id_, f"Location ID for slug {location_slug} was found"
+    assert not _id, f"Location ID for slug {location_slug} was found"
 
 
 @pytest.mark.parametrize("location_id", [95])
@@ -185,6 +212,25 @@ def test_location_utility_slugify_location_full(
     assert isinstance(slug, str), "Value returned is not a string"
 
 
+@pytest.mark.parametrize("location_id, city, state", [("2", "Chicago", "IL")])
+def test_location_utility_slugify_location_id_city_state(
+    location_id: int, city: str, state: str
+):
+    """Negative testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`.
+
+    Testing with city and state names.
+
+    :param location_id: Location ID to include in the slug string
+    :param city: City to include in the slug string
+    :param state: State to include in the slug string
+    """
+    utility = LocationUtility(connect_dict=get_connect_dict())
+    slug = utility.slugify_location(location_id=location_id, city=city, state=state)
+
+    assert slug, "Unable to convert into a slug string"
+    assert isinstance(slug, str), "Value returned is not a string"
+
+
 @pytest.mark.parametrize("location_id, venue", [(2, "Chase Auditorium")])
 def test_location_utility_slugify_location_venue(location_id: int, venue: str):
     """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location` with venue name.
@@ -211,6 +257,20 @@ def test_location_utility_slugify_location_venue_city_state(
     """
     utility = LocationUtility(connect_dict=get_connect_dict())
     slug = utility.slugify_location(venue=venue, city=city, state=state)
+
+    assert slug, "Unable to convert into a slug string"
+    assert isinstance(slug, str), "Value returned is not a string"
+
+
+@pytest.mark.parametrize("venue, city", [("Chase Auditorium", "Chicago")])
+def test_location_utility_slugify_location_venue_city(venue: str, city: str):
+    """Testing for :py:meth:`wwdtm.location.LocationUtility.slugify_location`.
+
+    :param venue: Venue name to include in the slug string
+    :param city: City to include in the slug string
+    """
+    utility = LocationUtility(connect_dict=get_connect_dict())
+    slug = utility.slugify_location(venue=venue, city=city)
 
     assert slug, "Unable to convert into a slug string"
     assert isinstance(slug, str), "Value returned is not a string"

@@ -128,8 +128,8 @@ class ScorekeeperAppearances:
         :return: A dictionary containing scorekeeper appearances with
             corresponding show dates and Best Of or Repeat show flags
         """
-        id_ = self.utility.convert_slug_to_id(scorekeeper_slug)
-        if not id_:
+        _id = self.utility.convert_slug_to_id(scorekeeper_slug)
+        if not _id:
             return {}
 
-        return self.retrieve_appearances_by_id(id_)
+        return self.retrieve_appearances_by_id(_id)

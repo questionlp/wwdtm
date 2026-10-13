@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.show import ShowInfo
 
@@ -26,6 +27,28 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+
+def test_show_info_database_connection():
+    """Testing instantiating :py:class:`wwdtm.show.ShowInfo` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    _info = ShowInfo(database_connection=database_connection)
+
+    assert _info, "Could not instantiate ShowInfo object using database connection"
+    assert isinstance(_info, ShowInfo), (
+        "Instantiated object is not an instance of ShowInfo"
+    )
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    _info = ShowInfo(database_connection=database_connection)
+
+    assert _info, "Could not instantiate ShowInfo object using database connection"
+    assert isinstance(_info, ShowInfo), (
+        "Instantiated object is not an instance of ShowInfo"
+    )
 
 
 @pytest.mark.parametrize("show_id", [319, 1162])

@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.show import ShowUtility
 
@@ -28,6 +29,32 @@ def get_connect_dict() -> dict[str, Any]:
             return config_dict["database"]
 
 
+def test_show_utility_database_connection():
+    """Testing instantiating :py:class:`wwdtm.show.ShowUtility` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    _utility = ShowUtility(database_connection=database_connection)
+
+    assert _utility, (
+        "Could not instantiate ShowUtility object using database connection"
+    )
+    assert isinstance(_utility, ShowUtility), (
+        "Instantiated object is not an instance of ShowUtility"
+    )
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    _utility = ShowUtility(database_connection=database_connection)
+
+    assert _utility, (
+        "Could not instantiate ShowUtility object using database connection"
+    )
+    assert isinstance(_utility, ShowUtility), (
+        "Instantiated object is not an instance of ShowUtility"
+    )
+
+
 @pytest.mark.parametrize("year, month, day", [(2018, 10, 27)])
 def test_show_utility_convert_date_to_id(year: int, month: int, day: int):
     """Testing for :py:meth:`wwdtm.show.ShowUtility.convert_date_to_id`.
@@ -37,10 +64,10 @@ def test_show_utility_convert_date_to_id(year: int, month: int, day: int):
     :param day: One or two digit day to test converting into show ID
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
-    id_ = utility.convert_date_to_id(year, month, day)
+    _id = utility.convert_date_to_id(year, month, day)
 
-    assert id_, f"Show ID for date {year:04d}-{month:02d}-{day:02d} not found"
-    assert isinstance(id_, int), (
+    assert _id, f"Show ID for date {year:04d}-{month:02d}-{day:02d} not found"
+    assert isinstance(_id, int), (
         f"Invalid value returned for date {year:04d}-{month:02d}-{day:02d}"
     )
 
@@ -56,9 +83,9 @@ def test_show_utility_convert_invalid_date_to_id(year: int, month: int, day: int
         show ID
     """
     utility = ShowUtility(connect_dict=get_connect_dict())
-    id_ = utility.convert_date_to_id(year, month, day)
+    _id = utility.convert_date_to_id(year, month, day)
 
-    assert not id_, f"Show ID for date {year:04d}-{month:02d}-{day:02d} was found"
+    assert not _id, f"Show ID for date {year:04d}-{month:02d}-{day:02d} was found"
 
 
 @pytest.mark.parametrize("show_id", [1162])

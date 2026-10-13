@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from mysql.connector import connect
 
 from wwdtm.panelist import PanelistUtility
 
@@ -26,6 +27,32 @@ def get_connect_dict() -> dict[str, Any]:
         config_dict = json.load(config_file)
         if "database" in config_dict:
             return config_dict["database"]
+
+
+def test_panelist_utility_database_connection():
+    """Testing instantiating :py:class:`wwdtm.panelist.PanelistUtility` with a database connection."""
+    # Test with connection in a connected state
+    database_connection = connect(**get_connect_dict())
+    _utility = PanelistUtility(database_connection=database_connection)
+
+    assert _utility, (
+        "Could not instantiate PanelistUtility object using database connection"
+    )
+    assert isinstance(_utility, PanelistUtility), (
+        "Instantiated object is not an instance of PanelistUtility"
+    )
+
+    # Test with connection in a disconnected state
+    database_connection = connect(**get_connect_dict())
+    database_connection.disconnect()
+    _utility = PanelistUtility(database_connection=database_connection)
+
+    assert _utility, (
+        "Could not instantiate PanelistUtility object using database connection"
+    )
+    assert isinstance(_utility, PanelistUtility), (
+        "Instantiated object is not an instance of PanelistUtility"
+    )
 
 
 @pytest.mark.parametrize("panelist_id", [14])
@@ -63,10 +90,10 @@ def test_panelist_utility_convert_slug_to_id(panelist_slug: str):
         panelist ID
     """
     utility = PanelistUtility(get_connect_dict())
-    id_ = utility.convert_slug_to_id(panelist_slug)
+    _id = utility.convert_slug_to_id(panelist_slug)
 
-    assert id_, f"Panelist ID for slug {panelist_slug} was not found"
-    assert isinstance(id_, int), f"Invalid value returned for slug {panelist_slug}"
+    assert _id, f"Panelist ID for slug {panelist_slug} was not found"
+    assert isinstance(_id, int), f"Invalid value returned for slug {panelist_slug}"
 
 
 @pytest.mark.parametrize("panelist_slug", ["faith-sale"])
@@ -77,9 +104,9 @@ def test_panelist_utility_convert_invalid_slug_to_id(panelist_slug: str):
         convert into panelist ID
     """
     utility = PanelistUtility(get_connect_dict())
-    id_ = utility.convert_slug_to_id(panelist_slug)
+    _id = utility.convert_slug_to_id(panelist_slug)
 
-    assert not id_, f"Panelist ID for slug {panelist_slug} was found"
+    assert not _id, f"Panelist ID for slug {panelist_slug} was found"
 
 
 @pytest.mark.parametrize("panelist_id", [14])

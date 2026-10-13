@@ -113,7 +113,7 @@ class Show:
                 FROM ww_shows
                 WHERE bestof = 1
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
                 SELECT showid AS id, showdate AS date,
@@ -122,7 +122,7 @@ class Show:
                 FROM ww_shows
                 WHERE bestof = 1 AND repeatshowid IS NULL
                 ORDER BY showdate ASC;
-            """
+                """
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -171,14 +171,14 @@ class Show:
                 FROM ww_shows
                 WHERE bestof = 1
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
                 SELECT showid
                 FROM ww_shows
                 WHERE bestof = 1 AND repeatshowid IS NULL
                 ORDER BY showdate ASC;
-            """
+                """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -331,7 +331,7 @@ class Show:
                 FROM ww_shows
                 WHERE repeatshowid IS NOT NULL
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
                 SELECT showid AS id, showdate AS date,
@@ -340,7 +340,7 @@ class Show:
                 FROM ww_shows
                 WHERE repeatshowid IS NOT NULL AND bestof = 0
                 ORDER BY showdate ASC;
-            """
+                """
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -386,14 +386,14 @@ class Show:
                 FROM ww_shows
                 WHERE repeatshowid IS NOT NULL
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
                 SELECT showid
                 FROM ww_shows
                 WHERE repeatshowid IS NOT NULL AND bestof = 0
                 ORDER BY showdate ASC;
-            """
+                """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -571,14 +571,14 @@ class Show:
                 SELECT showid FROM ww_shows
                 WHERE YEAR(showdate) = %s AND bestof = 1
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
                 SELECT showid FROM ww_shows
                 WHERE YEAR(showdate) = %s AND bestof = 1
                 AND repeatshowid IS NULL
                 ORDER BY showdate ASC;
-            """
+                """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query, (parsed_year.year,))
         results = cursor.fetchall()
@@ -613,14 +613,14 @@ class Show:
                 SELECT showid FROM ww_shows
                 WHERE YEAR(showdate) = %s AND bestof = 1
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
                 SELECT showid FROM ww_shows
                 WHERE YEAR(showdate) = %s AND bestof = 1
                 AND repeatshowid IS NULL
                 ORDER BY showdate ASC;
-            """
+                """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query, (parsed_year.year,))
         results = cursor.fetchall()
@@ -654,11 +654,11 @@ class Show:
             show flag, repeat show ID (if applicable) and show URL at
             NPR.org
         """
-        id_ = self.utility.convert_date_to_id(year, month, day)
-        if not id_:
+        _id = self.utility.convert_date_to_id(year, month, day)
+        if not _id:
             return {}
 
-        return self.retrieve_by_id(id_)
+        return self.retrieve_by_id(_id)
 
     def retrieve_by_date_string(self, date_string: str) -> dict[str, Any]:
         """Retrieves basic show information.
@@ -673,11 +673,11 @@ class Show:
         except ValueError:
             return {}
 
-        id_ = self.utility.convert_date_to_id(
+        _id = self.utility.convert_date_to_id(
             parsed_date.year, parsed_date.month, parsed_date.day
         )
 
-        return self.retrieve_by_id(id_)
+        return self.retrieve_by_id(_id)
 
     def retrieve_by_id(self, show_id: int) -> dict[str, Any]:
         """Retrieves basic show information.
@@ -852,7 +852,7 @@ class Show:
                 (SELECT COUNT(showid) FROM ww_shows
                     WHERE YEAR(showdate) = %s AND showdate <= NOW()
                     AND bestof = 1 AND repeatshowid IS NOT NULL) AS 'repeat_bestof';
-            """
+                """
         else:
             query = """
                 SELECT
@@ -868,7 +868,7 @@ class Show:
                 (SELECT COUNT(showid) FROM ww_shows
                     WHERE YEAR(showdate) = %s AND showdate <= NOW()
                     AND bestof = 1 AND repeatshowid IS NOT NULL) AS 'repeat_bestof';
-            """
+                """
 
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(
@@ -935,11 +935,11 @@ class Show:
             show flag, repeat show ID (if applicable), show URL at
             NPR.org, host, scorekeeper, location, panelists and guests
         """
-        id_ = self.utility.convert_date_to_id(year, month, day)
-        if not id_:
+        _id = self.utility.convert_date_to_id(year, month, day)
+        if not _id:
             return {}
 
-        return self.retrieve_details_by_id(id_)
+        return self.retrieve_details_by_id(_id)
 
     def retrieve_details_by_date_string(self, date_string: str) -> dict[str, Any]:
         """Retrieves detailed show information.
@@ -954,11 +954,11 @@ class Show:
         except ValueError:
             return {}
 
-        id_ = self.utility.convert_date_to_id(
+        _id = self.utility.convert_date_to_id(
             parsed_date.year, parsed_date.month, parsed_date.day
         )
 
-        return self.retrieve_details_by_id(id_)
+        return self.retrieve_details_by_id(_id)
 
     def retrieve_details_by_id(self, show_id: int) -> dict[str, Any]:
         """Retrieve detailed show information.
@@ -1485,7 +1485,7 @@ class Show:
             WHERE YEAR(showdate) = %s AND bestof = 1
             AND repeatshowid IS NOT NULL
             ORDER BY showdate ASC;
-        """
+            """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query, (parsed_year.year,))
         results = cursor.fetchall()
@@ -1564,14 +1564,14 @@ class Show:
                 SELECT showid FROM ww_shows
                 WHERE YEAR(showdate) = %s AND repeatshowid IS NOT NULL
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
             SELECT showid FROM ww_shows
             WHERE YEAR(showdate) = %s AND repeatshowid IS NOT NULL
             AND bestof = 0
             ORDER BY showdate ASC;
-        """
+            """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query, (parsed_year.year,))
         results = cursor.fetchall()
@@ -1608,14 +1608,14 @@ class Show:
                 SELECT showid FROM ww_shows
                 WHERE YEAR(showdate) = %s AND repeatshowid IS NOT NULL
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
                 SELECT showid FROM ww_shows
                 WHERE YEAR(showdate) = %s AND repeatshowid IS NOT NULL
                 AND bestof = 0
                 ORDER BY showdate ASC;
-            """
+                """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query, (parsed_year.year,))
         results = cursor.fetchall()
