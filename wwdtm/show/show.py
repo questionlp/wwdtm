@@ -113,7 +113,7 @@ class Show:
                 FROM ww_shows
                 WHERE bestof = 1
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
                 SELECT showid AS id, showdate AS date,
@@ -122,7 +122,7 @@ class Show:
                 FROM ww_shows
                 WHERE bestof = 1 AND repeatshowid IS NULL
                 ORDER BY showdate ASC;
-            """
+                """
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -171,14 +171,14 @@ class Show:
                 FROM ww_shows
                 WHERE bestof = 1
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
                 SELECT showid
                 FROM ww_shows
                 WHERE bestof = 1 AND repeatshowid IS NULL
                 ORDER BY showdate ASC;
-            """
+                """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -331,7 +331,7 @@ class Show:
                 FROM ww_shows
                 WHERE repeatshowid IS NOT NULL
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
                 SELECT showid AS id, showdate AS date,
@@ -340,7 +340,7 @@ class Show:
                 FROM ww_shows
                 WHERE repeatshowid IS NOT NULL AND bestof = 0
                 ORDER BY showdate ASC;
-            """
+                """
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -386,14 +386,14 @@ class Show:
                 FROM ww_shows
                 WHERE repeatshowid IS NOT NULL
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
                 SELECT showid
                 FROM ww_shows
                 WHERE repeatshowid IS NOT NULL AND bestof = 0
                 ORDER BY showdate ASC;
-            """
+                """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -571,14 +571,14 @@ class Show:
                 SELECT showid FROM ww_shows
                 WHERE YEAR(showdate) = %s AND bestof = 1
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
                 SELECT showid FROM ww_shows
                 WHERE YEAR(showdate) = %s AND bestof = 1
                 AND repeatshowid IS NULL
                 ORDER BY showdate ASC;
-            """
+                """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query, (parsed_year.year,))
         results = cursor.fetchall()
@@ -613,14 +613,14 @@ class Show:
                 SELECT showid FROM ww_shows
                 WHERE YEAR(showdate) = %s AND bestof = 1
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
                 SELECT showid FROM ww_shows
                 WHERE YEAR(showdate) = %s AND bestof = 1
                 AND repeatshowid IS NULL
                 ORDER BY showdate ASC;
-            """
+                """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query, (parsed_year.year,))
         results = cursor.fetchall()
@@ -852,7 +852,7 @@ class Show:
                 (SELECT COUNT(showid) FROM ww_shows
                     WHERE YEAR(showdate) = %s AND showdate <= NOW()
                     AND bestof = 1 AND repeatshowid IS NOT NULL) AS 'repeat_bestof';
-            """
+                """
         else:
             query = """
                 SELECT
@@ -868,7 +868,7 @@ class Show:
                 (SELECT COUNT(showid) FROM ww_shows
                     WHERE YEAR(showdate) = %s AND showdate <= NOW()
                     AND bestof = 1 AND repeatshowid IS NOT NULL) AS 'repeat_bestof';
-            """
+                """
 
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(
@@ -1485,7 +1485,7 @@ class Show:
             WHERE YEAR(showdate) = %s AND bestof = 1
             AND repeatshowid IS NOT NULL
             ORDER BY showdate ASC;
-        """
+            """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query, (parsed_year.year,))
         results = cursor.fetchall()
@@ -1564,14 +1564,14 @@ class Show:
                 SELECT showid FROM ww_shows
                 WHERE YEAR(showdate) = %s AND repeatshowid IS NOT NULL
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
             SELECT showid FROM ww_shows
             WHERE YEAR(showdate) = %s AND repeatshowid IS NOT NULL
             AND bestof = 0
             ORDER BY showdate ASC;
-        """
+            """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query, (parsed_year.year,))
         results = cursor.fetchall()
@@ -1608,14 +1608,14 @@ class Show:
                 SELECT showid FROM ww_shows
                 WHERE YEAR(showdate) = %s AND repeatshowid IS NOT NULL
                 ORDER BY showdate ASC;
-            """
+                """
         else:
             query = """
                 SELECT showid FROM ww_shows
                 WHERE YEAR(showdate) = %s AND repeatshowid IS NOT NULL
                 AND bestof = 0
                 ORDER BY showdate ASC;
-            """
+                """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query, (parsed_year.year,))
         results = cursor.fetchall()

@@ -76,7 +76,7 @@ class Pronouns:
             SELECT pronounsid
             FROM ww_pronouns
             ORDER BY pronounsid ASC;
-        """
+            """
         cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
@@ -96,7 +96,7 @@ class Pronouns:
             SELECT pronounsid, pronouns
             FROM ww_pronouns
             ORDER BY pronounsid ASC;
-        """
+            """
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -116,7 +116,7 @@ class Pronouns:
             SELECT pronouns
             FROM ww_pronouns
             ORDER BY pronounsid ASC;
-        """
+            """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
         results = cursor.fetchall()

@@ -98,7 +98,7 @@ class SocialMediaNetworks:
             SELECT networkid, network, networkslug
             FROM ww_socialmedianetworks
             ORDER BY networkid ASC;
-        """
+            """
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -147,7 +147,7 @@ class SocialMediaNetworks:
             SELECT networkslug
             FROM ww_socialmedianetworks
             ORDER BY networkid ASC;
-        """
+            """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
         results = cursor.fetchall()

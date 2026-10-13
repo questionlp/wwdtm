@@ -56,7 +56,7 @@ class ShowInfo:
             SELECT panelistid, panelist, panelistslug
             FROM ww_panelists
             ORDER BY panelistid ASC;
-        """
+            """
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
         results = cursor.fetchall()

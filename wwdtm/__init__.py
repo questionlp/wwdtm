@@ -11,7 +11,7 @@ from mysql.connector import connect
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.pooling import PooledMySQLConnection
 
-VERSION: str = "3.3.0-beta"
+VERSION: str = "3.3.0"
 MINIMUM_DATABASE_VERSION: tuple[int] = (4, 8, 0)  # Major, Minor, Patch
 MINIMUM_DATABASE_VERSION_STRING: str = "4.8.0"  # Major, Minor, Patch
 
@@ -43,11 +43,11 @@ def database_version(
 
     cursor = _database_connection.cursor(dictionary=True)
     query = """
-            SELECT keyname, value
-            FROM __metadata
-            WHERE keyname = 'database_version'
-            ORDER BY id DESC LIMIT 1;
-            """
+        SELECT keyname, value
+        FROM __metadata
+        WHERE keyname = 'database_version'
+        ORDER BY id DESC LIMIT 1;
+        """
     cursor.execute(query)
     result = cursor.fetchone()
 
