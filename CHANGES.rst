@@ -2,6 +2,24 @@
 Changes
 *******
 
+3.4.1
+=====
+
+Application Changes
+-------------------
+
+* Add warning filters in the following methods in order to reduce unnecessary ``DeprecationWarnings``, since the warnings should only occur when directly accessing the deprecated methods:
+
+  * :py:meth:`wwdtm.host.Host.retrieve_all`
+  * :py:meth:`wwdtm.host.Host.retrieve_all_details``
+  * :py:meth:`wwdtm.host.Host.retrieve_by_id`
+  * :py:meth:`wwdtm.panelist.Panelist.retrieve_all`
+  * :py:meth:`wwdtm.panelist.panelist.retrieve_all_details``
+  * :py:meth:`wwdtm.panelist.panelist.retrieve_by_id`
+  * :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all`
+  * :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all_details``
+  * :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_by_id`
+
 3.4.0
 =====
 
