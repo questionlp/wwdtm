@@ -126,25 +126,25 @@ class Host:
             for row in results:
                 _slug = row["slug"] if row["slug"] else slugify(row["name"])
 
-            hosts.append(
-                {
-                    "id": row["id"],
-                    "name": row["name"],
-                    "slug": _slug,
-                    "gender": row["gender"],
-                    "pronouns": self.retrieve_pronouns_by_id(row["id"]),
-                    "external_sites": self.retrieve_external_sites_by_id(row["id"]),
-                    "social_media_accounts": self.retrieve_social_media_accounts_by_id(
-                        row["id"]
-                    ),
-                    "is_guest": bool(_guest_utility.slug_exists(_slug)),
-                    "is_panelist": bool(_panelist_utility.slug_exists(_slug)),
-                    "is_scorekeeper": bool(_scorekeeper_utility.slug_exists(_slug)),
-                    "appearances": self.appearances.retrieve_appearances_by_id(
-                        row["id"]
-                    ),
-                }
-            )
+                hosts.append(
+                    {
+                        "id": row["id"],
+                        "name": row["name"],
+                        "slug": _slug,
+                        "gender": row["gender"],
+                        "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                        "external_sites": self.retrieve_external_sites_by_id(row["id"]),
+                        "social_media_accounts": self.retrieve_social_media_accounts_by_id(
+                            row["id"]
+                        ),
+                        "is_guest": bool(_guest_utility.slug_exists(_slug)),
+                        "is_panelist": bool(_panelist_utility.slug_exists(_slug)),
+                        "is_scorekeeper": bool(_scorekeeper_utility.slug_exists(_slug)),
+                        "appearances": self.appearances.retrieve_appearances_by_id(
+                            row["id"]
+                        ),
+                    }
+                )
 
         return hosts
 

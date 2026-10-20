@@ -11,7 +11,7 @@ from mysql.connector import connect
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.pooling import PooledMySQLConnection
 
-VERSION: str = "3.4.2"
+VERSION: str = "3.4.3"
 MINIMUM_DATABASE_VERSION: tuple[int] = (4, 8, 0)  # Major, Minor, Patch
 MINIMUM_DATABASE_VERSION_STRING: str = "4.8.0"  # Major, Minor, Patch
 
