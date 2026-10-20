@@ -190,6 +190,11 @@ class PanelistStatistics:
         :return: A dictionary containing panelist scoring and ranking
             statistics. Returns an empty dictionary if number_digits
             value is not valid.
+
+        .. version-changed:: 3.1.0
+            Added ``number_digits`` parameter.
+        .. version-changed:: 3.2.0
+            Renamed ``number_digits`` to ``number_decimal_places``.
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -295,6 +300,11 @@ class PanelistStatistics:
         :return: A dictionary containing panelist scoring and ranking
             statistics. Returns an empty dictionary if number_digits
             value is not valid.
+
+        .. version-changed:: 3.1.0
+            Added ``number_digits`` parameter.
+        .. version-changed:: 3.2.0
+            Renamed ``number_digits`` to ``number_decimal_places``.
         """
         _id = self.utility.convert_slug_to_id(panelist_slug)
         if not _id:

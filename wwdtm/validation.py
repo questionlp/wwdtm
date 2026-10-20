@@ -25,6 +25,8 @@ def check_database_version(
     :param database_connection: MySQL database connection object
     :return: True or False, based on if the current database version
         meets the library's minimum database version
+
+    .. version-added:: 3.0.0
     """
     if not connect_dict and not database_connection:
         return False
@@ -73,6 +75,10 @@ def valid_rounding_decimal_places(
     :param max_decimal_places: Maximum number of decimal places
     :return: True or False, based on if the number of decimal places is
         within the min/max value and if it is an integer
+
+    .. version-added:: 3.1.0
+    .. version-changed:: 3.2.0
+        Renamed from ``validation.valid_rounding_digits``.
     """
     if (
         number_decimal_places is None

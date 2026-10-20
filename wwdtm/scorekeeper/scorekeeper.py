@@ -5,6 +5,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 """Wait Wait Stats Scorekeeper Data Retrieval Functions."""
 
+import warnings
 from typing import Any
 
 from mysql.connector import connect
@@ -80,6 +81,7 @@ class Scorekeeper:
                     "slug": row["slug"] if row["slug"] else slugify(row["name"]),
                     "gender": row["gender"],
                     "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                    "external_sites": self.retrieve_external_sites_by_id(row["id"]),
                     "social_media_accounts": self.retrieve_social_media_accounts_by_id(
                         row["id"]
                     ),
@@ -127,6 +129,7 @@ class Scorekeeper:
                     "slug": _slug,
                     "gender": row["gender"],
                     "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                    "external_sites": self.retrieve_external_sites_by_id(row["id"]),
                     "social_media_accounts": self.retrieve_social_media_accounts_by_id(
                         row["id"]
                     ),
@@ -208,6 +211,7 @@ class Scorekeeper:
             "slug": result["slug"] if result["slug"] else slugify(result["name"]),
             "gender": result["gender"],
             "pronouns": self.retrieve_pronouns_by_id(scorekeeper_id),
+            "external_sites": self.retrieve_external_sites_by_id(scorekeeper_id),
             "social_media_accounts": self.retrieve_social_media_accounts_by_id(
                 scorekeeper_id
             ),
@@ -277,6 +281,8 @@ class Scorekeeper:
 
         :param scorekeeper_id: Scorekeeper ID
         :return: A list of preferred pronouns.
+
+        .. version-added:: 3.3.0
         """
         if not valid_int_id(scorekeeper_id):
             return []
@@ -303,6 +309,8 @@ class Scorekeeper:
 
         :param scorekeeper_slug: Scorekeeper slug string
         :return: A list of preferred pronouns.
+
+        .. version-added:: 3.3.0
         """
         _id = self.utility.convert_slug_to_id(scorekeeper_slug)
         if not _id:
@@ -380,24 +388,27 @@ class Scorekeeper:
 
         return self.retrieve_details_by_id(_id)
 
-    def retrieve_social_media_accounts_by_id(
+    def retrieve_external_sites_by_id(
         self, scorekeeper_id: int
     ) -> list[dict[str, str]]:
-        """Retrieves social media accounts for a scorekeeper.
+        """Retrieves external site information for a scorekeeper.
 
         :param scorekeeper_id: Scorekeeper ID
-        :return: A list of dictionaries containing social media
-            account information.
+        :return: A list of dictionaries containing external site
+            information, including social media accounts.
+
+        .. version-added:: 3.4.0
         """
         if not valid_int_id(scorekeeper_id):
             return []
 
         query = """
-            SELECT smn.network, smn.networkslug, ssm.account, ssm.url
-            FROM ww_sksocialmap ssm
-            JOIN ww_socialmedianetworks smn ON smn.networkid = ssm.networkid
+            SELECT es.site, es.siteslug, es.iconname, es.socialmedia,
+            ssm.url, ssm.account
+            FROM ww_skextsitesmap ssm
+            JOIN ww_externalsites es ON es.siteid = ssm.siteid
             WHERE ssm.scorekeeperid = %s
-            ORDER BY smn.network ASC;
+            ORDER BY es.site ASC;
             """
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (scorekeeper_id,))
@@ -411,8 +422,78 @@ class Scorekeeper:
         for row in results:
             accounts.append(
                 {
-                    "network": row["network"],
-                    "network_slug": row["networkslug"],
+                    "site": row["site"],
+                    "slug": row["siteslug"],
+                    "icon": row["iconname"],
+                    "social_media": bool(row["socialmedia"]),
+                    "account": row["account"],
+                    "url": row["url"],
+                }
+            )
+
+        return accounts
+
+    def retrieve_external_sites_by_slug(
+        self, scorekeeper_slug: str
+    ) -> list[dict[str, str]]:
+        """Retrieves external site information for a scorekeeper.
+
+        :param scorekeeper_slug: Scorekeeper slug string
+        :return: A list of dictionaries containing external site
+            information, including social media accounts.
+
+        .. version-added:: 3.4.0
+        """
+        _id = self.utility.convert_slug_to_id(scorekeeper_slug)
+        if not _id:
+            return {}
+
+        return self.retrieve_external_sites_by_id(_id)
+
+    def retrieve_social_media_accounts_by_id(
+        self, scorekeeper_id: int
+    ) -> list[dict[str, str]]:
+        """Retrieves social media accounts for a scorekeeper.
+
+        :param scorekeeper_id: Scorekeeper ID
+        :return: A list of dictionaries containing social media
+            account information.
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`retrieve_external_sites_by_id` instead.
+            Will be removed in version 3.6.
+        .. version-added:: 3.3.0
+        """
+        warnings.warn(
+            message="Use 'retrieve_external_sites_by_id()' instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+
+        if not valid_int_id(scorekeeper_id):
+            return []
+
+        query = """
+            SELECT es.site, es.siteslug, es.iconname, ssm.url, ssm.account
+            FROM ww_skextsitesmap ssm
+            JOIN ww_externalsites es ON es.siteid = ssm.siteid
+            WHERE ssm.scorekeeperid = %s AND es.socialmedia = 1
+            ORDER BY es.site ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=True)
+        cursor.execute(query, (scorekeeper_id,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        accounts = []
+        for row in results:
+            accounts.append(
+                {
+                    "network": row["site"],
+                    "network_slug": row["iconname"],
                     "account": row["account"],
                     "url": row["url"],
                 }
@@ -428,9 +509,21 @@ class Scorekeeper:
         :param scorekeeper_slug: Scorekeeper slug string
         :return: A list of dictionaries containing social media
             account information.
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`retrieve_external_sites_by_id` instead.
+            Will be removed in version 3.6.
+        .. version-added:: 3.3.0
         """
+        warnings.warn(
+            message="Use 'retrieve_external_sites_by_slug()' instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
         _id = self.utility.convert_slug_to_id(scorekeeper_slug)
         if not _id:
             return {}
 
-        return self.retrieve_social_media_accounts_by_id(_id)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return self.retrieve_social_media_accounts_by_id(_id)

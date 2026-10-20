@@ -5,6 +5,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 """Wait Wait Stats Panelist Data Retrieval Functions."""
 
+import warnings
 from typing import Any
 
 from mysql.connector import connect
@@ -85,6 +86,7 @@ class Panelist:
                     "slug": row["slug"] if row["slug"] else slugify(row["name"]),
                     "gender": row["gender"],
                     "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                    "external_sites": self.retrieve_external_sites_by_id(row["id"]),
                     "social_media_accounts": self.retrieve_social_media_accounts_by_id(
                         row["id"]
                     ),
@@ -104,6 +106,9 @@ class Panelist:
             slug string, gender, pronouns, whether the panelist is
             also a guest, host or scorekeeper, scoring statistics and
             appearances for each panelist
+
+        .. version-changed:: 3.2.0
+            Added ``number_decimal_places`` parameter
         """
         if not valid_rounding_decimal_places(
             number_decimal_places=number_decimal_places
@@ -142,6 +147,7 @@ class Panelist:
                     "slug": _slug,
                     "gender": row["gender"],
                     "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                    "external_sites": self.retrieve_external_sites_by_id(row["id"]),
                     "social_media_accounts": self.retrieve_social_media_accounts_by_id(
                         row["id"]
                     ),
@@ -231,6 +237,7 @@ class Panelist:
             "slug": result["slug"] if result["slug"] else slugify(result["name"]),
             "gender": result["gender"],
             "pronouns": self.retrieve_pronouns_by_id(panelist_id),
+            "external_sites": self.retrieve_external_sites_by_id(panelist_id),
             "social_media_accounts": self.retrieve_social_media_accounts_by_id(
                 panelist_id
             ),
@@ -260,6 +267,9 @@ class Panelist:
         :return: A dictionary containing panelist ID, name, slug string,
             gender, pronouns, whether the panelist is also a guest, host
             or scorekeeper, scoring statistics and appearances
+
+        .. version-changed:: 3.2.0
+            Added ``number_decimal_places`` parameter
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -302,6 +312,9 @@ class Panelist:
         :return: A dictionary containing panelist ID, name, slug string,
             gender, pronouns, whether the panelist is also a guest, host
             or scorekeeper, scoring statistics and appearances
+
+        .. version-changed:: 3.2.0
+            Added ``number_decimal_places`` parameter
         """
         _id = self.utility.convert_slug_to_id(panelist_slug)
         if not _id:
@@ -321,6 +334,8 @@ class Panelist:
 
         :param panelist_id: Panelist ID
         :return: A list of preferred pronouns.
+
+        .. version-added:: 3.3.0
         """
         if not valid_int_id(panelist_id):
             return []
@@ -347,6 +362,8 @@ class Panelist:
 
         :param panelist_slug: Panelist slug string
         :return: A list of preferred pronouns.
+
+        .. version-added:: 3.3.0
         """
         _id = self.utility.convert_slug_to_id(panelist_slug)
         if not _id:
@@ -417,6 +434,9 @@ class Panelist:
         :return: A dictionary containing panelist ID, name, slug string,
             gender, pronouns, whether the panelist is also a guest, host
             or scorekeeper, scoring statistics and appearances
+
+        .. version-changed:: 3.2.0
+            Added ``number_decimal_places`` parameter
         """
         _id = self.retrieve_random_id()
 
@@ -432,24 +452,25 @@ class Panelist:
             _id, number_decimal_places=number_decimal_places
         )
 
-    def retrieve_social_media_accounts_by_id(
-        self, panelist_id: int
-    ) -> list[dict[str, str]]:
-        """Retrieves social media accounts for a panelist.
+    def retrieve_external_sites_by_id(self, panelist_id: int) -> list[dict[str, str]]:
+        """Retrieves external site information for a panelist.
 
         :param panelist_id: Panelist ID
-        :return: A list of dictionaries containing social media
-            account information.
+        :return: A list of dictionaries containing external site
+            information, including social media accounts.
+
+        .. version-added:: 3.4.0
         """
         if not valid_int_id(panelist_id):
             return []
 
         query = """
-            SELECT smn.network, smn.networkslug, psm.account, psm.url
-            FROM ww_panelistsocialmap psm
-            JOIN ww_socialmedianetworks smn ON smn.networkid = psm.networkid
+            SELECT es.site, es.siteslug, es.iconname, es.socialmedia,
+            psm.url, psm.account
+            FROM ww_panelistextsitesmap psm
+            JOIN ww_externalsites es ON es.siteid = psm.siteid
             WHERE psm.panelistid = %s
-            ORDER BY smn.network ASC;
+            ORDER BY es.site ASC;
             """
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (panelist_id,))
@@ -463,8 +484,77 @@ class Panelist:
         for row in results:
             accounts.append(
                 {
-                    "network": row["network"],
-                    "network_slug": row["networkslug"],
+                    "site": row["site"],
+                    "slug": row["siteslug"],
+                    "icon": row["iconname"],
+                    "social_media": bool(row["socialmedia"]),
+                    "account": row["account"],
+                    "url": row["url"],
+                }
+            )
+
+        return accounts
+
+    def retrieve_external_sites_by_slug(
+        self, panelist_slug: str
+    ) -> list[dict[str, str]]:
+        """Retrieves external site information for a panelist.
+
+        :param panelist_slug: Panelist slug string
+        :return: A list of dictionaries containing external site
+            information, including social media accounts.
+
+        .. version-added:: 3.4.0
+        """
+        _id = self.utility.convert_slug_to_id(panelist_slug)
+        if not _id:
+            return {}
+
+        return self.retrieve_external_sites_by_id(_id)
+
+    def retrieve_social_media_accounts_by_id(
+        self, panelist_id: int
+    ) -> list[dict[str, str]]:
+        """Retrieves social media accounts for a panelist.
+
+        :param panelist_id: Panelist ID
+        :return: A list of dictionaries containing social media
+            account information.
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`retrieve_external_sites_by_id` instead.
+            Will be removed in version 3.6.
+        .. version-added:: 3.3.0
+        """
+        warnings.warn(
+            message="Use 'retrieve_external_sites_by_id()' instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        if not valid_int_id(panelist_id):
+            return []
+
+        query = """
+            SELECT es.site, es.siteslug, es.iconname, psm.url, psm.account
+            FROM ww_panelistextsitesmap psm
+            JOIN ww_externalsites es ON es.siteid = psm.siteid
+            WHERE psm.panelistid = %s AND es.socialmedia = 1
+            ORDER BY es.site ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=True)
+        cursor.execute(query, (panelist_id,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        accounts = []
+        for row in results:
+            accounts.append(
+                {
+                    "network": row["site"],
+                    "network_slug": row["iconname"],
                     "account": row["account"],
                     "url": row["url"],
                 }
@@ -480,9 +570,21 @@ class Panelist:
         :param panelist_slug: Panelist slug string
         :return: A list of dictionaries containing social media
             account information.
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`retrieve_external_sites_by_slug` instead.
+            Will be removed in version 3.6.
+        .. version-added:: 3.3.0
         """
+        warnings.warn(
+            message="Use 'retrieve_external_sites_by_slug()' instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
         _id = self.utility.convert_slug_to_id(panelist_slug)
         if not _id:
             return {}
 
-        return self.retrieve_social_media_accounts_by_id(_id)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return self.retrieve_social_media_accounts_by_id(_id)

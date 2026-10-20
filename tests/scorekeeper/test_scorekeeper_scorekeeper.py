@@ -67,6 +67,12 @@ def test_scorekeeper_retrieve_all():
     assert "pronouns" in scorekeepers[0], (
         "'pronouns' was not returned for the first list item"
     )
+    assert "external_sites" in scorekeepers[0], (
+        "'external_sites' was not returned for the first list item"
+    )
+    assert "social_media_accounts" in scorekeepers[0], (
+        "'social_media_accounts' was not returned for the first list item"
+    )
 
 
 def test_scorekeeper_retrieve_all_details():
@@ -80,6 +86,12 @@ def test_scorekeeper_retrieve_all_details():
     assert "slug" in scorekeepers[0], "'slug' was not returned for the first list item"
     assert "pronouns" in scorekeepers[0], (
         "'pronouns' was not returned for the first list item"
+    )
+    assert "external_sites" in scorekeepers[0], (
+        "'external_sites' was not returned for the first list item"
+    )
+    assert "social_media_accounts" in scorekeepers[0], (
+        "'social_media_accounts' was not returned for the first list item"
     )
     assert "is_panelist" in scorekeepers[0], (
         "'is_panelist' was not returned for the first list item"
@@ -119,6 +131,12 @@ def test_scorekeeper_retrieve_by_id(scorekeeper_id: int):
     assert "name" in info, f"'name' was not returned for ID {scorekeeper_id}"
     assert "slug" in info, f"'slug' was not returned for ID {scorekeeper_id}"
     assert "pronouns" in info, f"'pronouns' was not returned for ID {scorekeeper_id}"
+    assert "external_sites" in info, (
+        f"'external_sites' was not returned for ID {scorekeeper_id}"
+    )
+    assert "social_media_accounts" in info, (
+        f"'social_media_accounts' was not returned for ID {scorekeeper_id}"
+    )
 
 
 @pytest.mark.parametrize("scorekeeper_slug", ["chioke-i-anson", "alzo-slade"])
@@ -135,6 +153,12 @@ def test_scorekeeper_retrieve_by_slug(scorekeeper_slug: str):
     assert "name" in info, f"'name' was not returned for slug {scorekeeper_slug}"
     assert "slug" in info, f"'slug' was not returned for ID {scorekeeper_slug}"
     assert "pronouns" in info, f"'pronouns' was not returned for ID {scorekeeper_slug}"
+    assert "external_sites" in info, (
+        f"'external_sites' was not returned for ID {scorekeeper_slug}"
+    )
+    assert "social_media_accounts" in info, (
+        f"'social_media_accounts' was not returned for ID {scorekeeper_slug}"
+    )
 
 
 @pytest.mark.parametrize("scorekeeper_id", [13, 20])
@@ -151,6 +175,12 @@ def test_scorekeeper_retrieve_details_by_id(scorekeeper_id: int):
     assert "name" in info, f"'name' was not returned for ID {scorekeeper_id}"
     assert "slug" in info, f"'slug' was not returned for ID {scorekeeper_id}"
     assert "pronouns" in info, f"'pronouns' was not returned for ID {scorekeeper_id}"
+    assert "external_sites" in info, (
+        f"'external_sites' was not returned for ID {scorekeeper_id}"
+    )
+    assert "social_media_accounts" in info, (
+        f"'social_media_accounts' was not returned for ID {scorekeeper_id}"
+    )
     assert "is_panelist" in info, (
         f"'is_panelist' was not returned for ID {scorekeeper_id}"
     )
@@ -174,6 +204,12 @@ def test_scorekeeper_retrieve_details_by_slug(scorekeeper_slug: str):
     assert "slug" in info, f"'slug' was not returned for slug {scorekeeper_slug}"
     assert "pronouns" in info, (
         f"'pronouns' was not returned for slug {scorekeeper_slug}"
+    )
+    assert "external_sites" in info, (
+        f"'external_sites' was not returned for ID {scorekeeper_slug}"
+    )
+    assert "social_media_accounts" in info, (
+        f"'social_media_accounts' was not returned for ID {scorekeeper_slug}"
     )
     assert "is_panelist" in info, (
         f"'is_panelist' was not returned for slug {scorekeeper_slug}"
@@ -257,28 +293,84 @@ def test_scorekeeper_retrieve_random_details() -> None:
 
 
 @pytest.mark.parametrize("scorekeeper_id", [2, 20])
+def test_scorekeeper_retrieve_external_sites_by_id(scorekeeper_id: int):
+    """Testing for :py:meth`wwdtm.scorekeeper.Scorekeeper.retrieve_external_sites_by_id`."""
+    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
+    _sites = scorekeeper.retrieve_external_sites_by_id(scorekeeper_id)
+
+    assert isinstance(_sites, list), (
+        f"Returned value for scorekeeper ID {scorekeeper_id} was not of type list"
+    )
+
+    if _sites:
+        assert "site" in _sites[0], "Site name was not returned in the first list item"
+        assert "icon" in _sites[0], (
+            "Site icon name was not returned in the first list item"
+        )
+
+
+@pytest.mark.parametrize("scorekeeper_slug", ["korva-coleman", "alzo-slade"])
+def test_scorekeeper_retrieve_external_sites_by_slug(scorekeeper_slug: str):
+    """Testing for :py:meth`wwdtm.scorekeeper.Scorekeeper.retrieve_external_sites_by_id`."""
+    scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
+    _sites = scorekeeper.retrieve_external_sites_by_slug(scorekeeper_slug)
+
+    assert isinstance(_sites, list), (
+        f"Returned value for scorekeeper slug string {scorekeeper_slug} was not of type list"
+    )
+
+    if _sites:
+        assert "site" in _sites[0], "Site name was not returned in the first list item"
+        assert "icon" in _sites[0], (
+            "Site icon name was not returned in the first list item"
+        )
+
+
+@pytest.mark.parametrize("scorekeeper_id", [2, 20])
 def test_scorekeeper_retrieve_social_acounts_by_id(scorekeeper_id: int):
     """Testing for :py:meth`wwdtm.scorekeeper.Scorekeeper.retrieve_social_media_accounts_by_id`."""
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
-    _accounts = scorekeeper.retrieve_social_media_accounts_by_id(scorekeeper_id)
+    with pytest.deprecated_call():
+        _accounts = scorekeeper.retrieve_social_media_accounts_by_id(scorekeeper_id)
 
-    assert isinstance(_accounts, list), (
-        f"Returned value for scorekeeper ID {scorekeeper_id} was not of type list"
-    )
-    assert _accounts, (
-        f"No social media accounts were returned for scorekeeper ID {scorekeeper_id}"
-    )
+        assert isinstance(_accounts, list), (
+            f"Returned value for scorekeeper ID {scorekeeper_id} was not of type list"
+        )
+        assert _accounts, (
+            f"No social media accounts were returned for scorekeeper ID {scorekeeper_id}"
+        )
+
+        if _accounts:
+            assert "network" in _accounts[0], (
+                "Site name was not returned in the first list item"
+            )
+            assert "account" in _accounts[0], (
+                "Account name was not returned in the first list item"
+            )
+
+            assert "url" in _accounts[0], "URL was not returned in the first list item"
 
 
 @pytest.mark.parametrize("scorekeeper_slug", ["korva-coleman", "alzo-slade"])
 def test_scorekeeper_retrieve_social_media_accounts_by_slug(scorekeeper_slug: str):
     """Testing for :py:meth`wwdtm.scorekeeper.Scorekeeper.retrieve_social_media_accounts_by_id`."""
     scorekeeper = Scorekeeper(connect_dict=get_connect_dict())
-    _accounts = scorekeeper.retrieve_social_media_accounts_by_slug(scorekeeper_slug)
+    with pytest.deprecated_call():
+        _accounts = scorekeeper.retrieve_social_media_accounts_by_slug(scorekeeper_slug)
 
-    assert isinstance(_accounts, list), (
-        f"Returned value for scorekeeper slug string {scorekeeper_slug} was not of type list"
-    )
-    assert _accounts, (
-        f"No social media accounts were returned for scorekeeper slug string {scorekeeper_slug}"
-    )
+        assert isinstance(_accounts, list), (
+            f"Returned value for scorekeeper slug string {scorekeeper_slug} was not of type list"
+        )
+        assert _accounts, (
+            f"No social media accounts were returned for scorekeeper slug string {scorekeeper_slug}"
+        )
+
+        if _accounts:
+            assert "network" in _accounts[0], (
+                "Site name was not returned in the first list item"
+            )
+            assert "account" in _accounts[0], (
+                "Account name was not returned in the first list item"
+            )
+
+            assert "url" in _accounts[0], "URL was not returned in the first list item"

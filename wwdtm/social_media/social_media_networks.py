@@ -13,13 +13,13 @@ from mysql.connector.pooling import PooledMySQLConnection
 
 
 class SocialMediaNetworks:
-    """Social media networks information retrieval class.
+    """Social media network information retrieval class.
 
     Contains methods used to retrieve available social media networks.
 
-        :param connect_dict: A dictionary containing database connection
-            settings as required by MySQL Connector/Python
-        :param database_connection: MySQL database connection object
+    :param connect_dict: A dictionary containing database connection
+        settings as required by MySQL Connector/Python
+    :param database_connection: MySQL database connection object
     """
 
     def __init__(
@@ -37,15 +37,16 @@ class SocialMediaNetworks:
             self.database_connection = database_connection
 
     def retrieve_all(self) -> list[dict[int, str]]:
-        """Retrieves all social media networks.
+        """Retrieves all social media networks, sorted by ID.
 
-        :return: A list of dictionaries containing social media network
-            IDs, names and slug strings
+        :return: A list of dictionaries containing social media site
+            IDs, names, slug strings and icon names
         """
         query = """
-            SELECT networkid, network, networkslug
-            FROM ww_socialmedianetworks
-            ORDER BY networkid ASC;
+            SELECT siteid, site, siteslug, iconname
+            FROM ww_externalsites
+            WHERE socialmedia = 1
+            ORDER BY siteid ASC;
             """
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
@@ -59,24 +60,26 @@ class SocialMediaNetworks:
         for row in results:
             networks.append(
                 {
-                    "id": row["networkid"],
-                    "network": row["network"],
-                    "slug": row["networkslug"],
+                    "id": row["siteid"],
+                    "network": row["site"],
+                    "slug": row["siteslug"],
+                    "icon": row["iconname"],
                 }
             )
 
         return networks
 
     def retrieve_all_ids(self) -> list[int]:
-        """Retrieves all social media network IDs, sorted by ID.
+        """Retrieves all social media site IDs, sorted by ID.
 
-        :return: A list of social media network IDs as integers
+        :return: A list of social media site IDs as integers
         """
         cursor = self.database_connection.cursor(dictionary=False)
         query = """
-            SELECT networkid
-            FROM ww_socialmedianetworks
-            ORDER BY networkid ASC;
+            SELECT siteid
+            FROM ww_externalsites
+            WHERE socialmedia = 1
+            ORDER BY siteid ASC;
             """
         cursor.execute(query)
         results = cursor.fetchall()
@@ -88,16 +91,17 @@ class SocialMediaNetworks:
         return [row[0] for row in results]
 
     def retrieve_all_as_dict(self) -> dict[int, dict[str, str]]:
-        """Retrieves all social media networks as a dictionary.
+        """Retrieves all social media sites as a dictionary.
 
-        :return: A dictionary of social media network IDs as keys each
-            containing network name and slug key/values, ordered by
-            social media network ID
+        :return: A dictionary of social media site IDs as keys, each
+            containing name and slug key/values, ordered by social media
+            site ID
         """
         query = """
-            SELECT networkid, network, networkslug
-            FROM ww_socialmedianetworks
-            ORDER BY networkid ASC;
+            SELECT siteid, site, siteslug, iconname
+            FROM ww_externalsites
+            WHERE socialmedia = 1
+            ORDER BY siteid ASC;
             """
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query)
@@ -109,23 +113,25 @@ class SocialMediaNetworks:
 
         networks = {}
         for row in results:
-            networks[row["networkid"]] = {
-                "network": row["network"],
-                "slug": row["networkslug"],
+            networks[row["siteid"]] = {
+                "network": row["site"],
+                "slug": row["siteslug"],
+                "icon": row["iconname"],
             }
 
         return networks
 
     def retrieve_all_network_names(self) -> list[str]:
-        """Retrieves all social media network names.
+        """Retrieves all social media sites.
 
-        :return: A list of social media network names, ordered by
-            social media network ID
+        :return: A list of social media sites, ordered by social media
+            site ID
         """
         query = """
-            SELECT network
-            FROM ww_socialmedianetworks
-            ORDER BY networkid ASC;
+            SELECT site
+            FROM ww_externalsites
+            WHERE socialmedia = 1
+            ORDER BY siteid ASC;
             """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
@@ -138,15 +144,16 @@ class SocialMediaNetworks:
         return [row[0] for row in results]
 
     def retrieve_all_network_slugs(self) -> list[str]:
-        """Retrieves all social media network slug strings.
+        """Retrieves all social media site slug strings.
 
-        :return: A list of social media network slug strings,
-            ordered by social media network ID
+        :return: A list of social media site slug strings, ordered by
+            social media site ID
         """
         query = """
-            SELECT networkslug
-            FROM ww_socialmedianetworks
-            ORDER BY networkid ASC;
+            SELECT siteslug
+            FROM ww_externalsites
+            WHERE socialmedia = 1
+            ORDER BY siteid ASC;
             """
         cursor = self.database_connection.cursor(dictionary=False)
         cursor.execute(query)
@@ -159,16 +166,16 @@ class SocialMediaNetworks:
         return [row[0] for row in results]
 
     def retrieve_by_id(self, network_id: int) -> dict[int, str]:
-        """Retrieves social media network information by ID.
+        """Retrieves social media site information by site ID.
 
-        :param network_id: Social media network ID
-        :return: A dictionary containing social media network ID,
-            network name and slug strings
+        :param network_id: Social media site ID
+        :return: A dictionary containing social media site ID, name,
+            slug string and icon name
         """
         query = """
-            SELECT networkid, network, networkslug
-            FROM ww_socialmedianetworks
-            WHERE networkid = %s
+            SELECT siteid, site, siteslug, iconname
+            FROM ww_externalsites
+            WHERE siteid = %s AND socialmedia = 1
             LIMIT 1;
             """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -180,22 +187,23 @@ class SocialMediaNetworks:
             return {}
 
         return {
-            "id": result["networkid"],
-            "network": result["network"],
-            "slug": result["networkslug"],
+            "id": result["siteid"],
+            "network": result["site"],
+            "slug": result["siteslug"],
+            "icon": result["iconname"],
         }
 
     def retrieve_by_slug(self, network_slug: str) -> dict[int, str]:
-        """Retrieves social media network information by slug string.
+        """Retrieves social media site information by slug string.
 
         :param network_slug: Social media network slug string
-        :return: A dictionary containing social media network ID,
-            network name and slug strings
+        :return: A dictionary containing social media site ID, name,
+            slug string and icon name
         """
         query = """
-            SELECT networkid, network, networkslug
-            FROM ww_socialmedianetworks
-            WHERE networkslug = %s
+            SELECT siteid, site, siteslug, iconname
+            FROM ww_externalsites
+            WHERE siteslug = %s AND socialmedia = 1
             LIMIT 1;
             """
         cursor = self.database_connection.cursor(dictionary=True)
@@ -207,7 +215,8 @@ class SocialMediaNetworks:
             return {}
 
         return {
-            "id": result["networkid"],
-            "network": result["network"],
-            "slug": result["networkslug"],
+            "id": result["siteid"],
+            "network": result["site"],
+            "slug": result["siteslug"],
+            "icon": result["iconname"],
         }

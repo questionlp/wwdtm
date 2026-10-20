@@ -57,6 +57,9 @@ def test_host_retrieve_all():
     assert "name" in hosts[0], "'name' was not returned for the first list item"
     assert "slug" in hosts[0], "'slug' was not returned for the first list item"
     assert "pronouns" in hosts[0], "'pronouns' was not returned for the first list item"
+    assert "external_sites" in hosts[0], (
+        "'external_sites' was not returned for the first list item"
+    )
     assert "social_media_accounts" in hosts[0], (
         "'social_media_accounts' was not returned for the first list item"
     )
@@ -72,6 +75,9 @@ def test_host_retrieve_all_details():
     assert "name" in hosts[0], "'name' was not returned for the first list item"
     assert "slug" in hosts[0], "'slug' was not returned for the first list item"
     assert "pronouns" in hosts[0], "'pronouns' was not returned for the first list item"
+    assert "external_sites" in hosts[0], (
+        "'external_sites' was not returned for the first list item"
+    )
     assert "social_media_accounts" in hosts[0], (
         "'social_media_accounts' was not returned for the first list item"
     )
@@ -112,6 +118,9 @@ def test_host_retrieve_by_id(host_id: int):
     assert "name" in info, f"'name' was not returned for ID {host_id}"
     assert "slug" in info, f"'slug' was not returned for ID {host_id}"
     assert "pronouns" in info, f"'pronouns' was not returned for ID {host_id}"
+    assert "external_sites" in info, (
+        f"'external_sites' was not returned for ID {host_id}"
+    )
     assert "social_media_accounts" in info, (
         f"'social_media_accounts' was not returned for ID {host_id}"
     )
@@ -129,8 +138,11 @@ def test_host_retrieve_by_slug(host_slug: str):
 
     assert info, f"Host slug {host_slug} not found"
     assert "name" in info, f"'name' was not returned for slug {host_slug}"
-    assert "slug" in info, f"'slug' was not returned for ID {host_slug}"
-    assert "pronouns" in info, f"'pronouns' was not returned for ID {host_slug}"
+    assert "slug" in info, f"'slug' was not returned for slug {host_slug}"
+    assert "pronouns" in info, f"'pronouns' was not returned for slug {host_slug}"
+    assert "external_sites" in info, (
+        f"'external_sites' was not returned for slug {host_slug}"
+    )
     assert "social_media_accounts" in info, (
         f"'social_media_accounts' was not returned for ID {host_slug}"
     )
@@ -149,6 +161,9 @@ def test_host_retrieve_details_by_id(host_id: int):
     assert "name" in info, f"'name' was not returned for ID {host_id}"
     assert "slug" in info, f"'slug' was not returned for ID {host_id}"
     assert "pronouns" in info, f"'pronouns' was not returned for ID {host_id}"
+    assert "external_sites" in info, (
+        f"'external_sites' was not returned for ID {host_id}"
+    )
     assert "social_media_accounts" in info, (
         f"'social_media_accounts' was not returned for ID {host_id}"
     )
@@ -169,6 +184,9 @@ def test_host_retrieve_details_by_slug(host_slug: str):
     assert "name" in info, f"'name' was not returned for slug {host_slug}"
     assert "slug" in info, f"'slug' was not returned for slug {host_slug}"
     assert "pronouns" in info, f"'pronouns' was not returned for slug {host_slug}"
+    assert "external_sites" in info, (
+        f"'external_sites' was not returned for slug {host_slug}"
+    )
     assert "social_media_accounts" in info, (
         f"'social_media_accounts' was not returned for ID {host_slug}"
     )
@@ -247,26 +265,84 @@ def test_host_retrieve_random_details() -> None:
 
 
 @pytest.mark.parametrize("host_id", [1, 2])
+def test_host_retrieve_external_sites_by_id(host_id: int):
+    """Testing for :py:meth`wwdtm.host.Host.retrieve_external_sites_by_id`."""
+    host = Host(connect_dict=get_connect_dict())
+    _sites = host.retrieve_external_sites_by_id(host_id)
+
+    assert isinstance(_sites, list), (
+        f"Returned value for host ID {host_id} was not of type list"
+    )
+
+    if _sites:
+        assert "site" in _sites[0], "Site name was not returned in the first list item"
+        assert "icon" in _sites[0], (
+            "Site icon name was not returned in the first list item"
+        )
+
+
+@pytest.mark.parametrize("host_slug", ["peter-sagal", "luke-burbank"])
+def test_host_retrieve_external_sites_by_slug(host_slug: str):
+    """Testing for :py:meth`wwdtm.host.Host.retrieve_external_sites_by_id`."""
+    host = Host(connect_dict=get_connect_dict())
+    _sites = host.retrieve_external_sites_by_slug(host_slug)
+
+    assert isinstance(_sites, list), (
+        f"Returned value for host slug string {host_slug} was not of type list"
+    )
+
+    if _sites:
+        assert "site" in _sites[0], "Site name was not returned in the first list item"
+        assert "icon" in _sites[0], (
+            "Site icon name was not returned in the first list item"
+        )
+
+
+@pytest.mark.parametrize("host_id", [1, 2])
 def test_host_retrieve_social_acounts_by_id(host_id: int):
     """Testing for :py:meth`wwdtm.host.Host.retrieve_social_media_accounts_by_id`."""
     host = Host(connect_dict=get_connect_dict())
-    _accounts = host.retrieve_social_media_accounts_by_id(host_id)
+    with pytest.deprecated_call():
+        _accounts = host.retrieve_social_media_accounts_by_id(host_id)
 
-    assert isinstance(_accounts, list), (
-        f"Returned value for host ID {host_id} was not of type list"
-    )
-    assert _accounts, f"No social media accounts were returned for host ID {host_id}"
+        assert isinstance(_accounts, list), (
+            f"Returned value for host ID {host_id} was not of type list"
+        )
+        assert _accounts, (
+            f"No social media accounts were returned for host ID {host_id}"
+        )
+
+        if _accounts:
+            assert "network" in _accounts[0], (
+                "Site name was not returned in the first list item"
+            )
+            assert "account" in _accounts[0], (
+                "Account name was not returned in the first list item"
+            )
+
+            assert "url" in _accounts[0], "URL was not returned in the first list item"
 
 
 @pytest.mark.parametrize("host_slug", ["peter-sagal", "luke-burbank"])
 def test_host_retrieve_social_media_accounts_by_slug(host_slug: str):
     """Testing for :py:meth`wwdtm.host.Host.retrieve_social_media_accounts_by_id`."""
     host = Host(connect_dict=get_connect_dict())
-    _accounts = host.retrieve_social_media_accounts_by_slug(host_slug)
+    with pytest.deprecated_call():
+        _accounts = host.retrieve_social_media_accounts_by_slug(host_slug)
 
-    assert isinstance(_accounts, list), (
-        f"Returned value for host slug string {host_slug} was not of type list"
-    )
-    assert _accounts, (
-        f"No social media accounts were returned for host slug string {host_slug}"
-    )
+        assert isinstance(_accounts, list), (
+            f"Returned value for host slug string {host_slug} was not of type list"
+        )
+        assert _accounts, (
+            f"No social media accounts were returned for host slug string {host_slug}"
+        )
+
+        if _accounts:
+            assert "network" in _accounts[0], (
+                "Site name was not returned in the first list item"
+            )
+            assert "account" in _accounts[0], (
+                "Account name was not returned in the first list item"
+            )
+
+            assert "url" in _accounts[0], "URL was not returned in the first list item"

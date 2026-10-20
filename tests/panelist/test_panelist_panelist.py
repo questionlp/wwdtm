@@ -64,6 +64,12 @@ def test_panelist_retrieve_all():
     assert "pronouns" in panelists[0], (
         "'pronouns' was not returned for the first list item"
     )
+    assert "external_sites" in panelists[0], (
+        "'external_sites' was not returned for the first list item"
+    )
+    assert "social_media_accounts" in panelists[0], (
+        "'social_media_accounts' was not returned for the first list item"
+    )
 
 
 def test_panelist_retrieve_all_details():
@@ -77,6 +83,12 @@ def test_panelist_retrieve_all_details():
     assert "slug" in panelists[0], "'slug' was not returned for the first list item"
     assert "pronouns" in panelists[0], (
         "'pronouns' was not returned for the first list item"
+    )
+    assert "external_sites" in panelists[0], (
+        "'external_sites' was not returned for the first list item"
+    )
+    assert "social_media_accounts" in panelists[0], (
+        "'social_media_accounts' was not returned for the first list item"
     )
     assert "is_host" in panelists[0], (
         "'is_host' was not returned for the first list item"
@@ -116,6 +128,12 @@ def test_panelist_retrieve_all_details_valid_number_decimal_places(
     assert "slug" in panelists[0], "'slug' was not returned for the first list item"
     assert "pronouns" in panelists[0], (
         "'pronouns' was not returned for the first list item"
+    )
+    assert "external_sites" in panelists[0], (
+        "'external_sites' was not returned for the first list item"
+    )
+    assert "social_media_accounts" in panelists[0], (
+        "'social_media_accounts' was not returned for the first list item"
     )
     assert "is_host" in panelists[0], (
         "'is_host' was not returned for the first list item"
@@ -184,6 +202,12 @@ def test_panelist_retrieve_by_id(panelist_id: int):
     assert "name" in info, f"'name' was not returned for ID {panelist_id}"
     assert "slug" in info, f"'slug' was not returned for ID {panelist_id}"
     assert "pronouns" in info, f"'pronouns' was not returned for ID {panelist_id}"
+    assert "external_sites" in info, (
+        f"'external_sites' was not returned for ID {panelist_id}"
+    )
+    assert "social_media_accounts" in info, (
+        f"'social_media_accounts' was not returned for ID {panelist_id}"
+    )
 
 
 @pytest.mark.parametrize(
@@ -203,6 +227,12 @@ def test_panelist_retrieve_by_slug(panelist_slug: str):
     assert "name" in info, f"'name' was not returned for slug {panelist_slug}"
     assert "slug" in info, f"'slug' was not returned for slug {panelist_slug}"
     assert "pronouns" in info, f"'pronouns' was not returned for slug {panelist_slug}"
+    assert "external_sites" in info, (
+        f"'external_sites' was not returned for slug {panelist_slug}"
+    )
+    assert "social_media_accounts" in info, (
+        f"'social_media_accounts' was not returned for slug {panelist_slug}"
+    )
 
 
 @pytest.mark.parametrize("panelist_id", [13, 14])
@@ -218,6 +248,12 @@ def test_panelist_retrieve_details_by_id(panelist_id: int):
     assert "name" in info, f"'name' was not returned for ID {panelist_id}"
     assert "slug" in info, f"'slug' was not returned for ID {panelist_id}"
     assert "pronouns" in info, f"'pronouns' was not returned for ID {panelist_id}"
+    assert "external_sites" in info, (
+        f"'external_sites' was not returned for ID {panelist_id}"
+    )
+    assert "social_media_accounts" in info, (
+        f"'social_media_accounts' was not returned for ID {panelist_id}"
+    )
     assert "is_host" in info, f"'is_host' was not returned for ID {panelist_id}"
     assert "appearances" in info, f"'appearances' was not returned for ID {panelist_id}"
     assert info["appearances"], (
@@ -253,6 +289,12 @@ def test_panelist_retrieve_details_by_id_valid_number_decimal_places(
     assert "name" in info, f"'name' was not returned for ID {panelist_id}"
     assert "slug" in info, f"'slug' was not returned for ID {panelist_id}"
     assert "pronouns" in info, f"'pronouns' was not returned for ID {panelist_id}"
+    assert "external_sites" in info, (
+        f"'external_sites' was not returned for ID {panelist_id}"
+    )
+    assert "social_media_accounts" in info, (
+        f"'social_media_accounts' was not returned for ID {panelist_id}"
+    )
     assert "is_host" in info, f"'is_host' was not returned for ID {panelist_id}"
     assert "appearances" in info, f"'appearances' was not returned for ID {panelist_id}"
     assert info["appearances"], (
@@ -304,6 +346,12 @@ def test_panelist_retrieve_details_by_slug(panelist_slug: str):
     assert "name" in info, f"'name' was not returned for slug {panelist_slug}"
     assert "slug" in info, f"'slug' was not returned for slug {panelist_slug}"
     assert "pronouns" in info, f"'pronouns' was not returned for slug {panelist_slug}"
+    assert "external_sites" in info, (
+        f"'external_sites' was not returned for slug {panelist_slug}"
+    )
+    assert "social_media_accounts" in info, (
+        f"'social_media_accounts' was not returned for slug {panelist_slug}"
+    )
     assert "is_host" in info, f"'is_host' was not returned for slug {panelist_slug}"
     assert "appearances" in info, (
         f"'appearances' was not returned for slug {panelist_slug}"
@@ -348,6 +396,12 @@ def test_panelist_retrieve_details_by_slug_valid_number_decimal_places(
     assert "name" in info, f"'name' was not returned for slug {panelist_slug}"
     assert "slug" in info, f"'slug' was not returned for slug {panelist_slug}"
     assert "pronouns" in info, f"'pronouns' was not returned for slug {panelist_slug}"
+    assert "external_sites" in info, (
+        f"'external_sites' was not returned for slug {panelist_slug}"
+    )
+    assert "social_media_accounts" in info, (
+        f"'social_media_accounts' was not returned for slug {panelist_slug}"
+    )
     assert "is_host" in info, f"'is_host' was not returned for slug {panelist_slug}"
     assert "appearances" in info, (
         f"'appearances' was not returned for slug {panelist_slug}"
@@ -481,6 +535,12 @@ def test_panelist_retrieve_random_details_valid_number_decimal_places(
     assert "name" in info, "'name' attribute was not returned for a random panelist"
     assert "slug" in info, "'slug' was not returned for a random panelist"
     assert "pronouns" in info, "'pronouns' was not returned for a random panelist"
+    assert "external_sites" in info, (
+        "'external_sites' was not returned for a random panelist"
+    )
+    assert "social_media_accounts" in info, (
+        "'social_media_accounts' was not returned for a random panelist"
+    )
     assert "appearances" in info, "'appearances' was not returned for a random panelist"
 
 
@@ -503,28 +563,84 @@ def test_panelist_retrieve_random_details_invalid_number_decimal_places(
 
 
 @pytest.mark.parametrize("panelist_id", [2, 10])
+def test_panelist_retrieve_external_sites_by_id(panelist_id: int):
+    """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_external_sites_by_id`."""
+    panelist = Panelist(connect_dict=get_connect_dict())
+    _sites = panelist.retrieve_external_sites_by_id(panelist_id)
+
+    assert isinstance(_sites, list), (
+        f"Returned value for panelist ID {panelist_id} was not of type list"
+    )
+
+    if _sites:
+        assert "site" in _sites[0], "Site name was not returned in the first list item"
+        assert "icon" in _sites[0], (
+            "Site icon name was not returned in the first list item"
+        )
+
+
+@pytest.mark.parametrize("panelist_slug", ["tom-bodett", "paula-poundstone"])
+def test_panelist_retrieve_external_sites_by_slug(panelist_slug: str):
+    """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_external_sites_by_id`."""
+    panelist = Panelist(connect_dict=get_connect_dict())
+    _sites = panelist.retrieve_external_sites_by_slug(panelist_slug)
+
+    assert isinstance(_sites, list), (
+        f"Returned value for panelist slug string {panelist_slug} was not of type list"
+    )
+
+    if _sites:
+        assert "site" in _sites[0], "Site name was not returned in the first list item"
+        assert "icon" in _sites[0], (
+            "Site icon name was not returned in the first list item"
+        )
+
+
+@pytest.mark.parametrize("panelist_id", [2, 10])
 def test_panelist_retrieve_social_acounts_by_id(panelist_id: int):
     """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_social_media_accounts_by_id`."""
     panelist = Panelist(connect_dict=get_connect_dict())
-    _accounts = panelist.retrieve_social_media_accounts_by_id(panelist_id)
+    with pytest.deprecated_call():
+        _accounts = panelist.retrieve_social_media_accounts_by_id(panelist_id)
 
-    assert isinstance(_accounts, list), (
-        f"Returned value for panelist ID {panelist_id} was not of type list"
-    )
-    assert _accounts, (
-        f"No social media accounts were returned for panelist ID {panelist_id}"
-    )
+        assert isinstance(_accounts, list), (
+            f"Returned value for panelist ID {panelist_id} was not of type list"
+        )
+        assert _accounts, (
+            f"No social media accounts were returned for panelist ID {panelist_id}"
+        )
+
+        if _accounts:
+            assert "network" in _accounts[0], (
+                "Site name was not returned in the first list item"
+            )
+            assert "account" in _accounts[0], (
+                "Account name was not returned in the first list item"
+            )
+
+            assert "url" in _accounts[0], "URL was not returned in the first list item"
 
 
 @pytest.mark.parametrize("panelist_slug", ["tom-bodett", "paula-poundstone"])
 def test_panelist_retrieve_social_media_accounts_by_slug(panelist_slug: str):
     """Testing for :py:meth`wwdtm.panelist.Panelist.retrieve_social_media_accounts_by_id`."""
     panelist = Panelist(connect_dict=get_connect_dict())
-    _accounts = panelist.retrieve_social_media_accounts_by_slug(panelist_slug)
+    with pytest.deprecated_call():
+        _accounts = panelist.retrieve_social_media_accounts_by_slug(panelist_slug)
 
-    assert isinstance(_accounts, list), (
-        f"Returned value for panelist slug string {panelist_slug} was not of type list"
-    )
-    assert _accounts, (
-        f"No social media accounts were returned for panelist slug string {panelist_slug}"
-    )
+        assert isinstance(_accounts, list), (
+            f"Returned value for panelist slug string {panelist_slug} was not of type list"
+        )
+        assert _accounts, (
+            f"No social media accounts were returned for panelist slug string {panelist_slug}"
+        )
+
+        if _accounts:
+            assert "network" in _accounts[0], (
+                "Site name was not returned in the first list item"
+            )
+            assert "account" in _accounts[0], (
+                "Account name was not returned in the first list item"
+            )
+
+            assert "url" in _accounts[0], "URL was not returned in the first list item"
