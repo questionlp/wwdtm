@@ -39,8 +39,7 @@ Returned host, panelist and scorekeeper information or details will include both
 
 It is strongly advised that applications switch from using the values returned in ``social_media_accounts`` with values returned in ``external_sites`` whenever possible.
 
-All deprecated methods and the ``social_media_accounts`` key/value pair will remain through version 3.5, and will be removed in version 3.6.
-
+All deprecated methods and the ``social_media_accounts`` key/value pair will be removed in version 3.6.
 
 Application Changes
 -------------------

@@ -523,6 +523,7 @@ class Panelist:
 
         .. version-deprecated:: 3.4.0
             Use :py:meth:`retrieve_external_sites_by_id` instead.
+            Will be removed in version 3.6.
         .. version-added:: 3.3.0
         """
         warnings.warn(
@@ -572,6 +573,7 @@ class Panelist:
 
         .. version-deprecated:: 3.4.0
             Use :py:meth:`retrieve_external_sites_by_slug` instead.
+            Will be removed in version 3.6.
         .. version-added:: 3.3.0
         """
         warnings.warn(
