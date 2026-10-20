@@ -2,6 +2,14 @@
 Changes
 *******
 
+3.4.3
+=====
+
+Application Changes
+-------------------
+
+* Fixed an issue where :py:meth:`wwdtm.host.Host.retrieve_all_details` and :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_all_details` only returned a single item instead of all items
+
 3.4.2
 =====
 
