@@ -2,6 +2,14 @@
 Changes
 *******
 
+3.4.2
+=====
+
+Documentation Changes
+---------------------
+
+* Corrected docstrings and documentation that were missed before finalizing the version, tags and packages
+
 3.4.1
 =====
 
