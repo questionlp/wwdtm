@@ -2,6 +2,69 @@
 Changes
 *******
 
+3.4.0
+=====
+
+Deprecation Notices
+-------------------
+
+The following methods are deprecated in this release and flag a ``DeprecationWarning`` when used:
+
+* :py:meth:`wwdtm.host.Host.retrieve_social_media_accounts_by_id`
+* :py:meth:`wwdtm.host.Host.retrieve_social_media_accounts_by_slug`
+* :py:meth:`wwdtm.panelist.Panelist.retrieve_social_media_accounts_by_id`
+* :py:meth:`wwdtm.panelist.Panelist.retrieve_social_media_accounts_by_slug`
+* :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_social_media_accounts_by_id`
+* :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_social_media_accounts_by_slug`
+
+The deprecated methods are being replaced by the following corresponding methods:
+
+* :py:meth:`wwdtm.host.Host.retrieve_external_sites_by_id`
+* :py:meth:`wwdtm.host.Host.retrieve_external_sites_by_slug`
+* :py:meth:`wwdtm.panelist.Panelist.retrieve_external_sites_by_id`
+* :py:meth:`wwdtm.panelist.Panelist.retrieve_external_sites_by_slug`
+* :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_external_sites_by_id`
+* :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_external_sites_by_slug`
+
+The new ``retrieve_external_sites_by_id`` and ``retrieve_external_sites_by_slug`` return similar values as the deprecated methods, but with changes in semantics.
+
+* ``site`` replaces ``network`` and expands its definition to include any form of external sites
+* ``slug`` remains, but it no longer should be used for Bootstrap icon names
+* ``icon`` is a new value that returns the Bootstrap icon name without the ``bi-`` prefix
+* ``social_media`` is a new boolean value used to flag an external site as a social media network
+* ``url`` remains and is used to return an external site URL or a social media profile page
+* ``account`` is an optional value used to return a social media account or username
+
+Returned host, panelist and scorekeeper information or details will include both the now deprecated ``social_media_accounts`` and the new ``external_sites`` key/value pairs.
+
+It is strongly advised that applications switch from using the values returned in ``social_media_accounts`` with values returned in ``external_sites`` whenever possible.
+
+All deprecated methods and the ``social_media_accounts`` key/value pair will remain through version 3.5, and will be removed in version 3.6.
+
+
+Application Changes
+-------------------
+
+* The library now requires version 4.8 of the Wait Wait Stats Database in order to support the new external sites tables for hosts, panelists and scorekeepers that is replacing the previously new social media account tables
+
+  * The change from social media accounts tables to external sites tables is due to missing the need for links to non-social media sites such as Wikipedia
+
+* Added the following methods that retrieve external sites from the Stats Page for hosts, panelists and scorekeepers
+
+  * :py:meth:`wwdtm.host.Host.retrieve_external_sites_by_id`
+  * :py:meth:`wwdtm.host.Host.retrieve_external_sites_by_slug`
+  * :py:meth:`wwdtm.panelist.Panelist.retrieve_external_sites_by_id`
+  * :py:meth:`wwdtm.panelist.Panelist.retrieve_external_sites_by_slug`
+  * :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_external_sites_by_id`
+  * :py:meth:`wwdtm.scorekeeper.Scorekeeper.retrieve_external_sites_by_slug`
+
+* Added ``external_sites`` key/value pair in the information and details returned for hosts, panelists and scorekeepers. See the above "Deprecation Notices" for more information.
+
+Development Changes
+-------------------
+
+* Added missing assertions for various host, scorekeeper and panelist tests
+
 3.3.0
 =====
 

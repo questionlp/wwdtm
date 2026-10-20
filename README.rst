@@ -48,7 +48,6 @@ Version 3.3.0 raises the minimum required version of the Wait Wait Stats
 Database to 4.8.0, which includes all of the required tables and columns to
 store social media accounts for hosts, panelists and scorekeepers.
 
-
 Running Tests
 =============
 

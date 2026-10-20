@@ -5,6 +5,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 """Wait Wait Stats Host Data Retrieval Functions."""
 
+import warnings
 from typing import Any
 
 from mysql.connector import connect
@@ -78,6 +79,7 @@ class Host:
                     "slug": row["slug"] if row["slug"] else slugify(row["name"]),
                     "gender": row["gender"],
                     "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                    "external_sites": self.retrieve_external_sites_by_id(row["id"]),
                     "social_media_accounts": self.retrieve_social_media_accounts_by_id(
                         row["id"]
                     ),
@@ -127,6 +129,7 @@ class Host:
                     "slug": _slug,
                     "gender": row["gender"],
                     "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                    "external_sites": self.retrieve_external_sites_by_id(row["id"]),
                     "social_media_accounts": self.retrieve_social_media_accounts_by_id(
                         row["id"]
                     ),
@@ -204,6 +207,7 @@ class Host:
             "slug": result["slug"] if result["slug"] else slugify(result["name"]),
             "gender": result["gender"],
             "pronouns": self.retrieve_pronouns_by_id(host_id),
+            "external_sites": self.retrieve_external_sites_by_id(host_id),
             "social_media_accounts": self.retrieve_social_media_accounts_by_id(host_id),
         }
 
@@ -371,24 +375,23 @@ class Host:
 
         return self.retrieve_details_by_id(_id)
 
-    def retrieve_social_media_accounts_by_id(
-        self, host_id: int
-    ) -> list[dict[str, str]]:
-        """Retrieves social media accounts for a host.
+    def retrieve_external_sites_by_id(self, host_id: int) -> list[dict[str, str]]:
+        """Retrieves external site information for a host.
 
         :param host_id: Host ID
-        :return: A list of dictionaries containing social media
-            account information.
+        :return: A list of dictionaries containing external site
+            information, including social media accounts.
         """
         if not valid_int_id(host_id):
             return []
 
         query = """
-            SELECT smn.network, smn.networkslug, hsm.account, hsm.url
-            FROM ww_hostsocialmap hsm
-            JOIN ww_socialmedianetworks smn ON smn.networkid = hsm.networkid
+            SELECT es.site, es.siteslug, es.iconname, es.socialmedia,
+            hsm.url, hsm.account
+            FROM ww_hostextsitesmap hsm
+            JOIN ww_externalsites es ON es.siteid = hsm.siteid
             WHERE hsm.hostid = %s
-            ORDER BY smn.network ASC;
+            ORDER BY es.site ASC;
             """
         cursor = self.database_connection.cursor(dictionary=True)
         cursor.execute(query, (host_id,))
@@ -402,8 +405,69 @@ class Host:
         for row in results:
             accounts.append(
                 {
-                    "network": row["network"],
-                    "network_slug": row["networkslug"],
+                    "site": row["site"],
+                    "slug": row["siteslug"],
+                    "icon": row["iconname"],
+                    "social_media": bool(row["socialmedia"]),
+                    "url": row["url"],
+                    "account": row["account"],
+                }
+            )
+
+        return accounts
+
+    def retrieve_external_sites_by_slug(self, host_slug: str) -> list[dict[str, str]]:
+        """Retrieves external site information for a host.
+
+        :param host_slug: Host slug string
+        :return: A list of dictionaries containing external site
+            information, including social media accounts.
+        """
+        _id = self.utility.convert_slug_to_id(host_slug)
+        if not _id:
+            return {}
+
+        return self.retrieve_external_sites_by_id(_id)
+
+    def retrieve_social_media_accounts_by_id(
+        self, host_id: int
+    ) -> list[dict[str, str]]:
+        """*Deprecated:* Retrieves social media accounts for a host.
+
+        :param host_id: Host ID
+        :return: A list of dictionaries containing social media
+            account information.
+        """
+        warnings.warn(
+            message="This method has been deprecated. Use 'Host.retrieve_external_accounts_by_id()' instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+
+        if not valid_int_id(host_id):
+            return []
+
+        query = """
+            SELECT es.site, es.siteslug, es.iconname, hsm.url, hsm.account
+            FROM ww_hostextsitesmap hsm
+            JOIN ww_externalsites es ON es.siteid = hsm.siteid
+            WHERE hsm.hostid = %s AND es.socialmedia = 1
+            ORDER BY es.site ASC;
+            """
+        cursor = self.database_connection.cursor(dictionary=True)
+        cursor.execute(query, (host_id,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        if not results:
+            return []
+
+        accounts = []
+        for row in results:
+            accounts.append(
+                {
+                    "network": row["site"],
+                    "slug": row["iconname"],
                     "account": row["account"],
                     "url": row["url"],
                 }
@@ -414,14 +478,22 @@ class Host:
     def retrieve_social_media_accounts_by_slug(
         self, host_slug: str
     ) -> list[dict[str, str]]:
-        """Retrieves social media accounts for a host.
+        """*Deprecated:* Retrieves social media accounts for a host.
 
         :param host_slug: Host slug string
         :return: A list of dictionaries containing social media
             account information.
         """
+        warnings.warn(
+            message="This method has been deprecated. Use 'Host.retrieve_external_accounts_by_slug()' instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+
         _id = self.utility.convert_slug_to_id(host_slug)
         if not _id:
             return {}
 
-        return self.retrieve_social_media_accounts_by_id(_id)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return self.retrieve_social_media_accounts_by_id(_id)
