@@ -315,6 +315,8 @@ class Host:
 
         :param host_id: Host ID
         :return: A list of preferred pronouns.
+
+        .. version-added:: 3.3.0
         """
         if not valid_int_id(host_id):
             return []
@@ -341,6 +343,8 @@ class Host:
 
         :param host_slug: Host slug string
         :return: A list of preferred pronouns.
+
+        .. version-added:: 3.3.0
         """
         _id = self.utility.convert_slug_to_id(host_slug)
         if not _id:
@@ -381,6 +385,8 @@ class Host:
         :param host_id: Host ID
         :return: A list of dictionaries containing external site
             information, including social media accounts.
+
+        .. version-added:: 3.4.0
         """
         if not valid_int_id(host_id):
             return []
@@ -422,6 +428,8 @@ class Host:
         :param host_slug: Host slug string
         :return: A list of dictionaries containing external site
             information, including social media accounts.
+
+        .. version-added:: 3.4.0
         """
         _id = self.utility.convert_slug_to_id(host_slug)
         if not _id:
@@ -432,14 +440,18 @@ class Host:
     def retrieve_social_media_accounts_by_id(
         self, host_id: int
     ) -> list[dict[str, str]]:
-        """*Deprecated:* Retrieves social media accounts for a host.
+        """Retrieves social media accounts for a host.
 
         :param host_id: Host ID
         :return: A list of dictionaries containing social media
             account information.
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`retrieve_external_sites_by_id` instead.
+        .. version-added:: 3.3.0
         """
         warnings.warn(
-            message="This method has been deprecated. Use 'Host.retrieve_external_accounts_by_id()' instead.",
+            message="Use 'retrieve_external_sites_by_id()' instead.",
             category=DeprecationWarning,
             stacklevel=2,
         )
@@ -478,14 +490,18 @@ class Host:
     def retrieve_social_media_accounts_by_slug(
         self, host_slug: str
     ) -> list[dict[str, str]]:
-        """*Deprecated:* Retrieves social media accounts for a host.
+        """Retrieves social media accounts for a host.
 
         :param host_slug: Host slug string
         :return: A list of dictionaries containing social media
             account information.
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`retrieve_external_sites_by_slug` instead.
+        .. version-added:: 3.3.0
         """
         warnings.warn(
-            message="This method has been deprecated. Use 'Host.retrieve_external_accounts_by_slug()' instead.",
+            message="Use 'retrieve_external_sites_by_slug()' instead.",
             category=DeprecationWarning,
             stacklevel=2,
         )

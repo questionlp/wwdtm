@@ -106,6 +106,9 @@ class Panelist:
             slug string, gender, pronouns, whether the panelist is
             also a guest, host or scorekeeper, scoring statistics and
             appearances for each panelist
+
+        .. version-changed:: 3.2.0
+            Added ``number_decimal_places`` parameter
         """
         if not valid_rounding_decimal_places(
             number_decimal_places=number_decimal_places
@@ -264,6 +267,9 @@ class Panelist:
         :return: A dictionary containing panelist ID, name, slug string,
             gender, pronouns, whether the panelist is also a guest, host
             or scorekeeper, scoring statistics and appearances
+
+        .. version-changed:: 3.2.0
+            Added ``number_decimal_places`` parameter
         """
         if not valid_int_id(panelist_id):
             return {}
@@ -306,6 +312,9 @@ class Panelist:
         :return: A dictionary containing panelist ID, name, slug string,
             gender, pronouns, whether the panelist is also a guest, host
             or scorekeeper, scoring statistics and appearances
+
+        .. version-changed:: 3.2.0
+            Added ``number_decimal_places`` parameter
         """
         _id = self.utility.convert_slug_to_id(panelist_slug)
         if not _id:
@@ -325,6 +334,8 @@ class Panelist:
 
         :param panelist_id: Panelist ID
         :return: A list of preferred pronouns.
+
+        .. version-added:: 3.3.0
         """
         if not valid_int_id(panelist_id):
             return []
@@ -351,6 +362,8 @@ class Panelist:
 
         :param panelist_slug: Panelist slug string
         :return: A list of preferred pronouns.
+
+        .. version-added:: 3.3.0
         """
         _id = self.utility.convert_slug_to_id(panelist_slug)
         if not _id:
@@ -421,6 +434,9 @@ class Panelist:
         :return: A dictionary containing panelist ID, name, slug string,
             gender, pronouns, whether the panelist is also a guest, host
             or scorekeeper, scoring statistics and appearances
+
+        .. version-changed:: 3.2.0
+            Added ``number_decimal_places`` parameter
         """
         _id = self.retrieve_random_id()
 
@@ -442,6 +458,8 @@ class Panelist:
         :param panelist_id: Panelist ID
         :return: A list of dictionaries containing external site
             information, including social media accounts.
+
+        .. version-added:: 3.4.0
         """
         if not valid_int_id(panelist_id):
             return []
@@ -485,6 +503,8 @@ class Panelist:
         :param panelist_slug: Panelist slug string
         :return: A list of dictionaries containing external site
             information, including social media accounts.
+
+        .. version-added:: 3.4.0
         """
         _id = self.utility.convert_slug_to_id(panelist_slug)
         if not _id:
@@ -500,9 +520,13 @@ class Panelist:
         :param panelist_id: Panelist ID
         :return: A list of dictionaries containing social media
             account information.
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`retrieve_external_sites_by_id` instead.
+        .. version-added:: 3.3.0
         """
         warnings.warn(
-            message="This method has been deprecated. Use 'Paenelist.retrieve_external_accounts_by_id()' instead.",
+            message="Use 'retrieve_external_sites_by_id()' instead.",
             category=DeprecationWarning,
             stacklevel=2,
         )
@@ -545,9 +569,13 @@ class Panelist:
         :param panelist_slug: Panelist slug string
         :return: A list of dictionaries containing social media
             account information.
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`retrieve_external_sites_by_slug` instead.
+        .. version-added:: 3.3.0
         """
         warnings.warn(
-            message="This method has been deprecated. Use 'Panelist.retrieve_external_accounts_by_id()' instead.",
+            message="Use 'retrieve_external_sites_by_slug()' instead.",
             category=DeprecationWarning,
             stacklevel=2,
         )

@@ -281,6 +281,8 @@ class Scorekeeper:
 
         :param scorekeeper_id: Scorekeeper ID
         :return: A list of preferred pronouns.
+
+        .. version-added:: 3.3.0
         """
         if not valid_int_id(scorekeeper_id):
             return []
@@ -307,6 +309,8 @@ class Scorekeeper:
 
         :param scorekeeper_slug: Scorekeeper slug string
         :return: A list of preferred pronouns.
+
+        .. version-added:: 3.3.0
         """
         _id = self.utility.convert_slug_to_id(scorekeeper_slug)
         if not _id:
@@ -392,6 +396,8 @@ class Scorekeeper:
         :param scorekeeper_id: Scorekeeper ID
         :return: A list of dictionaries containing external site
             information, including social media accounts.
+
+        .. version-added:: 3.4.0
         """
         if not valid_int_id(scorekeeper_id):
             return []
@@ -435,6 +441,8 @@ class Scorekeeper:
         :param scorekeeper_slug: Scorekeeper slug string
         :return: A list of dictionaries containing external site
             information, including social media accounts.
+
+        .. version-added:: 3.4.0
         """
         _id = self.utility.convert_slug_to_id(scorekeeper_slug)
         if not _id:
@@ -445,14 +453,18 @@ class Scorekeeper:
     def retrieve_social_media_accounts_by_id(
         self, scorekeeper_id: int
     ) -> list[dict[str, str]]:
-        """*Deprecated:* Retrieves social media accounts for a scorekeeper.
+        """Retrieves social media accounts for a scorekeeper.
 
         :param scorekeeper_id: Scorekeeper ID
         :return: A list of dictionaries containing social media
             account information.
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`retrieve_external_sites_by_id` instead.
+        .. version-added:: 3.3.0
         """
         warnings.warn(
-            message="This method has been deprecated. Use 'Scorekeeper.retrieve_external_accounts_by_id()' instead.",
+            message="Use 'retrieve_external_sites_by_id()' instead.",
             category=DeprecationWarning,
             stacklevel=2,
         )
@@ -491,14 +503,18 @@ class Scorekeeper:
     def retrieve_social_media_accounts_by_slug(
         self, scorekeeper_slug: str
     ) -> list[dict[str, str]]:
-        """*Deprecated:* Retrieves social media accounts for a scorekeeper.
+        """Retrieves social media accounts for a scorekeeper.
 
         :param scorekeeper_slug: Scorekeeper slug string
         :return: A list of dictionaries containing social media
             account information.
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`retrieve_external_sites_by_id` instead.
+        .. version-added:: 3.3.0
         """
         warnings.warn(
-            message="This method has been deprecated. Use 'Scorekeeper.retrieve_external_accounts_by_slug()' instead.",
+            message="Use 'retrieve_external_sites_by_slug()' instead.",
             category=DeprecationWarning,
             stacklevel=2,
         )

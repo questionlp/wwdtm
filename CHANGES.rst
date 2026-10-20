@@ -65,6 +65,11 @@ Development Changes
 
 * Added missing assertions for various host, scorekeeper and panelist tests
 
+Documentation Changes
+---------------------
+
+* Updated docstrings for new or updated methods since version 3.0.0 to include ``version-added``, ``version-changed`` and ``version-deprecated`` directives where applicable
+
 3.3.0
 =====
 

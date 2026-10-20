@@ -33,7 +33,7 @@ Documentation = "https://docs.wwdt.me"
 GitHub = "https://github.com/questionlp/wwdtm"
 Sponsor = "https://github.com/sponsors/questionlp"
 Mastodon = "https://linh.social/@qlp"
-"Stats Page" = "https://stats.wwdt.me"
+"Wait Wait Stats Page" = "https://stats.wwdt.me"
 
 [tool.setuptools.dynamic]
 version = {attr = "wwdtm.VERSION"}
@@ -44,9 +44,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 minversion = "9.0"
-addopts = ["-p", "no:warnings"]
 filterwarnings = [
     "ignore::DeprecationWarning:mysql.*:",
+    "ignore::DeprecationWarning:wwdtm.*:"
 ]
 norecursedirs = [
     ".git",
