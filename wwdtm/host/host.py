@@ -479,7 +479,7 @@ class Host:
             accounts.append(
                 {
                     "network": row["site"],
-                    "slug": row["iconname"],
+                    "network_slug": row["iconname"],
                     "account": row["account"],
                     "url": row["url"],
                 }
