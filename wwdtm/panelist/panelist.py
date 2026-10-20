@@ -78,20 +78,22 @@ class Panelist:
 
         panelists = []
 
-        for row in results:
-            panelists.append(
-                {
-                    "id": row["id"],
-                    "name": row["name"],
-                    "slug": row["slug"] if row["slug"] else slugify(row["name"]),
-                    "gender": row["gender"],
-                    "pronouns": self.retrieve_pronouns_by_id(row["id"]),
-                    "external_sites": self.retrieve_external_sites_by_id(row["id"]),
-                    "social_media_accounts": self.retrieve_social_media_accounts_by_id(
-                        row["id"]
-                    ),
-                }
-            )
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            for row in results:
+                panelists.append(
+                    {
+                        "id": row["id"],
+                        "name": row["name"],
+                        "slug": row["slug"] if row["slug"] else slugify(row["name"]),
+                        "gender": row["gender"],
+                        "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                        "external_sites": self.retrieve_external_sites_by_id(row["id"]),
+                        "social_media_accounts": self.retrieve_social_media_accounts_by_id(
+                            row["id"]
+                        ),
+                    }
+                )
 
         return panelists
 
@@ -137,32 +139,34 @@ class Panelist:
             database_connection=self.database_connection
         )
 
-        for row in results:
-            _slug = row["slug"] if row["slug"] else slugify(row["name"])
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            for row in results:
+                _slug = row["slug"] if row["slug"] else slugify(row["name"])
 
-            panelists.append(
-                {
-                    "id": row["id"],
-                    "name": row["name"],
-                    "slug": _slug,
-                    "gender": row["gender"],
-                    "pronouns": self.retrieve_pronouns_by_id(row["id"]),
-                    "external_sites": self.retrieve_external_sites_by_id(row["id"]),
-                    "social_media_accounts": self.retrieve_social_media_accounts_by_id(
-                        row["id"]
-                    ),
-                    "is_guest": bool(_guest_utility.slug_exists(_slug)),
-                    "is_host": bool(_host_utility.slug_exists(_slug)),
-                    "is_scorekeeper": bool(_scorekeeper_utility.slug_exists(_slug)),
-                    "statistics": self.statistics.retrieve_statistics_by_id(
-                        row["id"], number_decimal_places=number_decimal_places
-                    ),
-                    "bluffs": self.statistics.retrieve_bluffs_by_id(row["id"]),
-                    "appearances": self.appearances.retrieve_appearances_by_id(
-                        row["id"]
-                    ),
-                }
-            )
+                panelists.append(
+                    {
+                        "id": row["id"],
+                        "name": row["name"],
+                        "slug": _slug,
+                        "gender": row["gender"],
+                        "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                        "external_sites": self.retrieve_external_sites_by_id(row["id"]),
+                        "social_media_accounts": self.retrieve_social_media_accounts_by_id(
+                            row["id"]
+                        ),
+                        "is_guest": bool(_guest_utility.slug_exists(_slug)),
+                        "is_host": bool(_host_utility.slug_exists(_slug)),
+                        "is_scorekeeper": bool(_scorekeeper_utility.slug_exists(_slug)),
+                        "statistics": self.statistics.retrieve_statistics_by_id(
+                            row["id"], number_decimal_places=number_decimal_places
+                        ),
+                        "bluffs": self.statistics.retrieve_bluffs_by_id(row["id"]),
+                        "appearances": self.appearances.retrieve_appearances_by_id(
+                            row["id"]
+                        ),
+                    }
+                )
 
         return panelists
 
@@ -231,17 +235,19 @@ class Panelist:
         if not result:
             return {}
 
-        return {
-            "id": result["id"],
-            "name": result["name"],
-            "slug": result["slug"] if result["slug"] else slugify(result["name"]),
-            "gender": result["gender"],
-            "pronouns": self.retrieve_pronouns_by_id(panelist_id),
-            "external_sites": self.retrieve_external_sites_by_id(panelist_id),
-            "social_media_accounts": self.retrieve_social_media_accounts_by_id(
-                panelist_id
-            ),
-        }
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return {
+                "id": result["id"],
+                "name": result["name"],
+                "slug": result["slug"] if result["slug"] else slugify(result["name"]),
+                "gender": result["gender"],
+                "pronouns": self.retrieve_pronouns_by_id(panelist_id),
+                "external_sites": self.retrieve_external_sites_by_id(panelist_id),
+                "social_media_accounts": self.retrieve_social_media_accounts_by_id(
+                    panelist_id
+                ),
+            }
 
     def retrieve_by_slug(self, panelist_slug: str) -> dict[str, Any]:
         """Retrieves panelist information.

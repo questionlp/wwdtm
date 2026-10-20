@@ -71,20 +71,22 @@ class Host:
 
         hosts = []
 
-        for row in results:
-            hosts.append(
-                {
-                    "id": row["id"],
-                    "name": row["name"],
-                    "slug": row["slug"] if row["slug"] else slugify(row["name"]),
-                    "gender": row["gender"],
-                    "pronouns": self.retrieve_pronouns_by_id(row["id"]),
-                    "external_sites": self.retrieve_external_sites_by_id(row["id"]),
-                    "social_media_accounts": self.retrieve_social_media_accounts_by_id(
-                        row["id"]
-                    ),
-                }
-            )
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            for row in results:
+                hosts.append(
+                    {
+                        "id": row["id"],
+                        "name": row["name"],
+                        "slug": row["slug"] if row["slug"] else slugify(row["name"]),
+                        "gender": row["gender"],
+                        "pronouns": self.retrieve_pronouns_by_id(row["id"]),
+                        "external_sites": self.retrieve_external_sites_by_id(row["id"]),
+                        "social_media_accounts": self.retrieve_social_media_accounts_by_id(
+                            row["id"]
+                        ),
+                    }
+                )
 
         return hosts
 
@@ -119,8 +121,10 @@ class Host:
             database_connection=self.database_connection
         )
 
-        for row in results:
-            _slug = row["slug"] if row["slug"] else slugify(row["name"])
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            for row in results:
+                _slug = row["slug"] if row["slug"] else slugify(row["name"])
 
             hosts.append(
                 {
@@ -201,15 +205,19 @@ class Host:
         if not result:
             return {}
 
-        return {
-            "id": result["id"],
-            "name": result["name"],
-            "slug": result["slug"] if result["slug"] else slugify(result["name"]),
-            "gender": result["gender"],
-            "pronouns": self.retrieve_pronouns_by_id(host_id),
-            "external_sites": self.retrieve_external_sites_by_id(host_id),
-            "social_media_accounts": self.retrieve_social_media_accounts_by_id(host_id),
-        }
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return {
+                "id": result["id"],
+                "name": result["name"],
+                "slug": result["slug"] if result["slug"] else slugify(result["name"]),
+                "gender": result["gender"],
+                "pronouns": self.retrieve_pronouns_by_id(host_id),
+                "external_sites": self.retrieve_external_sites_by_id(host_id),
+                "social_media_accounts": self.retrieve_social_media_accounts_by_id(
+                    host_id
+                ),
+            }
 
     def retrieve_by_slug(self, host_slug: str) -> dict[str, Any]:
         """Retrieves host information.
