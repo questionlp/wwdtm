@@ -13,6 +13,7 @@ The following is a list of modules provided in the library:
 .. toctree::
     :maxdepth: 2
 
+    external_site
     guest
     host
     location

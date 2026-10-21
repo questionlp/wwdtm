@@ -5,6 +5,7 @@
 # vim: set noai syntax=python ts=4 sw=4:
 """Wait Wait Stats Social Media Networks Data Retrieval Functions."""
 
+import warnings
 from typing import Any
 
 from mysql.connector import connect
@@ -20,6 +21,10 @@ class SocialMediaNetworks:
     :param connect_dict: A dictionary containing database connection
         settings as required by MySQL Connector/Python
     :param database_connection: MySQL database connection object
+
+    .. version-deprecated:: 3.4.0
+        Use :py:class:`wwdtm.external_site.ExternalSites` instead.
+    .. version-added:: 3.3.0
     """
 
     def __init__(
@@ -27,6 +32,12 @@ class SocialMediaNetworks:
         connect_dict: dict[str, Any] = None,
         database_connection: MySQLConnection | PooledMySQLConnection = None,
     ):
+        warnings.warn(
+            message="Use 'wwdtm.external_site.ExternalSites' instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+
         if connect_dict:
             self.connect_dict = connect_dict
             self.database_connection = connect(**connect_dict)
@@ -41,7 +52,17 @@ class SocialMediaNetworks:
 
         :return: A list of dictionaries containing social media site
             IDs, names, slug strings and icon names
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`wwdtm.external_site.ExternalSites.retrieve_all` instead.
+        .. version-added:: 3.3.0
         """
+        warnings.warn(
+            message="Use 'wwdtm.external_site.ExternalSites.retrieve_all()' instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+
         query = """
             SELECT siteid, site, siteslug, iconname
             FROM ww_externalsites
@@ -73,7 +94,17 @@ class SocialMediaNetworks:
         """Retrieves all social media site IDs, sorted by ID.
 
         :return: A list of social media site IDs as integers
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`wwdtm.external_site.ExternalSites.retrieve_all_ids` instead.
+        .. version-added:: 3.3.0
         """
+        warnings.warn(
+            message="Use 'wwdtm.external_site.ExternalSites.retrieve_all_ids()' instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+
         cursor = self.database_connection.cursor(dictionary=False)
         query = """
             SELECT siteid
@@ -96,7 +127,17 @@ class SocialMediaNetworks:
         :return: A dictionary of social media site IDs as keys, each
             containing name and slug key/values, ordered by social media
             site ID
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`wwdtm.external_site.ExternalSites.retrieve_all_as_dict` instead.
+        .. version-added:: 3.3.0
         """
+        warnings.warn(
+            message="Use 'wwdtm.external_site.ExternalSites.retrieve_all_as_dict()' instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+
         query = """
             SELECT siteid, site, siteslug, iconname
             FROM ww_externalsites
@@ -126,7 +167,17 @@ class SocialMediaNetworks:
 
         :return: A list of social media sites, ordered by social media
             site ID
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`wwdtm.external_site.ExternalSites.retrieve_all_site_names` instead.
+        .. version-added:: 3.3.0
         """
+        warnings.warn(
+            message="Use 'wwdtm.external_site.ExternalSites.retrieve_all_site_names()' instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+
         query = """
             SELECT site
             FROM ww_externalsites
@@ -148,7 +199,16 @@ class SocialMediaNetworks:
 
         :return: A list of social media site slug strings, ordered by
             social media site ID
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`wwdtm.external_site.ExternalSites.retrieve_all_site_slugs` instead.
+        .. version-added:: 3.3.0
         """
+        warnings.warn(
+            message="Use 'wwdtm.external_site.ExternalSites.retrieve_all_site_slugs()' instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
         query = """
             SELECT siteslug
             FROM ww_externalsites
@@ -171,7 +231,17 @@ class SocialMediaNetworks:
         :param network_id: Social media site ID
         :return: A dictionary containing social media site ID, name,
             slug string and icon name
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`wwdtm.external_site.ExternalSites.retrieve_by_id` instead.
+        .. version-added:: 3.3.0
         """
+        warnings.warn(
+            message="Use 'wwdtm.external_site.ExternalSites.retrieve_by_id()' instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+
         query = """
             SELECT siteid, site, siteslug, iconname
             FROM ww_externalsites
@@ -199,7 +269,17 @@ class SocialMediaNetworks:
         :param network_slug: Social media network slug string
         :return: A dictionary containing social media site ID, name,
             slug string and icon name
+
+        .. version-deprecated:: 3.4.0
+            Use :py:meth:`wwdtm.external_site.ExternalSites.retrieve_by_slug` instead.
+        .. version-added:: 3.3.0
         """
+        warnings.warn(
+            message="Use 'wwdtm.external_site.ExternalSites.retrieve_by_slug()' instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+
         query = """
             SELECT siteid, site, siteslug, iconname
             FROM ww_externalsites

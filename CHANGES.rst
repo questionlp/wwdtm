@@ -2,6 +2,29 @@
 Changes
 *******
 
+3.4.4
+=====
+
+Deprecation Notices
+-------------------
+
+The following class and its methods have been deprecated in this release and flag a ``DeprecationWarning`` when used:
+
+* :py:class:`wwdtm.social_media.SocialMediaNetworks`
+
+It is strongly advised that application switch to using :py:class:`wwdtm.external_site.ExternalSites` instead.
+
+The deprecated class and its methods will be removed in version 3.6.
+
+Application Changes
+-------------------
+
+* Added :py:class:`wwdtm.external_site.ExternalSites` to replace the now deprecated :py:class:`wwdtm.social_media.SocialMediaNetworks`
+* When transitioning to the new class, make note of the following method name differences:
+
+  * The replacement for :py:meth:`wwdtm.social_media.SocialMediaNetworks.retrieve_all_network_names` is :py:meth:`wwdtm.external_site.ExternalSites.retrieve_all_site_names`
+  * The replacement for :py:meth:`wwdtm.social_media.SocialMediaNetworks.retrieve_all_network_slugs` is :py:meth:`wwdtm.external_site.ExternalSites.retrieve_all_site_slugs`
+
 3.4.3
 =====
 

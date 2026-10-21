@@ -10,6 +10,7 @@ each of the :py:mod:`wwdtm` library modules:
 .. toctree::
     :maxdepth: 2
 
+    external_site
     guest
     host
     location
